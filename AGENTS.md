@@ -62,3 +62,15 @@ description: >-
   - **Claude Code**: Ferramenta `Agent` (com tipo `general-purpose`).
   - **Codex**: Execução em sub-processo / thread isolada.
 - O contexto e os requisitos devem ser passados integralmente e sem perda de fidelidade (*ipsis litteris*).
+
+---
+
+## 5. Governança e Ciclo de Vida do Desenvolvimento
+
+- **Divisão de Responsabilidades (Human Layer vs. Agent Layer)**: Siga rigorosamente os princípios de [`ai-assisted-software-development`](skills/ai-assisted-software-development/SKILL.md).
+- **Desenho / Design de Software**: É **obrigatório** utilizar a skill [`software-designing`](skills/software-designing/SKILL.md) para modelagem, fronteiras e contratos.
+- **Implementação de Código**: É **obrigatório** utilizar a skill [`coding`](skills/coding/SKILL.md) para escrita, testes e refatoração.
+- **Portão Autônomo de Qualidade**: O agente deve rodar obrigatoriamente [`agent-self-review`](skills/agent-self-review/SKILL.md) e corrigir seus próprios achados até obter aprovação (*clean*) antes de submeter ao humano.
+- **Revisão Humana de Alto Nível**: Utilize [`human-review`](skills/human-review/SKILL.md) sempre que o humano solicitar revisão da entrega, focando exclusivamente na camada de governança humana.
+
+
