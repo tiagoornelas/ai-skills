@@ -69,6 +69,7 @@ description: >-
 
 - **Divisão de Responsabilidades (Human Layer vs. Agent Layer)**: Siga rigorosamente os princípios de [`ai-assisted-software-development`](skills/ai-assisted-software-development/SKILL.md).
 - **Desenho / Design de Software**: É **obrigatório** utilizar a skill [`software-designing`](skills/software-designing/SKILL.md) para modelagem, fronteiras e contratos.
+- **Alternativas de Design**: Decisões de design caras de mudar depois devem passar por [`design-it-twice`](skills/design-it-twice/SKILL.md) antes de serem fixadas.
 - **Implementação de Código**: É **obrigatório** utilizar a skill [`coding`](skills/coding/SKILL.md) para escrita, testes e refatoração.
 - **Portão Autônomo de Qualidade**: O agente deve rodar obrigatoriamente [`agent-self-review`](skills/agent-self-review/SKILL.md) e corrigir seus próprios achados até obter aprovação (*clean*) antes de submeter ao humano.
 - **Revisão Humana de Alto Nível**: Utilize [`human-review`](skills/human-review/SKILL.md) sempre que o humano solicitar revisão da entrega, focando exclusivamente na camada de governança humana.
