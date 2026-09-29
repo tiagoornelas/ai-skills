@@ -17,7 +17,7 @@ These rules are non-negotiable and apply to **every** commit created by Claude, 
 
 - **Title Only, By Default:** The commit title (first line) is the entire message in the vast majority of cases. Do not add a body. Do not explain the "why" or the "how" unless the user explicitly asks for it.
 - **No Task References in Title:** The first line must describe what was done, without any task or issue key (e.g., `DEV-1234`, `PROJ-56`). If a task reference is relevant, place it alone on a second line below the title, separated by a blank line.
-- **No Local File References** (`AGENTS.md`, section 2): the task reference on that second line must be a real Jira key. If the ticket has no linked Jira issue, omit the reference line entirely.
+- **No Local File References** ([no-local-references](../ai-assisted-software-development/references/no-local-references.md)): the task reference on that second line must be a real Jira key. If the ticket has no linked Jira issue, omit the reference line entirely.
 - **Body Is the Exception, Not the Default:** Only add a body paragraph when the user explicitly asks for more context, or the change is genuinely inexplicable from the title alone (e.g., a non-obvious workaround). When in doubt, leave it out. If added, it must be a single paragraph of **maximum 3 lines** — never more.
 - **No Bullet Points:** Never use bullet points or lists in the commit body, under any circumstance.
 - **English Only:** All messages must be in English.

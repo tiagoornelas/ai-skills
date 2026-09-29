@@ -75,7 +75,7 @@ Regras:
 - **Separe fato de crença.** O próximo agente trata o documento como contrato e não vai reconferir. Uma afirmação do tipo "X não existe" ou "Y está pronto" que a sessão nunca verificou vira premissa falsa: rebaixe-a para ❓.
 - **Guarde o porquê**, não só o quê: as decisões e o que foi descartado são o que um resumo costuma perder.
 - **Skills sugeridas**: nomeie as skills que o próximo agente deve acionar, pelo nome com que o harness de destino as conhece.
-- **Para um colega**, caminhos da máquina não servem (`AGENTS.md`, seção 2): use links de issue, PR e commit, ou reescreva a informação.
+- **Para um colega**, caminhos da máquina não servem ([sem referências locais](../ai-assisted-software-development/references/no-local-references.md)): use links de issue, PR e commit, ou reescreva a informação.
 - **Remova dados sensíveis**: chaves de API, tokens, senhas e dados pessoais. Nunca entram no documento.
 
 ---

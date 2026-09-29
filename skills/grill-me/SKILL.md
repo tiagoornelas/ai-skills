@@ -85,8 +85,8 @@ Nunca pergunte ao usuário algo que o ambiente responde. Feche as duas ignorânc
 
 Quando uma pergunta da fronteira depende de um fato:
 
-- **No ambiente local** (arquivos, git, ferramentas): despache um subagente para buscar (ver `AGENTS.md`, seção 4).
-- **Fora do ambiente** (comportamento de API de terceiros, contrato de biblioteca, documentação): despache um subagente para pesquisar em fontes primárias (documentação oficial, código-fonte, especificação) e trazer a resposta com o link. Não chute.
+- **No ambiente local** (arquivos, git, ferramentas): despache um subagente para buscar (ver [subagent-delegation.md](../ai-assisted-software-development/references/subagent-delegation.md)).
+- **Fora do ambiente** (comportamento de API de terceiros, contrato de biblioteca, documentação): despache um subagente, do mesmo jeito, para pesquisar em fontes primárias (documentação oficial, código-fonte, especificação) e trazer a resposta com o link. Não chute.
 - **Não bloqueie**: uma busca em andamento é um pré-requisito não resolvido. Só as perguntas que dependem dela esperam; o resto da fronteira é perguntado agora.
 
 ---

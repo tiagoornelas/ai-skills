@@ -127,7 +127,7 @@ Após as tarefas:
 - **Descrição concisa**: quem lê deve entender a tarefa em menos de um minuto. Corte tudo que não ajuda a entender o porquê, o quê ou como verificar.
 - **Resultado, não implementação**: descreva comportamentos e capacidades (Camada Humana). Detalhes internos (nomes de funções privadas, estrutura de pastas) só entram se forem essenciais para entender a tarefa.
 - **Critérios de aceite verificáveis**: cada um é algo que alguém pode checar. Para tarefas concluídas, descrevem o que foi entregue; para tarefas a fazer, o que define "pronto".
-- **Sem referências locais** (`AGENTS.md`, seção 2). Links para PRs, commits e issues públicos são bem-vindos.
+- **[sem referências locais](../ai-assisted-software-development/references/no-local-references.md)**. Links para PRs, commits e issues públicos são bem-vindos.
 - **Sem inventar**: se uma informação necessária não está nas evidências (ex.: o motivo de negócio), pergunte ou deixe explícito como pendente, em vez de supor.
 - **Status honesto**: *Concluída* só com evidência de que foi entregue; na dúvida, *Em andamento*.
 

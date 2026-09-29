@@ -22,7 +22,7 @@ Todo agente operando neste repositório (ou em repositórios configurados a part
 - **Agnosticismo de Harness**: As instruções e skills devem ser descritas de forma portável, evitando dependências rígidas de um único motor quando houver equivalentes diretos (ex.: ferramentas de subagentes).
 - **Segurança e Não-Destrutividade**: Sempre preserve dados do usuário, não execute comandos destrutivos sem verificação e respeite arquivos existentes.
 - **Formatação de Arquivos**: Ao referenciar arquivos no Markdown, use links formatados (ex.: `[README.md](README.md)`).
-- **Sem Referências Locais em Artefatos Compartilhados**: Commits, PRs, comentários de revisão e relatórios nunca citam caminhos locais que o leitor não consegue abrir (`docs/tickets/`, `docs/prd/`, `docs/research/`, arquivos no `.gitignore`, caminhos da máquina). Use a issue vinculada (Jira/GitHub) ou reescreva a informação.
+- **Sem Referências Locais em Artefatos Compartilhados**: Commits, PRs, comentários de revisão e relatórios nunca citam caminhos locais que o leitor não consegue abrir (`docs/tickets/`, `docs/prd/`, `docs/research/`, arquivos no `.gitignore`, caminhos da máquina). Use a issue vinculada (Jira/GitHub) ou reescreva a informação. Detalhes em [no-local-references.md](skills/ai-assisted-software-development/references/no-local-references.md).
 
 ---
 
@@ -63,6 +63,7 @@ description: >-
   - **Claude Code**: Ferramenta `Agent` (com tipo `general-purpose`).
   - **Codex**: Execução em sub-processo / thread isolada.
 - O contexto e os requisitos devem ser passados integralmente e sem perda de fidelidade (*ipsis litteris*).
+- Caminhos de skills citados num brief são passados como caminhos absolutos: o subagente roda na pasta do projeto, não na pasta das skills. Detalhes em [subagent-delegation.md](skills/ai-assisted-software-development/references/subagent-delegation.md).
 
 ---
 

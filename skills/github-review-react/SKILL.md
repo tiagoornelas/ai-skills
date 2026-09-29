@@ -153,7 +153,7 @@ Regras:
 - **Direta e concisa**: uma a três frases. Sem agradecimento em toda resposta, sem pedir desculpas pelo código.
 - **Cortês sem ceder no mérito**: um ❌ explica o motivo concreto (o cenário não ocorre porque X; a regra do projeto Y pede o contrário; o custo é Z) e deixa a porta aberta. Nunca soa como "você está errado".
 - **SHA curto** (7 caracteres): o GitHub transforma em link automaticamente.
-- **Sem referências locais** (`AGENTS.md`, seção 2), **sem assinatura** e sem linha de coautoria ou de IA.
+- **[sem referências locais](../ai-assisted-software-development/references/no-local-references.md)**, **sem assinatura** e sem linha de coautoria ou de IA.
 - Termos técnicos, identificadores e código ficam no idioma original.
 
 Apresente todas as respostas juntas, um bloco por thread, com o local e o destino.

@@ -75,7 +75,7 @@ Depois da decisão, o design escolhido segue o Passo 6 de `software-designing` (
 
 ## 4. Delegação a Subagentes
 
-Use a ferramenta de subagentes do harness atual (ver `AGENTS.md`, seção 4):
+Siga [subagent-delegation.md](../ai-assisted-software-development/references/subagent-delegation.md): brief autossuficiente e caminhos de skills absolutos. Ferramenta por harness:
 - **Claude Code**: `Agent` com tipo `general-purpose`, uma chamada por alternativa, **todas no mesmo turno**, para rodarem em paralelo.
 - **Antigravity CLI**: `invoke_subagent` com `TypeName: "self"`.
 - **Codex**: um sub-processo ou thread isolada por alternativa.
@@ -83,7 +83,7 @@ Use a ferramenta de subagentes do harness atual (ver `AGENTS.md`, seção 4):
 Prompt de cada subagente (preencha e repasse o Pacote de Contexto integralmente):
 
 ```markdown
-Siga a skill `software-designing` (skills/software-designing/SKILL.md) no modo
+Siga a skill `software-designing` (<skills>/software-designing/SKILL.md) no modo
 "acionada por outro agente".
 
 ## Pacote de Contexto
