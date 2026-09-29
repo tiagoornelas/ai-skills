@@ -14,6 +14,9 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SKILLS_DIR="$REPO_ROOT/skills"
 AGENTS_FILE="$REPO_ROOT/AGENTS.md"
 
+# shellcheck source=lib/link.sh
+source "$SCRIPT_DIR/lib/link.sh"
+
 # Destinos globais de skills
 CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
 GEMINI_SKILLS_DIR="$HOME/.gemini/config/skills"
@@ -45,12 +48,17 @@ for skill_path in "$SKILLS_DIR"/*; do
 
   if [ -d "$skill_path" ]; then
     echo "  -> Vinculando skill: $skill_name"
-    ln -sfn "$skill_path" "$CLAUDE_SKILLS_DIR/$skill_name"
-    ln -sfn "$skill_path" "$GEMINI_SKILLS_DIR/$skill_name"
-    ln -sfn "$skill_path" "$CODEX_SKILLS_DIR/$skill_name"
+    safe_link "$skill_path" "$CLAUDE_SKILLS_DIR/$skill_name" claude
+    safe_link "$skill_path" "$GEMINI_SKILLS_DIR/$skill_name" gemini
+    safe_link "$skill_path" "$CODEX_SKILLS_DIR/$skill_name" codex
     count=$((count + 1))
   fi
 done
+
+# Links para skills que saíram do repositório
+prune_dangling_links "$CLAUDE_SKILLS_DIR" "$SKILLS_DIR"
+prune_dangling_links "$GEMINI_SKILLS_DIR" "$SKILLS_DIR"
+prune_dangling_links "$CODEX_SKILLS_DIR" "$SKILLS_DIR"
 
 if [ "$count" -eq 0 ]; then
   echo "  (Nenhuma skill encontrada em $SKILLS_DIR ainda. Quando adicionar novas pastas de skills, execute este script novamente para vinculá-las automaticamente)."
@@ -98,4 +106,7 @@ else
 fi
 
 echo ""
+if [ "$AI_SKILLS_BACKED_UP" -eq 1 ]; then
+  echo "📦 Conteúdos substituídos foram guardados em: $AI_SKILLS_BACKUP_DIR"
+fi
 echo "✅ Concluído!"

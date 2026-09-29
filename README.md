@@ -32,6 +32,8 @@ Execute o script de setup global:
    - `~/.claude/skills/<skill>`
    - `~/.gemini/config/skills/<skill>`
    - `~/.codex/skills/<skill>`
+
+   Se já existir uma pasta real com o mesmo nome (uma cópia antiga), ela é movida para `~/.ai-skills-backup/<data>/` antes de o link ser criado. Links que apontavam para skills removidas do repositório são apagados.
 2. Pergunta se você deseja vincular o `AGENTS.md` deste repositório como instrução global padrão nos três ambientes (com backup automático dos arquivos existentes).
 
 ---
@@ -48,7 +50,7 @@ Execute o script apontando para a pasta do projeto:
 
 **O que o script faz no projeto de destino:**
 1. **Regras Unificadas:** Cria `AGENTS.md` base (se ainda não existir) e gera os symlinks `CLAUDE.md -> AGENTS.md` e `GEMINI.md -> AGENTS.md`.
-2. **Acesso às Skills:** Aponta `.claude/skills` e `.agents/skills` diretamente para a pasta `skills/` deste repositório.
+2. **Acesso às Skills:** Aponta `.claude/skills` e `.agents/skills` diretamente para a pasta `skills/` deste repositório. Se o projeto já tiver uma pasta de skills própria, ela é preservada e cada skill deste repositório é vinculada dentro dela, sem sobrescrever skills do projeto com o mesmo nome.
 
 ---
 
