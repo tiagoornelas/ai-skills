@@ -171,7 +171,7 @@ Quando o usuário estiver pronto, **pergunte quais achados ele considera válido
 
 ### 8.1. Comentários de linha
 
-Para cada achado aceito, gere um comentário pronto para colar, em **PT-BR**. Rascunhe e depois passe pela skill `humanize-writing` (se disponível no harness) antes de apresentar: são lidos por um colega, e um comentário que parece gerado por IA quebra o tom colaborativo.
+Para cada achado aceito, gere um comentário pronto para colar, em **PT-BR**. Rascunhe e depois passe pela skill [`humanize-writing`](../humanize-writing/SKILL.md) antes de apresentar: são lidos por um colega, e um comentário que parece gerado por IA quebra o tom colaborativo.
 
 <comment-template>
 
