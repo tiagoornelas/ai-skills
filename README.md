@@ -1,4 +1,4 @@
-# ai-skills
+# ai-skills ✨
 
 O meu jeito de desenvolver software com agentes de IA, escrito como **skills** e instalado a partir de uma fonte única em **Claude Code**, **Codex** e **Antigravity CLI**.
 
