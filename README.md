@@ -1,8 +1,8 @@
 # ai-skills ✨
 
-My way of developing software with AI agents, written as **skills** and installed from a single source across **Claude Code**, **Codex**, and **Antigravity CLI**.
+My current take on AI-assisted software development, written as **skills** and installed from a single source across **Claude Code**, **Codex**, and **Antigravity CLI**.
 
-More than a catalog of prompts, this represents the division of labor I believe in: what the human decides and what the agent executes autonomously. It structures these layers and applies design and coding principles that guide agent behavior, allowing humans to trust what they don't need to read and bringing their attention only to what truly demands their review and decision.
+More than a catalog of prompts, this represents the division of labor I believe in: what the human decides and what the agent executes autonomously. It structures these layers and applies design and coding principles that guide agent behavior, allowing humans to trust what they don't need to check and bringing their attention only to what truly demands their review and decision.
 
 ---
 
