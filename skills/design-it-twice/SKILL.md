@@ -98,6 +98,8 @@ agentes estão cobrindo os outros eixos.
 Um Design Brief com UMA alternativa (pule a tabela "Alternativas consideradas").
 Inclua, obrigatoriamente: mapa de módulos, cartões de interface, modos de falha,
 e uma seção "Fraquezas conhecidas" com os pontos fracos honestos desta abordagem.
+Custo só em termos relativos (complexidade, risco, tamanho da mudança), sem
+estimativa em dias nem fases.
 Não implemente código.
 ```
 
@@ -123,7 +125,7 @@ Não implemente código.
 | Generalidade | | | |
 | Vazamento de informação | | | |
 | Modos de falha expostos | | | |
-| Eficiência / custo de implementação | | | |
+| Eficiência / custo relativo de implementação (sem prazo) | | | |
 | Facilidade de mudança provável | | | |
 
 ## Recomendação

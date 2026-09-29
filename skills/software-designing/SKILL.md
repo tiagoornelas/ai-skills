@@ -72,6 +72,7 @@ Aplique as referências pertinentes (seção 4). No mínimo, para cada alternati
 - Apresente ao humano **apenas** o que pertence à Camada Humana: módulos e responsabilidades, direção das dependências, contratos e modos de falha, comportamentos e trade-offs.
 - **Visualize** com [`visualize-it`](../visualize-it/SKILL.md): mapa de módulos com direção das dependências e cartões de interface para cada contrato novo ou alterado.
 - Liste as **decisões pendentes** de forma explícita, cada uma com opções, custo de cada opção e recomendação.
+- **Custo é relativo, nunca prazo**: compare as opções em complexidade, risco e tamanho da mudança (ex.: "B altera três módulos; A, só um"). Não estime dias nem monte cronograma por fases: planejar a entrega não é papel do design.
 
 ### Passo 6: Fechar e registrar
 - Consolide as decisões do humano num **registro de decisão** curto: contexto, alternativas consideradas, decisão, consequências.
