@@ -90,8 +90,8 @@ echo ""
 
 if [ "$GLOBAL_INSTRUCTIONS" = "ask" ]; then
   if [ -t 0 ]; then
-    read -p "Deseja vincular as instruções globais agora? [s/N]: " -r response || response="n"
-    [[ "$response" =~ ^([sS][iI][mM]|[sS])$ ]] && GLOBAL_INSTRUCTIONS="yes" || GLOBAL_INSTRUCTIONS="no"
+    read -p "Deseja vincular as instruções globais agora? [y/N | s/N]: " -r response || response="n"
+    [[ "$response" =~ ^([sS][iI][mM]|[sS]|[yY][eE][sS]|[yY])$ ]] && GLOBAL_INSTRUCTIONS="yes" || GLOBAL_INSTRUCTIONS="no"
   else
     echo "  Terminal não interativo: rode com --global-instructions para vincular sem perguntar."
     GLOBAL_INSTRUCTIONS="no"

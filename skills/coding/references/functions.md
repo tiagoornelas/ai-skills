@@ -1,93 +1,93 @@
-# Funções
+# Functions
 
-> **Tese central**: uma boa função faz **o que o nome promete**, pode ser entendida **sem ler outras funções** e tem uma assinatura que diz como usá-la. Entre a escola das funções minúsculas e a das funções longas e profundas, a posição aqui é um meio-termo: **extrair ajuda a leitura quando o pedaço extraído é independente**, e atrapalha quando só espalha o que precisa ser lido junto.
-
----
-
-## Quando consultar
-
-- Ao escrever ou dividir funções e métodos.
-- Ao revisar funções num diff.
-- Esta referência cobre funções internas. Dividir uma interface pública em várias, ou juntar várias numa, é mudança de contrato: Camada Humana (ver [deep-modules.md](../../software-designing/references/deep-modules.md)).
+> **Central thesis**: a good function does **what its name promises**, can be understood **without reading other functions**, and features a signature that clearly indicates how to call it. Between the camp of tiny two-line functions and the camp of sprawling monolithic routines, the position here is balanced: **extraction aids comprehension when the extracted piece is independent**, and harms comprehension when it merely scatters logic that must be read together.
 
 ---
 
-## 1. Tamanho e extração
+## When to consult
 
-| Tema | Um polo | O outro polo | Aqui |
+- When authoring or decomposing functions and methods.
+- When reviewing functions in a code diff.
+- *Scope note*: this reference covers internal functions. Splitting or merging public interfaces alters contracts: Human Layer (see [deep-modules.md](../../software-designing/references/deep-modules.md)).
+
+---
+
+## 1. Function Size and Extraction
+
+| Dimension | Extreme A | Extreme B | This Standard |
 | :--- | :--- | :--- | :--- |
-| Tamanho | Funções minúsculas, de poucas linhas. | O tamanho quase nunca importa. | O tamanho sozinho não decide. O que decide é a independência. |
-| "Fazer uma coisa só" | Regra absoluta, aplicada até não sobrar nada a extrair. | Não é critério. | A função faz o que o nome promete, sem efeito escondido. |
-| Níveis de abstração | Um único nível por função, descendo em cascata. | Não é critério. | Misturar níveis é **sinal** de uma possível subtarefa independente. Quem decide é o critério de independência. |
+| **Size** | Tiny functions of only a few lines. | Line count virtually never matters. | Line count alone is non-decisive. Independence is the governing test. |
+| **"Do One Thing"** | Dogmatic rule, applied until nothing left to extract. | Irrelevant criterion. | The function does what its name promises, with zero hidden side effects. |
+| **Abstraction Levels** | Single level of abstraction per function, strictly cascading. | Irrelevant criterion. | Mixed abstraction levels signal an opportunity for extraction, but independence decides. |
 
-### Quando extrair
+### When to Extract
 
-- **Extraia uma subtarefa independente**: com entrada e saída explícitas, e compreensível sem ler a função original, e vice-versa. Isso melhora a leitura, inclusive dentro de um módulo profundo.
-- **Extraia o que se repete** e representa a mesma decisão (ver [together-or-apart.md](../../software-designing/references/together-or-apart.md)).
+- **Extract an independent subtask**: explicit inputs, explicit outputs, fully understandable without reading the caller, and vice-versa. This enhances readability even within deep modules.
+- **Extract identical logic** that represents the same underlying domain decision (see [together-or-apart.md](../../software-designing/references/together-or-apart.md)).
 
-### Quando não extrair
+### When Not to Extract
 
-- **Pedaços conjugados**: se as partes se comunicam por estado compartilhado ou dependem da ordem de chamada, extrair só espalha a complexidade. O leitor precisa ler todas juntas.
-- **Só por tamanho**: uma função longa, com assinatura simples e blocos em sequência fáceis de ler, pode ficar como está.
+- **Conjoined logic**: if pieces communicate via shared mutable state or depend strictly on call sequence, extraction merely scatters complexity. The reader must keep jumping across functions.
+- **Solely for size**: a long function with a clean signature and clear sequential blocks can remain unified.
 
 ```python
-# Conjugado: cada parte depende do estado deixado pela anterior
-def processar(pedido):
-    self._validar(pedido)        # preenche self._itens_validos
-    self._aplicar_descontos()    # lê self._itens_validos, preenche self._total
-    self._registrar()            # lê self._total
+# Conjoined: each step depends on implicit state set by the previous
+def process(order):
+    self._validate(order)        # populates self._valid_items
+    self._apply_discounts()      # reads self._valid_items, populates self._total
+    self._record()               # reads self._total
 
-# Independente: cada parte se entende sozinha
-def processar(pedido):
-    itens = itens_validos(pedido)
-    total = total_com_descontos(itens, pedido.cliente)
-    registrar_venda(pedido.id, total)
+# Independent: each part is self-contained and clear
+def process(order):
+    items = valid_items(order)
+    total = total_with_discounts(items, order.customer)
+    record_sale(order.id, total)
 ```
 
 ---
 
-## 2. A função faz o que o nome promete
+## 2. The Function Does What Its Name Promises
 
-- **Sem efeito colateral escondido**: `verificarSenha()` que também abre a sessão promete uma coisa e faz duas. Ou o nome diz tudo, ou o efeito sai da função.
-- **Consulta separada de modificação**: uma função devolve informação ou altera estado, não as duas coisas.
-- **Sem argumento de saída**: devolva o resultado em vez de alterar o objeto recebido. Se a função precisa alterar um objeto, ela deveria ser um método dele.
-
----
-
-## 3. Argumentos
-
-- **Sem número fixo.** Uma função profunda pode precisar de vários parâmetros. Muitos parâmetros são um **sinal** de que:
-  - alguns formam um conceito (vire um objeto de parâmetro, ou passe o objeto inteiro);
-  - algum pode ser obtido pela própria função a partir dos outros;
-  - a função faz coisas demais.
-- **Nunca troque parâmetros explícitos por estado escondido** (campos da classe preenchidos antes da chamada): a assinatura fica menor, mas as funções passam a depender da ordem de chamada.
-- **Sem argumento flag**: um literal (`true`, `"modo"`) que escolhe o comportamento indica duas funções numa. Divida-as, a menos que o valor venha de dados.
+- **Zero hidden side effects**: `checkPassword()` that also creates a login session promises one thing and performs two. Either the name reflects both actions, or the side effect is removed.
+- **Separate queries from commands**: a function returns information or mutates state, never both.
+- **No output arguments**: return results rather than mutating input objects. If a function must mutate an object, it should be a method on that object.
 
 ---
 
-## Red flags
+## 3. Function Arguments
 
-- Função cujo nome não diz tudo o que ela faz.
-- Função que devolve um valor e também altera estado.
-- Argumento de saída.
-- Argumento flag passado como literal.
-- Funções que só podem ser entendidas lidas em conjunto (conjugadas).
-- Parâmetros substituídos por campos preenchidos antes da chamada.
-- Extração que deixa a função original mais difícil de entender do que antes.
-
----
-
-## Como aplicar
-
-- **Ao escrever**: escreva a função pelo que ela promete; extraia só subtarefas independentes.
-- **Ao revisar**: efeito colateral escondido, consulta com modificação e funções conjugadas têm cenário concreto e valem corrigir. Quebrar uma função legível só por tamanho não tem: não vale apontar.
+- **No dogmatic parameter limit.** A deep function may require several parameters. A high parameter count is a **signal** that:
+  - parameters form a cohesive domain concept (bundle into a parameter object or pass an existing entity);
+  - a parameter could be derived internally from others;
+  - the function has too many responsibilities.
+- **Never replace explicit parameters with hidden state** (setting instance fields prior to calling a method): the signature appears smaller, but methods become tightly coupled to execution order.
+- **Avoid flag arguments**: boolean or mode literals (`true`, `"fast"`) passed to select internal behavior indicate two distinct functions tangled into one. Split them into separate functions, unless the flag originates from dynamic runtime data.
 
 ---
 
-## Relações
+## Red Flags
 
-- Profundidade vale mais que comprimento: [deep-modules.md](../../software-designing/references/deep-modules.md).
-- Juntar ou separar, e o critério de duplicação: [together-or-apart.md](../../software-designing/references/together-or-apart.md).
-- Nomes de funções: [naming.md](naming.md).
-- Erros na implementação: [error-handling.md](error-handling.md).
-- Outros smells e refatorações: [code-smells.md](code-smells.md).
+- Function whose name fails to declare everything it does.
+- Function returning a query value while mutating state.
+- Output parameters mutated in place.
+- Flag arguments passed as hardcoded literals.
+- Conjoined functions that can only be understood by reading them in sequence.
+- Function parameters replaced by stateful instance fields populated before invocation.
+- An extraction that leaves the original function harder to understand than before.
+
+---
+
+## How to Apply
+
+- **When writing**: design functions around explicit promises; extract strictly independent subtasks.
+- **When reviewing**: hidden side effects, queries that mutate state, and conjoined functions have concrete maintenance risks and warrant correction. Splitting a readable sequential function solely due to line count lacks a concrete failure scenario: do not flag it.
+
+---
+
+## Relationships
+
+- Depth matters more than length: [deep-modules.md](../../software-designing/references/deep-modules.md).
+- Grouping vs. separating logic: [together-or-apart.md](../../software-designing/references/together-or-apart.md).
+- Function naming rules: [naming.md](naming.md).
+- Error handling in implementation: [error-handling.md](error-handling.md).
+- Additional smells and refactoring patterns: [code-smells.md](code-smells.md).

@@ -1,61 +1,62 @@
 # AGENTS.md
 
-> Regras para manter o repositório **ai-skills** (Hub Central de Skills e Regras Multi-Harness).
+> Rules for maintaining the **ai-skills** repository (Central Hub for Multi-Harness Skills and Rules).
 >
-> As regras de trabalho que valem em qualquer projeto (como reportar, princípios, governança do desenvolvimento e subagentes) estão em [`global/AGENTS.md`](global/AGENTS.md). Elas também valem aqui: siga as duas.
+> Working rules that apply to any project (how to report, principles, development governance, and subagents) are located in [`global/AGENTS.md`](global/AGENTS.md). They also apply here: follow both.
 
 ---
 
-## 1. Identidade e Propósito do Repositório
+## 1. Repository Identity and Purpose
 
-Este repositório centraliza:
-1. **Skills reutilizáveis ([`skills/`](skills/))**: procedimentos sob demanda em formato universal (`SKILL.md`), consumidos por Claude Code, Antigravity CLI e Codex.
-2. **Instruções globais ([`global/AGENTS.md`](global/AGENTS.md))**: as regras de trabalho instaladas como instrução global nos três harnesses.
-3. **Scripts de automação ([`scripts/`](scripts/))**: vinculam, via symlinks, as skills e as instruções globais aos ambientes locais.
-
----
-
-## 2. Princípios de Manutenção
-
-- **Single Source of Truth (SSOT)**: cada regra mora num lugar só. Regras de trabalho ficam em [`global/AGENTS.md`](global/AGENTS.md); regras compartilhadas entre skills ficam numa referência de skill e são ligadas por caminho relativo (ex.: `../ai-assisted-software-development/references/`). Arquivos específicos de harness (`CLAUDE.md`, `GEMINI.md`) apontam para o arquivo primário via symlink.
-- **Agnosticismo de harness**: instruções e skills são portáveis, sem dependência rígida de um único motor quando existe equivalente direto (ex.: ferramentas de subagentes).
-- **Skills autossuficientes**: uma skill nunca depende deste `AGENTS.md` nem de caminhos do repositório (`skills/...`); instalada globalmente, ela roda na pasta de outro projeto. Links entre skills são relativos à pasta de skills (`../<skill>/`).
-- **Instruções globais citam skills pelo nome**, não por caminho: o arquivo é instalado em pastas diferentes em cada harness.
+This repository centralizes:
+1. **Reusable skills ([`skills/`](skills/))**: on-demand procedures in universal format (`SKILL.md`), consumed by Claude Code, Antigravity CLI, and Codex.
+2. **Global instructions ([`global/AGENTS.md`](global/AGENTS.md))**: working rules installed as global instructions across all three harnesses.
+3. **Automation scripts ([`scripts/`](scripts/))**: link skills and global instructions to local environments via symlinks.
 
 ---
 
-## 3. Padrão de Autoria de Skills (`skills/`)
+## 2. Maintenance Principles
 
-Ao criar ou atualizar skills neste repositório:
+- **Single Source of Truth (SSOT)**: each rule lives in exactly one place. Working rules live in [`global/AGENTS.md`](global/AGENTS.md); rules shared across skills live in a skill reference and are linked via relative paths (e.g., `../ai-assisted-software-development/references/`). Harness-specific files (`CLAUDE.md`, `GEMINI.md`) point to the primary file via symlinks.
+- **Harness Agnosticism**: instructions and skills are portable, avoiding hard dependencies on a single engine when direct equivalents exist (e.g., subagent tooling).
+- **Self-contained Skills**: a skill never depends on this `AGENTS.md` nor on repository paths (`skills/...`); when installed globally, it runs in another project's directory. Links between skills are relative to the skills folder (`../<skill>/`).
+- **Global instructions reference skills by name**, not by path: the file is installed in different locations across harnesses.
 
-### 3.1. Estrutura de Diretórios
+---
+
+## 3. Skill Authoring Standard (`skills/`)
+
+When creating or updating skills in this repository:
+
+### 3.1. Directory Structure
 ```text
-skills/<nome-da-skill>/
-├── SKILL.md            # [Obrigatório] Instruções principais com YAML frontmatter
-├── scripts/            # [Opcional] Scripts utilitários executáveis
-├── references/         # [Opcional] Documentação aprofundada carregada sob demanda
-└── resources/          # [Opcional] Templates, dados e ativos estáticos
+skills/<skill-name>/
+├── SKILL.md            # [Required] Main instructions with YAML frontmatter
+├── scripts/            # [Optional] Executable utility scripts
+├── references/         # [Optional] In-depth documentation loaded on demand
+└── resources/          # [Optional] Templates, data, and static assets
 ```
 
-### 3.2. Frontmatter no `SKILL.md`
+### 3.2. Frontmatter in `SKILL.md`
 
-Campos obrigatórios:
+Required fields:
 ```yaml
 ---
-name: nome-da-skill
+name: skill-name
 description: >-
-  Descrição em 3ª pessoa explicando o que a skill faz e exatamente quando
-  o agente deve ativá-la.
+  Third-person description explaining what the skill does and exactly when
+  the agent should trigger it.
 ---
 ```
 
-Campos opcionais reconhecidos pelos harnesses (usar quando aplicável):
-- `argument-hint: "[dica]"`: dica visual do argumento esperado ao acionar a skill (ex.: `"[número/URL do PR]"`).
-- `disable-model-invocation: true`: indica que a skill é restrita ao acionamento manual do humano via chat/comando, impedindo o acionamento autônomo pelo modelo.
+Optional fields recognized by harnesses (use when applicable):
+- `argument-hint: "[hint]"`: visual hint for the expected argument when invoking the skill (e.g., `"[PR number/URL]"`).
+- `disable-model-invocation: true`: indicates the skill is restricted to manual user invocation via chat/command, preventing autonomous invocation by the model.
 
-### 3.3. Boas Práticas para Skills
-- **Progressive Disclosure**: mantenha o `SKILL.md` conciso e focado nas decisões e passos essenciais. Delegue referências extensas para arquivos em `references/`.
-- **Nomes Padronizados**: use `kebab-case` para nomes de pastas e skills (ex.: `code-review`, `deploy-helper`).
-- **Pastas Limpas**: não crie pastas `references/` ou `scripts/` vazias sem arquivos reais.
-- **Validação de Sucesso**: toda skill termina obrigatoriamente com uma seção de checklist orientando o agente sobre como verificar se os passos foram executados com êxito.
-- **Depois de adicionar ou remover uma skill**, rode `./scripts/setup-global.sh`.
+### 3.3. Best Practices for Skills
+- **Authored in English by Default**: Skills, YAML frontmatter descriptions, instructions, references, and validation checklists are authored in English by default. Technical terms follow standard industry terminology.
+- **Progressive Disclosure**: keep `SKILL.md` concise, focusing on essential decisions and workflow steps. Delegate extensive reference material to files in `references/`.
+- **Standardized Naming**: use `kebab-case` for folder and skill names (e.g., `code-review`, `deploy-helper`).
+- **Clean Directories**: do not create empty `references/` or `scripts/` directories without actual files.
+- **Success Validation**: every skill must end with a checklist section guiding the agent on how to verify that steps were executed successfully.
+- **After adding or removing a skill**, run `./scripts/setup-global.sh`.

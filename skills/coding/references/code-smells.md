@@ -1,120 +1,120 @@
-# Code Smells e Refatorações
+# Code Smells and Refactorings
 
-> **Tese central**: um code smell é um **sinal** de que o código ficou mais difícil de ler ou de mudar do que precisa. Não é uma regra: só vale corrigir quando existe um **cenário concreto** em que ele atrapalha (um bug provável, uma mudança que ficaria cara, um leitor que se confundiria). Este catálogo cobre a Camada do Agente, abaixo dos contratos. Design de módulos e interfaces fica com [`software-designing`](../../software-designing/SKILL.md), que **prevalece** em qualquer conflito.
-
----
-
-## Quando consultar
-
-- No passo "refactor" depois do teste verde, e na refatoração preparatória.
-- Ao revisar código abaixo dos contratos, próprio ou de outra pessoa.
+> **Central thesis**: a code smell is a **signal** that code has become harder to read or modify than necessary. It is not an absolute prohibition: remediation is only warranted when there is a **concrete scenario** where it causes harm (a probable bug, an expensive future change, or reader confusion). This catalog governs the Agent Layer, below contracts. Module architecture and interface design belong to [`software-designing`](../../software-designing/SKILL.md), which **takes precedence** in any conflict.
 
 ---
 
-## 1. Como usar este catálogo
+## When to consult
 
-- Cada smell traz: **sinal** (como reconhecer), **por que atrapalha**, **refatorações** (pelo nome do catálogo de refatoração; os passos são conhecidos) e **quando não aplicar**.
-- **Priorize por impacto**, nesta ordem:
-  1. risco de bug (estado mutável compartilhado, consulta com efeito colateral, caso especial esquecido);
-  2. custo de mudança (a próxima mudança provável tocaria vários lugares);
-  3. legibilidade (o leitor precisa de esforço para entender).
-- Se não dá para descrever o cenário concreto em uma frase, **descarte o achado**.
-- Toda refatoração segue [refactoring-principles.md](refactoring-principles.md). Se ela mudaria um contrato público ou uma fronteira de módulo, não aplique: é Camada Humana.
+- In the "refactor" phase following green tests, and during preparatory refactorings.
+- When reviewing code below contracts, whether written by yourself or peers.
 
 ---
 
-## 2. Estado e dados
+## 1. How to Use This Catalog
 
-| Smell | Sinal | Por que atrapalha | Refatorações | Não aplicar quando |
+- Each smell provides: **signal** (how to recognize it), **why it hurts**, **remediations** (canonical refactoring patterns), and **when not to apply**.
+- **Prioritize by impact**, in this order:
+  1. bug risk (shared mutable state, commands disguised as queries, missed edge cases);
+  2. change cost (likely subsequent changes touching multiple files);
+  3. readability (unnecessary cognitive friction for maintainers).
+- If you cannot articulate the concrete failure scenario in a single sentence, **discard the finding**.
+- Every refactoring must adhere to [refactoring-principles.md](refactoring-principles.md). If a refactoring would alter a public contract or module boundary, do not apply it unilaterally: escalate to the Human Layer.
+
+---
+
+## 2. State and Data
+
+| Smell | Signal | Why it Hurts | Remediations | Do Not Apply When |
 | :--- | :--- | :--- | :--- | :--- |
-| **Dados mutáveis** | Variável, campo ou estrutura alterada em vários pontos, ou modificada por quem só a recebeu. | Dependência escondida: mudar num lugar quebra outro sem aviso. | *Encapsulate Variable*, *Separate Query from Modifier*, *Remove Setting Method*, *Change Reference to Value* | Estado local de escopo curto, em que a mutação é óbvia. |
-| **Dados globais** | Variável global, singleton mutável, estado de módulo acessível de qualquer lugar. | Qualquer ponto do sistema pode mudá-lo; ninguém sabe quem muda. | *Encapsulate Variable*, depois restringir o escopo | Constantes imutáveis. |
-| **Variável com dois papéis** | A mesma variável guarda coisas diferentes ao longo da função (fora acumuladores e laços). | O leitor precisa acompanhar qual papel vale em cada linha. | *Split Variable* | — |
-| **Valor derivado armazenado** | Campo que guarda algo calculável a partir de outros dados, atualizado à mão. | Pode ficar inconsistente com a origem. | *Replace Derived Variable with Query* | O cálculo é caro e isso foi medido. |
-| **Campo temporário** | Campo preenchido só em algumas situações, vazio no resto. | O leitor não sabe quando o campo é válido. | *Extract Class* (interna), *Introduce Special Case*, *Move Function* | — |
-| **Coleção exposta** | Getter devolve a coleção interna, que o chamador pode alterar. | O dono perde o controle das próprias invariantes. | *Encapsulate Collection* | A coleção é imutável. |
-| **Referência × valor trocados** | Objeto compartilhado por referência que deveria ser um valor (dinheiro, período), ou cópias de uma entidade que deveriam ser uma só. | Alterações aparecem onde não deviam, ou deixam de aparecer onde deviam. | *Change Reference to Value*, *Change Value to Reference* | — |
-| **Setter desnecessário** | Campo que só deveria ser definido na criação tem um setter. | Abre caminho para estado inconsistente. | *Remove Setting Method* | — |
+| **Mutable Data** | Variable, field, or structure mutated in multiple places, or mutated by a callee that received it for reading. | Hidden coupling: mutating state in one place breaks distant code without warning. | *Encapsulate Variable*, *Separate Query from Modifier*, *Remove Setting Method*, *Change Reference to Value* | Local short-lived variables where mutation is obvious. |
+| **Global Data** | Global variable, mutable singleton, or module state accessible from anywhere. | Any line of code can mutate it; impossible to trace who modified what. | *Encapsulate Variable*, then restrict scope | Immutable constants. |
+| **Split-Personality Variable** | The same variable stores different values for distinct purposes across a function (excluding loop accumulators). | Readers must track which role the variable plays at each line. | *Split Variable* | — |
+| **Stored Derived Value** | Field caching a value computable from existing state, updated manually. | Prone to falling out of sync with primary state. | *Replace Derived Variable with Query* | Computation is measurably expensive and profiled. |
+| **Temporary Field** | Class field populated only during specific operations, empty the rest of the time. | Callers cannot tell when the field holds valid state. | *Extract Class* (internal), *Introduce Special Case*, *Move Function* | — |
+| **Exposed Collection** | Getter returns an internal mutable collection directly to callers. | Owner loses control over its internal invariants. | *Encapsulate Collection* | Collection is immutable or a defensive copy. |
+| **Inverted Reference vs. Value** | Shared mutable reference that should be an immutable value (money, date range), or duplicated entities that should share identity. | Unintended mutations bleed outward, or changes fail to propagate where expected. | *Change Reference to Value*, *Change Value to Reference* | — |
+| **Unnecessary Setter** | Property that should only be initialized upon creation provides a public setter. | Invites inconsistent state mutation after initialization. | *Remove Setting Method* | — |
 
 ---
 
-## 3. Condicionais
+## 3. Conditionals
 
-| Smell | Sinal | Por que atrapalha | Refatorações | Não aplicar quando |
+| Smell | Signal | Why it Hurts | Remediations | Do Not Apply When |
 | :--- | :--- | :--- | :--- | :--- |
-| **Condicional complexa** | Condição longa ou ramos longos, cujo propósito não está claro. | O leitor precisa decifrar a regra. | *Decompose Conditional*, *Consolidate Conditional Expression* | A condição já é curta e legível. |
-| **Aninhamento para casos excepcionais** | O caminho normal fica enterrado em `if` aninhados. | Esconde qual é o fluxo principal. | *Replace Nested Conditional with Guard Clauses* | Os ramos têm peso igual (não há caso principal). |
-| **Caso especial repetido** | A mesma verificação (nulo, "desconhecido", vazio) espalhada pelos chamadores. | Cada chamador novo pode esquecê-la. | *Introduce Special Case* (ver [define-errors-out-of-existence.md](../../software-designing/references/define-errors-out-of-existence.md)) | Só existe um ponto de verificação. |
-| **Premissa implícita** | O código só funciona se algo for verdade, mas isso não está dito. | Incógnita desconhecida para quem mexer depois. | *Introduce Assertion* | A condição depende de entrada externa: aí é validação, não asserção. |
-| **`switch` repetido** | O mesmo `switch`/`if` sobre o mesmo tipo em **vários** lugares. | Cada variação nova exige mudar todos. | *Replace Conditional with Polymorphism* | Há um único `switch`, claro: mantenha. Polimorfismo para um caso só gera classes rasas. |
+| **Complex Conditional** | Convoluted boolean expression or bloated branches whose purpose is obscure. | Readers must mentally decipher the boolean formula. | *Decompose Conditional*, *Consolidate Conditional Expression* | Expression is already concise and obvious. |
+| **Deep Nesting for Exceptions** | Happy path is buried inside deeply nested `if` blocks. | Obscures the primary execution flow. | *Replace Nested Conditional with Guard Clauses* | Branches represent equal alternatives with no primary path. |
+| **Repeated Special Case** | Identical defensive check (null, missing, empty) repeated across multiple callers. | Future callers can easily forget the defensive check. | *Introduce Special Case* (see [define-errors-out-of-existence.md](../../software-designing/references/define-errors-out-of-existence.md)) | Only a single isolated call site exists. |
+| **Implicit Assumption** | Code depends on an unstated precondition without runtime verification. | Unknown unknown for future maintainers. | *Introduce Assertion* | Condition depends on external user input: that is validation, not assertion. |
+| **Repeated `switch`** | The same `switch` or `if/else` ladder over a type discriminator repeated across **multiple** sites. | Adding a new variant requires hunting down and updating every ladder. | *Replace Conditional with Polymorphism* | An isolated, single clean switch statement: keep it. Polymorphism for a single instance creates shallow classes. |
 
 ---
 
-## 4. Funções
+## 4. Functions
 
-Efeito colateral escondido, consulta com modificação, argumento de saída, argumento flag, lista longa de parâmetros e critérios de extração: ver [functions.md](functions.md).
+Hidden side effects, queries mutating state, output parameters, flag arguments, long parameter lists, and extraction criteria: see [functions.md](functions.md).
 
 ---
 
-## 5. Lugar do código
+## 5. Code Placement
 
-| Smell | Sinal | Por que atrapalha | Refatorações | Não aplicar quando |
+| Smell | Signal | Why it Hurts | Remediations | Do Not Apply When |
 | :--- | :--- | :--- | :--- | :--- |
-| **Inveja de recurso** (*Feature Envy*) | Função que usa mais os dados de outro objeto do que os do próprio. | O conhecimento está longe dos dados (ver [information-hiding.md](../../software-designing/references/information-hiding.md)). | *Move Function*, *Move Field* | A função mistura dados de vários objetos de propósito. Se a mudança cruza uma fronteira de módulo, é Camada Humana. |
-| **Cadeia de mensagens** | `a.b().c().d()` repetido pelos chamadores. | Os chamadores dependem da estrutura interna da cadeia. | *Hide Delegate*, *Move Function* | A cadeia aparece uma vez só. Cada delegação criada é um método repassador: só vale se esconder a estrutura de vários chamadores. |
-| **Instruções fora do lugar** | Código relacionado espalhado; declaração longe do uso; trecho repetido antes ou depois de cada chamada de uma função. | O leitor precisa juntar as peças. | *Slide Statements*, *Move Statements into Function*, *Move Statements to Callers*, *Replace Inline Code with Function Call* | — |
+| **Feature Envy** | Method invokes more methods and properties on another object than on its own class. | Logic is decoupled from the data it operates on (see [information-hiding.md](../../software-designing/references/information-hiding.md)). | *Move Function*, *Move Field* | Method deliberately coordinates data from multiple objects. If moving crosses a module boundary: Human Layer. |
+| **Message Chain** | `a.b().c().d()` repeated across multiple callers. | Callers become coupled to the internal navigation structure. | *Hide Delegate*, *Move Function* | Chain appears only once. Creating delegation adds pass-through methods: only justified when hiding structure from many callers. |
+| **Misplaced Statements** | Related logic scattered; declarations far from usage sites; boilerplate repeated before/after calls. | Readers must manually assemble fragmented context. | *Slide Statements*, *Move Statements into Function*, *Move Statements to Callers*, *Replace Inline Code with Function Call* | — |
 
 ---
 
-## 6. Fluxo
+## 6. Control Flow
 
-| Smell | Sinal | Por que atrapalha | Refatorações | Não aplicar quando |
+| Smell | Signal | Why it Hurts | Remediations | Do Not Apply When |
 | :--- | :--- | :--- | :--- | :--- |
-| **Laço com várias tarefas** | Um laço que calcula coisas independentes ao mesmo tempo. | Cada tarefa fica difícil de entender e de mudar separadamente. | *Split Loop*, *Replace Loop with Pipeline* (se for o idioma do repositório) | Desempenho medido exige uma única passada. |
-| **Código morto** | Código, parâmetro ou ramo que nunca executa. | O leitor gasta tempo com o que não importa. | *Remove Dead Code* (o histórico fica no git) | — |
-| **Expressão sem nome** | Subexpressão cujo significado o leitor precisa deduzir. | Carga cognitiva. | *Extract Variable*; o inverso, *Inline Variable*, quando o nome não diz nada além da expressão | — |
-| **Algoritmo confuso** | Um jeito complicado de fazer algo que tem um jeito mais simples (inclusive uma função da biblioteca padrão). | Carga cognitiva sem ganho. | *Substitute Algorithm* | — |
+| **Multi-Tasking Loop** | A single loop computing multiple unrelated outcomes simultaneously. | Difficult to understand and modify tasks independently. | *Split Loop*, *Replace Loop with Pipeline* (if idiomatic to repository) | Profiled, measured performance demands a single pass. |
+| **Dead Code** | Unreachable statements, unused parameters, or dead branches. | Wastes mental bandwidth on irrelevant logic. | *Remove Dead Code* (git preserves history) | — |
+| **Unnamed Expression** | Complex sub-expression whose semantic meaning must be deduced. | Cognitive load. | *Extract Variable*; inversely, *Inline Variable* when the name adds zero context | — |
+| **Convoluted Algorithm** | Complicated custom logic implementing something with a simpler idiomatic solution (including standard library utilities). | Unnecessary cognitive friction without benefit. | *Substitute Algorithm* | — |
 
 ---
 
-## 7. Smells subordinados ao `software-designing`
+## 7. Smells Governed by `software-designing`
 
-Estes smells existem no catálogo clássico, mas aqui valem **só com o critério do `software-designing`**:
+These smells originate from classic refactoring catalogs, but here are governed strictly by **`software-designing` criteria**:
 
-- **Função longa**: vale o critério de independência de [functions.md](functions.md). Tamanho sozinho não é smell.
-- **Código duplicado**: junte só se as cópias representam a mesma decisão de design e mudariam pelo mesmo motivo. Ver [together-or-apart.md](../../software-designing/references/together-or-apart.md).
-- **Separar em fases** (*Split Phase*): vale quando cada fase lida com um conhecimento diferente (interpretar a entrada × calcular). Se as fases compartilham o mesmo conhecimento (o mesmo formato), é decomposição temporal. Ver [information-hiding.md](../../software-designing/references/information-hiding.md).
-- **Generalidade especulativa**: remova ganchos sem uso (parâmetros, classes abstratas, *hooks* que nenhum chamador usa). Isso não contradiz interfaces um pouco gerais, que servem às necessidades atuais. Ver [general-purpose-modules.md](../../software-designing/references/general-purpose-modules.md).
+- **Long Function**: governed by independence criteria in [functions.md](functions.md). Length alone is not a smell.
+- **Duplicate Code**: merge only if duplicates represent the exact same design decision and change for the exact same reason. See [together-or-apart.md](../../software-designing/references/together-or-apart.md).
+- **Split Phase**: justified when phases handle disjoint knowledge (parsing input vs. computing business result). If phases share identical underlying knowledge (same wire format), it is temporal decomposition. See [information-hiding.md](../../software-designing/references/information-hiding.md).
+- **Speculative Generality**: eliminate unused hooks (unused parameters, dead abstract classes). This does not contradict somewhat general-purpose interfaces serving current needs. See [general-purpose-modules.md](../../software-designing/references/general-purpose-modules.md).
 
 ---
 
-## 8. Cobertos pelo `software-designing`: não duplicar
+## 8. Covered by `software-designing`: Do Not Duplicate
 
-| Smell clássico | Lente |
+| Classic Smell | Architectural Lens |
 | :--- | :--- |
-| Nome misterioso | [naming.md](naming.md) (nomes internos) e [obvious-code.md](../../software-designing/references/obvious-code.md) (nomes de contrato) |
-| Obsessão por primitivos | [obvious-code.md](../../software-designing/references/obvious-code.md) |
-| Intermediário (*Middle Man*), elemento ocioso (*Lazy Element*) | [deep-modules.md](../../software-designing/references/deep-modules.md), [different-layer-different-abstraction.md](../../software-designing/references/different-layer-different-abstraction.md) |
-| Classe de dados, intimidade excessiva (*Insider Trading*) | [information-hiding.md](../../software-designing/references/information-hiding.md) |
-| Alteração divergente, cirurgia com rifle (*Shotgun Surgery*), classe grande | [together-or-apart.md](../../software-designing/references/together-or-apart.md), [nature-of-complexity.md](../../software-designing/references/nature-of-complexity.md) |
-| Herança recusada, classes alternativas com interfaces diferentes | [deep-modules.md](../../software-designing/references/deep-modules.md) (várias implementações de uma interface) |
+| Mysterious Name | [naming.md](naming.md) (internal names) and [obvious-code.md](../../software-designing/references/obvious-code.md) (contract names) |
+| Primitive Obsession | [obvious-code.md](../../software-designing/references/obvious-code.md) |
+| Middle Man, Lazy Element | [deep-modules.md](../../software-designing/references/deep-modules.md), [different-layer-different-abstraction.md](../../software-designing/references/different-layer-different-abstraction.md) |
+| Data Class, Insider Trading | [information-hiding.md](../../software-designing/references/information-hiding.md) |
+| Divergent Change, Shotgun Surgery, Large Class | [together-or-apart.md](../../software-designing/references/together-or-apart.md), [nature-of-complexity.md](../../software-designing/references/nature-of-complexity.md) |
+| Refused Bequest, Alternative Classes with Different Interfaces | [deep-modules.md](../../software-designing/references/deep-modules.md) (multiple implementations of an interface) |
 
-Na escala de módulo ou de contrato, esses smells são decisões de design, da Camada Humana. Nomes internos são a exceção: ficam em [naming.md](naming.md).
-
----
-
-## 9. Fora deste catálogo
-
-Não reporte nem aplique, mesmo que o catálogo clássico os traga:
-
-- **Comentários como smell.** O que comentar e o que não comentar está em [comments.md](comments.md).
-- ***Replace Function with Command*.** Acrescenta uma classe rasa sem esconder nada.
+At module or contract scale, these smells represent architectural decisions belonging to the Human Layer. Internal variable/function naming is the sole exception: detailed in [naming.md](naming.md).
 
 ---
 
-## Relações
+## 9. Excluded From This Catalog
 
-- Regras para refatorar com segurança: [refactoring-principles.md](refactoring-principles.md).
-- Funções, nomes, comentários e erros: [functions.md](functions.md), [naming.md](naming.md), [comments.md](comments.md), [error-handling.md](error-handling.md).
-- Sintomas e causas de complexidade que cada smell produz: [nature-of-complexity.md](../../software-designing/references/nature-of-complexity.md).
-- Lentes de design, que prevalecem em conflito: [`software-designing`](../../software-designing/SKILL.md).
+Do not report or apply, even if present in classic catalogs:
+
+- **Comments as a smell.** What and how to document is detailed in [comments.md](comments.md).
+- ***Replace Function with Command*.** Introduces a shallow class without encapsulating meaningful complexity.
+
+---
+
+## Relationships
+
+- Rules for safe refactoring: [refactoring-principles.md](refactoring-principles.md).
+- Functions, naming, comments, and error handling: [functions.md](functions.md), [naming.md](naming.md), [comments.md](comments.md), [error-handling.md](error-handling.md).
+- Symptoms and root causes of complexity: [nature-of-complexity.md](../../software-designing/references/nature-of-complexity.md).
+- Architectural design lenses taking precedence: [`software-designing`](../../software-designing/SKILL.md).

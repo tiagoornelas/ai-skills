@@ -1,81 +1,81 @@
-# Puxe a Complexidade para Baixo
+# Pull Complexity Downwards
 
-> **Tese central**: é mais importante um módulo ter uma **interface simples** do que uma **implementação simples**. A maioria dos módulos tem muito mais usuários que desenvolvedores; é melhor que os desenvolvedores do módulo sofram do que os usuários.
-
----
-
-## Quando consultar
-
-- Quando surgir a tentação de "deixar o chamador decidir": lançar uma exceção, expor um parâmetro de configuração, exigir um passo extra.
-- Ao decidir em qual camada uma lógica difícil deve morar.
-- Ao desenhar APIs públicas, SDKs, bibliotecas internas ou serviços consumidos por vários clientes.
+> **Central thesis**: it is far more important for a module to have a **simple interface** than a **simple implementation**. Most modules have vastly more users than maintainers; it is preferable for module authors to absorb complexity once than for callers to suffer repeatedly.
 
 ---
 
-## 1. O princípio
+## When to consult
 
-- Ao desenvolver um módulo, se surgir uma complexidade inevitável, procure uma forma de **absorvê-la dentro do módulo** em vez de empurrá-la para quem usa.
-- Complexidade na implementação de um módulo é paga uma vez, por quem o desenvolve. Complexidade na interface é paga por **cada** usuário, **toda vez** que ele usa o módulo.
-- É tentador fazer o contrário. Quando aparece uma condição que não se sabe tratar, o mais fácil é:
-  - lançar uma exceção e deixar o chamador lidar;
-  - expor um parâmetro de configuração e deixar o administrador escolher;
-  - documentar "o chamador deve garantir que...".
-- Essas saídas facilitam a vida de quem escreve o módulo hoje, mas **multiplicam** a complexidade: cada chamador precisa lidar com o problema, e geralmente com menos informação do que o módulo tinha.
+- When facing the temptation to "let the caller handle it": throwing an exception, exporting a configuration knob, requiring manual setup sequences.
+- When deciding which architectural layer should own tricky logic.
+- When designing public APIs, SDKs, shared internal packages, or services consumed by multiple teams.
 
 ---
 
-## 2. Exemplo: a classe de texto do editor
+## 1. The Core Principle
 
-- Se a classe de texto expõe uma interface orientada a linhas, cada operação de edição na UI precisa lidar com divisão e junção de linhas. A complexidade subiu para a UI, e se repete em cada operação.
-- Uma interface orientada a caracteres **puxa essa complexidade para baixo**: a classe de texto trata linhas internamente uma vez, e toda a UI fica mais simples.
-
----
-
-## 3. Exemplo: parâmetros de configuração
-
-- Parâmetros de configuração são um exemplo clássico de **empurrar complexidade para cima**. Em vez de determinar um comportamento internamente, a classe exporta um parâmetro e deixa o usuário escolher.
-- Eles parecem úteis (o usuário ajusta o sistema às suas necessidades), mas também são uma **desculpa para não resolver problemas difíceis**, passando-os para outra pessoa. Na maioria dos casos o usuário ou administrador tem ainda **menos** condições de escolher o valor certo do que o próprio módulo.
-- Exemplo: um protocolo de rede com um parâmetro para o intervalo de retransmissão de requisições perdidas. É melhor o próprio protocolo **medir o tempo de resposta** das requisições bem-sucedidas e calcular um intervalo razoável (por exemplo, um múltiplo do tempo medido). Isso é mais simples para o usuário e se adapta sozinho às condições do ambiente.
-- Pergunta-chave antes de exportar um parâmetro: **"os usuários (ou os módulos de nível mais alto) conseguem determinar um valor melhor do que conseguimos determinar aqui?"** Se não, não exponha.
-- Quando for inevitável criar um parâmetro, forneça um **valor padrão razoável**, para que o usuário só precise informá-lo em casos excepcionais. Idealmente o módulo calcula o valor automaticamente e o parâmetro existe só para sobrescrever em situações raras.
-- Evitar parâmetros de configuração tanto quanto possível.
+- When building a module, if an unavoidable complexity arises, actively seek ways to **absorb it internally** instead of passing the burden upward to callers.
+- Implementation complexity is paid once by the author. Interface complexity is paid by **every single caller, every single time** they invoke the module.
+- The path of least resistance is often the opposite. When encountering an unhandled edge case, the easiest tactical move is:
+  - throw an exception and let callers figure out how to recover;
+  - expose a configuration property and force administrators to tune it;
+  - write documentation stating "callers must ensure that...".
+- These shortcuts make life easier for the module author today, but **multiply systemic complexity**: every caller must implement error-handling or configuration glue, typically with far less context than the module had internally.
 
 ---
 
-## 4. Levando longe demais
+## 2. Example: Text Model vs. View
 
-- Puxar complexidade para baixo não significa colocar **tudo** dentro de um único módulo. É preciso discernimento.
-- Puxar complexidade para baixo faz mais sentido quando:
-  1. a complexidade está **intimamente relacionada à funcionalidade que o módulo já tem**;
-  2. puxá-la para baixo resulta em **muitas simplificações** em outros lugares da aplicação;
-  3. puxá-la para baixo **simplifica a interface** do módulo.
-- Contra-exemplo: adicionar à classe de texto um método `backspace` porque a UI precisa dele. Isso não é puxar complexidade para baixo; é **vazar um conceito da UI** para a classe de texto. Não simplifica a interface (adiciona um método) e só serve a um caller. A funcionalidade de backspace pertence à UI, implementada sobre a interface geral (ver [general-purpose-modules.md](general-purpose-modules.md)).
-- O objetivo é **minimizar a complexidade total do sistema**, não mover complexidade de lugar sem critério.
+- If a text model exposes a line-oriented API, every UI editing action must coordinate string splitting and joining across line breaks. Complexity is pushed upward into the UI and duplicated across actions.
+- A character-oriented interface **pulls that complexity downwards**: the text engine manages line breaks and indexing internally once, making the entire UI significantly cleaner.
 
 ---
 
-## Red flags
+## 3. Example: Configuration Parameters
 
-- Exceções lançadas por condições que o próprio módulo teria informação para tratar.
-- Parâmetros de configuração cujo valor ideal poderia ser calculado internamente.
-- Documentação do tipo "o chamador deve sempre..." ou "lembre-se de chamar X antes de Y".
-- O mesmo trecho de tratamento repetido em todos os chamadores de um módulo.
-- Um módulo "genérico" que exige que cada cliente faça pré e pós-processamento idênticos.
-
----
-
-## Como aplicar
-
-1. Para cada dificuldade no design (erro, ambiguidade, ajuste fino, ordem de chamada), pergunte: **quem tem mais informação para resolvê-la?** Normalmente é o módulo, não o chamador.
-2. Se o módulo pode resolver, resolva dentro dele. Registre na interface **o resultado** (o que é garantido), não o mecanismo.
-3. Para cada parâmetro de configuração proposto, aplique a pergunta-chave e prefira cálculo automático com padrão razoável.
-4. Verifique os três critérios de "levar longe demais" antes de mover algo para baixo: relação com a funcionalidade existente, simplificação em outros lugares, interface mais simples.
-5. Ao reportar ao humano, destaque quais decisões foram **absorvidas** pelo módulo e quais foram **deixadas explicitamente** para o chamador, e por quê. As deixadas para o chamador fazem parte do contrato e são decisões da Camada Humana.
+- Configuration properties are a canonical example of **pushing complexity upwards**. Rather than determining appropriate behavior dynamically, the module exports a knob and delegates the decision to the user.
+- While superficially appealing ("empowering users to tune the system"), they are often an **excuse to dodge difficult engineering trade-offs**. In reality, callers or sysadmins have far **less** context to pick the optimal value than the module itself.
+- Example: a network transport protocol with a static retransmission timeout knob. It is vastly superior for the protocol to **measure round-trip latencies** of successful requests dynamically and calculate an adaptive timeout. This eliminates configuration overhead for users while adapting gracefully to changing network conditions.
+- Governing test before introducing a configuration parameter: **"Can users (or higher-level callers) genuinely determine a better value than we can compute automatically here?"** If not, do not expose it.
+- When a configuration parameter is strictly unavoidable, provide a **sensible default**, ensuring users only need to touch it in extreme scenarios. Ideally, the system auto-tunes itself and configuration serves only as an emergency override.
+- Eliminate configuration knobs wherever possible.
 
 ---
 
-## Relações
+## 4. Taking It Too Far
 
-- Puxar complexidade para baixo é o que torna um módulo profundo: [deep-modules.md](deep-modules.md).
-- Mascarar exceções é um caso de puxar complexidade para baixo: [define-errors-out-of-existence.md](define-errors-out-of-existence.md).
-- A fronteira entre generalidade e especialização: [general-purpose-modules.md](general-purpose-modules.md).
+- Pulling complexity downwards does not mean turning one module into a bloated monolith. Good judgment is required.
+- Pulling complexity downwards makes sense when:
+  1. the complexity is **intimately related to the module's core mission**;
+  2. absorbing it yields **widespread simplifications** across many call sites;
+  3. pulling it downward **simplifies the module's interface**.
+- Counter-example: adding a dedicated `backspace` method to a text model because a UI widget needs it. That is not pulling complexity downward; it is **leaking UI concepts** into the domain model. It bloats the interface and serves only one client. Backspace behavior belongs in the UI, composed cleanly over the general text editing API (see [general-purpose-modules.md](general-purpose-modules.md)).
+- The goal is to **minimize total system complexity**, not to blindly shuffle complexity around.
+
+---
+
+## Red Flags
+
+- Throwing exceptions for conditions that the module itself has sufficient context to handle cleanly.
+- Configuration parameters whose optimal value could be computed or auto-tuned internally.
+- Documentation stating "the caller must always ensure..." or "remember to call X before Y".
+- Identical error-handling or defensive checks replicated across every caller of a module.
+- A "generic" module that forces every client to implement identical pre- and post-processing rituals.
+
+---
+
+## How to Apply
+
+1. For each design dilemma (error handling, ambiguity, parameter tuning, invocation order), ask: **who possesses the most information to resolve it cleanly?** It is almost always the module, not the caller.
+2. If the module can resolve it, handle it internally. State **the guarantee** in the interface, not the internal mechanics.
+3. For every proposed configuration parameter, apply the governing test and favor auto-tuning with sensible defaults.
+4. Verify the three boundary criteria before pulling complexity down: relationship to core mission, systemic simplifications, and cleaner interface.
+5. When presenting to the human, highlight which decisions were **absorbed** by the module and which were **deliberately delegated** to callers, and why. Caller-delegated decisions form the public contract and belong to the Human Layer.
+
+---
+
+## Relationships
+
+- Pulling complexity downwards is what makes modules deep: [deep-modules.md](deep-modules.md).
+- Masking exceptions is a prime example of pulling complexity downward: [define-errors-out-of-existence.md](define-errors-out-of-existence.md).
+- Decoupling general capabilities from specialized use cases: [general-purpose-modules.md](general-purpose-modules.md).

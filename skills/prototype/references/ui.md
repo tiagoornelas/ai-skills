@@ -1,67 +1,63 @@
-# Protótipo de UI
+# UI Prototypes
 
-Gere **várias variações de interface radicalmente diferentes**, lado a lado, num único HTML descartável que reproduz o visual real do projeto o mais fielmente possível. É um mockup: nunca é ligado ao app, e nada vai para o repositório.
+Generate **multiple radically different interface variations**, rendered side by side in a single disposable HTML file that faithfully replicates the project's visual design language. This is a mockup: never wired into the production application, with nothing committed to the repository.
 
-Se a pergunta é sobre lógica ou estado, e não sobre aparência, é o ramo errado: use [`logic.md`](logic.md).
-
----
-
-## 1. Quando é a forma certa
-
-- "Como essa página deveria ficar?"
-- "Quero ver algumas opções para esse dashboard antes de decidir."
-- "Tenta outro layout para a tela de configurações."
-- Sempre que o usuário passaria um dia escolhendo entre três mockups vagos na cabeça.
-
-## 2. Por que avulso e lado a lado
-
-Um protótipo ligado à rota real (seletor de variante, parâmetro `?variant=`, rota temporária) deixa código no projeto que precisa ser encontrado e removido depois, e essa remoção nunca é totalmente confiável. Um HTML avulso elimina o problema: nada é criado dentro do projeto, então não há o que limpar. E lado a lado vence alternar uma variante por vez: comparar deve ser uma olhada, não um clique.
+If the inquiry concerns business logic, data models, or state transitions rather than visual layout, that is the wrong branch: use [`logic.md`](logic.md).
 
 ---
 
-## 3. Processo
+## 1. When This is the Right Form
 
-### 3.1. Declarar a pergunta e escolher N
-
-Padrão: **3 variantes**. Acima de 5 elas deixam de ser radicalmente diferentes e viram ruído; esse é o teto.
-
-Escreva o plano em uma linha antes de rascunhar:
-
-> "Três variantes da página de configurações, lado a lado num mockup avulso."
-
-### 3.2. Reproduzir o ambiente real
-
-Antes das variantes, extraia a identidade visual do projeto (cores, escala de espaçamento, tipografia, raios de borda, sombras e a aparência dos componentes compartilhados: botões, cards, inputs, navegação) de onde o projeto as define: variáveis CSS, configuração de tema ou Tailwind, código dos componentes. Copie os valores reais para o `<style>` do mockup, para cada variante parecer parte do app, e não uma página genérica de template.
-
-Se a página tem uma moldura (cabeçalho, menu lateral, navegação) que muda como a variante é lida, aproxime-a também: estática, sem função, só o suficiente para dar contexto honesto. Sem dados reais, sem rotas.
-
-### 3.3. Montar um HTML com as N variantes lado a lado
-
-- Um arquivo, HTML/CSS/JS puro: sem framework, sem bundler, sem servidor, tudo inline, para abrir com duplo clique.
-- As N variantes numa linha ou grade responsiva, cada uma num painel rotulado, comparáveis de relance.
-- Cada painel com um nome curto e uma linha dizendo o que ele tem de estruturalmente diferente.
-- As variantes precisam ser **estruturalmente diferentes**: outro layout, outra hierarquia de informação, outra ação principal, não só outras cores. Se duas saírem parecidas demais, refaça uma com uma restrição explícita ("sem grade de cards").
-
-### 3.4. Salvar fora do repositório e abrir
-
-Grave o arquivo num diretório temporário fora do projeto (o diretório de rascunho da sessão, se o harness tiver um), **nunca** dentro do repositório: o protótipo não pode exigir limpeza no git. Abra para o usuário ou passe o caminho.
-
-### 3.5. Entregar
-
-O usuário escolhe uma favorita ou descreve um híbrido ("o cabeçalho da B com o layout da C"): essa é a decisão de design. O mockup pode ser revisado e reaberto quantas vezes for preciso; ele é descartável por construção.
-
-### 3.6. Registrar a resposta e implementar de verdade
-
-Registre a resposta (qual variante ou híbrido, e por quê) na issue vinculada ou num commit.
-
-A implementação do vencedor é código de produção, no componente ou página real, com os componentes e o design system reais do projeto e com o padrão normal dele (testes, tratamento de erro, acessibilidade), seguindo a skill [`coding`](../../coding/SKILL.md). O mockup é só referência visual, não fonte para copiar: ele aproximou o design system em vez de usá-lo. Apague o arquivo depois de registrar a resposta; como ele nunca esteve no projeto, não há mais nada a remover.
+- "What should this screen look like?"
+- "I want to see a few visual directions for this dashboard before choosing."
+- "Explore an alternative layout for the settings view."
+- Whenever a user would otherwise spend days debating vague mental wireframes.
 
 ---
 
-## 4. Anti-padrões
+## 2. Why Standalone and Side-by-Side
 
-- **Variantes que diferem só em cor ou texto.** Isso é ajuste, não protótipo. Variantes de verdade discordam sobre estrutura.
-- **Mockup genérico que ignora os tokens reais do projeto.** Impede julgar as variantes "como ficariam de verdade".
-- **Ligar o mockup ao app real, a um servidor de desenvolvimento ou a uma rota**, mesmo que temporariamente, "só para ver".
-- **Gravar o mockup dentro do repositório.** Ele pertence a fora do projeto, e é isso que torna a limpeza um não-problema.
-- **Copiar o markup do mockup para produção.** Reconstrua o vencedor com os componentes e o design system reais.
+Prototypes wired into live app routes (variant toggles, `?variant=` query parameters, temporary test views) leave debris in the project that must be found and removed later—a cleanup process that is notoriously error-prone. A standalone HTML file completely outside the repository eliminates this risk: nothing is created in the codebase, leaving zero mess to clean up. Furthermore, side-by-side layout beats cycling variants one at a time: comparing designs should take a single glance, not repeated clicking.
+
+---
+
+## 3. Process
+
+### 3.1. Declare the Question and Set N
+Default: **3 variants**. Beyond 5, variations stop being radically different and degenerate into noise; 5 is the hard ceiling.
+
+State the brief in one line prior to drafting:
+
+> "Three variants of the user settings page, presented side-by-side in a standalone mockup."
+
+### 3.2. Replicate the Real Visual Identity
+Before drafting variants, extract the project's real design tokens (colors, typography scales, spacing units, border radii, shadows, and base styling for shared components: buttons, cards, form inputs, navigation bars) from wherever the project defines them: CSS variables, Tailwind configurations, or theme files. Copy these values directly into the `<style>` block of the mockup so each variant feels authentically like part of the application rather than a generic template.
+
+If the page includes structural framing (headers, sidebars, global navigation) that heavily influences how content is perceived, replicate that frame statically: non-functional, purely to provide authentic visual context. Zero real data, zero live routing.
+
+### 3.3. Assemble the HTML with N Variants Side by Side
+- Single file, pure HTML/CSS/JS: no frameworks, no bundlers, no dev server, everything inline, opening on double-click.
+- N variants arranged in a responsive grid or side-by-side row, each inside a clearly labeled panel, effortlessly comparable at a glance.
+- Each panel features a concise title and a single sentence articulating its core structural differentiator.
+- Variants must be **structurally divergent**: distinct information hierarchies, different spatial layouts, alternative primary action placements—not mere palette swaps. If two variants look too similar, rebuild one with an explicit constraint ("no card grid").
+
+### 3.4. Save Outside the Repository and Open
+Save the HTML file in a temporary scratch directory completely outside the project repository (e.g. the session scratch directory), **never** inside the repository tree: the prototype must not require git cleanup. Open it for the user or provide the absolute path.
+
+### 3.5. Review and Deliver
+The user selects a favorite or specifies a hybrid ("header from Variant B with the layout from Variant C"): that constitutes the design decision. The mockup can be tweaked and refreshed as needed; it is disposable by design.
+
+### 3.6. Record the Decision and Implement in Production
+Record the decision (the chosen variant or hybrid, and why) in the linked issue or commit message.
+
+Implementation of the winning variant is real production code: built into the actual component or page using the project's real design system and standards (testing, error handling, accessibility), adhering to the [`coding`](../../coding/SKILL.md) skill. The mockup serves strictly as visual reference, not source code to copy: it approximated the design system rather than implementing it cleanly. Delete the temporary mockup file after recording the decision; since it never entered version control, no repository cleanup is needed.
+
+---
+
+## 4. Anti-Patterns
+
+- **Variants differing merely by color or font weight.** That is styling tuning, not prototyping. Real variants disagree on structure.
+- **Generic placeholder styling ignoring real project design tokens.** Prevents stakeholders from judging how designs would look in production.
+- **Wiring mockups into live app routing or dev servers**, even temporarily "just to check".
+- **Saving mockups inside the project repository.** Placing files outside the repository is what makes cleanup effortless.
+- **Copying raw mockup markup directly into production.** Rebuild the winning design properly using production components and patterns.

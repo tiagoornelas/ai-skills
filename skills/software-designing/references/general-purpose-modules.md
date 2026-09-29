@@ -1,37 +1,37 @@
-# Módulos de Propósito Geral São Mais Profundos
+# General-Purpose Modules Are Deeper
 
-> **Tese central**: o ponto ideal é criar módulos **"um pouco de propósito geral"**: a funcionalidade reflete as necessidades atuais, mas a **interface** é geral o bastante para suportar múltiplos usos. Interfaces gerais tendem a ser mais simples, mais profundas e a esconder mais informação que interfaces especializadas.
-
----
-
-## Quando consultar
-
-- Ao desenhar a interface de um novo módulo ou API.
-- Quando uma interface tem um método para cada caso de uso da tela ou do cliente atual.
-- Ao notar condicionais espalhadas tratando casos especiais.
-- Ao decidir entre "resolver só o problema de hoje" e "construir um framework genérico".
+> **Central thesis**: the optimal design is to make modules **"somewhat general-purpose"**: functionality addresses immediate needs, but the **interface** is general enough to support multiple uses. General-purpose interfaces tend to be simpler, deeper, and hide more information than specialized interfaces.
 
 ---
 
-## 1. Especializar ou generalizar?
+## When to consult
 
-- **Abordagem especializada**: implementar exatamente o que é necessário hoje. Argumento: não se sabe o que será necessário no futuro, e generalizar pode gerar código que nunca será usado.
-- **Abordagem de propósito geral**: implementar um mecanismo que resolve uma gama ampla de problemas. Argumento: pode economizar tempo no futuro.
-- O meio-termo recomendado: **um pouco de propósito geral**.
-  - A **funcionalidade** deve refletir as necessidades atuais (não implementar recursos que ninguém pediu).
-  - A **interface** não deve ficar amarrada aos usos de hoje; deve ser geral o bastante para servir a múltiplos usos.
-  - A interface deve ser fácil de usar para as necessidades de hoje, sem estar presa especificamente a elas.
-- O benefício mais importante nem é a reutilização futura: é que **a interface geral fica mais simples e mais profunda agora**.
+- When designing the interface for a new module or API.
+- When an interface grows a dedicated method for each UI view or client use case.
+- When noticing conditional branches scattered to handle ad-hoc special cases.
+- When deciding between "solving only today's narrow problem" and "building a bloated generic framework".
 
 ---
 
-## 2. Exemplo canônico: a classe de texto de um editor
+## 1. Specialize or Generalize?
 
-Num projeto de editor de texto gráfico, a classe responsável pelo texto (armazenar e modificar o conteúdo do arquivo) pode ser projetada de duas formas.
+- **Specialized approach**: implement exclusively what is needed today. Rationale: future requirements are unknown, and premature generalization breeds dead code.
+- **General-purpose approach**: build a comprehensive engine that solves a vast spectrum of hypothetical problems. Rationale: might save time down the road.
+- The recommended middle ground: **somewhat general-purpose**.
+  - **Functionality** strictly reflects current requirements (never build speculative features).
+  - The **interface** avoids coupling to immediate callers; it remains general enough to serve multiple call sites.
+  - The interface must be natural and ergonomic for today's needs, without being narrow-minded.
+- The most crucial payoff is not future reuse: it is that **a general interface is simpler and deeper right now**.
 
-### Interface especializada (ruim)
+---
 
-Métodos que espelham as operações da interface do usuário:
+## 2. Canonical Example: A Text Editor's Document Model
+
+In a graphical text editor, the class managing document content (storage and modification) can be architected in two contrasting ways.
+
+### Specialized Interface (Anti-pattern)
+
+Methods that mirror UI user actions:
 
 ```java
 void backspace(Cursor cursor);
@@ -39,14 +39,14 @@ void delete(Cursor cursor);
 void deleteSelection(Selection selection);
 ```
 
-- Cada nova operação da UI exige um novo método na classe de texto.
-- A classe de texto passa a conhecer conceitos da UI (cursor, seleção, tecla backspace): vazamento de informação.
-- Muitos métodos rasos, cada um usado por um único recurso da UI.
-- Quem trabalha na UI precisa aprender um grande número de métodos.
+- Every new user interface gesture forces a new method on the text class.
+- The text model becomes contaminated with UI concepts (cursors, selections, keyboard keys): information leakage.
+- Yields a proliferation of shallow methods, each tied to a single UI widget.
+- UI developers face a bloated API surface to learn.
 
-### Interface de propósito geral (melhor)
+### Somewhat General-Purpose Interface (Superior)
 
-Operações básicas sobre texto, sem referência à UI:
+Fundamental text operations agnostic of UI concepts:
 
 ```java
 void insert(Position position, String newText);
@@ -54,76 +54,76 @@ void delete(Position start, Position end);
 Position changePosition(Position position, int numChars);
 ```
 
-As operações da UI passam a ser implementadas **em cima** dessa interface:
+User actions are implemented cleanly **on top of** this core abstraction:
 
 ```java
 // backspace
 text.delete(text.changePosition(cursor, -1), cursor);
 
-// delete (tecla "Del")
+// delete (Del key)
 text.delete(cursor, text.changePosition(cursor, 1));
 ```
 
-- Menos métodos, cada um mais poderoso: a classe fica mais profunda.
-- A classe de texto não sabe nada sobre a UI: melhor separação e ocultação.
-- O código de UI fica até mais **óbvio**: a intenção ("apagar o caractere antes do cursor") está visível.
-- Novas operações da UI não exigem mudanças na classe de texto.
+- Fewer methods, each significantly more powerful: the class is much deeper.
+- The text engine knows nothing about UI widgets or key bindings: clean decoupling and information hiding.
+- UI logic becomes more **obvious**: intent ("delete the character preceding the cursor") is directly expressed.
+- Adding UI features requires zero modifications to the text engine.
 
 ---
 
-## 3. Generalidade leva a melhor ocultação de informação
+## 3. Generality Leads to Better Information Hiding
 
-- A abordagem geral separa claramente as classes: a classe de texto não precisa conhecer cursores, seleções ou teclas; a UI não precisa conhecer a representação do texto.
-- Métodos especializados para cada caso de uso da UI tendem a ser rasos e a vazar conhecimento de cima para baixo.
-
----
-
-## 4. Perguntas para encontrar o ponto certo
-
-1. **Qual é a interface mais simples que cobre todas as minhas necessidades atuais?** Reduzir o número de métodos sem reduzir a capacidade geral geralmente torna a interface mais geral. Cuidado: reduzir métodos à custa de muitos argumentos adicionais não simplifica.
-2. **Em quantas situações este método será usado?** Se um método é desenhado para **um único uso específico**, é um sinal de alerta de que ele pode ser especializado demais. Veja se vários métodos especializados podem ser substituídos por um único geral.
-3. **Esta API é fácil de usar para as minhas necessidades atuais?** Se é preciso escrever muito código adicional para usar a classe no caso de hoje, a interface provavelmente não tem a funcionalidade certa. Exemplo: se a única forma de apagar um intervalo de texto é chamar em loop um método que apaga um caractere, a interface é geral demais (ou baixa demais) para o uso real.
+- The general approach establishes clean boundaries: the text model does not need to know about cursors or keybindings; the UI does not need to know how text is stored or indexed.
+- Specialized methods for each UI edge case tend to be shallow and leak caller concepts downward.
 
 ---
 
-## 5. Empurrar a especialização para cima (e para baixo)
+## 4. Guiding Questions for Finding the Sweet Spot
 
-- A maioria dos sistemas precisa ter algum código especializado. O objetivo não é eliminá-lo, mas **separá-lo** do código geral.
-- Normalmente, a especialização fica **no topo**: a camada de aplicação/UI implementa os recursos específicos usando os mecanismos gerais das camadas inferiores.
-- Às vezes a especialização vai **para baixo**: drivers de dispositivo, por exemplo, são especializados, mas ficam atrás de uma interface geral que o resto do sistema usa sem conhecer os detalhes.
-- Exemplo: um mecanismo de **desfazer** (*undo*) num editor. O mecanismo geral mantém um histórico de ações e sabe voltar e avançar. Cada tipo de ação (inserir texto, mudar seleção) fornece seu próprio handler especializado para desfazer/refazer. O mecanismo geral não conhece os detalhes das ações; as ações não conhecem a mecânica do histórico.
-
-### Eliminar casos especiais
-
-- Especialização também aparece como casos especiais espalhados. Como eliminá-los: [define-errors-out-of-existence.md](define-errors-out-of-existence.md) (seção 3).
+1. **What is the simplest interface that covers all current needs?** Reducing method count without sacrificing capability almost always makes an interface more general. *Caution*: reducing methods by inflating parameter counts with flags does not simplify.
+2. **In how many situations will this method be used?** If a method is crafted for **only one specific call site**, it is a red flag for over-specialization. Check whether multiple specialized methods can be unified into a single general abstraction.
+3. **Is this API ergonomic for current needs?** If callers must write extensive boilerplate to accomplish standard tasks, the abstraction is missing required capabilities. Example: if deleting a text range requires looping over a single-character delete method, the interface is excessively low-level for real-world usage.
 
 ---
 
-## Red flags
+## 5. Pushing Specialization Upward (and Downward)
 
-- **Mistura de especial com geral** (*special-general mixture*): um mecanismo de propósito geral contém código especializado para um uso particular dele.
-- Um método projetado para exatamente um caso de uso.
-- A interface de um módulo de baixo nível usa conceitos de uma camada superior (ex.: classe de dados que conhece "tela", "botão", "cursor").
-- Cada nova feature da camada superior exige um novo método na camada inferior.
-- Condicionais para casos especiais espalhadas pelo código.
+- Systems inevitably contain specialized logic. The objective is not to eliminate it, but to **isolate it** from general-purpose machinery.
+- Typically, specialization belongs **at the top**: application/UI layers orchestrate specific features using the general mechanisms of lower layers.
+- Occasionally, specialization goes **to the bottom**: hardware device drivers, for instance, are highly specialized, but live behind general OS interfaces that upper layers consume transparently.
+- Example: an **undo/redo** manager. The general engine tracks action history and handles stack traversal. Specific actions (insert text, alter formatting) provide their own handlers for applying/reverting changes. The core engine knows nothing about text manipulation; text actions know nothing about history stack mechanics.
 
----
+### Defining Out Special Cases
 
-## Como aplicar
-
-1. Liste os **usos atuais** do módulo.
-2. Desenhe a **menor interface** que cobre todos eles, usando os conceitos do próprio domínio do módulo (não os do cliente).
-3. Escreva, em pseudo-código, **como cada uso atual ficaria** em cima dessa interface. Se algum ficar muito verboso, ajuste a interface.
-4. Separe o que é especializado e empurre-o para a camada que o origina (normalmente a de cima).
-5. Procure casos especiais que possam ser eliminados redefinindo o caso normal.
-6. **Não implemente** funcionalidade especulativa: generalize a interface, não o escopo.
+- Specialization often manifests as scattered edge-case branches. To eliminate them: see [define-errors-out-of-existence.md](define-errors-out-of-existence.md) (Section 3).
 
 ---
 
-## Relações
+## Red Flags
 
-- Por que interfaces menores e mais gerais são melhores: [deep-modules.md](deep-modules.md).
-- A classe de texto e a UI como camadas com abstrações distintas: [different-layer-different-abstraction.md](different-layer-different-abstraction.md).
-- Separar código geral e especializado também guia a decisão de juntar/separar: [together-or-apart.md](together-or-apart.md).
-- Eliminar casos especiais é o mesmo raciocínio de eliminar erros: [define-errors-out-of-existence.md](define-errors-out-of-existence.md).
-- Exceção na fronteira com a infraestrutura: a porta usa o vocabulário das regras de negócio: [dependency-direction.md](dependency-direction.md).
+- **Special-general mixture**: a general-purpose mechanism contains hardcoded logic tailored to a single specific caller.
+- A public method designed for exactly one caller.
+- A lower-level module interface referencing upper-layer concepts (e.g., a data model referencing "buttons", "views", or "mouse cursors").
+- Every new upper-layer feature requires adding methods to lower layers.
+- Conditional branches for special cases scattered throughout core flows.
+
+---
+
+## How to Apply
+
+1. List the **current use cases** of the module.
+2. Design the **smallest interface** that completely fulfills all of them, speaking strictly the module's own domain vocabulary.
+3. Draft pseudo-code showing **how each current use case consumes this interface**. If any flow is overly verbose, refine the abstraction.
+4. Identify specialized details and push them to the layer where they originate (typically upper layers).
+5. Search for special cases that can be eliminated by expanding the definition of the normal case.
+6. **Do not implement** speculative capabilities: generalize the interface, not the feature scope.
+
+---
+
+## Relationships
+
+- Why smaller, general interfaces are superior: [deep-modules.md](deep-modules.md).
+- Text models and UI as distinct layers with different abstractions: [different-layer-different-abstraction.md](different-layer-different-abstraction.md).
+- Decoupling general from specialized logic also guides module partitioning: [together-or-apart.md](together-or-apart.md).
+- Eliminating special cases follows the same principles as eliminating errors: [define-errors-out-of-existence.md](define-errors-out-of-existence.md).
+- Exception at the infrastructure boundary: ports speak the domain's business vocabulary: [dependency-direction.md](dependency-direction.md).

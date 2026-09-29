@@ -1,87 +1,87 @@
-# Tratamento de Erro na Implementação
+# Error Handling in Implementation
 
-> **Tese central**: o tratamento de erro não pode esconder a lógica principal nem deixar falhas passarem em silêncio. Esta referência trata de **como implementar** o tratamento dentro do código. **Quais** erros um contrato público expõe é decisão de design e da Camada Humana: ver [define-errors-out-of-existence.md](../../software-designing/references/define-errors-out-of-existence.md).
-
----
-
-## Quando consultar
-
-- Ao escrever código que pode falhar (I/O, rede, entrada externa, bibliotecas de terceiros).
-- Ao revisar `try/catch`, retornos de erro, `null` e mensagens de erro num diff.
+> **Central thesis**: error handling must not obscure core business logic nor allow failures to pass silently. This reference addresses **how to implement** error handling in code. **Which** failure modes a public contract exposes is an architectural design decision belonging to the Human Layer: see [define-errors-out-of-existence.md](../../software-designing/references/define-errors-out-of-existence.md).
 
 ---
 
-## 1. Mecanismo idiomático
+## When to consult
 
-- Use o mecanismo de erro **idiomático da linguagem e do repositório**: exceções, `Result`/`Maybe`/`Either`, retorno de erro. A convenção do repositório prevalece.
-- Qualquer que seja o mecanismo: o **caminho principal fica legível**, e nenhum chamador é obrigado a checar um retorno que ele pode esquecer. Prefira mecanismos que o tipo ou a linguagem obrigam a tratar.
-
----
-
-## 2. Primeiro, faça o erro não existir
-
-- Antes de tratar um erro interno, veja se ele precisa existir: ajustar a semântica, devolver coleção vazia, usar um objeto de caso especial. As técnicas estão em [define-errors-out-of-existence.md](../../software-designing/references/define-errors-out-of-existence.md).
+- When authoring code prone to failure (I/O, network calls, external input, third-party libraries).
+- When reviewing `try/catch` blocks, error return values, `null` checks, and error messages in a diff.
 
 ---
 
-## 3. Não devolva nem passe nulo
+## 1. Idiomatic Mechanisms
 
-- Devolver `null`/`None`/`nil` obriga cada chamador a checar, e basta um esquecimento para o erro aparecer longe da origem.
-- Prefira coleção vazia, um objeto de caso especial ou o tipo opcional idiomático da linguagem.
-- Não passe nulo como argumento, a menos que a interface declare isso explicitamente.
-
----
-
-## 4. Erros com contexto
-
-- A mensagem diz **qual operação falhou**, com qual entrada relevante e por quê. "Erro ao processar" não ajuda ninguém.
-- Preserve a causa original (encadeamento de exceções, erro envolvido) em vez de substituí-la.
-- Não coloque dados sensíveis na mensagem.
+- Leverage the error mechanism **idiomatic to the language and repository**: exceptions, `Result`/`Maybe`/`Either` monads, or explicit error return values. Repository conventions take precedence.
+- Regardless of the mechanism chosen: ensure the **happy path remains readable**, and callers are never forced to check return codes that can be silently ignored. Favor mechanisms enforced by the compiler or type system.
 
 ---
 
-## 5. Não engula erros
+## 2. First, Define the Error Out of Existence
 
-- `catch` vazio, `except: pass` e "logar e seguir" sem uma decisão escondem falhas.
-- Capture só o que você sabe tratar, no ponto em que sabe tratar. O resto sobe.
-
----
-
-## 6. Separe o tratamento da lógica
-
-- O corpo de um `try` não deve misturar lógica com tratamento. Extraia a lógica para uma função, e deixe o `try` só com a chamada e o tratamento.
-- Mantenha o `try` o mais estreito possível, envolvendo só o que pode falhar.
+- Before writing error-handling logic, evaluate whether the error condition needs to exist at all: adjust semantics, return an empty collection, or leverage a special-case object. Techniques are detailed in [define-errors-out-of-existence.md](../../software-designing/references/define-errors-out-of-existence.md).
 
 ---
 
-## 7. Erros de terceiros
+## 3. Do Not Return or Pass Null
 
-- No ponto em que o código chama uma biblioteca ou serviço externo, traduza as falhas dele para os erros que o módulo já define no contrato. Os erros do terceiro não devem se espalhar pelo resto do código.
-
----
-
-## Red flags
-
-- `catch` vazio, `except: pass`, ou erro só logado sem decisão.
-- Função que devolve `null` para indicar falha ou ausência.
-- Mensagem de erro sem a operação e o motivo.
-- Causa original descartada ao relançar.
-- `try` longo misturando lógica e tratamento.
-- Checagem do mesmo erro repetida em vários chamadores.
-- Exceções de biblioteca externa atravessando o código do módulo.
+- Returning `null`/`None`/`nil` forces every caller to remember null checks; a single omission causes failures far from the root cause.
+- Prefer empty collections, a null-object/special-case instance, or idiomatic optional types.
+- Never pass null as a function argument unless the interface explicitly specifies it as valid input.
 
 ---
 
-## Como aplicar
+## 4. Contextual Error Messages
 
-- **Ao escrever**: tente eliminar o erro; se ele existir, use o mecanismo idiomático, com contexto, sem nulo, e tratado só onde há algo a fazer.
-- **Ao revisar**: erro engolido, nulo devolvido sem necessidade e causa perdida têm cenário concreto (falha silenciosa, erro longe da origem) e valem corrigir.
-- Se a correção mudaria os erros que um contrato público expõe, não é implementação: é Camada Humana.
+- The error message must specify **which operation failed**, with relevant input context, and why. "Failed to process" helps no one.
+- Preserve the root cause (exception chaining, wrapped errors) rather than discarding it.
+- Never leak sensitive credentials, tokens, or PII into error strings.
 
 ---
 
-## Relações
+## 5. Never Swallow Errors
 
-- Quais erros um contrato expõe, e como eliminá-los: [define-errors-out-of-existence.md](../../software-designing/references/define-errors-out-of-existence.md).
-- Funções que fazem o que o nome promete: [functions.md](functions.md).
-- Caso especial em vez de checagens repetidas: [code-smells.md](code-smells.md).
+- Empty `catch` blocks, `except: pass`, and passive logging without handling obscure critical failures.
+- Catch strictly what you can meaningfully handle at the current altitude. Allow everything else to propagate upward.
+
+---
+
+## 6. Decouple Error Handling from Core Logic
+
+- A `try` block should not intermingle business algorithms with recovery logic. Extract the domain algorithm into a clean function, keeping the `try` block restricted to invocation and handling.
+- Keep `try` blocks as narrow as possible, scoping only the operations that can fail.
+
+---
+
+## 7. Third-Party Vendor Errors
+
+- At the boundary where code integrates with external libraries or SDKs, translate foreign exceptions into the errors defined by the module's domain contract. Vendor-specific errors must not leak into core application logic.
+
+---
+
+## Red Flags
+
+- Empty `catch` blocks, `except: pass`, or logging an error without making a recovery or termination decision.
+- Functions returning `null` to signal failure or absence.
+- Generic error messages omitting the operation context and cause.
+- Discarding root-cause exceptions when re-throwing.
+- Sprawling `try` blocks tangling business logic with error traps.
+- Identical error checks replicated across multiple call sites.
+- Third-party library exceptions bubbling untamed through domain logic.
+
+---
+
+## How to Apply
+
+- **When writing**: attempt to define errors away; where errors are inevitable, use idiomatic mechanisms, provide rich context, avoid nulls, and handle errors strictly where actionable recovery is possible.
+- **When reviewing**: swallowed errors, gratuitous null returns, and lost root causes represent concrete failure scenarios (silent bugs, remote failures) and warrant remediation.
+- If remediation alters the failure modes exposed by a public contract, that is an architectural decision: escalate to the Human Layer.
+
+---
+
+## Relationships
+
+- Exposing contract failure modes and defining them out of existence: [define-errors-out-of-existence.md](../../software-designing/references/define-errors-out-of-existence.md).
+- Functions that fulfill their explicit promises: [functions.md](functions.md).
+- Special-case objects replacing defensive checks: [code-smells.md](code-smells.md).

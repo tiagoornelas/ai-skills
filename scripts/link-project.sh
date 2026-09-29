@@ -41,25 +41,25 @@ if [ ! -f "$TARGET_DIR/AGENTS.md" ]; then
   cat <<'EOF' > "$TARGET_DIR/AGENTS.md"
 # AGENTS.md
 
-> Instruções de desenvolvimento e governança para agentes de IA neste projeto.
+> Development and governance instructions for AI agents in this project.
 
 ---
 
-## 1. Visão Geral do Projeto
-- Stack tecnológica e escopo do projeto.
+## 1. Project Overview
+- Tech stack and project scope.
 
 ---
 
-## 2. Comandos Frequentes
-- Instalação: `npm install` (ou equivalente)
-- Testes: `npm test`
+## 2. Common Commands
+- Setup: `npm install` (or equivalent)
+- Tests: `npm test`
 - Lint: `npm run lint`
 
 ---
 
-## 3. Diretrizes Operacionais
-- Respostas concisas e estruturadas.
-- Verifique testes antes de concluir tarefas.
+## 3. Operational Guidelines
+- Concise and structured responses.
+- Verify tests before completing tasks.
 EOF
   echo "  ✓ Criado: $TARGET_DIR/AGENTS.md"
 else

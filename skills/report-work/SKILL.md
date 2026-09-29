@@ -1,144 +1,144 @@
 ---
 name: report-work
 description: >-
-  Entende o trabalho que o usuário está fazendo ou já fez (conversa, commits,
-  diffs, branches, PRs) e o reporta como tarefas concisas, com título e
-  descrição, por padrão em PT-BR, opcionalmente organizadas em contextos/épicos,
-  tarefas pai e relacionamentos. É agnóstica de ferramenta: prepara as tarefas e
-  para, aguardando o usuário instruir onde e como salvá-las (Jira, GitHub,
-  Linear, arquivo etc.). Deve ser acionada quando o usuário pedir para reportar,
-  registrar, documentar ou transformar em tarefas um trabalho feito ou em
-  andamento, inteiro ou uma fatia dele.
-argument-hint: "[fatia do trabalho a reportar — por padrão, o trabalho da conversa atual]"
+  Understands the work the user is actively doing or has completed
+  (conversation, commits, diffs, branches, PRs) and reports it as concise
+  actionable tasks with titles and descriptions in the user's session language,
+  optionally organized into contexts/epics, parent tasks, and relationships.
+  Tool-agnostic: formats tasks and pauses, awaiting user instructions on where
+  and how to persist them (Jira, GitHub Issues, Linear, markdown file, etc.).
+  Triggered when the user asks to report, log, document, or convert work into
+  tickets/tasks, whether the entire scope or a slice of it.
+argument-hint: "[slice of work to report — by default, current session's work]"
 ---
 
 # Report Work
 
-Inverte a ordem habitual de criação de tarefas: **primeiro se trabalha para entender o que de fato precisa ser feito, depois se reporta o trabalho como tarefas.** Tarefas escritas depois do trabalho descrevem a realidade, não uma suposição.
+Inverts the traditional task creation sequence: **first you do the work to understand what genuinely needs to be done, then you report the work as actionable tasks.** Tasks written after the work describe reality rather than speculation.
 
 ---
 
-## 1. Princípio Fundamental
+## 1. Core Principle
 
-> A skill **entende e redige**; o usuário **decide onde e como salvar**.
+> The skill **understands and drafts**; the user **decides where and how to persist**.
 
-- **Agnóstica de ferramenta**: o resultado é um conjunto neutro de tarefas. Nenhum campo, status ou convenção específica de ferramenta entra antes de o usuário pedir.
-- **Não salva nada sozinha**: depois de apresentar as tarefas, a skill para e aguarda a instrução de destino.
-- **Relata o que existe**: toda tarefa se apoia em evidência (conversa, commit, diff, PR). Nada é inventado para "completar" o conjunto.
-
----
-
-## 2. Fluxo de Trabalho
-
-### Passo 1: Delimitar a fatia
-Determine **qual trabalho** será reportado:
-1. **Alvo explícito no prompt** (ex.: "só a parte de autenticação", "o que fiz nesta branch", "o PR #42") → use-o.
-2. **Sem alvo explícito** → use o trabalho discutido e realizado **na conversa atual**.
-3. **Ambíguo** (a conversa cobre vários trabalhos sem relação, ou não há trabalho na conversa) → pergunte qual fatia reportar, oferecendo as opções que você identificou.
-
-Declare em uma linha a fatia escolhida antes de seguir.
-
-### Passo 2: Reunir evidências
-Leia só o necessário para a fatia:
-- **Conversa**: objetivos, decisões tomadas, problemas encontrados, o que ficou pendente.
-- **Git**: `git log <base>..HEAD --oneline`, `git diff <base>...HEAD --stat` e o diff dos trechos relevantes; branches envolvidas.
-- **PRs/issues** (se houver): título, descrição e issues vinculadas (ex.: `gh pr view`).
-- **Arquivos** tocados, quando o diff sozinho não explica a intenção.
-
-### Passo 3: Entender o trabalho
-Antes de escrever, responda para si:
-- Qual **problema ou objetivo** motivou o trabalho?
-- Quais **resultados observáveis** ele entrega (comportamentos, capacidades, correções)?
-- O que foi **concluído**, o que está **em andamento** e o que ficou **pendente**, descoberto durante o trabalho?
-- Existem **agrupamentos naturais** (um objetivo maior com várias partes)?
-
-### Passo 4: Recortar em tarefas
-- **Uma tarefa = um resultado verificável**, que faz sentido sozinho para quem vai ler na ferramenta. Recorte por **resultado entregue**, não por arquivo, camada ou commit.
-- Commits pequenos do mesmo resultado se fundem numa tarefa; um commit que entrega dois resultados distintos se divide.
-- **Trabalho descoberto e não feito** (dívida, bug encontrado, próximo passo) vira tarefa com status *A fazer*: é justamente o valor de trabalhar antes de reportar.
-- Não crie tarefas para higiene mecânica sem valor próprio (formatação, renomear variável) salvo pedido do usuário. Isso fica dentro da tarefa que a motivou.
-
-### Passo 5: Organizar hierarquia e relações (quando fizer sentido)
-- **Contexto/Épico**: use quando as tarefas servem a um objetivo maior comum. Se o usuário indicar um épico existente, associe a ele em vez de criar um novo.
-- **Tarefa pai → subtarefas**: use quando um resultado é grande demais para uma tarefa, mas suas partes não são épicos.
-- **Relações entre tarefas**: `bloqueia` / `é bloqueada por`, `relacionada a`, `duplica`.
-- Use **chaves temporárias** (`E1`, `T1`, `T1.1`) para expressar relações antes de existirem IDs reais.
-- Sem agrupamento natural → lista plana. **Não force hierarquia.**
-
-### Passo 6: Redigir
-Siga o formato da seção 3 e as regras da seção 4.
-
-### Passo 7: Apresentar e aguardar
-Apresente as tarefas e **pare**. Termine perguntando como o usuário quer salvá-las, por exemplo: em qual ferramenta, projeto, épico existente, tipos de issue, labels, responsável, sprint ou formato de arquivo.
-
-Ajustes pedidos pelo usuário (fundir, dividir, reescrever, mudar hierarquia) são aplicados e o conjunto é reapresentado até ele aprovar.
-
-### Passo 8: Salvar conforme instrução
-Quando o usuário instruir o destino:
-- Se existir uma skill específica para a ferramenta (ex.: uma skill de uso do Jira), carregue-a e siga suas regras.
-- **Confirme antes de escrever** em qualquer sistema externo: mostre o que será criado, onde, e com quais campos.
-- Crie na ordem que as relações exigem (épico → pai → subtarefas → vínculos), substituindo as chaves temporárias pelos IDs reais.
-- Reporte ao final a tabela `chave temporária → ID/link real`.
+- **Tool-agnostic**: produces a neutral, clean task representation. Zero tracker-specific fields, statuses, or rituals are assumed until instructed by the user.
+- **Never saves autonomously**: after presenting tasks, the skill stops and awaits target destination instructions.
+- **Reports evidence**: every task is grounded in real evidence (conversations, commits, diffs, PRs). Nothing is fabricated to pad out the backlog.
 
 ---
 
-## 3. Formato de Saída
+## 2. Workflow
+
+### Step 1: Delimit the Slice
+Determine **which work** to report:
+1. **Explicit target in prompt** (e.g., "only authentication", "what I committed on this branch", "PR #42") → use it.
+2. **No explicit target** → use work discussed and performed **in the current conversation**.
+3. **Ambiguous** (session spans unrelated tasks, or zero work occurred in chat) → ask which slice to report, presenting identified options.
+
+Declare the selected slice in one line before proceeding.
+
+### Step 2: Gather Evidence
+Inspect strictly what is needed for the slice:
+- **Conversation**: objectives, decisions made, obstacles resolved, outstanding items.
+- **Git**: `git log <base>..HEAD --oneline`, `git diff <base>...HEAD --stat` and diffs of relevant files; involved branches.
+- **PRs/issues** (if present): title, description, linked tickets (e.g. `gh pr view`).
+- **Files** touched, when diffs alone do not convey intent.
+
+### Step 3: Understand the Work
+Before drafting, clarify:
+- What **underlying problem or goal** motivated the work?
+- What **observable outcomes** were delivered (behaviors, capabilities, bug fixes)?
+- What was **completed**, what is **in progress**, and what **remains pending**, discovered along the way?
+- Do **natural groupings** exist (a broader milestone composed of multiple parts)?
+
+### Step 4: Slice into Tasks
+- **One task = one verifiable outcome** that makes standalone sense to whoever reads it in the issue tracker. Slice by **delivered capability**, not by file, layer, or commit.
+- Minor commits for the same outcome merge into one task; a commit delivering two distinct capabilities splits into two tasks.
+- **Unfinished work discovered during implementation** (technical debt, discovered bug, next step) becomes a task with *To Do* status: this is the primary value of doing work before reporting.
+- Do not create tasks for mechanical hygiene without standalone value (linting, variable renames) unless requested. That belongs inside the task that motivated it.
+
+### Step 5: Structure Hierarchy and Relationships (When Meaningful)
+- **Context/Epic**: use when tasks serve a shared broader initiative. If the user indicates an existing epic, associate tasks with it rather than creating a new one.
+- **Parent Task → Subtasks**: use when an outcome is too large for a single ticket, but parts are not distinct epics.
+- **Task Relationships**: `blocks` / `is blocked by`, `relates to`, `duplicates`.
+- Use **temporary keys** (`E1`, `T1`, `T1.1`) to express relationships before real IDs exist.
+- Without natural grouping → flat list. **Never force hierarchy.**
+
+### Step 6: Draft Tasks
+Follow the Section 3 format and Section 4 writing guidelines.
+
+### Step 7: Present and Await
+Present tasks and **stop**. Conclude by asking how the user wishes to save them: e.g., target tool, project key, existing epic, issue types, labels, assignee, sprint, or file export format.
+
+User requested edits (merging, splitting, rewriting, shifting hierarchy) are applied and the updated set re-presented until approved.
+
+### Step 8: Save per User Instruction
+When destination instructions arrive:
+- If a specific tool skill exists (e.g., Jira skill), load it and adhere to its rules.
+- **Confirm prior to writing** to any external system: display what will be created, where, and with what fields.
+- Create in relational order (epic → parent → subtasks → links), replacing temporary keys with real tracking IDs.
+- Present a final mapping table: `Temporary Key → Real ID / Link`.
+
+---
+
+## 3. Output Format
 
 ```markdown
-## Fatia reportada
-<uma linha: o que foi considerado e de onde veio a evidência>
+## Reported Slice
+<one line: what was considered and evidence sources>
 
-## E1 — <título do contexto/épico>          ← só se houver agrupamento
-<1–2 frases: objetivo comum das tarefas>
+## E1 — <Context / Epic Title>              ← strictly if grouped
+<1–2 sentences: shared objective of enclosed tasks>
 
-### T1 — <título da tarefa>
-**Status:** Concluída | Em andamento | A fazer
-**Pai:** E1        **Relações:** bloqueia T2   ← omitir linhas vazias
+### T1 — <Task Title>
+**Status:** Completed | In Progress | To Do
+**Parent:** E1        **Relations:** blocks T2   ← omit empty metadata
 
-**Contexto:** <por que esta tarefa existe — problema ou objetivo, 1–2 frases>
+**Context:** <why this task exists — problem or goal, 1–2 sentences>
 
-**Escopo:** <o que foi (ou será) feito, em termos de resultado — 1–3 frases ou poucos tópicos>
+**Scope:** <what was (or will be) done in terms of outcome — 1–3 sentences or brief bullets>
 
-**Critérios de aceite:**
-- <comportamento observável e verificável>
+**Acceptance Criteria:**
+- <observable, verifiable behavior>
 - <...>
 
-**Observações:** <decisões relevantes, riscos, pendências — opcional>
+**Notes:** <notable decisions, technical constraints, risks — optional>
 
-#### T1.1 — <subtarefa>                      ← só se houver
+#### T1.1 — <Subtask Title>                  ← strictly if subtask exists
 ...
 ```
 
-Após as tarefas:
+After tasks:
 
 ```markdown
-## Resumo
-| Chave | Título | Tipo | Status | Pai | Relações |
+## Summary
+| Key | Title | Type | Status | Parent | Relations |
 
-**Como deseja salvar estas tarefas?** (ferramenta, projeto, épico existente, campos, formato…)
+**How would you like to save these tasks?** (tool, project, existing epic, fields, format...)
 ```
 
 ---
 
-## 4. Regras de Redação
+## 4. Writing Guidelines
 
-- **Idioma**: PT-BR por padrão; siga outro idioma se o usuário pedir. Termos técnicos e identificadores ficam no original.
-- **Título**: imperativo e específico, até ~70 caracteres, dizendo o resultado (ex.: *"Permitir login com conta Google"*, *"Corrigir cálculo de juros em parcelas atrasadas"*). Sem prefixos de tipo, chaves ou emojis.
-- **Descrição concisa**: quem lê deve entender a tarefa em menos de um minuto. Corte tudo que não ajuda a entender o porquê, o quê ou como verificar.
-- **Resultado, não implementação**: descreva comportamentos e capacidades (Camada Humana). Detalhes internos (nomes de funções privadas, estrutura de pastas) só entram se forem essenciais para entender a tarefa.
-- **Critérios de aceite verificáveis**: cada um é algo que alguém pode checar. Para tarefas concluídas, descrevem o que foi entregue; para tarefas a fazer, o que define "pronto".
-- **[sem referências locais](../ai-assisted-software-development/references/no-local-references.md)**. Links para PRs, commits e issues públicos são bem-vindos.
-- **Sem inventar**: se uma informação necessária não está nas evidências (ex.: o motivo de negócio), pergunte ou deixe explícito como pendente, em vez de supor.
-- **Status honesto**: *Concluída* só com evidência de que foi entregue; na dúvida, *Em andamento*.
+- **Language**: User session language by default; follow another language if explicitly requested. Keep technical terms, identifiers, and code in their original form.
+- **Title**: imperative and specific, up to ~70 characters, describing the outcome (e.g., *"Enable Google OAuth login"*, *"Fix overdue installment interest calculation"*). No type prefixes, tracking keys, or emojis.
+- **Concise Description**: readers must grasp the task in under a minute. Cut filler that does not clarify why, what, or how to verify.
+- **Outcomes, Not Mechanics**: describe capabilities and behaviors (Human Layer). Internal implementation minutiae (private helper names, directory paths) belong strictly when essential to task comprehension.
+- **Verifiable Acceptance Criteria**: each criterion is independently checkable. For completed tasks, describe what was delivered; for to-do tasks, describe what defines "done".
+- **[No local references](../ai-assisted-software-development/references/no-local-references.md)**. Public PR, commit, and issue links are encouraged.
+- **Zero Fabrication**: if required information is absent from evidence (e.g. underlying business driver), ask or flag as pending rather than assuming.
+- **Honest Status**: *Completed* strictly with concrete evidence of delivery; when in doubt, *In Progress*.
 
 ---
 
-## 5. Validação de Sucesso
+## 5. Success Validation
 
-- [ ] A fatia reportada foi declarada e corresponde ao pedido (ou ao contexto da conversa, sem alvo explícito).
-- [ ] Toda tarefa tem título, status, contexto, escopo e critérios de aceite verificáveis, e se apoia em evidência real.
-- [ ] Cada tarefa representa um resultado único e verificável, sem tarefas por arquivo ou por commit.
-- [ ] Trabalho descoberto e pendente foi capturado como *A fazer*.
-- [ ] Hierarquia e relações só existem onde há agrupamento natural, e todas as chaves temporárias referenciadas existem.
-- [ ] Nenhum campo ou convenção específica de ferramenta foi assumido antes da instrução do usuário.
-- [ ] Nada foi salvo em sistema externo sem instrução e confirmação explícitas.
+- [ ] Reported slice declared and matches request (or session context without explicit target).
+- [ ] Every task features title, status, context, scope, and verifiable acceptance criteria backed by real evidence.
+- [ ] Each task represents a single verifiable outcome; zero tasks per file or per commit.
+- [ ] In-flight and outstanding discoveries captured as *To Do*.
+- [ ] Hierarchy and relationships exist strictly where natural groupings occur; temporary keys resolve consistently.
+- [ ] Zero tool-specific assumptions made prior to user instruction.
+- [ ] Zero items saved to external systems without explicit confirmation.

@@ -1,65 +1,65 @@
-# Padrões de Conflito
+# Conflict Patterns
 
-Catálogo usado pela seção 3 do [`SKILL.md`](../SKILL.md) para classificar cada ponto de conflito, e pela seção 6 para resolvê-lo. Um padrão diz **como reconhecer** o conflito e **qual resolução** preserva os dois lados.
+Catalog used by Section 3 of [`SKILL.md`](../SKILL.md) to classify conflict points, and by Section 6 to resolve them. Each pattern details **how to recognize** the conflict and **which resolution strategy** preserves both sides.
 
 ---
 
-## 🟢 Mecânicos
+## 🟢 Mechanical
 
-| Padrão | Como reconhecer | Resolução |
+| Pattern | How to Recognize | Resolution |
 | :--- | :--- | :--- |
-| **Adições vizinhas** | Os dois lados adicionam linhas independentes no mesmo lugar: imports, entradas de lista, rotas, chaves de config, casos de `switch`. | Manter as duas, na ordem que a convenção do arquivo pede (alfabética, por grupo). Sem duplicatas. |
-| **Formatação × conteúdo** | Um lado só reformatou (ou o formatador mudou) e o outro mudou conteúdo. | Pegar o conteúdo e rodar o formatador do projeto. |
-| **Arquivo gerado** | Código gerado, snapshots de build, clientes de API, esquemas compilados. | Resolver as fontes e **regenerar**. Nunca mesclar à mão. |
-| **Lockfile** | `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `poetry.lock`, `Gemfile.lock`, `go.sum` etc. | Resolver o manifesto (`package.json`, `pyproject.toml`...), depois regenerar o lock com o gerenciador. Se as duas versões de uma dependência diferem, é 🟡. |
-| **Mudança idêntica** | Os dois lados fizeram a mesma alteração (cherry-pick, correção repetida). | Manter uma. |
-| **Remoção × nada** | Um lado removeu código que o outro não tocou, mas o contexto vizinho mudou. | Aplicar a remoção. Se o outro lado passou a usar o código removido, é ⚠️. |
+| **Adjacent Additions** | Both sides append independent lines in the same location: imports, list items, routes, config keys, `switch` cases. | Retain both, ordered per file convention (alphabetical, grouped). Eliminate duplicates. |
+| **Formatting vs. Content** | One side reformatted code (or prettier/linter changed) while the other modified logic. | Accept the content changes and re-run project code formatter. |
+| **Generated Files** | Code generation output, build artifacts, generated API clients, compiled schemas. | Resolve underlying source inputs and **regenerate**. Never merge by hand. |
+| **Lockfiles** | `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `poetry.lock`, `Gemfile.lock`, `go.sum`, etc. | Resolve manifest (`package.json`, `pyproject.toml`), then regenerate lockfile via native package manager. If version requirements diverge, treat as 🟡. |
+| **Identical Change** | Both sides applied the exact same change (cherry-pick, duplicated bugfix). | Keep one. |
+| **Deletion vs. Context** | One side removed code untouched by the other, but adjacent lines shifted. | Apply deletion. If the other side added calls to the removed code, treat as ⚠️. |
 
 ---
 
-## 🟡 Composição
+## 🟡 Composition
 
-| Padrão | Como reconhecer | Resolução |
+| Pattern | How to Recognize | Resolution |
 | :--- | :--- | :--- |
-| **Mesma função, preocupações diferentes** | Um lado adicionou validação, outro adicionou log, cache ou normalização na mesma função. | Compor na ordem que faz sentido para o domínio (ex.: normalizar → validar → persistir). Explicitar a ordem na proposta. |
-| **Parâmetro novo dos dois lados** | Os dois adicionaram parâmetros ou campos à mesma assinatura ou estrutura. | Manter os dois; atualizar todas as chamadas dos dois lados. |
-| **Versões diferentes de uma dependência** | Os dois lados subiram a mesma dependência para versões distintas. | Usar a maior compatível com o código dos dois lados; rodar os testes de ambos. |
-| **Edição × movimentação** | Um lado moveu ou extraiu um trecho (para outro arquivo ou função); o outro editou o trecho no lugar antigo. | Aplicar a edição no lugar novo. O Git mostra conflito no lugar antigo, ou nenhum: confira sempre. |
-| **Migrações paralelas** | Os dois lados criaram migrações de banco com a mesma sequência ou mexendo na mesma tabela. | Reordenar/renumerar conforme a ferramenta de migração; se tocam as mesmas colunas, é 🔴. |
+| **Same Function, Different Concerns** | One side added validation; the other added logging, caching, or normalization in the same function. | Compose in domain-logical order (e.g.: normalize → validate → persist). State execution order in proposal. |
+| **New Parameter on Both Sides** | Both sides added parameters or fields to the same function signature or struct. | Retain both; update all callers across both branches. |
+| **Different Dependency Versions** | Both branches upgraded the same library to different versions. | Adopt the highest version compatible with both branches; run tests from both sides. |
+| **Edit vs. Move/Extract** | One side extracted logic into a helper/module; the other edited it in the original location. | Port the edits into the new location. Git may show conflict in old location or none: always verify. |
+| **Parallel Database Migrations** | Both sides created schema migrations sharing sequence numbers or modifying the same table. | Re-sequence migrations per migration framework conventions; if modifying the same columns, treat as 🔴. |
 
 ---
 
-## 🔴 Intenções em choque
+## 🔴 Clashing Intent
 
-| Padrão | Como reconhecer | Opções típicas para o usuário |
+| Pattern | How to Recognize | Typical Options for User |
 | :--- | :--- | :--- |
-| **Refatoração × extensão** | Um lado reestruturou (novo módulo, nova abstração), o outro estendeu a estrutura antiga. | Portar a extensão para a estrutura nova (geralmente recomendado) · adiar a refatoração. |
-| **Abstrações gêmeas** | Os dois lados criaram, em paralelo, conceitos para a mesma coisa (dois helpers, dois tipos, dois serviços). | Unificar num só (qual nome, qual interface) · manter os dois com fronteira clara, se forem de fato coisas diferentes. |
-| **Regras contraditórias** | As duas mudanças implementam regras de negócio que não podem valer ao mesmo tempo. | Não é decisão técnica: levar ao usuário, que pode precisar consultar produto ou os autores. |
-| **Contrato alterado dos dois lados** | Os dois mudaram a mesma interface pública, endpoint ou esquema de formas diferentes. | Um contrato que atende aos dois consumidores · versionar · escolher um e adaptar o outro. Passar por `software-designing`. |
-| **Remoção × uso** | Um lado removeu uma funcionalidade; o outro passou a depender dela. | Manter a remoção e reescrever o uso · desfazer a remoção. Perguntar por que foi removida. |
+| **Refactoring vs. Extension** | One side restructured architecture; the other built features on the legacy structure. | Port feature onto new architecture (recommended default) · defer refactoring. |
+| **Twin Abstractions** | Both sides created competing concepts for the same responsibility (two helpers, two domain types, two clients). | Unify into one (select name and interface) · keep both with distinct boundaries if responsibilities truly differ. |
+| **Contradictory Business Rules** | The two changes enforce mutually exclusive business rules. | Business decision: escalate to user, who may consult product owners or authors. |
+| **Contract Altered on Both Sides** | Both sides modified the same public interface, endpoint, or schema incompatibly. | Design unified contract satisfying both clients · version contract · adapt one side. Pass through `software-designing`. |
+| **Deletion vs. Usage** | One side removed a feature; the other introduced new dependencies on it. | Preserve deletion and rewrite caller · restore feature. Inquire why it was removed. |
 
 ---
 
-## ⚠️ Semânticos (sem conflito textual)
+## ⚠️ Semantic Conflicts (Zero Textual Markers)
 
-O merge "passa", mas o resultado quebra ou muda de comportamento. Procure ativamente quando um lado alterou:
+Merge completes cleanly, but runtime behavior breaks or alters unexpectedly. Actively audit whenever one side modified:
 
-- **Nome ou assinatura** de função, método, classe, variável exportada: busque usos novos do nome antigo no outro lado.
-- **Formato de dado**: campo renomeado, tipo mudado, JSON de resposta alterado, evento com outro payload.
-- **Esquema de banco**: coluna renomeada ou removida, restrição nova (ex.: `NOT NULL`) que o código novo do outro lado não respeita.
-- **Comportamento padrão**: valor default, ordem de execução, flag ligada/desligada, tratamento de erro (passou a lançar exceção, deixou de retornar `null`).
-- **Configuração e ambiente**: variável de ambiente renomeada, chave de config movida.
-- **Invariantes implícitas**: um lado passou a assumir algo (lista ordenada, id sempre presente) que o outro deixou de garantir.
+- **Name or signature** of an exported function, method, class, or variable: search for new invocations of the legacy name in the other branch.
+- **Data formats**: renamed properties, changed types, modified response JSON, event payloads.
+- **Database schemas**: renamed/dropped columns, new constraints (e.g. `NOT NULL`) unhandled by new code on the other side.
+- **Default behaviors**: modified defaults, changed execution sequence, toggled feature flags, altered error policies (throwing exceptions instead of returning `null`).
+- **Configuration & environment**: renamed environment variables, relocated config keys.
+- **Implicit invariants**: one side assumes a precondition (sorted collections, non-empty IDs) that the other side ceased guaranteeing.
 
-Receita de detecção:
+Detection Recipe:
 
 ```bash
-# símbolos alterados ou removidos por um lado
-git diff <merge-base> <lado-A> | grep -E '^-' | <extrair identificadores>
+# symbols modified or dropped by side A
+git diff <merge-base> <side-A> | grep -E '^-' | <extract identifiers>
 
-# usos desses símbolos no código novo do outro lado
-git diff <merge-base> <lado-B> | grep -E '^\+' | grep -E '<símbolo>'
+# usages of those symbols in new code introduced by side B
+git diff <merge-base> <side-B> | grep -E '^\+' | grep -E '<symbol>'
 ```
 
-Depois do merge, a prova final é rodar build, verificador de tipos e os testes dos dois lados. Em linguagens sem verificação estática forte, escreva ou rode um teste que exercite o ponto ⚠️.
+Post-merge verification: run build, type checks, and complete test suites from both branches. In dynamically typed languages, write or run a targeted integration test exercising the ⚠️ semantic boundary.

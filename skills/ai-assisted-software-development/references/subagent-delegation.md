@@ -1,48 +1,48 @@
-# Delegação a Subagentes
+# Subagent Delegation
 
-> **Tese central**: um subagente só enxerga o que o brief entrega. Ele não herda a conversa, não herda o contexto de quem o criou e **não sabe onde as skills estão instaladas**. Todo brief precisa ser autossuficiente.
-
----
-
-## Quando consultar
-
-- Sempre que uma skill mandar criar subagentes (trabalho em paralelo, contexto isolado, busca em segundo plano).
-- Ao escrever um brief que manda o subagente ler uma skill ou uma referência.
+> **Central thesis**: a subagent only sees what the brief provides. It does not inherit the conversation history, does not inherit the creator's context, and **does not know where skills are installed**. Every brief must be self-contained.
 
 ---
 
-## 1. A ferramenta de cada harness
+## When to consult
 
-| Harness | Como criar um subagente |
+- Whenever a skill instructs creating subagents (parallel execution, isolated context, background search).
+- When writing a brief that directs a subagent to read a skill or reference.
+
+---
+
+## 1. Harness Tooling
+
+| Harness | How to create a subagent |
 | :--- | :--- |
-| **Claude Code** | Ferramenta `Agent`, com tipo `general-purpose`. Várias chamadas na mesma mensagem rodam em paralelo. |
-| **Antigravity CLI** | `invoke_subagent`, com `TypeName: "self"` ou um tipo específico. |
-| **Codex** | Um sub-processo ou thread isolada por tarefa. |
+| **Claude Code** | `Agent` tool with `general-purpose` type. Multiple calls in the same message run in parallel. |
+| **Antigravity CLI** | `invoke_subagent` with `TypeName: "self"` or a specific type. |
+| **Codex** | A subprocess or isolated thread per task. |
 
-Em outro harness, use a ferramenta equivalente. Sem nenhuma, execute as tarefas em sequência no contexto atual e diga isso.
-
----
-
-## 2. Contexto integral
-
-Passe ao subagente o contexto e os requisitos **integralmente, sem perda de fidelidade** (*ipsis litteris*): especificação, decisões já tomadas, restrições, a escala de severidade ou o formato de entrega que a skill define. Resumir o contexto ao delegar é a forma mais comum de o subagente responder à pergunta errada.
+In other harnesses, use the equivalent tool. If none exists, execute tasks sequentially in the current context and state that explicitly.
 
 ---
 
-## 3. Caminhos de skills no brief
+## 2. Full Context
 
-As skills são instaladas fora do projeto (ex.: `~/.claude/skills/`), e o subagente roda na pasta do projeto. Um caminho como `agent-self-review/SKILL.md`, escrito no brief do jeito que aparece na skill, não resolve lá.
-
-Antes de enviar o brief:
-
-1. Localize a **pasta de skills**: é a pasta que contém a skill em execução (o diretório pai da pasta dela). Os links relativos das skills (`../<skill>/SKILL.md`) partem dela.
-2. Nos briefs, `<skills>` representa essa pasta. Troque `<skills>` pelo **caminho absoluto** antes de enviar (ex.: `<skills>/coding/references/testing.md` → `/Users/<usuário>/.claude/skills/coding/references/testing.md`).
-3. Confirme que os arquivos citados existem nesse caminho. Se algum não existir, não delegue às cegas: diga qual está faltando.
+Pass context and requirements to the subagent **completely, without loss of fidelity** (*verbatim*): specifications, decisions already made, constraints, severity scales, and output formats defined by the skill. Summarizing context during delegation is the most common reason subagents answer the wrong question.
 
 ---
 
-## 4. Validação
+## 3. Skill Paths in Briefs
 
-- [ ] A ferramenta usada é a do harness atual (ou a execução sequencial foi declarada).
-- [ ] O brief carrega o contexto e os requisitos completos.
-- [ ] Nenhum brief contém `<skills>` ou um caminho relativo de skill; todos os caminhos são absolutos e existem.
+Skills are installed outside the project (e.g., `~/.claude/skills/`), whereas the subagent runs in the project folder. A path like `agent-self-review/SKILL.md` written directly in a brief will not resolve in the subagent's working directory.
+
+Before sending the brief:
+
+1. Locate the **skills directory**: the directory containing the currently executing skill (its parent folder). Relative links between skills (`../<skill>/SKILL.md`) originate from here.
+2. In briefs, `<skills>` represents this folder. Replace `<skills>` with the **absolute path** before sending (e.g., `<skills>/coding/references/testing.md` → `/Users/<user>/.claude/skills/coding/references/testing.md`).
+3. Verify that cited files actually exist at that path. If any file is missing, do not delegate blindly: report which file is missing.
+
+---
+
+## 4. Validation
+
+- [ ] The tool used matches the current harness (or sequential execution was stated).
+- [ ] The brief carries complete context and requirements.
+- [ ] No brief contains `<skills>` or a relative skill path; all paths are absolute and verified to exist.

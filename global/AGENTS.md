@@ -1,47 +1,48 @@
-# Instruções Globais
+# Global Instructions
 
-> Regras de trabalho que valem em **qualquer projeto**, para qualquer agente (Claude Code, Codex, Antigravity CLI). Instaladas como instrução global pelo `setup-global.sh` do repositório **ai-skills**.
+> Working rules that apply to **any project**, for any agent (Claude Code, Codex, Antigravity CLI). Installed as global instructions by `setup-global.sh` from the **ai-skills** repository.
 >
-> As skills citadas abaixo são referenciadas **pelo nome**: estão instaladas na pasta de skills do harness. O `AGENTS.md` do projeto em que você está trabalhando complementa estas regras e, em caso de conflito, prevalece.
+> The skills cited below are referenced **by name**: they are installed in the harness skills directory. The `AGENTS.md` of the project you are working on complements these rules and, in case of conflict, takes precedence.
 
 ---
 
-## 1. Como reportar ao usuário
+## 1. How to report to the user
 
-- **Resposta primeiro, detalhes depois.**
-- **Conciso e visual**: prefira estrutura (tópicos, tabelas curtas, títulos, blocos de código) a parágrafos longos.
-- **Frases curtas e completas**: não sacrifique gramática nem clareza pela brevidade.
-
----
-
-## 2. Princípios de trabalho
-
-- **Segurança e não-destrutividade**: preserve os dados do usuário, não execute comandos destrutivos sem verificar o alvo antes e respeite arquivos existentes.
-- **Links formatados**: ao citar arquivos em Markdown, use links (ex.: `[README.md](README.md)`).
-- **Sem referências locais em artefatos compartilhados**: commits, PRs, comentários de revisão, issues e relatórios nunca citam caminhos que o leitor não consegue abrir (caminhos da máquina, `docs/tickets/`, `docs/prd/`, arquivos no `.gitignore`). Use a issue vinculada ou reescreva a informação. Detalhes na referência `no-local-references` da skill `ai-assisted-software-development`.
+- **Response first, details later.**
+- **Concise and visual**: prefer structure (bullet points, short tables, headings, code blocks) over long paragraphs.
+- **Short, complete sentences**: do not sacrifice grammar or clarity for brevity.
+- **User session language**: Although skills, instructions, and documentation are authored in English, agents must always work and communicate with the user in the language the user is speaking in the current session. Keep technical terms in English whenever they are standard industry terminology or better explain the technical concept (e.g., *pull request*, *mock*, *refactor*, *code smell*, *runtime*, *bug*, *feature*), avoiding forced or awkward translations.
 
 ---
 
-## 3. Governança do desenvolvimento
+## 2. Working principles
 
-A divisão de trabalho segue a skill `ai-assisted-software-development`: o humano governa módulos, fronteiras, direção das dependências, contratos e comportamentos (**Camada Humana**); o agente responde por tudo abaixo dos contratos (**Camada do Agente**).
+- **Safety and non-destructiveness**: preserve user data, never execute destructive commands without inspecting the target beforehand, and respect existing files.
+- **Formatted links**: when citing files in Markdown, use links (e.g., `[README.md](README.md)`).
+- **No local references in shared artifacts**: commits, PRs, review comments, issues, and reports must never reference paths the reader cannot open (local machine paths, `docs/tickets/`, `docs/prd/`, files in `.gitignore`). Reference the linked issue or rephrase the information. Details in the `no-local-references` reference of the `ai-assisted-software-development` skill.
 
-| Gatilho | Ação obrigatória |
+---
+
+## 3. Development governance
+
+Division of labor follows the `ai-assisted-software-development` skill: the human governs modules, boundaries, dependency direction, contracts, and behaviors (**Human Layer**); the agent is responsible for everything below contracts (**Agent Layer**).
+
+| Trigger | Mandatory action |
 | :--- | :--- |
-| Antes de decidir módulos, fronteiras, interfaces, contratos ou a direção das dependências | Carregue `software-designing`. |
-| Antes de fixar uma decisão de design cara de mudar depois | Passe por `design-it-twice`. |
-| **Antes de criar, editar, testar ou refatorar qualquer arquivo de código** | **Carregue `coding`**, mesmo numa mudança pequena. |
-| Antes de entregar código ao humano | Rode `agent-self-review` e corrija os achados até o veredito limpo. |
-| Quando o humano pedir revisão da entrega | Use `human-review`, só na Camada Humana. |
-| Antes de qualquer commit | Use `commit`. |
+| Before deciding modules, boundaries, interfaces, contracts, or dependency direction | Load `software-designing`. |
+| Before locking in a high-consequence design decision | Run through `design-it-twice`. |
+| **Before creating, editing, testing, or refactoring any code file** | **Load `coding`**, even for a small change. |
+| Before delivering code to the human | Run `agent-self-review` and fix findings until a clean verdict is reached. |
+| When the human requests delivery review | Use `human-review`, strictly on the Human Layer. |
+| Before any commit | Use `commit`. |
 
 ---
 
-## 4. Subagentes e delegação
+## 4. Subagents and delegation
 
-- Quando um fluxo exigir trabalho em segundo plano ou contexto isolado, use a ferramenta de subagentes do harness atual:
-  - **Claude Code**: ferramenta `Agent`, com tipo `general-purpose`.
-  - **Antigravity CLI**: `invoke_subagent`, com `TypeName: "self"` ou um tipo específico.
-  - **Codex**: sub-processo ou thread isolada.
-- Passe o contexto e os requisitos **integralmente**, sem perda de fidelidade (*ipsis litteris*).
-- Caminhos de skills citados num brief vão como **caminhos absolutos**: o subagente roda na pasta do projeto, não na pasta das skills. Detalhes na referência `subagent-delegation` da skill `ai-assisted-software-development`.
+- When a workflow requires background execution or isolated context, use the current harness's subagent mechanism:
+  - **Claude Code**: `Agent` tool with `general-purpose` type.
+  - **Antigravity CLI**: `invoke_subagent` with `TypeName: "self"` or a specific type.
+  - **Codex**: sub-process or isolated thread.
+- Pass context and requirements **verbatim** (*ipsis litteris*), without loss of fidelity.
+- Skill paths cited in a brief must use **absolute paths**: the subagent runs in the project directory, not the skills directory. Details in the `subagent-delegation` reference of the `ai-assisted-software-development` skill.

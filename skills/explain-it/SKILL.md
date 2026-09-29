@@ -1,39 +1,41 @@
 ---
 name: explain-it
 description: >-
-  Explica código, arquivos, fluxos ou conceitos técnicos de forma didática, visual e estruturada, como se estivesse orientando um desenvolvedor novo no projeto. Utiliza visualize-it para suporte gráfico.
+  Explains code, files, flows, or technical concepts in an educational, visual,
+  and structured manner, as if mentoring a developer new to the project.
+  Leverages visualize-it for graphical diagrams.
 disable-model-invocation: true
-argument-hint: "[o que explicar — por padrão o último tópico discutido]"
+argument-hint: "[what to explain — by default the last discussed topic]"
 ---
 
 # Explain It
 
-Skill didática para explicar componentes, fluxos e decisões técnicas.
+Educational skill for explaining components, architectures, workflows, and technical decisions.
 
 ---
 
-## 1. Princípio Operacional
+## 1. Operational Principle
 
-Explique o assunto com foco em **clareza, intencionalidade e estrutura**:
-- Seja didático e objetivo, evitando jargões sem explicação contextual.
-- Utilize visualização: acione obrigatoriamente a skill [`visualize-it`](../visualize-it/SKILL.md) sempre que houver relações estruturais, sequência de chamadas ou modelos de estado.
-- Responda no mesmo idioma em que o usuário se comunicou.
-
----
-
-## 2. Estrutura da Explicação
-
-1. **Alvo da Explicação**: Se nenhum argumento for fornecido, explique o último componente, arquivo ou fluxo discutido na conversa.
-2. **O Que É e Qual o Propósito**: Explicação em 1 a 2 frases do objetivo daquele elemento no sistema.
-3. **Visão Estrutural / Fluxo (Visual)**: Diagrama em ASCII ou Mermaid (via `visualize-it`) mostrando como ele interage com o restante da aplicação.
-4. **Pontos de Atenção**: Casos de borda, regras de negócio críticas ou armadilhas comuns.
-5. **Resumo / Takeaway**: Conclusão em tópicos curtos.
+Explain the subject focusing on **clarity, intentionality, and structure**:
+- Be educational and direct, avoiding uncontextualized technical jargon.
+- Use visuals: invoke the [`visualize-it`](../visualize-it/SKILL.md) skill whenever explaining structural relationships, call sequences, or state machines.
+- Respond in the same language the user is communicating in during the session.
 
 ---
 
-## 3. Validação de Sucesso
+## 2. Explanation Structure
 
-- [ ] O alvo da explicação foi identificado e contextualizado em 1–2 frases.
-- [ ] Inclui representação visual via [`visualize-it`](../visualize-it/SKILL.md) quando há relações estruturais, sequências ou estados.
-- [ ] Pontos de atenção e regras críticas foram destacados sem jargões desnecessários.
-- [ ] A explicação foi concluída com takeaway conciso em tópicos curtos.
+1. **Target of Explanation**: If no argument is provided, explain the last component, file, or flow discussed in the conversation.
+2. **What It Is and Core Purpose**: 1 to 2 sentence summary explaining the component's role in the wider system.
+3. **Structural View / Flow (Visual)**: ASCII or Mermaid diagram (via `visualize-it`) displaying how it interacts with surrounding modules.
+4. **Key Nuances & Pitfalls**: Edge cases, critical business rules, failure modes, or common traps.
+5. **Takeaway Summary**: Concise bullet-point conclusion.
+
+---
+
+## 3. Success Validation
+
+- [ ] Target identified and contextualized in 1–2 sentences.
+- [ ] Includes visual representation via [`visualize-it`](../visualize-it/SKILL.md) for structural relationships, sequences, or state models.
+- [ ] Nuances and critical rules highlighted without unnecessary jargon.
+- [ ] Explanation concludes with a concise bullet-point takeaway.

@@ -1,69 +1,63 @@
-# Protótipo de Lógica
+# Logic Prototypes
 
-Um HTML único e autocontido, uma **demo compartilhável**, que permite a qualquer pessoa operar um modelo de estados clicando em botões. Use quando a pergunta é sobre **regra de negócio, transições de estado ou formato de dados**: o tipo de coisa que parece razoável no papel e só soa errada quando passa por casos reais.
+A single, self-contained HTML file—a **shareable interactive demo**—allowing anyone to drive a state machine or domain model by clicking buttons. Use when the question concerns **business rules, state transitions, or data modeling**: concepts that appear sound on paper but reveal flaws when evaluated against real scenarios.
 
-Como é um arquivo sem nada para instalar, dá para entregá-lo a um não-desenvolvedor (designer, PM, especialista do domínio) e deixar que ele sinta o modelo por conta própria. Por isso a demo fala a língua dele, não a do código.
-
----
-
-## 1. Quando é a forma certa
-
-- "Não sei se essa máquina de estados trata o caso em que X e depois Y."
-- "Esse modelo de dados consegue representar o caso em que..."
-- "Quero sentir como a API deveria ser antes de escrevê-la."
-- Qualquer situação em que alguém quer **apertar botões e ver o estado mudar**.
-
-Se a pergunta é "como isso deveria parecer", é o ramo errado: use [`ui.md`](ui.md).
+Because it is a single file requiring zero dependencies or installation rituals, it can be handed directly to non-technical stakeholders (designers, product managers, domain experts) to test the model intuitively. The demo speaks their business vocabulary, not technical jargon.
 
 ---
 
-## 2. Processo
+## 1. When This is the Right Form
 
-### 2.1. Declarar a pergunta
+- "I'm unsure whether this state machine handles scenario X followed by Y."
+- "Can this data model adequately represent the case where..."
+- "I want to feel what the API ergonomics are like before building it."
+- Any context where someone needs to **click buttons and watch state evolve**.
 
-Antes de escrever código, escreva qual modelo de estados e qual pergunta estão sendo prototipados. Um parágrafo, no topo da demo, visível (não só num comentário). Deixar a pergunta explícita permite conferir depois se foi ela que o protótipo respondeu, com o usuário olhando agora ou voltando mais tarde.
-
-### 2.2. Isolar a lógica num módulo portátil
-
-A lógica que responde à pergunta fica num único bloco `<script>`, escrita como um módulo pequeno e puro, que poderia ser tirado dali e colocado no código real. A página em volta é descartável; esse módulo não.
-
-A forma depende da pergunta:
-
-- **Reducer puro** (`(state, action) => state`): quando as ações são eventos discretos e o estado é um valor só.
-- **Máquina de estados** (estados e transições explícitos): quando "quais ações são permitidas agora" faz parte da pergunta.
-- **Conjunto de funções puras** sobre um tipo de dado simples: quando não há estado corrente implícito, só transformações.
-- **Classe ou módulo com métodos claros**: quando a lógica de fato é dona de um estado interno contínuo.
-
-Escolha a forma que melhor serve à pergunta, **não** a mais fácil de ligar à página. Mantenha-a pura: sem DOM, sem `document`, sem handlers de botão lá dentro. A página chama o módulo; nada flui no sentido contrário. É isso que torna o protótipo útil depois: respondida a pergunta, o reducer, a máquina ou as funções validadas vão sozinhos para o módulo real.
-
-### 2.3. Montar o HTML compartilhável
-
-Um arquivo, HTML/CSS/JS puro: sem framework, sem bundler, sem servidor, tudo inline, para abrir com duplo clique e sobreviver a ser enviado por e-mail.
-
-Escreva para um não-desenvolvedor. Todo rótulo está na **linguagem do domínio**, não do código: botões e estado se leem como o negócio, não como o reducer.
-
-Hierarquia, de cima para baixo:
-
-1. **Título e uma linha de explicação** do que a demo permite explorar (a pergunta da 2.1).
-2. **Estado atual**: o estado relevante inteiro, num painel legível (campos rotulados, não um JSON cru), redesenhado a cada clique. Onde ajudar, destaque o que acabou de mudar.
-3. **Botões livres**: um por ação, sempre disponíveis, para mexer no modelo em qualquer ordem.
-4. **Roteiros guiados**: um **cenário** por aba. Cada aba tem uma descrição curta do cenário (a situação e o que observar) e, embaixo, os **botões a apertar**, na ordem. Cada passo é um botão real que executa a ação e avança. Começar um roteiro reinicia para um estado inicial conhecido, para o cenário rodar sempre igual.
-
-Escolha cenários que mostrem os casos incômodos: o caminho feliz, um caso de borda difícil, uma tentativa de algo que deveria ser proibido.
-
-Bonito, mas contido: tipografia limpa, espaço generoso, uma cor de destaque. Sem animações nem enfeites que disputem atenção com o estado e os botões.
-
-### 2.4. Registrar a resposta e o protótipo
-
-Registre a resposta (veredito e pergunta resolvida) na issue vinculada ou num commit. O módulo validado entra no módulo real: é a decisão, absorvida. O HTML vai para uma branch descartável `prototype/<nome>`, fora da principal e nunca mesclada, como fonte primária da decisão; deixe na issue um ponteiro para essa branch. Enviar a branch ao remoto só com confirmação do usuário.
+If the question is "What should this look like?", that is the wrong branch: use [`ui.md`](ui.md).
 
 ---
 
-## 3. Anti-padrões
+## 2. Process
 
-- **Adicionar testes.** Um protótipo que precisa de testes deixou de ser protótipo.
-- **Ligar ao banco real.** Estado em memória, a menos que a pergunta seja justamente sobre persistência.
-- **Generalizar.** Nada de "e se depois quisermos suportar X". O protótipo responde a uma pergunta.
-- **Misturar lógica e página.** Se o módulo puro referencia DOM, `document` ou handlers, ele não pode mais ser reaproveitado.
-- **Usar framework, bundler ou servidor.** Um arquivo que abre com duplo clique; um app React ou um servidor de desenvolvimento acabam com o "compartilhável".
-- **Levar a casca HTML para produção.** A página serve para ser clicada à mão. O que vale guardar é o módulo por trás dela.
+### 2.1. State the Question Explicitly
+Before writing code, clearly declare the state model and question being investigated. Place this in a prominent paragraph at the top of the demo interface (not just in an HTML comment). Keeping the question explicit allows stakeholders to verify later whether the prototype actually answered the intended question.
+
+### 2.2. Isolate the Core Logic in a Portable Module
+The logic addressing the question lives in a single `<script>` block, structured as a compact, pure module that could be extracted directly into production code. The surrounding HTML shell is disposable; this core logic module is not.
+
+Form depends on the inquiry:
+- **Pure Reducer** (`(state, action) => state`): when actions are discrete events and state is a single immutable snapshot.
+- **State Machine** (explicit states and transitions): when "which actions are valid right now" is central to the question.
+- **Set of Pure Functions** over simple records: when there is no implicit ongoing state, only transformations.
+- **Class or Module with clean methods**: when the domain naturally encapsulates a continuous internal state.
+
+Choose the structure that best serves the domain question, **not** the easiest way to bind to DOM buttons. Keep it pure: zero DOM access, zero `document` references, zero click handlers inside the module. The UI invokes the module; data never flows backward. This enables clean reuse: once the question is answered, the validated reducer or functions move directly into the production codebase.
+
+### 2.3. Build the Shareable HTML Artifact
+One file, vanilla HTML/CSS/JS: no build tools, no bundlers, no local servers, everything inline, opening on double-click and surviving an email attachment.
+
+Author for non-developers. All labels use **domain vocabulary**, not developer jargon: buttons and state displays read as business actions, not internal reducer types.
+
+Visual hierarchy, top to bottom:
+1. **Title and one-line summary** of what the demo explores (the question from 2.1).
+2. **Current State Panel**: the complete relevant state rendered in a readable dashboard (labeled fields, not raw JSON blobs), updated on every interaction. Highlight recently modified properties where helpful.
+3. **Free Action Buttons**: one button per domain action, always available to manipulate the model in any order.
+4. **Guided Scenarios**: one **scenario** per tab. Each tab contains a short narrative (the scenario context and what to observe), followed by an ordered sequence of **action buttons**. Each step is a live button that triggers the action and advances. Starting a scenario resets the model to a clean baseline state for reproducibility.
+
+Select scenarios that showcase difficult boundaries: the happy path, an intricate edge case, and an attempt to execute an invalid action.
+
+Clean and restraint in styling: crisp typography, generous whitespace, a single accent color. Zero animations or decorative fluff competing with state inspection.
+
+### 2.4. Record Findings and Retire the Prototype
+Record the verdict and answered question in the linked issue or commit message. The validated domain logic moves into the production codebase. The HTML demo is archived on a temporary scratch branch (`prototype/<name>`), isolated from main and never merged, serving as primary evidence for the design decision. Push to remote only upon explicit user confirmation.
+
+---
+
+## 3. Anti-Patterns
+
+- **Adding automated tests.** A prototype requiring test suites has ceased being a prototype.
+- **Wiring to real databases.** State lives in memory, unless the inquiry specifically investigates persistence mechanics.
+- **Premature generalization.** No "what if we need to support X later". The prototype answers one question.
+- **Entangling logic with the DOM.** If the pure module references DOM nodes or event handlers, it cannot be reused cleanly.
+- **Using frameworks, bundlers, or dev servers.** Requires a single double-clickable file; React apps or node dev servers destroy shareability.
+- **Promoting the HTML harness to production.** The web page exists solely for manual exploration. Only the underlying logic module has production value.

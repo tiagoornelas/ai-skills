@@ -1,128 +1,130 @@
 ---
 name: github-pull-request
 description: >-
-  Formata e abre Pull Requests no GitHub focados na revisão de alto nível, com síntese direta no topo, diagramas visuais gerados via visualize-it e verificação de vínculo com issues.
+  Formats and opens GitHub Pull Requests focused on high-level review, with
+  direct executive summary at the top, visual architecture diagrams generated
+  via visualize-it, and issue linkage verification.
 ---
 
 # GitHub Pull Request
 
-Skill para estruturação, documentação e abertura de Pull Requests no GitHub.
+Skill for structuring, documenting, and opening Pull Requests on GitHub.
 
 ---
 
-## 1. Princípios do Pull Request
+## 1. Pull Request Principles
 
-- **Pensado para quem revisa**: O revisor deve entender a razão de ser do PR nos primeiros 5 segundos de leitura.
-- **Foco na revisão de alto nível**: Conectado à filosofia de [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md) e [`human-review`](../human-review/SKILL.md). Não polua o PR com minúcias de implementação interna que já foram validadas pelo [`agent-self-review`](../agent-self-review/SKILL.md).
-- **Visual via `visualize-it`**: Diagramas em Mermaid facilitam a visualização de fronteiras e contratos.
-
----
-
-## 2. Verificação de Issue e Rastreabilidade
-
-Todo PR deve, idealmente, estar associado a uma issue de acompanhamento para informar a equipe e manter o histórico do projeto.
-
-### Regra de Ativação do Agente:
-1. **Se houver issue no contexto** (Jira, GitHub Issues, Linear, etc.):
-   - Vincule o link e o identificador na seção de rastreabilidade do PR.
-2. **Se NÃO houver issue no contexto**:
-   - **O agente deve alertar e recomendar proativamente**:
-     > *"Este PR ainda não referencia nenhuma issue de rastreamento. Recomendo criar uma issue (no GitHub Issues, Jira ou ferramenta de sua preferência) para manter seus colegas informados sobre o trabalho. Gostaria de criar uma issue antes de abrirmos o PR?"*
-   - Se o usuário desejar criar, o agente aguarda ou auxilia na criação da issue.
-   - Se o usuário optar por não criar, o PR pode ser aberto sem vínculo de issue.
+- **Designed for the Reviewer**: The reviewer must understand the purpose of the PR within the first 5 seconds of reading.
+- **Focus on High-Level Review**: Grounded in the philosophy of [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md) and [`human-review`](../human-review/SKILL.md). Do not clutter the PR with internal implementation minutiae already validated by [`agent-self-review`](../agent-self-review/SKILL.md).
+- **Visuals via `visualize-it`**: Mermaid diagrams clearly communicate boundaries and contracts.
 
 ---
 
-## 3. Formato do Título do PR
+## 2. Issue Linkage and Traceability
+
+Every PR should ideally be linked to a tracking issue to keep the team informed and preserve project history.
+
+### Agent Workflow:
+1. **If an issue exists in context** (Jira, GitHub Issues, Linear, etc.):
+   - Link the identifier and URL in the PR traceability section.
+2. **If NO issue exists in context**:
+   - **The agent must proactively recommend**:
+     > *"This PR does not yet reference a tracking issue. I recommend creating an issue (in GitHub Issues, Jira, or your preferred tracker) to keep teammates informed about this work. Would you like to create an issue before we open the PR?"*
+   - If the user wishes to create one, the agent assists or waits.
+   - If the user opts out, the PR proceeds without an issue link.
+
+---
+
+## 3. PR Title Format
 
 ```text
-Tipo/Breve Descrição em Português
+Type/Concise Description
 ```
-*Tipos aceitos:* `Feat/`, `Fix/`, `Refactor/`, `Chore/`, `Perf/`, `Docs/`.  
-*Exemplos:*
-- `Feat/Autenticação com refresh token e rotação de chaves`
-- `Fix/Timeout intermitente na chamada do gateway de pagamento`
-- `Refactor/Isolamento de persistência do módulo de pedidos`
+*Accepted Types:* `Feat/`, `Fix/`, `Refactor/`, `Chore/`, `Perf/`, `Docs/`.
+*Examples:*
+- `Feat/Refresh token authentication and key rotation`
+- `Fix/Intermittent timeout on payment gateway call`
+- `Refactor/Isolate order repository persistence`
 
-> **Nota de convenção**: O título do PR utiliza prefixo PascalCase e descrição em português para facilitar a triagem pela equipe no GitHub, enquanto os commits individuais seguem Conventional Commits em inglês (`feat(auth): ...`).
+> **Convention note**: PR titles use a PascalCase prefix followed by a description in the team/repository language for triage on GitHub, while individual commits strictly adhere to English Conventional Commits (`feat(auth): ...`).
 
 ---
 
-## 4. Modelo da Descrição do PR (Corpo)
+## 4. PR Description Template (Body)
 
-Utilize a estrutura abaixo:
+Use the structure below:
 
 ```markdown
-## Resumo
-[Em 1 ou 2 frases diretas, explique o que este PR faz e a sua razão de existir, pensando em quem lê. Seja direto: o que o sistema passa a fazer agora que não fazia antes?]
+## Summary
+[In 1 or 2 direct sentences, explain what this PR does and why it exists from the reader's perspective. Be direct: what does the system do now that it did not do before?]
 
 ---
 
-## Rastreabilidade & Issue
-- **Issue**: [Link e identificador da issue, ex.: `#42` ou `PROJ-123`] *(ou "N/A - Trabalho avulso autorizado")*
+## Traceability & Issue
+- **Issue**: [Link and issue key, e.g.: `#42` or `PROJ-123`] *(or "N/A - Authorized standalone work")*
 
 ---
 
-## Camada Arquitetural e Contratos
+## Architecture & Contracts
 
-<!-- Utilize a skill visualize-it para gerar o diagrama Mermaid de arquitetura -->
+<!-- Use the visualize-it skill to generate the Mermaid architecture diagram -->
 ```mermaid
 graph LR
-  Client[Cliente / Rota] --> Controller[🆕 AuthController]
+  Client[Client / Route] --> Controller[🆕 AuthController]
   Controller --> Service[AuthService]
   Service --> Repo[UserRepository]
 ```
 
-- **Módulos / Componentes**: Resumo dos componentes novos, alterados ou removidos, na notação do [`visualize-it`](../visualize-it/SKILL.md).
-- **Interfaces e Contratos**: O que as interfaces ou contratos públicos criados/alterados prometem e quais são seus comportamentos em caso de falha.
-- **Direção de Dependências**: Confirmação de que as dependências continuam apontando em direção às regras de negócio ([dependency-direction.md](../software-designing/references/dependency-direction.md)).
+- **Modules / Components**: Summary of new, modified, or removed components using [`visualize-it`](../visualize-it/SKILL.md) notation.
+- **Interfaces & Contracts**: What public interfaces created/modified guarantee and how they behave on failure.
+- **Dependency Direction**: Confirmation that dependencies continue pointing inward toward business rules ([dependency-direction.md](../software-designing/references/dependency-direction.md)).
 
 ---
 
-## Comportamentos Entregues (Definition of Done)
+## Delivered Behaviors (Definition of Done)
 
-Tabela direta mapeando os comportamentos implementados e seu status de verificação, conforme a legenda do [`human-review`](../human-review/SKILL.md) (seção 2.3):
+Status table mapping implemented behaviors to verification status, adhering to the legend from [`human-review`](../human-review/SKILL.md) (Section 2.3):
 
-| Status | Comportamento Entregue | Verificação | Ação para o Revisor |
+| Status | Delivered Behavior | Verification | Action for Reviewer |
 | :---: | :--- | :--- | :--- |
-| ✅ | Bloqueio de token expirado com HTTP 401 | Teste unitário em `tests/auth.test.ts` | Nenhuma (coberto por teste) |
-| 🔎 | Envio do e-mail de confirmação pelo provedor real | Não testável por código; verificado em staging | Opcional testar |
-| 👤 | Layout responsivo do formulário de login | Verificação visual necessária | Abrir `/login` e validar em tela mobile (375px) |
+| ✅ | Reject expired tokens with HTTP 401 | Unit test in `tests/auth.test.ts` | None (covered by test) |
+| 🔎 | Dispatch confirmation email via real provider | Not code-testable; verified in staging | Optional to test |
+| 👤 | Responsive layout for login form | Requires visual inspection | Open `/login` and verify on mobile (375px) |
 
-*Legenda: ✅ Coberto por teste automatizado · 🔎 Não testável por código, verificado por outro meio · 👤 Requer validação manual humana · 🚨 Ausente ou sem cobertura*
+*Legend: ✅ Covered by automated test · 🔎 Not code-testable, verified via alternative means · 👤 Requires manual human validation · 🚨 Missing or unverified*
 
 ---
 
-## Impacto & Breaking Changes
-- [Descreva quebras de contrato de API, mudanças de schema de banco ou variáveis de ambiente novas. Se não houver, indique "Nenhum"].
+## Impact & Breaking Changes
+- [Describe API contract breaks, database migrations, or new environment variables. If none, write "None"].
 ```
 
 ---
 
-## 5. Fluxo de Abertura do PR
+## 5. PR Creation Workflow
 
-1. **Garantir Remote Atualizado**:
-   - Verifique se todos os commits necessários foram feitos e envie a branch para o repositório remoto:
+1. **Ensure Remote is Up to Date**:
+   - Verify all commits are recorded and push the branch:
      ```bash
-     git push -u origin <nome-da-branch>
+     git push -u origin <branch-name>
      ```
-2. **Revisão com o Desenvolvedor**:
-   - Apresente o rascunho completo do título e da descrição para o desenvolvedor aprovar antes da publicação.
-3. **Criação do PR**:
-   - Execute o comando via GitHub CLI:
+2. **Review with Developer**:
+   - Present the full draft of title and description for developer approval before publishing.
+3. **Create the PR**:
+   - Run the command via GitHub CLI:
      ```bash
-     gh pr create --draft --title "<titulo>" --body "<corpo>"
+     gh pr create --draft --title "<title>" --body "<body>"
      ```
-   - Por padrão, crie como `--draft` (rascunho) para permitir que o desenvolvedor dê uma última conferida na interface do GitHub, a menos que ele solicite explicitamente a abertura como PR definitivo.
-4. **Retorno**:
-   - Retorne o link clicável do PR gerado no GitHub.
+   - By default, create as `--draft` to give the developer a final pass on GitHub's interface, unless they explicitly request opening as ready for review.
+4. **Output**:
+   - Return the clickable GitHub PR link.
 
 ---
 
-## 6. Validação de Sucesso
+## 6. Success Validation
 
-- [ ] A rastreabilidade com issue foi verificada ou acordada com o desenvolvedor.
-- [ ] O título segue o formato padronizado (`Tipo/Descrição em Português`).
-- [ ] O corpo inclui resumo direto, diagrama de arquitetura (via `visualize-it`) e a tabela de DoD com a legenda oficial.
-- [ ] O rascunho completo foi apresentado e aprovado pelo usuário antes do envio.
-- [ ] O PR foi aberto (por padrão como `--draft`) e o link retornado.
+- [ ] Issue traceability was verified or agreed with the developer.
+- [ ] Title follows standardized format (`Type/Description`).
+- [ ] Body includes direct summary, architecture diagram (via `visualize-it`), and DoD table with official legend.
+- [ ] Full draft was presented and approved by the user prior to publishing.
+- [ ] PR was opened (defaulting to `--draft`) and clickable link returned.

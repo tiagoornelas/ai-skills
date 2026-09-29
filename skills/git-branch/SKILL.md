@@ -1,36 +1,37 @@
 ---
 name: git-branch
 description: >-
-  Cria e prepara uma nova branch de trabalho no Git para uma determinada tarefa, aplicando as convenções de nomenclatura e garantindo que a branch base correta seja selecionada e atualizada.
+  Creates and sets up a new Git working branch for a given task, enforcing
+  naming conventions and ensuring the correct base branch is selected and up to date.
 ---
 
 # Git Branch
 
-Skill para criação e preparação padronizada de branches de desenvolvimento.
+Standardized skill for creating and preparing Git development branches.
 
 ---
 
-## 1. Convenções de Nomenclatura
+## 1. Naming Conventions
 
-O nome da branch deve ser conciso, em minúsculas e utilizar hífens como separador (*kebab-case*).
+Branch names must be concise, lowercase, and hyphen-delimited (*kebab-case*).
 
-### Padrão 1: Com Issue ou Ticket Formal
-Se a tarefa possuir uma chave formal de rastreamento (Jira, GitHub Issues, Linear, etc.):
+### Pattern 1: With Formal Issue or Ticket
+If the task has a formal tracking key (Jira, GitHub Issues, Linear, etc.):
 ```text
-<CHAVE-DA-ISSUE>-<short-kebab-slug>
+<ISSUE-KEY>-<short-kebab-slug>
 ```
-*Exemplos:*
+*Examples:*
 - `DEV-1423-persist-session-token`
 - `gh-42-fix-redirect-loop`
 - `PROJ-89-user-profile-api`
 
-### Padrão 2: Sem Chave de Issue
-Se não houver uma issue formal vinculada, utilize o prefixo semântico do tipo de trabalho:
+### Pattern 2: Without Issue Key
+If there is no formal linked issue, use the semantic work-type prefix:
 ```text
-<tipo>/<short-kebab-slug>
+<type>/<short-kebab-slug>
 ```
-*Tipos aceitos:* `feat`, `fix`, `refactor`, `chore`, `perf`, `docs`.
-*Exemplos:*
+*Accepted types:* `feat`, `fix`, `refactor`, `chore`, `perf`, `docs`.
+*Examples:*
 - `feat/jwt-authentication-middleware`
 - `fix/oauth-token-expiration`
 - `refactor/extract-query-builder`
@@ -38,40 +39,40 @@ Se não houver uma issue formal vinculada, utilize o prefixo semântico do tipo 
 
 ---
 
-## 2. Seleção da Branch Base
+## 2. Base Branch Selection
 
-1. **Trabalho Independente (Padrão)**:
-   - A base é a branch principal do repositório (`main` ou `master`).
-   - A branch base deve ser sincronizada com o remoto antes de extrair a nova branch (`git fetch` e `git pull --ff-only`).
+1. **Independent Work (Default)**:
+   - Base is the repository's default branch (`main` or `master`).
+   - The base branch must be synchronized with the remote before creating the new branch (`git fetch` and `git pull --ff-only`).
 
-2. **Trabalho Empilhado / Dependente (*Stacked Branch*)**:
-   - Se o trabalho depender de outra tarefa que já está em desenvolvimento em uma branch própria e ainda não foi mergeada na `main`, a base da nova branch deve ser a **branch dessa dependência**.
+2. **Stacked / Dependent Work**:
+   - If work depends on another in-flight feature branch not yet merged into `main`, the base of the new branch must be that **dependency's branch**.
 
 ---
 
-## 3. Fluxo de Execução
+## 3. Execution Workflow
 
-1. **Verificação de Estado**:
-   - Execute `git status` para confirmar que a árvore de trabalho está limpa (sem arquivos modificados ou conflitos não commitados).
-2. **Definição da Base**:
-   - Vá para a branch base e garanta que ela esteja atualizada:
+1. **State Verification**:
+   - Run `git status` to confirm the working tree is clean (no uncommitted edits or staged changes).
+2. **Base Branch Synchronization**:
+   - Switch to the base branch and ensure it is up to date:
      ```bash
      git checkout <base-branch>
      git pull --ff-only
      ```
-3. **Criação da Branch**:
-   - Crie e troque para a nova branch seguindo a convenção de nomenclatura:
+3. **Branch Creation**:
+   - Create and switch to the new branch adhering to naming conventions:
      ```bash
-     git checkout -b <nome-da-branch>
+     git checkout -b <branch-name>
      ```
-4. **Confirmação**:
-   - Confirme para o desenvolvedor o nome da branch criada e a base de onde ela partiu.
+4. **Confirmation**:
+   - Confirm to the developer the created branch name and its upstream base.
 
 ---
 
-## 4. Validação de Sucesso
+## 4. Success Validation
 
-- [ ] A árvore de trabalho estava limpa antes de criar a branch (`git status`).
-- [ ] A branch base foi atualizada com o remoto (`git pull --ff-only`).
-- [ ] O nome da branch segue rigorosamente a convenção kebab-case com chave de issue (`DEV-123-slug`) ou tipo semântico (`feat/slug`).
-- [ ] A nova branch foi criada e confirmada para o desenvolvedor.
+- [ ] Working tree was clean prior to branch creation (`git status`).
+- [ ] Base branch was synchronized with remote (`git pull --ff-only`).
+- [ ] Branch name adheres strictly to kebab-case with issue key (`DEV-123-slug`) or semantic prefix (`feat/slug`).
+- [ ] The new branch was successfully created and reported to the developer.

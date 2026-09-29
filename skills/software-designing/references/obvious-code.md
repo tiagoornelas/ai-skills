@@ -1,81 +1,81 @@
-# Código Deve Ser Óbvio
+# Code Should Be Obvious
 
-> **Tese central**: obscuridade é uma das duas principais causas de complexidade. Código óbvio é aquele que o leitor consegue ler rapidamente, sem muito esforço, e cujas **primeiras suposições sobre o comportamento estão corretas**. Software deve ser projetado para facilidade de **leitura**, não de escrita.
-
----
-
-## Quando consultar
-
-- Ao definir nomes de módulos, tipos, operações e campos de um contrato.
-- Ao escolher estruturas de dados públicas (retornos, eventos, mensagens).
-- Ao avaliar designs orientados a eventos, callbacks ou fluxos indiretos.
-- Ao revisar se um design comunica sua intenção para quem não participou da conversa.
+> **Central thesis**: obscurity is one of the two root causes of software complexity. Obvious code is code that a developer can read quickly without friction, where their **initial assumptions about behavior are consistently correct**. Software must be engineered for ease of **reading**, not ease of writing.
 
 ---
 
-## 1. O que é "óbvio"
+## When to consult
 
-- Se o código é óbvio, o leitor não precisa gastar tempo nem esforço para entendê-lo, e é improvável que ele se engane ao modificá-lo.
-- Se o código não é óbvio, o leitor precisa gastar muito tempo, ou vai supor errado e introduzir bugs.
-- **A obviedade está na mente do leitor.** É mais fácil perceber que o código de outra pessoa não é óbvio do que perceber isso no próprio código. Por isso, a melhor forma de verificar é **revisão por outras pessoas**: se alguém diz que o código não é óbvio, ele não é, por mais claro que pareça ao autor. Em vez de discutir, entenda o que confundiu o leitor e mude o código.
-- Para ser óbvio, o código precisa garantir que o leitor tenha a **informação necessária** para entendê-lo, e que o código seja **consistente com as expectativas** do leitor.
-
----
-
-## 2. O que torna o código mais óbvio
-
-- **Bons nomes**: nos contratos (módulos, tipos, operações e campos públicos), nomes precisos esclarecem o comportamento e reduzem a necessidade de documentação. Um nome difícil de escolher é sinal de conceito confuso. Regras para nomes: [naming.md](../../coding/references/naming.md).
-- **Consistência**: coisas parecidas feitas de forma parecida, e coisas diferentes feitas de forma diferente. Se o leitor reconhece um padrão já visto, pode tirar conclusões com segurança sem analisar tudo de novo. Nomes, estilo de codificação, interfaces, padrões de design e invariantes devem ser consistentes.
-- **Uso criterioso de espaço em branco**: a forma como o código é formatado afeta a facilidade de leitura. Linhas em branco separando blocos lógicos, alinhamento de parâmetros documentados e espaçamento consistente ajudam o leitor a enxergar a estrutura.
-- **Comentários**: quando o código não consegue dizer tudo, um comentário curto fornece a informação que falta. O que comentar e como: [comments.md](../../coding/references/comments.md).
+- When establishing names for modules, types, operations, and public fields.
+- When choosing public data structures (DTOs, return types, domain events, messages).
+- When evaluating event-driven architectures, callbacks, or indirect control flows.
+- When verifying whether a proposed design communicates intent clearly to developers who were not in the room.
 
 ---
 
-## 3. O que torna o código menos óbvio
+## 1. What "Obvious" Means
 
-- **Programação orientada a eventos**: o fluxo de controle é difícil de acompanhar, porque handlers não são chamados diretamente; são invocados indiretamente por um mecanismo de eventos. Nunca é óbvio *quando* ou *por quem* um handler é chamado. **Compensação**: documente quando e por quem cada handler é invocado ([comments.md](../../coding/references/comments.md)).
-- **Contêineres genéricos**: estruturas como `Pair<Integer, Boolean>` ou tuplas agrupam valores sem dar nome a eles. Quem usa vê `getKey()` e `getValue()` (ou `t[0]`, `t[1]`), que não dizem nada sobre o significado. O código fica mais fácil de **escrever**, mas mais difícil de **ler**. Melhor definir um tipo nomeado para o caso específico, com campos significativos.
-- **Tipos diferentes na declaração e na alocação**: por exemplo, declarar uma variável como `List<Message>` e atribuir uma `ArrayList`. O leitor vê a declaração e pode não perceber o tipo real, que pode afetar desempenho ou thread-safety. Quando o tipo concreto importa para o comportamento, torne-o visível.
-- **Código que viola as expectativas do leitor**: por exemplo, uma função `main` que retorna logo depois de inicializar, enquanto a aplicação continua rodando em uma thread criada por um construtor. O leitor espera que a aplicação termine ao fim da `main`. Se o código faz algo diferente do esperado, isso **precisa ser documentado** de forma explícita.
-
----
-
-## 4. Princípio geral
-
-- Software deve ser projetado para facilidade de leitura, não de escrita. Atalhos que economizam digitação para quem escreve e custam compreensão para quem lê são um mau negócio: o código é lido muito mais vezes do que é escrito.
-- Duas abordagens para tornar código óbvio:
-  1. **Reduzir a quantidade de informação necessária** (abstração, eliminação de casos especiais, ocultação).
-  2. **Aproveitar informação que o leitor já tem** (consistência com convenções e padrões conhecidos), para que ele não precise aprender nada novo.
-- Quando isso não bastar, **fornecer a informação que falta** no próprio código (comentários, nomes, tipos).
+- In obvious code, readers do not need to expend mental effort deciphering intent, and are unlikely to introduce regressions when modifying it.
+- In non-obvious code, readers spend excessive time deciphering mechanics, or make incorrect assumptions that introduce bugs.
+- **Obviousness lives in the mind of the reader.** It is far easier to spot obscurity in someone else's code than in your own. The gold standard for obviousness is **peer review**: if a reader finds code non-obvious, it *is* non-obvious, no matter how clear it felt to the author. Do not argue; identify what confused the reader and clarify the design.
+- Code achieves obviousness when it provides all **necessary context** without cognitive leaps, and remains **consistent with developer expectations**.
 
 ---
 
-## Red flags
+## 2. What Makes Code Obvious
 
-- **Código não óbvio**: o significado e o comportamento não podem ser entendidos numa leitura rápida.
-- **Nome vago** ou **nome difícil de escolher** (sinal de design confuso).
-- Tuplas, pares e mapas genéricos em contratos públicos.
-- Fluxos por eventos, callbacks ou hooks sem documentação de quando e por quem são disparados.
-- Inconsistência: mesmo conceito com nomes diferentes, ou mesmo nome para conceitos diferentes.
-- Comportamento surpreendente sem documentação.
+- **Precise naming**: across contracts (modules, types, operations, public properties), accurate names clarify intent and reduce the need for explanatory text. If a name is hard to choose, the underlying concept is usually muddled. Naming principles: [naming.md](../../coding/references/naming.md).
+- **Consistency**: similar things look similar; different things look different. When readers recognize established patterns, they confidently draw conclusions without exhaustive re-analysis. Naming conventions, code styling, interface shapes, design patterns, and invariants must remain consistent.
+- **Judicious whitespace**: visual formatting dramatically impacts scanning velocity. Blank lines delimiting logical blocks, aligned parameters, and consistent spacing help readers parse structural hierarchy instantly.
+- **Strategic comments**: where code cannot express the full rationale, a concise comment fills the knowledge gap. What and how to document: [comments.md](../../coding/references/comments.md).
 
 ---
 
-## Como aplicar
+## 3. What Makes Code Obscure
 
-Ao finalizar um design, revise-o **como leitor**, não como autor:
-
-1. **Nomes**: cada módulo, tipo, operação e campo tem um nome preciso? Algum nome foi difícil de escolher? (Se sim, revise o conceito.)
-2. **Consistência**: o design segue as convenções já existentes no sistema? Onde diverge, a divergência é intencional e explicada?
-3. **Contratos com tipos nomeados**: substitua estruturas genéricas por tipos com significado.
-4. **Fluxos indiretos**: para cada evento/callback, está claro quando e por quem é disparado?
-5. **Surpresas**: algo no comportamento contraria o que um leitor esperaria? Documente ou mude.
-6. **Teste do leitor externo**: alguém que não participou da conversa entenderia o design só olhando para os contratos e o diagrama? Ao apresentar ao humano, se ele precisar de muita explicação, trate isso como sinal de obscuridade no design, não de falta de explicação.
+- **Event-driven indirection**: control flow is difficult to trace because event handlers are not invoked directly; they are called indirectly by a publish/subscribe bus. It is rarely obvious *when* or *by whom* an event handler is invoked. **Countermeasure**: explicitly document the trigger conditions and origins of every event handler ([comments.md](../../coding/references/comments.md)).
+- **Generic containers**: structures like `Pair<Integer, Boolean>` or generic tuples bundle values without naming them. Callers must parse `.first` and `.second` (or `[0]`, `[1]`), which convey zero semantic meaning. Code is easier to **write**, but much harder to **read**. Always define named domain types with self-documenting fields.
+- **Type discrepancies between declaration and allocation**: e.g., declaring a variable as `List<Message>` while instantiating a custom synchronized collection. Readers scan the interface type and may miss critical concurrency or performance characteristics. When the concrete type dictates observable behavior, make it obvious.
+- **Violating reader expectations**: e.g., a `main` entry point that returns immediately while background threads continue running detached. Readers expect process termination when `main` completes. When code defies standard expectations, the anomaly **must be explicitly documented**.
 
 ---
 
-## Relações
+## 4. Guiding Principle
 
-- Obscuridade como causa de complexidade: [nature-of-complexity.md](nature-of-complexity.md).
-- Reduzir a informação necessária via abstração: [deep-modules.md](deep-modules.md) e [information-hiding.md](information-hiding.md).
-- Escrever e manter comentários: [comments.md](../../coding/references/comments.md).
+- Software must be designed for reading, not writing. Shortcuts that save keystrokes for the author at the expense of comprehension for future maintainers are poor engineering: code is read orders of magnitude more often than it is written.
+- Two primary avenues to make code obvious:
+  1. **Reduce required context** (clean abstractions, eliminating special cases, deep information hiding).
+  2. **Leverage existing knowledge** (consistency with established project patterns and industry idioms), so readers need no new orientation.
+- When those are insufficient, **provide missing knowledge directly in code** (comments, expressive types, descriptive names).
+
+---
+
+## Red Flags
+
+- **Non-obvious code**: purpose and mechanics cannot be grasped upon a quick first read.
+- **Vague or elusive names** (signals an ambiguous design concept).
+- Untyped tuples, generic pairs, and raw nested maps in public contracts.
+- Event buses, hooks, or callbacks lacking documentation on trigger origins and sequencing.
+- Inconsistency: the same concept referred to by different terms, or identical names applied to distinct concepts.
+- Surprising side effects or unannounced background threads.
+
+---
+
+## How to Apply
+
+When completing a design, review it **as a reader**, not as the author:
+
+1. **Names**: does every module, type, method, and property carry a clear, unambiguous name? Was any name difficult to settle on? (If so, rethink the concept.)
+2. **Consistency**: does the design adhere strictly to existing codebase conventions? Where it deviates, is the deviation intentional and documented?
+3. **Strong typing in contracts**: replace generic tuples and primitives with descriptive types.
+4. **Indirect flows**: is the trigger sequence for every event, hook, and callback documented?
+5. **Surprises**: does any behavior contradict standard expectations? Document or eliminate it.
+6. **The outsider test**: could a developer who was not in the design conversation understand the system purely from the module map and contract cards? If extensive verbal explanation is needed, treat that as a design defect.
+
+---
+
+## Relationships
+
+- Obscurity as a root cause of complexity: [nature-of-complexity.md](nature-of-complexity.md).
+- Minimizing required context via abstraction: [deep-modules.md](deep-modules.md) and [information-hiding.md](information-hiding.md).
+- Authoring effective comments: [comments.md](../../coding/references/comments.md).

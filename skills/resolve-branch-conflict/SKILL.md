@@ -1,170 +1,168 @@
 ---
 name: resolve-branch-conflict
 description: >-
-  Conduz, junto com o usuário, a resolução de conflitos entre duas branches (ou
-  entre um PR e sua base): mostra visualmente onde e por que os trabalhos
-  paralelos colidiram, entende a intenção de cada lado, separa o que se resolve
-  mecanicamente do que exige composição cuidadosa, detecta conflitos semânticos
-  que o Git não acusa e resolve preservando o comportamento e a arquitetura dos
-  dois trabalhos, levando ao usuário as decisões que forem dele. Deve ser acionada
-  quando o usuário pedir ajuda para entender ou resolver conflitos de merge ou
-  rebase entre branches ou num PR.
+  Guides the user through resolving Git conflicts between two branches (or
+  between a PR and its base): visually demonstrates where and why parallel
+  streams collided, deciphers the intent of each side, separates mechanical
+  resolutions from delicate compositional synthesis, detects semantic conflicts
+  that Git misses, and resolves clashes while preserving the behavior and
+  architecture of both streams.
 disable-model-invocation: true
-argument-hint: "[número/URL do PR, ou duas branches: <nossa> <deles>]"
+argument-hint: "[PR number/URL, or two branches: <ours> <theirs>]"
 ---
 
 # Resolve Branch Conflict
 
-Um conflito é o sinal de que duas pessoas mexeram na mesma camada **sem saber uma da outra**. Resolver bem não é escolher um lado: é entregar o que **os dois** trabalhos pretendiam, de um jeito que nenhum dos autores estranharia, e que continue escalando quando o próximo trabalho paralelo chegar.
+A merge conflict signals that two developers modified the same layer **without awareness of each other's work**. Resolving conflicts well is not picking a winner: it means delivering what **both** work streams intended, structured cleanly so neither author is alienated and code remains extensible.
 
-> O agente entende, classifica, propõe e executa. **Descartar o trabalho de alguém, mudar um contrato ou escolher entre designs é decisão do usuário.**
+> The agent analyzes, classifies, proposes, and executes. **Discarding someone's work, altering a public contract, or choosing between competing architectures is strictly the user's decision.**
 
-Usa [`visualize-it`](../visualize-it/SKILL.md) para mostrar a colisão, [`software-designing`](../software-designing/SKILL.md) quando a resolução toca design, e [`coding`](../coding/SKILL.md) para escrever o código resolvido. O catálogo de padrões de conflito e as receitas de cada classe estão em [`references/conflict-patterns.md`](references/conflict-patterns.md).
+Uses [`visualize-it`](../visualize-it/SKILL.md) to diagram collisions, [`software-designing`](../software-designing/SKILL.md) when resolution touches architecture, and [`coding`](../coding/SKILL.md) for clean implementation. Catalog of conflict patterns and recipes resides in [`references/conflict-patterns.md`](references/conflict-patterns.md).
 
 ---
 
-## 1. Fixar as duas pontas
+## 1. Pin Down the Two Endpoints
 
-- **PR**: `gh pr view <pr> --json number,title,body,url,author,baseRefName,headRefName,commits`. *Nossa* = head do PR; *deles* = base.
-- **Duas branches**: a primeira é *nossa* (a que recebe a resolução); a segunda é *deles*. Se a ordem não estiver clara, pergunte.
+- **GitHub PR**: `gh pr view <pr> --json number,title,body,url,author,baseRefName,headRefName,commits`. *Ours* = PR head; *Theirs* = base branch.
+- **Two Local Branches**: first branch is *ours* (receives the resolution); second branch is *theirs*. If order is ambiguous, ask.
 
-Depois:
+Next:
 
 ```bash
 git fetch origin
-git merge-base <nossa> <deles>                          # ponto de divergência
-git merge-tree --write-tree --name-only <nossa> <deles> # conflitos textuais, sem tocar no working tree
-git diff --name-only <merge-base> <nossa>                # tocado por nós
-git diff --name-only <merge-base> <deles>                # tocado por eles
+git merge-base <ours> <theirs>                          # divergence point
+git merge-tree --write-tree --name-only <ours> <theirs> # textual conflicts without touching worktree
+git diff --name-only <merge-base> <ours>                # touched by us
+git diff --name-only <merge-base> <theirs>              # touched by them
 ```
 
-Confirme que as refs resolvem e que existe conflito (textual ou sobreposição de arquivos) **antes** de seguir. Sem sobreposição nenhuma, diga isso e pare.
+Confirm that refs resolve and collisions exist (textual or file overlap) **prior** to proceeding. If zero overlap exists, report that and stop.
 
-**Não altere o working tree do usuário nesta fase.** Se ele estiver sujo, avise antes de qualquer merge.
-
----
-
-## 2. Entender o trabalho paralelo
-
-Para cada lado, reúna a intenção, não só o diff:
-
-- `git log <merge-base>..<lado> --format='%h %an %s'`: commits e autores.
-- Descrição do PR, issues vinculadas (Jira/GitHub) e mensagens de commit.
-- Os trechos do diff de cada lado nos arquivos sobrepostos.
-
-Resuma em uma frase por lado: **"Nós queríamos X. Eles queriam Y."** Se a intenção de um lado não estiver clara pelas evidências, diga isso e pergunte, em vez de supor.
-
-Mostre a divergência com `visualize-it`:
-- **Linha do tempo**: merge-base, commits de cada lado e onde cada um tocou a área em conflito.
-- **Mapa de módulos** da sobreposição: quais módulos cada lado alterou, marcados na notação do `visualize-it` (🆕 🔧 🗑️ ⚠️), com os pontos de colisão em ⚠️.
+**Do not modify the user's working tree during this phase.** If dirty, notify the user before attempting any merge.
 
 ---
 
-## 3. Classificar cada ponto de conflito
+## 2. Understand Parallel Work Streams
 
-Cada hunk em conflito, e cada sobreposição sem conflito textual, recebe uma classe (detalhes e receitas em [`references/conflict-patterns.md`](references/conflict-patterns.md)):
+For each side, gather the underlying intent, not just raw diff lines:
 
-| Classe | Significado | Quem decide |
+- `git log <merge-base>..<side> --format='%h %an %s'`: commits and authors.
+- PR description, linked issues (Jira/GitHub), and commit messages.
+- Diff chunks of each side across overlapping files.
+
+Summarize in a single sentence per side: **"We intended X. They intended Y."** If intent is ambiguous from evidence, declare that and ask the user rather than guessing.
+
+Diagram the divergence using `visualize-it`:
+- **Timeline**: merge-base, commits from each side, and where each modified the conflict area.
+- **Module Collision Map**: which modules each side modified using `visualize-it` badges (🆕 🔧 🗑️ ⚠️), marking points of collision with ⚠️.
+
+---
+
+## 3. Classify Each Conflict Point
+
+Every conflicting hunk and overlapping file receives a classification (recipes in [`references/conflict-patterns.md`](references/conflict-patterns.md)):
+
+| Class | Meaning | Decision Authority |
 | :---: | :--- | :--- |
-| 🟢 **Mecânico** | Mudanças independentes que só colidiram no texto: imports, entradas em listas, formatação, arquivos gerados, lockfiles. | Agente resolve; mostra o resumo. |
-| 🟡 **Composição** | Os dois lados mexeram na mesma lógica com intenções compatíveis; a resolução precisa conter os dois comportamentos. | Agente propõe; usuário confirma. |
-| 🔴 **Intenções em choque** | Intenções incompatíveis ou designs divergentes (um refatora enquanto o outro estende, os dois criam abstrações para a mesma coisa, regras de negócio contraditórias). | Usuário decide, com opções e recomendação. |
-| ⚠️ **Semântico** | Sem conflito textual, mas quebra ao juntar: um lado mudou um contrato (assinatura, nome, formato, migração) e o outro adicionou uso do contrato antigo. | Tratado como 🟡 ou 🔴, conforme o caso. |
+| 🟢 **Mechanical** | Independent changes that merely collided textually: imports, list items, formatting, generated code, lockfiles. | Agent resolves; displays summary. |
+| 🟡 **Composition** | Both sides touched the same logic with compatible intent; resolution must preserve both behaviors. | Agent proposes; user confirms. |
+| 🔴 **Clashing Intent** | Incompatible intent or diverging designs (one refactors while the other extends; competing abstractions for the same concept; contradictory business rules). | User decides, with options and recommendation. |
+| ⚠️ **Semantic** | Zero textual conflict, but breaks when combined: one side altered a contract (signature, name, format, schema) while the other introduced calls to the old contract. | Handled as 🟡 or 🔴 based on impact. |
 
-A classe ⚠️ é a que o Git não mostra. Para encontrá-la, cruze **os símbolos, contratos e esquemas alterados por um lado** com **o código novo do outro lado** (`git diff <merge-base> <lado> -- <arquivo>` e busca pelos símbolos). Na dúvida entre duas classes, use a mais alta.
+Class ⚠️ is what Git's merge engine cannot see. To locate semantic conflicts, cross-reference **symbols, contracts, and schemas altered by one side** against **new code introduced by the other side** (`git diff <merge-base> <side> -- <file>` and symbol grep). When uncertain between classes, assign the higher severity.
 
 ---
 
-## 4. Apresentar o mapa do conflito
+## 4. Present Conflict Map
 
 ```markdown
-## Nós × Eles
-- **Nós** (<branch>, <autores>): <intenção em uma frase>
-- **Eles** (<branch>, <autores>): <intenção em uma frase>
+## Ours × Theirs
+- **Ours** (<branch>, <authors>): <intent in one sentence>
+- **Theirs** (<branch>, <authors>): <intent in one sentence>
 
-<linha do tempo e mapa de módulos via visualize-it>
+<timeline and module map via visualize-it>
 
-## Pontos de conflito — 🟢 N · 🟡 N · 🔴 N · ⚠️ N
+## Conflict Points — 🟢 N · 🟡 N · 🔴 N · ⚠️ N
 
-| # | Local | Classe | Nós | Eles | Proposta |
+| # | Location | Class | Ours | Theirs | Proposal |
 | :-: | :--- | :-: | :--- | :--- | :--- |
-| 1 | `src/a.ts:40-58` | 🟢 | adiciona import X | adiciona import Y | manter os dois |
-| 2 | `src/b.ts:12-30` | 🟡 | valida CPF | normaliza CPF | normalizar, depois validar |
-| 3 | `src/c.ts` + `src/d.ts:88` | ⚠️ | renomeia `getUser` → `findUser` | nova chamada a `getUser` | atualizar a chamada nova |
+| 1 | `src/a.ts:40-58` | 🟢 | adds import X | adds import Y | retain both |
+| 2 | `src/b.ts:12-30` | 🟡 | validates SSN | normalizes SSN | normalize, then validate |
+| 3 | `src/c.ts` + `src/d.ts:88` | ⚠️ | renames `getUser` → `findUser` | new call to `getUser` | update new call site |
 ```
 
-Para cada 🟡, 🔴 e ⚠️, mostre um cartão em três colunas (**base / nós / eles**) com o trecho mínimo que explica o conflito, seguido da proposta. Use `zdiff3` para enxergar a base nos marcadores: `git -c merge.conflictStyle=zdiff3 ...`.
+For each 🟡, 🔴, and ⚠️, display a three-column card (**base / ours / theirs**) showing minimal context, followed by proposed resolution. Use `zdiff3` conflict style to see base context: `git -c merge.conflictStyle=zdiff3 ...`.
 
-Discuta com o usuário. Ele pode mudar classes, propostas e a ordem.
-
----
-
-## 5. Decidir a estratégia de integração
-
-Pergunte, com recomendação, se não estiver claro pela convenção do repositório:
-
-- **Merge de *deles* em *nossa*** (recomendado por padrão): não reescreve histórico e é seguro em branch compartilhada.
-- **Rebase de *nossa* sobre *deles***: histórico linear, mas reescreve commits; só em branch que só o usuário usa. Exige `push --force-with-lease` depois.
-
-Faça a integração numa branch de trabalho ou num worktree (`git worktree add`), para que o estado original fique intacto até o usuário aprovar.
+Discuss with user. User can adjust classifications, proposals, and execution order.
 
 ---
 
-## 6. Resolver
+## 5. Determine Integration Strategy
 
-Na ordem:
+Ask the user with a recommendation if repository conventions do not dictate:
 
-1. **🟢 Mecânicos em lote**, seguindo as receitas da referência. Arquivos gerados e lockfiles são **regenerados** pela ferramenta, não mesclados à mão.
-2. **🟡 Composição e ⚠️ semânticos**, um por vez: escreva a resolução com a skill [`coding`](../coding/SKILL.md), mostre o resultado ao lado da base, de nós e deles, e siga após a confirmação.
-3. **🔴 Intenções em choque**: leve ao usuário 2–3 opções, com o que cada uma preserva e perde de cada lado, e uma recomendação. Quando a escolha é de design (qual abstração fica, onde mora a regra, direção de dependência), aplique [`software-designing`](../software-designing/SKILL.md); se for cara de mudar depois, passe por [`design-it-twice`](../design-it-twice/SKILL.md).
+- **Merge *theirs* into *ours*** (recommended default): preserves non-destructive history, safe for shared branches.
+- **Rebase *ours* onto *theirs***: linear history, but rewrites commit SHAs; appropriate only on private feature branches. Requires `push --force-with-lease` afterward.
 
-Regras da resolução:
-
-- **Os dois comportamentos sobrevivem**, a menos que o usuário decida o contrário. Nunca descarte um lado em silêncio (`--ours`/`--theirs` num arquivo inteiro só em 🟢 ou com decisão explícita).
-- **Respeite o design de quem veio antes**: se *deles* já está na base (merged), o código novo de *nós* se adapta ao design deles, e não o contrário, salvo decisão do usuário.
-- **Elegância, não empilhamento**: se a composição só fica certa com `if` para cada lado, é sinal de que falta um conceito; proponha-o (via `software-designing`) em vez de acumular ramos.
-- **Sem escopo extra**: a resolução não aproveita para refatorar o que não está no conflito. Ideias de melhoria vão para a seção 8.
-- Se a resolução muda o trabalho de outro autor de forma relevante, ofereça um rascunho curto de mensagem para avisá-lo.
+Perform resolution inside a working branch or isolated worktree (`git worktree add`), keeping the original state pristine until user approves.
 
 ---
 
-## 7. Verificar
+## 6. Resolve
 
-- [ ] Nenhum marcador restante: `git diff --check` e busca por `<<<<<<<`, `=======`, `>>>>>>>`.
-- [ ] Build, linters e verificadores de tipo do projeto passam.
-- [ ] **Os testes dos dois lados** passam; nenhum teste de um lado foi removido ou afrouxado para caber o outro.
-- [ ] Cada intenção da seção 2 continua entregue: liste os comportamentos de *nós* e de *eles* e como cada um foi verificado (legenda de DoD do [`human-review`](../human-review/SKILL.md), seção 2.3).
-- [ ] Os pontos ⚠️ foram exercitados por teste ou por execução.
+In order:
 
-Falha na verificação volta para a seção 6, não para o usuário, salvo se exigir decisão.
+1. **🟢 Mechanical in batch**, following reference recipes. Generated files and lockfiles are **regenerated** via native tooling, never merged by hand.
+2. **🟡 Composition and ⚠️ Semantic**, one at a time: author the resolution using [`coding`](../coding/SKILL.md), show result alongside base, ours, and theirs, proceeding upon confirmation.
+3. **🔴 Clashing Intent**: present the user with 2–3 explicit options detailing what each preserves and loses, with a recommendation. When selecting between architectural abstractions, apply [`software-designing`](../software-designing/SKILL.md); if high-consequence, pass through [`design-it-twice`](../design-it-twice/SKILL.md).
+
+Rules of resolution:
+
+- **Both behaviors survive**, unless the user explicitly chooses otherwise. Never silently drop one side (`--ours`/`--theirs` across entire files only for 🟢 or with explicit confirmation).
+- **Respect established precedent**: if *theirs* is already on the base branch (merged), new code from *ours* adapts to their design, not vice-versa, unless user decides otherwise.
+- **Elegance, not branching clutter**: if composing requires adding flags for each side, an abstraction is missing; design the unifying concept via `software-designing`.
+- **Zero scope creep**: do not use conflict resolution as an excuse to refactor untouched code.
+- If resolution substantially alters a peer's recent code, draft a short courtesy message to notify them.
 
 ---
 
-## 8. Concluir
+## 7. Verify
 
-1. Commit de merge (ou `rebase --continue`) com a skill [`commit`](../commit/SKILL.md). A mensagem registra as resoluções 🟡, 🔴 e ⚠️ e as decisões tomadas, para quem ler o histórico depois.
-2. **Não faça push sem pedido.** Com pedido, mostre o comando (`--force-with-lease` se houve rebase) e confirme.
-3. Feche com o resumo:
+- [ ] Zero conflict markers remaining: `git diff --check` and search for `<<<<<<<`, `=======`, `>>>>>>>`.
+- [ ] Project build, linters, and type checkers pass.
+- [ ] **Tests from both sides pass**; zero tests loosened or removed to force a pass.
+- [ ] Every intent from Section 2 remains fulfilled: enumerate behaviors from *ours* and *theirs* and verification evidence (DoD legend from [`human-review`](../human-review/SKILL.md), Section 2.3).
+- [ ] Semantic conflict points ⚠️ verified through execution or tests.
+
+Verification failures return to Section 6, not to the user, unless requiring an architectural decision.
+
+---
+
+## 8. Finalize
+
+1. Record merge commit (or `rebase --continue`) using [`commit`](../commit/SKILL.md). Commit message documents 🟡, 🔴, and ⚠️ resolutions and decisions taken.
+2. **Do not push without request.** When requested, show the command (`--force-with-lease` if rebased) and confirm.
+3. Conclude with summary:
 
 ```markdown
-## ✅ Conflito resolvido
-- 🟢 N mecânicos · 🟡 N composições · 🔴 N decisões · ⚠️ N semânticos
-- Decisões tomadas: <uma linha por decisão do usuário>
-- Verificação: <build/testes/comportamentos>
+## ✅ Conflict Resolved
+- 🟢 N mechanical · 🟡 N compositions · 🔴 N decisions · ⚠️ N semantic
+- Decisions taken: <one line per user decision>
+- Verification: <build/tests/behaviors>
 
-## Pontos de atrito para o futuro
-- <onde o trabalho paralelo colidiu por falta de uma fronteira, ponto de extensão ou contrato claro, com a sugestão — nada disso foi feito>
+## Friction Points for Future Refactoring
+- <where parallel streams collided due to missing extension points or ambiguous boundaries, with suggestions — unexecuted>
 ```
 
-A última seção é o que faz o software escalar: cada conflito real aponta um lugar onde dois desenvolvedores não conseguiam trabalhar sem se esbarrar. Ofereça transformar esses pontos em tarefas com [`report-work`](../report-work/SKILL.md).
+Offer to convert friction points into tracking issues using [`report-work`](../report-work/SKILL.md).
 
 ---
 
-## 9. Validação de Sucesso
+## 9. Success Validation
 
-- [ ] As duas pontas e o merge-base foram fixados e validados antes de qualquer alteração; o working tree do usuário não foi alterado sem aviso.
-- [ ] A intenção de cada lado foi declarada com evidência, e a divergência foi mostrada visualmente.
-- [ ] Todo ponto de conflito, inclusive os semânticos sem conflito textual, tem classe e proposta.
-- [ ] Todo 🔴 e todo descarte de trabalho alheio foram decididos pelo usuário.
-- [ ] A verificação da seção 7 passou por completo, com os comportamentos dos dois lados preservados.
-- [ ] Nada foi enviado ao remoto sem pedido e confirmação explícitos.
+- [ ] Both branches and merge-base pinned and validated prior to edits; user working tree untouched without warning.
+- [ ] Intent of each side declared with evidence; divergence visualized.
+- [ ] Every conflict point, including semantic non-textual collisions, classified with a concrete proposal.
+- [ ] Every 🔴 and work-discarding choice approved by the user.
+- [ ] Section 7 verification passed completely with behaviors from both branches intact.
+- [ ] Zero changes pushed to remote without explicit request and confirmation.

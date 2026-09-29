@@ -1,93 +1,93 @@
-# Projete Duas Vezes
+# Design It Twice
 
-> **Tese central**: projetar software é difícil, e é improvável que a primeira ideia sobre como estruturar um módulo ou sistema seja o melhor design. Os resultados ficam muito melhores quando se consideram **várias opções para cada decisão importante**, e elas são **radicalmente diferentes** entre si.
-
----
-
-## Quando consultar
-
-- Antes de fixar qualquer decisão de design importante: decomposição de um sistema, interface de um módulo, contrato de uma API, implementação de um mecanismo central.
-- Quando a primeira ideia "parece óbvia" e ninguém questionou alternativas.
-- Ao comparar alternativas e decidir entre elas.
+> **Central thesis**: software design is hard, and it is improbable that the first idea for structuring a module or system represents the optimal design. Outcomes improve dramatically when developers consider **multiple options for every high-consequence decision**, ensuring those options are **radically different** from one another.
 
 ---
 
-## 1. O princípio
+## When to consult
 
-- Para cada decisão de design importante, não pegue a primeira ideia. Esboce **duas ou mais abordagens**, compare-as e escolha, ou combine, a melhor.
-- As alternativas devem ser **radicalmente diferentes**, não variações da mesma ideia. Variações pequenas exploram pouco do espaço de soluções. Alternativas radicalmente diferentes ensinam mais sobre o problema, mesmo que sejam descartadas.
-- Isso vale mesmo quando você acha que só existe uma forma razoável. Esboçar uma alternativa, mesmo uma que você sabe que não é boa, ajuda a entender o que torna a outra melhor.
-
----
-
-## 2. Exemplo: a classe de texto do editor
-
-Para a interface de uma classe que gerencia o texto de um arquivo num editor gráfico, três alternativas bem diferentes:
-
-1. **Orientada a linhas**: operações para inserir, apagar e ler linhas inteiras.
-2. **Orientada a caracteres**: operações para inserir e apagar caracteres individuais.
-3. **Orientada a intervalos**: operações sobre trechos arbitrários de texto, que podem atravessar linhas.
-
-Comparando:
-
-- A interface por linhas obriga a camada de cima a dividir e juntar linhas em operações parciais e em operações que atravessam linhas (ex.: apagar uma seleção).
-- A interface por caracteres obriga a fazer laços para operações sobre vários caracteres (ex.: apagar uma seleção caractere por caractere).
-- A interface por intervalos cobre bem os dois casos e tende a ser a mais simples de usar, além de ser de propósito mais geral.
+- Prior to locking in any major design decision: system decomposition, module interface, API contract, or core mechanism implementation.
+- When the first idea "feels obvious" and no one has explored alternatives.
+- When evaluating and contrasting alternative architectures.
 
 ---
 
-## 3. Como comparar as alternativas
+## 1. The Core Principle
 
-- Liste os **prós e contras** de cada alternativa.
-- O critério mais importante para uma interface é a **facilidade de uso para quem está acima dela** (o software de nível mais alto que vai consumi-la).
-- Outros fatores a considerar:
-  - A interface de uma alternativa é **mais simples** que a de outra?
-  - Uma interface é **mais de propósito geral** que a outra?
-  - Uma interface permite uma **implementação mais eficiente**?
-- Quase sempre, a comparação revela fraquezas de cada alternativa. Isso é útil por si só.
-
-### Quando nenhuma alternativa convence
-
-- Às vezes nenhuma das alternativas é atraente. Nesse caso, use os problemas identificados em cada uma para chegar a um **novo design**.
-- É comum que o melhor design seja uma **combinação** das melhores características de alternativas diferentes, ou uma ideia nova que só surgiu por causa da comparação.
-- Se nenhuma opção for satisfatória, isso é um sinal de que o problema ainda não foi bem entendido. Vale investir mais antes de escolher.
+- For every high-impact design decision, never settle on the first idea. Sketch **two or more distinct approaches**, evaluate them side-by-side, and choose or combine the best elements.
+- Alternatives must be **radically different**, not superficial variations of the same underlying concept. Minor tweaks explore very little of the design space. Radically different designs deepen understanding of the problem domain, even when they are ultimately discarded.
+- This holds true even when one approach appears to be the only plausible path. Sketching an alternative—even one you suspect is sub-optimal—illuminates the specific strengths that make the preferred design superior.
 
 ---
 
-## 4. Em que níveis aplicar
+## 2. Case Study: Text Model Interface
 
-- **Interfaces** de módulos: o uso mais importante.
-- **Implementação**: vale para partes centrais, em que simplicidade e desempenho importam.
-- **Decomposição do sistema**: quais módulos existem e como se dividem as responsabilidades.
-- **Interfaces com o usuário**: layouts e fluxos também se beneficiam de alternativas radicalmente diferentes.
+When designing the core text-handling class for a graphical editor, three radically different abstraction approaches emerge:
 
-Em cada nível, projetar duas vezes é mais barato do que parece. Para um módulo pequeno, esboçar alternativas no nível da interface leva uma ou duas horas, pouco perto do tempo que se passará implementando e mantendo o módulo. Em decisões maiores o investimento é maior, mas o custo de errar também é muito maior.
+1. **Line-Oriented**: methods to insert, delete, and read entire lines.
+2. **Character-Oriented**: methods to insert and delete individual characters.
+3. **Range-Oriented**: operations over arbitrary character intervals that seamlessly span line boundaries.
 
----
+Comparison:
 
-## 5. O obstáculo das "pessoas inteligentes"
-
-- Pessoas muito capazes às vezes resistem a projetar duas vezes. Ao longo da vida, a primeira ideia delas costumava ser boa o bastante (na escola, em exercícios menores), e elas se acostumaram a confiar nela.
-- Com problemas grandes e difíceis, isso deixa de funcionar: **ninguém é bom o suficiente para acertar na primeira tentativa**.
-- Considerar múltiplas opções não é sinal de insegurança. É a forma de chegar ao melhor resultado.
-- Projetar duas vezes também **melhora a habilidade de projetar**: quem compara alternativas com frequência aprende o que torna um design melhor que outro, e passa a descartar ideias ruins mais rápido.
+- The line-oriented interface forces callers to handle line splitting and concatenation whenever operations cross line boundaries (e.g., deleting a block selection).
+- The character-oriented interface forces callers to manage loops for multi-character edits (e.g., deleting a range character-by-character).
+- The range-oriented interface accommodates both cleanly, proves significantly more ergonomic for consuming callers, and delivers a much more general-purpose abstraction.
 
 ---
 
-## Red flags
+## 3. Comparing Alternatives
 
-- Só uma alternativa foi considerada para uma decisão importante.
-- As "alternativas" são variações da mesma ideia (mesma decomposição, com nomes ou detalhes diferentes).
-- Uma alternativa foi montada fraca de propósito, só para perder para a favorita (*espantalho*).
-- A comparação só lista prós da favorita e contras das outras.
-- A escolha foi feita pela facilidade de implementação, sem considerar a facilidade de uso da interface.
+- Enumerate candid **pros and cons** for each candidate design.
+- The single most critical criterion for an interface is **ease of use for the higher-level software consuming it**.
+- Additional evaluation factors:
+  - Is one interface noticeably **simpler** than the other?
+  - Is one interface more **general-purpose**?
+  - Does one interface enable a **more efficient implementation**?
+- Rigorous comparison almost always exposes hidden trade-offs and weaknesses in every option. This insight is immensely valuable in its own right.
+
+### When No Alternative is Compelling
+
+- Occasionally, none of the proposed alternatives are satisfying. In that case, use the discovered flaws to synthesize a **new design**.
+- The optimal architecture is frequently a **hybrid combination** blending the best traits of disparate options, or a novel concept sparked by the comparative analysis.
+- If no design feels right, it is a clear indicator that the problem domain is not yet well understood. Invest in clarifying requirements before committing to code.
 
 ---
 
-## Como aplicar
+## 4. Architectural Levels of Application
 
-1. Identifique as **decisões importantes** do problema (as que seriam caras de mudar depois).
-2. Para cada uma, gere **ao menos duas alternativas radicalmente diferentes**, esboçadas no nível da interface.
-3. Compare, com a facilidade de uso para quem consome como critério principal, e depois simplicidade, generalidade e eficiência.
-4. Escolha, combine ou, se nenhuma servir, gere uma nova a partir das fraquezas encontradas.
-5. Registre as alternativas descartadas e por que foram descartadas.
+- **Module Interfaces**: the most critical application level.
+- **Internal Mechanisms**: applicable to core algorithmic engines where performance and simplicity intersect.
+- **System Decomposition**: which modules exist and how domain responsibilities are partitioned.
+- **User Interfaces**: workflows, screen layouts, and interaction flows similarly benefit from exploring radically different wireframes.
+
+At every level, designing twice is vastly cheaper than it appears. For a small module, sketching candidate interfaces takes an hour or two—negligible compared to weeks spent implementing and maintaining it. On system-wide architectures, the upfront investment is larger, but the cost of getting it wrong is catastrophic.
+
+---
+
+## 5. The "Smart Person" Trap
+
+- Talented engineers often resist designing twice. Throughout their careers, their initial intuition was frequently "good enough" for standard tasks, breeding overconfidence in their first ideas.
+- On large, complex problems, this instinct breaks down: **no one is skilled enough to get hard architectural problems right on the first try**.
+- Evaluating multiple alternatives is not a sign of indecision; it is the hallmark of professional craftsmanship.
+- Designing twice systematically **hones architectural judgment**: engineers who routinely compare alternatives learn what makes one design cleaner than another, and learn to discard flawed ideas rapidly.
+
+---
+
+## Red Flags
+
+- Only one approach was considered for an important decision.
+- "Alternatives" are merely superficial variations of the same idea (identical decomposition with renamed classes).
+- A strawman alternative was constructed deliberately weak just to make the favorite look good.
+- The evaluation lists only pros for the favorite and only cons for the others.
+- The choice was made based on ease of implementation rather than caller ergonomics.
+
+---
+
+## How to Apply
+
+1. Identify **high-impact decisions** (those that are expensive to reverse later).
+2. For each, generate **at least two radically different alternatives**, sketched at the interface level.
+3. Compare them, prioritizing caller ergonomics, followed by interface simplicity, generality, and efficiency.
+4. Select, combine into a hybrid, or iterate to a new design based on discovered flaws.
+5. Record rejected alternatives and the explicit rationale for their rejection.

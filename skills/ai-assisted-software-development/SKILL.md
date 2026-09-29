@@ -1,73 +1,73 @@
 ---
 name: ai-assisted-software-development
 description: >-
-  Princípios fundamentais de governança e divisão de responsabilidades no desenvolvimento com IA. Define a fronteira entre a Camada Humana (governança, arquitetura e contratos) e a Camada do Agente (implementação interna, automação e self-review).
+  Core principles of governance and division of responsibilities in AI-assisted development. Defines the boundary between the Human Layer (governance, architecture, and contracts) and the Agent Layer (internal implementation, automation, and self-review).
 ---
 
 # AI-Assisted Software Development
 
-Diretrizes e princípios para divisão de trabalho entre humanos e agentes de IA.
+Guidelines and principles for the division of labor between humans and AI agents.
 
 ---
 
-## 1. O Problema da Vazão e Foco
+## 1. The Throughput and Focus Problem
 
-Agentes de IA produzem código mais rápido do que um desenvolvedor humano consegue ler linha por linha. Tentar inspecionar todo o código gerado transforma o humano em um gargalo ineficiente.
+AI agents generate code faster than any human developer can read line by line. Attempting to inspect all generated code turns the human into an inefficient bottleneck.
 
-A resposta sustentável é **dividir o trabalho em duas camadas rígidas**:
-- O **humano** foca exclusivamente no que é caro de errar e barato de revisar (arquitetura, contratos e comportamentos).
-- O **agente** assume a responsabilidade total pela qualidade do código abaixo dos contratos, validando-se a si próprio por meio de testes automatizados e **self-review**.
-
----
-
-## 2. A Camada Humana (*Human Layer*)
-
-A esfera de governança e decisão humana. **Somente o que pertence a esta camada deve ser reportado ao desenvolvedor.**
-
-### Responsabilidades Humanas:
-- **Sistemas e Módulos**: Quais componentes existem, suas responsabilidades e seus limites.
-- **Direção de Dependências**: Garantir que as dependências apontem em direção às regras de negócio (a política nunca depende de detalhes de infraestrutura ou frameworks). Ver [dependency-direction.md](../software-designing/references/dependency-direction.md).
-- **Contratos e Interfaces Públicas**: O que cada módulo promete a quem o consome (assinaturas, garantias e modos de falha).
-- **Comportamentos (Definition of Done)**: Validação dos critérios de aceite observáveis pelo usuário ou cliente da API.
-- **Trade-offs e Inspeções Manuais**: Julgamento de negócios e execução de verificações que não puderem ser automatizadas.
+The sustainable solution is to **strictly divide labor into two distinct layers**:
+- The **human** focuses exclusively on what is expensive to get wrong and cheap to review (architecture, contracts, and behaviors).
+- The **agent** assumes full responsibility for code quality below contracts, self-validating through automated testing and **self-review**.
 
 ---
 
-## 3. A Camada do Agente (*Agent Layer*)
+## 2. The Human Layer
 
-Tudo o que reside abaixo das fronteiras e contratos. **O humano não deve ser sobrecarregado com a leitura rotineira deste nível.**
+The sphere of human governance and decision-making. **Only what belongs to this layer should be reported to the developer.**
 
-### Responsabilidades do Agente:
-- **Implementação Interna**: Fluxo de controle, loops, funções auxiliares privadas e algoritmos.
-- **Estruturas de Dados Internas**: Escolha de tipos, coleções e mecanismos de cache internos.
-- **Higiene Mecânica**: Formatação, padrões de linter, tipagem estática e ausência de complexidade desnecessária.
-- **Cobertura de Testes (BDD/TDD)**: Escrita de testes que provem deterministicamente cada comportamento da DoD.
-- **Auto-Correção Recursiva**: Realizar o próprio **`agent-self-review`**, corrigindo falhas até que todos os critérios estejam limpos (*clean*) antes de submeter ao humano.
-
----
-
-## 4. O Teste da Fronteira
-
-Na dúvida sobre a qual camada uma decisão pertence, aplique este teste:
-
-> **"Alterar isso exigiria renegociar um contrato com quem chama externamente, ou poderia ser reescrito amanhã sem ninguém fora do módulo perceber?"**
-> - Se exigir renegociação de contrato ou mudar regra de negócio → **Camada Humana**.
-> - Se puder ser alterado internamente sem impacto externo → **Camada do Agente**.
+### Human Responsibilities:
+- **Systems and Modules**: Which components exist, their responsibilities, and their boundaries.
+- **Dependency Direction**: Ensuring dependencies point toward business rules (policy never depends on infrastructure details or frameworks). See [dependency-direction.md](../software-designing/references/dependency-direction.md).
+- **Contracts and Public Interfaces**: What each module promises to its consumers (signatures, guarantees, and failure modes).
+- **Behaviors (Definition of Done)**: Validation of acceptance criteria observable by the user or API consumer.
+- **Trade-offs and Manual Verifications**: Business judgment and execution of checks that cannot be automated.
 
 ---
 
-## 5. Fluxos Operacionais Derivados
+## 3. The Agent Layer
 
-Esta teoria orienta dois fluxos de execução complementares:
+Everything that resides below boundaries and contracts. **The human should not be burdened with routine inspection of this level.**
 
-1. **[`agent-self-review`](../agent-self-review/SKILL.md)**: Executado de forma autônoma pelo agente. O agente inspeciona sua própria implementação (linter/tipos, cobertura de DoD e testes), corrigindo problemas recursivamente até aprovação.
-2. **[`human-review`](../human-review/SKILL.md)**: Invocado pelo desenvolvedor humano sob demanda. O agente sintetiza a entrega exclusivamente no nível de governança humana (mapa de dependências, interfaces alteradas e tabela de validação do DoD).
+### Agent Responsibilities:
+- **Internal Implementation**: Control flow, loops, private helper functions, and algorithms.
+- **Internal Data Structures**: Choice of internal types, collections, and caching mechanisms.
+- **Mechanical Hygiene**: Formatting, linter compliance, static typing, and elimination of accidental complexity.
+- **Test Coverage (BDD/TDD)**: Writing tests that deterministically prove every DoD behavior.
+- **Recursive Self-Correction**: Performing its own **`agent-self-review`**, correcting flaws until all criteria are clean before submitting to the human.
 
 ---
 
-## 6. Validação de Sucesso
+## 4. The Boundary Test
 
-- [ ] A fronteira entre a Camada Humana e a Camada do Agente foi respeitada.
-- [ ] Decisões sobre módulos, contratos, direção de dependências ou comportamentos da DoD foram levadas ao humano.
-- [ ] Detalhes internos abaixo dos contratos foram resolvidos de forma autônoma pelo agente com testes e self-review.
-- [ ] Nenhum caminho local ou não versionado foi exposto em artefatos compartilhados.
+Whenever in doubt about which layer a decision belongs to, apply this test:
+
+> **"Would changing this require renegotiating a contract with external callers, or could it be rewritten tomorrow without anyone outside the module noticing?"**
+> - If it requires renegotiating a contract or changing a business rule → **Human Layer**.
+> - If it can be changed internally with zero external impact → **Agent Layer**.
+
+---
+
+## 5. Derived Operational Workflows
+
+This theory guides two complementary execution workflows:
+
+1. **[`agent-self-review`](../agent-self-review/SKILL.md)**: Executed autonomously by the agent. The agent inspects its own implementation (linter/types, DoD coverage, and tests), recursively fixing issues until approved.
+2. **[`human-review`](../human-review/SKILL.md)**: Invoked by the human developer on demand. The agent synthesizes the delivery strictly at the human governance level (dependency map, modified interfaces, and DoD validation table).
+
+---
+
+## 6. Success Validation
+
+- [ ] The boundary between the Human Layer and Agent Layer was respected.
+- [ ] Decisions regarding modules, contracts, dependency direction, or DoD behaviors were brought to the human.
+- [ ] Internal details below contracts were resolved autonomously by the agent with tests and self-review.
+- [ ] No local or unversioned paths were exposed in shared artifacts.

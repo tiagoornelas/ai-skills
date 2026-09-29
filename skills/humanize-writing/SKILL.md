@@ -1,73 +1,73 @@
 ---
 name: humanize-writing
 description: >-
-  Escreve, edita e revisa textos em qualquer idioma para reduzir padrões
-  previsíveis de escrita gerada por IA, preservando voz, ponto de vista e
-  contexto. Deve ser acionada para e-mails, artigos, posts, documentos, roteiros
-  e textos profissionais quando o usuário pedir uma escrita mais humana, natural
-  ou autoral, e pelas skills github-code-review e github-review-react ao redigir
-  comentários e respostas de PR, para que soem escritos por um colega.
+  Writes, edits, and reviews text in any language to reduce predictable
+  patterns of AI-generated prose, preserving authentic voice, point of view,
+  and context. Triggered for emails, articles, blog posts, documents, scripts,
+  and professional communications when the user requests natural, authentic
+  writing, and by github-code-review and github-review-react when drafting PR
+  comments and replies so they read as written by a human peer.
 ---
 
 # Humanize Writing
 
-Uma revisão de estilo, **nunca uma lista mecânica de proibições**. O texto mantém propósito, tom, fatos e idioma. Não se inventam dados, experiências vividas ou fontes para imitar uma voz humana.
+A craft-oriented stylistic review, **never a mechanical checklist of rigid prohibitions**. Text preserves its purpose, tone, facts, and target language. Never invent data, lived experiences, or sources to simulate a human voice.
 
 ---
 
-## 1. Idioma e contexto
+## 1. Language and Context
 
-- Escreva no idioma pedido pelo usuário. Sem pedido, mantenha o idioma do texto de origem ou da conversa.
-- Respeite o registro, a pontuação, as expressões e o contexto cultural do idioma. Não transplante hábitos retóricos do inglês para outro idioma.
-- Aplique a intenção editorial deste guia, não a tradução literal dos exemplos. Um padrão só importa quando soa formulaico naquele idioma e contexto.
-
----
-
-## 2. Fluxo
-
-1. **Entender**: propósito, público, voz pretendida, idioma e evidências disponíveis.
-2. **Redigir ou revisar** com clareza e ponto de vista. Prefira parágrafos quando o texto precisa de fluidez; use listas só quando ajudam o leitor a agir ou comparar.
-3. **Passada final** pelos padrões da seção 3. Reescreva apenas onde houver automatismo, excesso ou perda de naturalidade.
-4. **Entregar** o texto pronto. Explique as edições só se o usuário pedir ou se uma escolha editorial relevante precisar ser sinalizada.
+- Write in the language requested by the user. If unstated, preserve the language of the source text or conversation.
+- Respect the register, punctuation, idioms, and cultural context of the language. Do not transplant English rhetorical habits into other languages.
+- Apply the editorial intent of this guide rather than literal translation of examples. A pattern matters only when it sounds formulaic in that specific language and context.
 
 ---
 
-## 3. Checklist de revisão
+## 2. Editorial Flow
 
-- **Contraste pronto**: evite "não se trata de X, e sim de Y". Se o contraste for necessário, que seja específico, surpreendente e enraizado no contexto.
-- **Anáfora** (a mesma abertura em frases seguidas): com parcimônia e intenção, não como ritmo padrão.
-- **Transições-muleta** ("mas quando", "quando isso acontece"): troque por uma ressalva integrada ao raciocínio ou por uma mudança mais direta na estrutura da frase.
-- **Tudo em tópicos**: não transforme cada ideia em lista, passo numerado ou enumeração didática. Deixe o texto respirar em parágrafos.
-- **Meio-termo vazio**: tome posição quando o contexto permite; quando a incerteza é real, defina-a com precisão.
-- **Final de efeito**: não termine por padrão com pergunta provocativa, moral poética ou frase grandiosa. Termine de forma direta, concreta ou abrupta quando isso servir melhor ao texto.
-- **Confie no leitor**: corte explicações óbvias; mantenha elipses e subentendidos quando a compreensão continua intacta.
-- **Ritmo variado**: alterne o tamanho de frases e parágrafos conforme a intenção. Uma frase curta pode bastar. Uma longa também pode merecer o espaço.
-- **Opinião com lastro**: sustente opiniões com evidência verificável quando existir. Sem evidência, apresente a afirmação honestamente como visão pessoal, não como certeza.
-- **Travessão proibido na prosa de comunicação**: em textos destinados a outras pessoas (e-mails, artigos, comentários e respostas de PR, mensagens), nunca use travessão (ou meia-risca no lugar dele) como pausa reflexiva, enfeite ou aparte. Esse é um dos vícios mais evidentes de texto gerado por IA. Reescreva com ponto, vírgula, ponto e vírgula, dois-pontos, parênteses ou outra estrutura. **Regra rígida, não julgamento**: se a frase parece precisar de travessão, reescreva a frase. (Esta restrição não se aplica a elementos estruturais de código, limites de tabelas Markdown, marcadores de lista ou rótulos de identificação como `E1 — Título`).
+1. **Understand**: purpose, target audience, intended voice, language, and verified facts.
+2. **Draft or revise** with clarity and point of view. Favor cohesive paragraphs when prose needs fluidity; use lists strictly when they assist the reader in comparing items or taking action.
+3. **Final pass** through the Section 3 review criteria. Rewrite strictly where text feels automated, bloated, or unnatural.
+4. **Deliver** the polished text. Explain edits only if requested by the user or if a significant editorial decision warrants disclosure.
 
 ---
 
-## 4. Princípios de voz
+## 3. Review Criteria
 
-- Escreva como alguém com história, preferências e contradições plausíveis, sem fabricar biografia ou experiência.
-- Desconfie da figura de linguagem que veio fácil demais.
-- Quebre o ritmo de propósito para dar ênfase, não para encenar espontaneidade.
-- O contexto decide. Nenhum item do checklist é absoluto (exceto o travessão na prosa); o problema é a repetição automática.
-
----
-
-## 5. Limites
-
-- Não remova estrutura, precisão ou tom profissional só para soar informal.
-- Não acrescente fontes, fatos ou anedotas pessoais sem confirmação.
-- Não aplique todos os ajustes de uma vez num texto que já tem voz própria: preserve o que funciona.
+- **Formulaic Contrasts**: avoid "it's not about X, it's about Y". If a contrast is necessary, make it specific, surprising, and rooted in substance.
+- **Anaphora** (repeated sentence openings): use with restraint and intention, never as an unthinking rhythmic habit.
+- **Crutch Transitions** ("when that happens", "more than that"): replace with nuanced qualifications woven into the thought, or restructure the sentence directly.
+- **Excessive Bullet Points**: do not convert every thought into a list, numbered step, or pedagogical enumeration. Allow prose to breathe in well-structured paragraphs.
+- **Empty Compromises**: take a clear stance when context warrants; when uncertainty exists, define its exact boundaries.
+- **Formulaic Flourishes**: avoid closing with rhetorical questions, grand moral aphorisms, or soaring manifestos. End directly, concretely, or abruptly when that best serves the message.
+- **Trust the Reader**: cut patronizing explanations; maintain intentional omissions when comprehension remains intact.
+- **Varied Cadence**: alternate sentence and paragraph lengths intentionally. A short sentence carries punch. A longer sentence can earn its complexity.
+- **Anchored Opinion**: back opinions with verifiable evidence when present. Without evidence, frame statements honestly as perspectives rather than undisputed facts.
+- **Prohibition of Em-dashes in Communicative Prose**: in texts addressed to human teammates (emails, articles, PR comments, PR replies, direct messages), never use em-dashes (or hyphens/en-dashes substituting for them) as dramatic pauses, decorative flourishes, or parenthetical asides. This is one of the most glaring tells of AI-generated text. Rewrite using periods, commas, semicolons, colons, parentheses, or restructured syntax. **Rigid rule, not subjective preference**: if a sentence feels like it needs an em-dash, rewrite the sentence. (This restriction does not apply to code syntax, Markdown table pipes, list bullets, or identifier labels such as `E1 — Title`).
 
 ---
 
-## 6. Validação de Sucesso
+## 4. Voice Principles
 
-- [ ] O texto está no idioma pedido (ou no de origem) e respeita o registro e as convenções desse idioma.
-- [ ] Fatos, propósito e tom profissional foram preservados; nada foi inventado.
-- [ ] A passada final pelo checklist da seção 3 foi feita, e só os trechos com automatismo foram reescritos.
-- [ ] Não há travessão nem meia-risca na prosa do texto gerado.
-- [ ] O texto foi entregue pronto, sem explicação das edições, salvo pedido ou escolha editorial relevante.
+- Write as someone with plausible domain background, preferences, and perspectives, without fabricating false personal anecdotes.
+- Be skeptical of rhetorical figures that come too easily.
+- Break rhythm intentionally for emphasis, never to perform forced spontaneity.
+- Context governs. No checklist item is dogmatic (except the em-dash restriction in prose); the defect is unthinking formulaic repetition.
+
+---
+
+## 5. Boundaries
+
+- Do not strip structure, technical precision, or professional dignity merely to sound casual.
+- Never invent citations, statistics, or personal narratives without verification.
+- Do not apply heavy rewrites to text that already possesses a distinctive, effective voice: preserve what works.
+
+---
+
+## 6. Success Validation
+
+- [ ] Text is in the requested language and honors its register and conventions.
+- [ ] Facts, purpose, and professional tone are preserved; zero fabricated details.
+- [ ] Final pass against Section 3 completed; strictly automated tropes were rewritten.
+- [ ] Zero em-dashes or en-dashes appear within communicative prose.
+- [ ] Delivered ready-to-use without commentary, unless specifically requested.

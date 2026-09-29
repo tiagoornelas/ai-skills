@@ -1,61 +1,61 @@
 ---
 name: prototype
 description: >-
-  Constrói um protótipo descartável para responder a uma única pergunta de
-  design que conversa não resolve: se uma lógica ou modelo de estados se
-  sustenta (demo HTML interativa, com a lógica num módulo puro reaproveitável)
-  ou como uma interface deveria parecer (mockup HTML avulso, fora do projeto,
-  com variantes radicalmente diferentes lado a lado). Deve ser acionada quando o
-  usuário quiser testar uma lógica ou explorar uma interface antes de construí-la,
-  ou quando uma entrevista (grill-me) esbarrar numa pergunta de aparência ou
-  comportamento.
-argument-hint: "[a pergunta que o protótipo deve responder]"
+  Builds a disposable prototype to answer a single design question that
+  conversation cannot resolve: whether a business logic or state machine holds
+  up (interactive standalone HTML demo, with logic encapsulated in a pure,
+  reusable module) or what a user interface should look like (isolated HTML
+  mockup, outside the project repository, featuring radically different design
+  variants side by side). Triggered whenever the user wants to stress-test logic
+  or explore UI directions prior to construction, or when an interview
+  (grill-me) encounters a visual or behavioral fork.
+argument-hint: "[the specific question the prototype must answer]"
 ---
 
 # Prototype
 
-Um protótipo é **código descartável que responde a uma pergunta**. A pergunta vem primeiro e decide a forma de tudo: um protótipo que responde à pergunta errada é desperdício, por melhor que pareça.
+A prototype is **disposable code designed to answer a single question**. The question comes first and dictates every structural decision: a prototype answering the wrong question is wasted effort, regardless of polish.
 
 ---
 
-## 1. Escolher o ramo
+## 1. Choosing the Branch
 
-Identifique qual pergunta está sendo respondida, pelo pedido do usuário, pelo código ao redor ou perguntando:
+Identify the question being investigated—from user intent, surrounding codebase context, or by asking:
 
-| Pergunta | Ramo | Artefato |
+| Question | Branch | Artifact |
 | :--- | :--- | :--- |
-| **"Essa lógica / modelo de estados se sustenta?"** | [`references/logic.md`](references/logic.md) | Um HTML único e compartilhável, com botões livres e roteiros guiados em abas, que empurra o modelo pelos casos difíceis de raciocinar no papel e que um não-desenvolvedor consegue operar. |
-| **"Como isso deveria parecer?"** | [`references/ui.md`](references/ui.md) | Um mockup HTML avulso, **fora do projeto**, que reproduz o design system real e mostra variantes radicalmente diferentes lado a lado. Nada é ligado ao app. |
+| **"Does this business logic / state model hold up?"** | [`references/logic.md`](references/logic.md) | A single, self-contained, shareable HTML file featuring unconstrained action buttons and tabbed scenarios, driving the domain model through edge cases difficult to evaluate on paper, operable by non-technical stakeholders. |
+| **"What should this interface look like?"** | [`references/ui.md`](references/ui.md) | A standalone HTML mockup, **outside the project repository**, faithful to the project's actual design system, displaying radically different visual variants side by side. Completely decoupled from the production app. |
 
-Os dois ramos produzem artefatos muito diferentes: errar aqui desperdiça o protótipo inteiro. Se a pergunta for de fato ambígua e o usuário não estiver disponível, escolha o ramo que combina com o código ao redor (módulo de backend → lógica; página ou componente → UI) e declare a suposição no topo do protótipo.
+The two branches produce fundamentally different deliverables: choosing the wrong one invalidates the exercise. If the inquiry is ambiguous and the user is unavailable, select the branch matching surrounding code (backend module → logic; view/page component → UI) and declare the assumption explicitly at the top of the artifact.
 
-Se a pergunta não cabe numa sessão ("como é o app inteiro?"), não é um protótipo: corte até uma pergunta só.
-
----
-
-## 2. Regras dos dois ramos
-
-1. **Descartável desde o início, e marcado como tal.** A demo de lógica fica ao lado do módulo que prototipa, com nome que deixa claro que não é produção. O mockup de UI fica **fora do projeto**: nada vai para o repositório, então não há o que confundir com produção.
-2. **Trivial de rodar.** Os dois ramos geram um único HTML autocontido que se abre com duplo clique: sem comando, sem servidor de desenvolvimento.
-3. **Sem persistência por padrão.** O estado vive em memória. Persistência é o que o protótipo *verifica*, não algo de que ele depende. Se a pergunta envolve banco de dados, use um banco ou arquivo de rascunho com nome claro, como `PROTOTYPE-apagar`.
-4. **Sem acabamento.** Sem testes, sem tratamento de erro além do necessário para rodar, sem abstrações. No momento em que você endurece o protótipo (adiciona teste, liga o banco real, generaliza), parou de prototipar.
-5. **Estado visível.** Depois de cada ação (lógica) ou lado a lado na página (UI), mostre o estado relevante inteiro, para o usuário ver o que mudou.
-6. **Registrar ao terminar.** A **resposta** (o veredito e a pergunta que ele resolveu) é registrada na issue vinculada ou numa mensagem de commit. O **protótipo** segue o destino do seu ramo: na lógica, o módulo validado entra no código real e o HTML vai para uma branch descartável; na UI, o vencedor é reimplementado de verdade e o mockup é apagado.
+If the inquiry is too broad for a single session ("What should the whole app look like?"), it is not a prototype: narrow it down to a single question.
 
 ---
 
-## 3. Entregar e iterar
+## 2. Universal Rules for Both Branches
 
-Abra o arquivo para o usuário ou passe o caminho. Os momentos que importam são *"espera, isso não devia ser possível"* ou *"ah, eu achava que X seria diferente"*: são os bugs **da ideia**, que é o objetivo. Se ele pedir novas ações, cenários ou variantes, acrescente. Protótipos evoluem.
-
-Quando o protótipo foi acionado por outra skill (por exemplo, uma entrevista do [`grill-me`](../grill-me/SKILL.md)), devolva a ela a resposta em uma linha.
+1. **Disposable by design, and marked as such.** Logic demos reside alongside the module they test, clearly named to indicate prototype status. UI mockups live **outside the project repository**: nothing touches version control, eliminating any risk of confusing it with production code.
+2. **Effortless to run.** Both branches generate a single self-contained HTML file opened via double-click: zero installation commands, zero local dev servers.
+3. **No persistence by default.** State lives purely in memory. Persistence is something a prototype *verifies*, not a prerequisite it depends on. If the question explicitly concerns database behavior, use an isolated scratch database or file clearly named `PROTOTYPE-delete`.
+4. **No premature finish.** No automated test suites, no exhaustive error trapping beyond what is needed to execute, no speculative abstractions. The moment you harden a prototype (adding tests, wiring real databases, generalizing), you have stopped prototyping.
+5. **Visible state.** After every action (logic) or side-by-side on screen (UI), render the complete relevant state so users directly observe mutations.
+6. **Record findings upon conclusion.** The **answer** (the verdict and the question resolved) is recorded in the linked issue or commit message. The **prototype** meets its branch-specific fate: in logic, the validated pure module moves into production code and the HTML demo goes to a scratch branch; in UI, the winning variant is rebuilt from scratch in production and the mockup file is deleted.
 
 ---
 
-## 4. Validação de Sucesso
+## 3. Delivery and Iteration
 
-- [ ] A pergunta que o protótipo responde cabe em uma frase e está escrita no topo do artefato.
-- [ ] O ramo escolhido corresponde à pergunta (lógica × aparência), ou a suposição foi declarada.
-- [ ] O artefato é um único HTML autocontido que abre com duplo clique, com o estado visível.
-- [ ] O mockup de UI não foi escrito dentro do repositório; a demo de lógica está marcada como protótipo.
-- [ ] A resposta foi registrada, e o protótipo teve o destino do seu ramo: nada dele entrou na branch principal como produção.
+Open the file for the user or provide the absolute path. The critical milestones are reactions like *"Wait, that shouldn't be permitted"* or *"Ah, I assumed X would behave differently"*: these uncover **conceptual flaws in the idea**, which is the sole purpose of the prototype. If the user requests new actions, scenarios, or variants, append them. Prototypes evolve rapidly.
+
+When invoked by another skill (such as an interview in [`grill-me`](../grill-me/SKILL.md)), return the resolution to it in a single sentence.
+
+---
+
+## 4. Success Validation
+
+- [ ] The question answered by the prototype fits in a single sentence and is prominently displayed at the top of the artifact.
+- [ ] The selected branch corresponds accurately to the question (logic vs. appearance), or assumptions were declared.
+- [ ] The deliverable is a single self-contained HTML file opening via double-click, featuring transparent visible state.
+- [ ] UI mockups were created strictly outside the repository; logic demos are explicitly flagged as prototypes.
+- [ ] The verdict was recorded, and the prototype followed its branch lifecycle: zero disposable code was merged into main branches.

@@ -1,113 +1,113 @@
-# Dependências Apontam para as Regras de Negócio
+# Dependencies Point Toward Business Rules
 
-> **Tese central**: separe a **política** (as regras de negócio) dos **detalhes** (persistência, UI, frameworks, provedores externos, mecanismos de entrega) e faça as dependências de código cruzarem essa fronteira **num único sentido: em direção à política**. As regras de negócio declaram as **portas** de que precisam, no vocabulário delas; os detalhes as implementam como **plug-ins**. Assim, nenhuma mudança num detalhe obriga a mudar a política.
-
----
-
-## Quando consultar
-
-- Ao definir ou revisar a **direção das dependências** entre módulos.
-- Quando uma regra de negócio precisa de algo de infraestrutura (persistência, mensageria, HTTP, relógio, provedor externo).
-- Ao desenhar a arquitetura de um sistema ou de um módulo grande, e decidir onde ficam as fronteiras entre núcleo e detalhes.
-- Quando houver pressão para escolher cedo banco, framework ou topologia de serviços.
+> **Central thesis**: separate **policy** (business rules) from **details** (persistence, UI, frameworks, external vendors, delivery mechanisms) and ensure code dependencies cross that boundary **in a single direction: pointing inward toward policy**. Business rules declare the **ports** they require, using their own vocabulary; infrastructure details implement them as **plug-ins**. Consequently, no change to an infrastructure detail forces changes to core business policy.
 
 ---
 
-## 1. Política e detalhe
+## When to consult
 
-- **Política**: as regras que existiriam mesmo sem computador (cálculos, validações, decisões e fluxos do negócio). É o que o sistema **é**.
-- **Detalhe**: tudo o que existe para entregar, guardar ou buscar informação (banco, UI, API, CLI, fila, framework, SDK de provedor). É **como** o sistema funciona hoje, e pode mudar sem que o negócio mude.
-- As duas partes mudam por motivos diferentes e em ritmos diferentes. Essa diferença é o que justifica uma fronteira entre elas.
-- Vocabulário: esta referência usa **política × detalhe**, e não "alto/baixo nível". "Camada de cima/de baixo" continua tendo o sentido de [different-layer-different-abstraction.md](different-layer-different-abstraction.md) e de [general-purpose-modules.md](general-purpose-modules.md) (o mecanismo mais geral fica embaixo, e quem está em cima o usa).
+- When establishing or reviewing **dependency direction** between modules.
+- When business logic requires external capabilities (databases, message queues, HTTP endpoints, system clocks, third-party APIs).
+- When architecting system boundaries and separating core domain logic from infrastructure plumbing.
+- Under pressure to commit prematurely to database engines, frameworks, or cloud topologies.
 
 ---
 
-## 2. Fronteira e direção
+## 1. Policy vs. Detail
 
-- A direção da **dependência de código** (quem importa ou conhece quem) não precisa acompanhar a direção do **fluxo de controle** (quem chama quem em tempo de execução).
-- A regra de negócio chama a persistência em tempo de execução. Mas, no código, é o módulo de persistência que conhece a porta declarada pela regra de negócio, e não o contrário:
+- **Policy**: rules that exist independently of computers (computations, validations, domain decisions, business workflows). It defines what the system **is**.
+- **Detail**: technical mechanisms used to transport, store, or display information (databases, web frameworks, CLI parsers, message queues, vendor SDKs). It defines **how** the system executes today, and can change without changing business logic.
+- Policy and details change for different reasons and at different cadences. This divergence justifies an architectural boundary between them.
+- Terminology: this reference uses **policy × detail** rather than ambiguous "high/low level". "Upper/lower layer" retains the meaning from [different-layer-different-abstraction.md](different-layer-different-abstraction.md) and [general-purpose-modules.md](general-purpose-modules.md) (general-purpose mechanisms sit lower, consumed by higher layers).
+
+---
+
+## 2. Boundaries and Directionality
+
+- The direction of **source code dependencies** (who imports or references whom) does not need to mirror runtime **control flow** (who invokes whom during execution).
+- At runtime, business rules invoke persistence operations. In source code, however, persistence modules depend on the port declared by the business rules:
 
 ```text
-Pedidos ──declara──▶ RepositorioDePedidos.salvar(pedido)
+Orders ──declares──▶ OrderRepository.save(order)
                               ▲
-PersistenciaPostgres ──implementa──┘
+PostgresPersistence ──implements──┘
 ```
 
-- Toda seta que cruza a fronteira aponta para o lado da política. O núcleo não sabe qual banco, framework ou provedor existe do outro lado.
-- Consequência: as regras de negócio podem ser **entendidas e testadas sozinhas**, sem subir banco, servidor ou provedor.
+- Every arrow crossing the architectural boundary points toward policy. The core domain knows nothing about the concrete database, web framework, or third-party service on the other side.
+- Consequence: business rules can be **understood and tested in isolation**, with zero dependency on databases, web servers, or cloud infrastructure.
 
 ---
 
-## 3. A porta pertence à política
+## 3. The Port Belongs to Policy
 
-- A porta é declarada **pelo núcleo**, com os **conceitos do núcleo** e **apenas as operações que ele usa**. Para o núcleo, `RepositorioDePedidos` é um conceito do próprio domínio, e não uma necessidade de um cliente qualquer.
-- Isso não contraria [general-purpose-modules.md](general-purpose-modules.md). As duas regras valem em lugares diferentes:
-  - **na fronteira entre política e detalhe**, a porta fica do lado da política e usa o vocabulário dela;
-  - **atrás da porta**, o adaptador pode (e costuma) usar módulos gerais, com interfaces no vocabulário deles (um cliente de banco, um armazenamento chave-valor, um cliente HTTP).
-- A porta deve ser **profunda** e **esconder** tudo sobre o detalhe (ver [information-hiding.md](information-hiding.md)). Uma porta que só espelha a API do banco ou do SDK inverte a seta, mas não protege nada: os conceitos da infraestrutura (tabelas, transações, códigos de status, paginação do provedor) continuam vazando para as regras de negócio.
-
----
-
-## 4. Detalhes como plug-ins
-
-- Com as portas do lado da política, cada detalhe vira um **plug-in**: pode ser trocado, duplicado (uma implementação real e uma em memória para testes) ou adiado sem alterar o núcleo.
-- A relação é **assimétrica**: o plug-in conhece o núcleo; o núcleo não sabe que o plug-in existe.
-- Para isso funcionar, as implementações precisam ser **substituíveis**: qualquer uma deve cumprir o contrato completo da porta, inclusive a parte informal (ver [deep-modules.md](deep-modules.md)).
-
-### Adiar decisões
-
-- Com a porta definida, a escolha do detalhe (qual banco, qual framework, qual provedor, se haverá serviços separados) pode ser **adiada** até existir informação suficiente para decidir. Começa-se com a implementação mais simples que cumpre o contrato.
-- Decisões de infraestrutura tomadas cedo demais, antes de entender os casos de uso, tendem a contaminar o núcleo e a custar caro depois.
+- The port is declared **by the domain core**, expressed in the **domain's own vocabulary**, containing **only the operations it requires**. To the domain, `OrderRepository` is an intrinsic domain concept, not an accommodation for an external client.
+- This aligns with [general-purpose-modules.md](general-purpose-modules.md). The two principles govern different boundaries:
+  - **at the boundary between policy and detail**, the port lives on the policy side and uses policy vocabulary;
+  - **behind the port**, infrastructure adapters consume general-purpose utilities expressed in infrastructure vocabulary (SQL drivers, key-value stores, HTTP clients).
+- Ports must be **deep** and **encapsulate** all infrastructure details (see [information-hiding.md](information-hiding.md)). A port that merely mirrors database APIs or SDK types fails to protect the core: infrastructure concepts (tables, transaction handles, HTTP status codes, vendor pagination tokens) leak directly into business logic.
 
 ---
 
-## 5. Onde se criam os concretos
+## 4. Details as Plug-ins
 
-- Alguém precisa conhecer as implementações concretas para criá-las e conectá-las às portas.
-- Concentre esse conhecimento em **poucos pontos de composição** (o `main`, um *composition root*, a configuração da aplicação), e não espalhado pelas regras de negócio.
+- By placing ports on the policy side, infrastructure details become interchangeable **plug-ins**: they can be swapped, duplicated (in-memory doubles for tests vs. production implementations), or deferred without touching core logic.
+- The relationship is **asymmetric**: plug-ins know the core; the core does not know plug-ins exist.
+- This requires **substitutability**: every implementation must fulfill the complete contract, including informal behavioral guarantees (see [deep-modules.md](deep-modules.md)).
 
----
+### Deferring Decisions
 
-## 6. Levando longe demais
-
-- **Inverta só onde há fronteira entre política e detalhe.** Dentro da própria política, ou dentro de um mesmo detalhe, dependências diretas entre módulos são mais simples e mais óbvias. Uma interface para cada classe, com uma única implementação e nada a proteger, gera módulos rasos e **obscuridade** (o leitor precisa descobrir o que roda de verdade). Ver [deep-modules.md](deep-modules.md) e [obvious-code.md](obvious-code.md).
-- **Dependências estáveis podem ser diretas.** Bibliotecas padrão da linguagem e tipos básicos mudam raramente; escondê-las atrás de portas é custo sem ganho.
-- **Fronteira lógica antes de física.** Uma fronteira arquitetural não precisa ser um serviço, um processo ou uma fila: na maioria dos casos, basta uma porta no código com as dependências no sentido certo. Fronteiras físicas antes de uma necessidade concreta (escala, implantação independente, times separados) trazem o custo da distribuição sem o benefício.
-- **Não separe o que muda junto.** Uma fronteira no lugar errado gera amplificação de mudança a cada nova funcionalidade. Confira contra [together-or-apart.md](together-or-apart.md).
+- With ports established, technical decisions (database engine, framework, cloud vendor, service boundaries) can be **deferred** until sufficient operational data exists. Development begins with the simplest lightweight implementation that satisfies the contract.
+- Infrastructure decisions made prematurely before understanding use cases contaminate domain models and incur heavy downstream costs.
 
 ---
 
-## Red flags
+## 5. Composition Roots
 
-- Uma regra de negócio que importa um módulo de banco, framework web, SDK de provedor ou fila.
-- Conceitos de infraestrutura (tabelas, transações, códigos HTTP, formatos de provedor) aparecendo nas regras de negócio.
-- Portas que espelham a API da infraestrutura em vez de expressar a necessidade do núcleo.
-- Não dá para testar as regras de negócio sem subir banco, servidor ou provedor.
-- Trocar um detalhe (banco, UI, provedor) exigiria alterar o núcleo.
-- Setas de dependência cruzando uma fronteira nos dois sentidos.
-- Criação de implementações concretas espalhada pelas regras de negócio.
-- O oposto: interfaces com uma única implementação e nenhuma fronteira entre política e detalhe a proteger.
+- Somewhere in the application, concrete implementations must be instantiated and injected into ports.
+- Concentrate concrete wiring into **centralized composition roots** (the `main` function, a dependency injection container, application bootstrap scripts), keeping instantiation out of business logic.
 
 ---
 
-## Como aplicar
+## 6. Taking It Too Far
 
-1. No mapa de módulos, **classifique cada módulo** como política ou detalhe. Quando a classificação depender do negócio, pergunte ao humano.
-2. **Trace a fronteira** entre as duas partes.
-3. Para cada dependência de código que vai da política para um detalhe, **crie uma porta do lado da política**, com o vocabulário dela e só com as operações que ela usa. O detalhe implementa a porta.
-4. Verifique se cada porta **esconde** o detalhe: nenhum conceito de infraestrutura deve atravessá-la.
-5. **Concentre a criação** dos concretos em poucos pontos de composição.
-6. **Teste do plug-in**: para cada detalhe, pergunte "dá para trocar isto, ou substituir por uma versão em memória, sem alterar as regras de negócio?". Se não, a fronteira está vazando.
-7. Liste as **decisões de infraestrutura que podem ser adiadas** e o que falta saber para tomá-las.
-
-Ao reportar ao humano, mostre no mapa de módulos o núcleo, os plug-ins e a fronteira, com todas as setas cruzando no mesmo sentido, e um cartão de interface para cada porta. A direção das dependências, as portas e as decisões adiadas são da Camada Humana.
+- **Invert dependencies only at genuine policy/detail boundaries.** Within domain policy, or within a single infrastructure adapter, direct dependencies between cohesive classes are simpler and more obvious. Creating an interface for every single class with only one implementation breeds shallow modules and **obscurity** (forcing readers to hunt for the actual execution path). See [deep-modules.md](deep-modules.md) and [obvious-code.md](obvious-code.md).
+- **Stable dependencies can remain direct.** Language standard libraries and fundamental primitives change rarely; wrapping them behind custom ports adds boilerplate without protection.
+- **Logical boundaries precede physical boundaries.** Architectural boundaries do not require microservices, separate processes, or message queues: in most cases, clean interfaces and correct dependency arrows in code are sufficient. Physical boundaries introduced prematurely impose distributed systems overhead without architectural benefits.
+- **Do not decouple things that change together.** An improperly placed boundary amplifies changes across every new feature. Cross-reference with [together-or-apart.md](together-or-apart.md).
 
 ---
 
-## Relações
+## Red Flags
 
-- Portas devem ser profundas e esconder o detalhe: [deep-modules.md](deep-modules.md) e [information-hiding.md](information-hiding.md).
-- Atrás da porta, módulos gerais no vocabulário deles: [general-purpose-modules.md](general-purpose-modules.md).
-- Cada lado da fronteira oferece uma abstração diferente: [different-layer-different-abstraction.md](different-layer-different-abstraction.md).
-- O custo de separar o que muda junto: [together-or-apart.md](together-or-apart.md).
-- Dependências são uma das duas causas de complexidade: [nature-of-complexity.md](nature-of-complexity.md).
+- Business logic importing database drivers, web frameworks, cloud SDKs, or queue libraries.
+- Infrastructure concepts (tables, transactions, HTTP codes, cloud payloads) surfacing in domain types.
+- Ports that mirror vendor APIs rather than expressing core domain needs.
+- Business rules untestable without booting a database, web server, or cloud emulator.
+- Changing infrastructure requires modifying business policy.
+- Dependency arrows crossing an architectural boundary in both directions.
+- Direct instantiation of concrete infrastructure classes scattered across business services.
+- The inverse anti-pattern: one-to-one interfaces with zero policy/detail boundary to protect.
+
+---
+
+## How to Apply
+
+1. On the module map, **classify every module** as policy or detail. When classification hinges on business context, confirm with the human.
+2. **Draw the boundary** between policy and detail.
+3. For every dependency pointing from policy toward detail, **define a port on the policy side**, in policy vocabulary, containing only the operations the policy needs. The detail implements the port.
+4. Verify that the port **encapsulates** the detail: no infrastructure artifacts may leak through.
+5. **Centralize instantiation** of concrete classes within composition roots.
+6. **The plug-in test**: for each detail, ask "Can this be replaced with an in-memory double without editing business logic?" If not, the boundary is leaking.
+7. List **infrastructure decisions that can be deferred** and the criteria needed to make them.
+
+When presenting to the human, highlight core domain, plug-ins, and boundary lines on the module map, showing all boundary-crossing arrows pointing inward, accompanied by interface cards for each port. Dependency direction, ports, and deferred decisions belong to the Human Layer.
+
+---
+
+## Relationships
+
+- Ports must be deep and encapsulate implementation details: [deep-modules.md](deep-modules.md) and [information-hiding.md](information-hiding.md).
+- Behind the port, general-purpose modules in their own vocabulary: [general-purpose-modules.md](general-purpose-modules.md).
+- Each side of the boundary provides a different abstraction: [different-layer-different-abstraction.md](different-layer-different-abstraction.md).
+- The cost of separating things that change together: [together-or-apart.md](together-or-apart.md).
+- Dependencies as a primary driver of complexity: [nature-of-complexity.md](nature-of-complexity.md).

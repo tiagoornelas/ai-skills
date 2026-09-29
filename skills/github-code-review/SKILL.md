@@ -1,221 +1,220 @@
 ---
 name: github-code-review
 description: >-
-  Revisa o Pull Request de um colega no GitHub (ou um diff desde um ponto fixo)
-  combinando os critérios do agent-self-review (ferramental, regras do projeto,
-  cobertura da DoD, sanidade dos testes e qualidade do código) com os do human-review
-  (módulos, direção de dependências, contratos e comportamentos). Os eixos rodam em
-  subagentes paralelos. Depois a skill discute os achados com o usuário,
-  recomenda aprovar ou pedir alterações e transforma os pontos aceitos em
-  comentários em PT-BR prontos para colar no PR.
+  Reviews a teammate's GitHub Pull Request (or a diff from a fixed reference point)
+  by combining criteria from agent-self-review (tooling, project rules, DoD coverage,
+  test sanity, code quality) with human-review (modules, dependency direction, contracts,
+  and behaviors). Evaluation axes run across parallel subagents. The skill then
+  discusses findings with the user, recommends approval or change requests, and formats
+  accepted points into humanized review comments ready to paste into GitHub.
 disable-model-invocation: true
-argument-hint: "[número/URL do PR, branch, SHA ou ref base]"
+argument-hint: "[PR number/URL, branch, SHA, or base ref]"
 ---
 
 # GitHub Code Review
 
-Para revisar **o trabalho de outras pessoas**: o PR de um colega, ou qualquer diff desde um ponto fixo. A entrega não é a revisão em si; é **ajudar o usuário a decidir** (aprovar ou pedir alterações) e **a encontrar os pontos em que ele vai comentar**.
+For reviewing **other people's work**: a teammate's PR, or any diff from a fixed base. The deliverable is not the raw review itself; it is **assisting the user in deciding** (approve or request changes) and **identifying the specific points they will comment on**.
 
-> Esta skill aplica ao código de um colega os mesmos critérios que o pipeline aplica ao próprio código: o rigor mecânico do [`agent-self-review`](../agent-self-review/SKILL.md) e a visão de governança do [`human-review`](../human-review/SKILL.md). A diferença é que aqui **nada é corrigido**: tudo vira achado, e o usuário escolhe o que comentar.
+> This skill applies the same standards to a teammate's code that the development pipeline applies internally: the mechanical rigor of [`agent-self-review`](../agent-self-review/SKILL.md) and the architectural governance of [`human-review`](../human-review/SKILL.md). The difference is that here **nothing is modified unilaterally**: everything becomes a finding, and the user chooses what to comment on.
 
-Quatro eixos, rodados como **subagentes paralelos** para que um não contamine o contexto do outro:
+Four review axes, executed via **parallel subagents** to prevent context contamination:
 
-| Eixo | Origem | Pergunta |
+| Axis | Origin | Core Question |
 | :--- | :--- | :--- |
-| 🔧 **Qualidade e Regras** | `agent-self-review` fases 1–2 | O código passa no ferramental e segue as regras documentadas do projeto? |
-| ✅ **Comportamentos e Testes** | `agent-self-review` fases 3–4 + tabela DoD do `human-review` | A mudança faz o que foi pedido, e cada comportamento está provado por teste que sobrevive a refatorações? |
-| 🏗️ **Arquitetura e Contratos** | `human-review` + referências de `software-designing` | Módulos, fronteiras, direção das dependências e contratos estão sólidos? |
-| 🧹 **Qualidade do Código** | `agent-self-review` fase 5 + referências de `coding` | O código novo, abaixo dos contratos, é fácil de ler e de mudar? |
+| 🔧 **Quality and Rules** | `agent-self-review` phases 1–2 | Does code pass project tooling and follow documented repository rules? |
+| ✅ **Behaviors and Tests** | `agent-self-review` phases 3–4 + `human-review` DoD table | Does the change fulfill requirements, with each behavior verified by refactor-proof tests? |
+| 🏗️ **Architecture and Contracts** | `human-review` + `software-designing` references | Are modules, boundaries, dependency direction, and contracts architecturally sound? |
+| 🧹 **Code Quality** | `agent-self-review` phase 5 + `coding` references | Is newly added code below contracts clean, obvious, and maintainable? |
 
 ---
 
-## 1. Fixar o ponto de comparação
+## 1. Establish the Comparison Baseline
 
-Use o que o usuário indicou: um PR, SHA, branch, tag, `main`, `HEAD~5`.
+Use the reference provided by the user: PR number/URL, SHA, branch, tag, `main`, `HEAD~5`.
 
-- **PR do GitHub**: `gh pr view <pr> --json number,title,body,baseRefName,headRefName,url,author` e `gh pr diff <pr>`. A base do PR é o ponto fixo.
-- **Ref local**: `git diff <ponto-fixo>...HEAD` (três pontos, contra o merge-base) e `git log <ponto-fixo>..HEAD --oneline`.
+- **GitHub PR**: `gh pr view <pr> --json number,title,body,baseRefName,headRefName,url,author` and `gh pr diff <pr>`. The PR base is the fixed point.
+- **Local Ref**: `git diff <fixed-ref>...HEAD` (triple-dot, against merge-base) and `git log <fixed-ref>..HEAD --oneline`.
 
-Capture o diff **uma única vez**. Confirme que a ref resolve e que o diff não está vazio **antes** de criar qualquer subagente: uma ref inválida deve falhar aqui, não dentro dos subagentes.
+Capture the diff **once**. Verify that the reference resolves and that the diff is non-empty **before** creating subagents: invalid refs must fail here, not inside subagent threads.
 
-Para o eixo 🔧 poder rodar o ferramental, prepare uma cópia isolada do código do PR **sem mexer no working tree do usuário**:
+To allow Axis 🔧 to run test and lint tooling, create an isolated worktree of the PR code **without altering the user's working tree**:
 
 ```bash
 git fetch origin pull/<pr>/head:review/<pr>
 git worktree add ../<repo>-review-<pr> review/<pr>
 ```
 
-Registre o caminho do worktree para os subagentes. Ao final da revisão, remova-o (`git worktree remove`) e apague a branch local `review/<pr>`.
+Pass the worktree path to subagents. Upon completing the review, clean it up (`git worktree remove`) and delete the local `review/<pr>` branch.
 
 ---
 
-## 2. Encontrar a especificação (DoD)
+## 2. Locate the Specification (DoD)
 
-Na ordem: issues referenciadas no corpo do PR ou nas mensagens de commit (Jira, GitHub) → caminho informado pelo usuário → PRD, blueprint ou ticket em `docs/` que corresponda à branch ou feature → perguntar.
+In order: issues referenced in the PR body or commit messages (Jira, GitHub, Linear) → path provided by the user → PRD, blueprint, or ticket in `docs/` matching the branch or feature → ask the user.
 
-Extraia uma **lista de comportamentos esperados** (critérios de aceite). Se não houver especificação, diga isso no relatório: o eixo ✅ passa a avaliar só a sanidade dos testes e o escopo aparente. **Não invente uma especificação a partir do diff.**
-
----
-
-## 3. Encontrar a arquitetura pretendida
-
-O eixo 🏗️ precisa saber o que o design *deveria* ser, senão vira preferência pessoal. Procure, na ordem:
-
-1. um blueprint, ADR ou documento de design dessa área;
-2. a arquitetura que o código ao redor já estabelece, com as convenções com que esta mudança deveria ser consistente;
-3. na falta dos dois, os princípios gerais em [`software-designing/references/`](../software-designing/references/).
-
-Diga qual dos três foi usado. "Inconsistente com a estrutura de módulos que o resto deste pacote usa" é um achado muito mais forte que "eu teria feito diferente", e o leitor merece saber qual dos dois está recebendo.
+Extract a **list of expected behaviors** (acceptance criteria). If no specification exists, state that explicitly in the report: Axis ✅ then evaluates test suite sanity and apparent scope. **Never invent a specification out of thin air from the diff.**
 
 ---
 
-## 4. Escala de severidade
+## 3. Identify Intended Architecture
 
-Todo achado, em todos os eixos, recebe uma destas marcas, para o relatório poder ser lido de relance:
+Axis 🏗️ needs to know what the design *ought* to be; otherwise review degenerates into subjective personal preference. Check, in order:
 
-- 🔴 **Crítico**: quebra um requisito, introduz bug, falha no ferramental ou viola uma regra obrigatória. Não deveria entrar como está. Equivale ao **Blocking** do `agent-self-review`.
-- 🟡 **Atenção**: preocupação real, não bloqueante, que vale discutir antes do merge. Equivale ao **Should fix** do `agent-self-review`.
-- 🟢 **Sugestão**: melhoria de baixo impacto, **com cenário concreto**. Preferência de estilo sem cenário concreto não é reportada em nenhum eixo.
+1. an existing architectural blueprint, ADR, or design doc for this domain;
+2. established patterns in surrounding code that this change should remain consistent with;
+3. in the absence of both, general design principles in [`software-designing/references/`](../software-designing/references/).
 
-Diferença em relação ao `agent-self-review`: lá, qualquer desvio das regras é bloqueante porque o próprio agente corrige na hora. Aqui é o código de um colega. **Violação de regra documentada** do projeto pode ser 🔴 ou 🟡, conforme o impacto. **Red flag de design** (vindo das referências de `coding` ou `software-designing`) é um julgamento e **nunca passa de 🟡**, a menos que cause um problema concreto demonstrável.
-
----
-
-## 5. Reunir as regras do projeto
-
-Todas as fontes que documentam como o código deve ser escrito aqui: `AGENTS.md`/`CLAUDE.md` do repositório e do usuário, tudo em `docs/rules/` e arquivos como `CODING_STANDARDS.md` ou `CONTRIBUTING.md`. As referências da skill [`coding`](../coding/SKILL.md) não são regras do projeto: são usadas pelo eixo 🧹.
-
-- **O repositório prevalece**: uma regra documentada do repo sempre vence; se ela endossa algo que as referências gerais apontariam, descarte o achado.
-- **Não duplique o ferramental**: ignore o que linters e formatadores já garantem; o que eles reportarem entra via Fase 1.
+State which source was referenced. "Inconsistent with the module structure used throughout this package" is a vastly stronger finding than "I would have designed it differently".
 
 ---
 
-## 6. Criar os quatro subagentes em paralelo
+## 4. Severity Scale
 
-Uma única mensagem com quatro chamadas à ferramenta de subagentes do harness (ver [subagent-delegation.md](../ai-assisted-software-development/references/subagent-delegation.md); no Claude Code, `Agent` com tipo `general-purpose`). Nos briefs abaixo, `<skills>` é a pasta de skills: troque pelo caminho absoluto antes de enviar. Cole a **escala de severidade da seção 4** em cada brief: cada subagente marca seus próprios achados, e nada precisa ser retriado depois. Nenhum subagente altera código.
+Every finding across all axes receives one of these badges for scannability:
 
-**🔧 Qualidade e Regras**: passe o comando do diff, a lista de commits, o caminho do worktree, as fontes de regras da seção 5 e a escala. Brief:
-> *"Aplique as fases 1 e 2 de `<skills>/agent-self-review/SKILL.md` ao código deste PR, sem corrigir nada. (a) No worktree, rode os linters, verificadores de tipo e testes do projeto; se não for possível rodar, use `gh pr checks <pr>` e diga isso. Reporte só falhas introduzidas ou tocadas pelo diff. (b) Reporte cada ponto do diff que viola uma regra documentada, citando arquivo e regra. Não reporte code smells nem julgamentos gerais de qualidade: são de outro eixo. Cite `arquivo:linha` em todos. Prefixe cada achado com o emoji de severidade (🔴/🟡/🟢) da escala. Até 400 palavras."*
+- 🔴 **Critical**: breaks a requirement, introduces a bug, fails build/test tooling, or violates a mandatory rule. Must not be merged as-is. Equivalent to **Blocking** in `agent-self-review`.
+- 🟡 **Warning**: real concern, non-blocking, warrants discussion prior to merge. Equivalent to **Should fix** in `agent-self-review`.
+- 🟢 **Suggestion**: minor improvement **with a concrete scenario**. Style preferences lacking concrete failure scenarios are never reported on any axis.
 
-**✅ Comportamentos e Testes**: passe o comando do diff, a lista de commits, a lista de comportamentos da seção 2 e a escala, com instrução para ler antes `<skills>/coding/references/testing.md`. Brief:
-> *"Aplique as fases 3 e 4 de `<skills>/agent-self-review/SKILL.md` a este PR, sem corrigir nada. Para cada comportamento da lista, classifique com a legenda de DoD de `<skills>/human-review/SKILL.md` (seção 2.3): ✅, 🔎, 👤 (diga o que o revisor precisa verificar manualmente e como) ou 🚨. Depois reporte como achados: (a) comportamento implementado, testável, mas sem teste adequado (🟡); (b) comportamento no diff que não foi pedido (scope creep); (c) testes do diff que violam `testing.md` (acoplados a texto, estrutura ou internos; internos expostos só para teste; mocks de colaboradores internos; infraestrutura de testes nova sem relação com a tarefa), com o cenário concreto de quebra. Cite o critério da especificação e o `arquivo:linha`. Prefixe cada achado com o emoji de severidade (🔴/🟡/🟢) da escala. Até 400 palavras."*
-
-**🏗️ Arquitetura e Contratos**: passe o comando do diff, a lista de commits, a arquitetura pretendida da seção 3 e a escala, com instrução para ler antes `<skills>/human-review/SKILL.md` e todos os arquivos em `<skills>/software-designing/references/`, e internalizar essas lentes antes de opinar. Brief:
-> *"Revise o design do diff, não a sintaxe nem a lógica de negócio. Seguindo a estrutura do `human-review`, reporte: (a) módulos novos, alterados ou removidos e a direção das dependências, com um mapa de módulos na notação do `visualize-it` e marcação de qualquer seta que aponte para fora das regras de negócio; (b) interfaces e contratos públicos criados ou alterados: o que prometem e seus modos de falha; (c) preocupações ordenadas por impacto: qual é o problema, por que importa concretamente (o que quebra, o que fica mais difícil) e uma direção sugerida, usando os termos das referências (módulo raso, vazamento de informação, método repassador etc.); (d) pontos fortes a preservar. Pese os trade-offs: diga quando uma aparente violação é razoável e deliberada. Aponte arquivos, funções e linhas. Prefixe cada preocupação com o emoji de severidade (🔴/🟡/🟢) da escala; pontos fortes não levam emoji. Até 500 palavras."*
-
-**🧹 Qualidade do Código**: passe o comando do diff, a lista de commits, as regras do projeto da seção 5 e a escala, com instrução para ler antes todos os arquivos em `<skills>/coding/references/`. Brief:
-> *"Aplique a Fase 5 de `<skills>/agent-self-review/SKILL.md` a este PR, sem corrigir nada. Olhe só as linhas adicionadas ou alteradas pelo diff. Reporte **no máximo 5** achados (nomes, funções, comentários, tratamento de erro ou code smells), escolhidos pela prioridade de impacto de `code-smells.md` (risco de bug → custo de mudança → legibilidade). Para cada um: o problema, o cenário concreto em que ele atrapalha, a refatoração sugerida pelo nome e `arquivo:linha`. Descarte o que não tiver cenário concreto, o que for preferência de estilo, o que o ferramental já pega, o que uma regra do projeto endossa e o que está na seção 'Fora deste catálogo'. Não reporte smells na escala de módulo ou de contrato: são do eixo de arquitetura. Severidade máxima 🟡. Até 300 palavras."*
+*Calibration*: in `agent-self-review`, rule violations are blocking because the agent fixes them immediately. Here, this is a peer's PR. **Documented rule violations** can be 🔴 or 🟡 based on impact. **Design red flags** (from `coding` or `software-designing`) are subjective evaluations and **never exceed 🟡**, unless they trigger a demonstrable failure.
 
 ---
 
-## 7. Apresentar e discutir
+## 5. Gather Repository Rules
 
-Monte o relatório para ser lido em segundos. **Não misture nem reordene os achados entre eixos**: uma mudança pode passar num eixo e falhar em outro, e a separação impede que um mascare os demais.
+Consolidate documentation on repository coding guidelines: repository `AGENTS.md`/`CLAUDE.md`, user global rules, files under `docs/rules/`, and `CODING_STANDARDS.md` or `CONTRIBUTING.md`. References from the [`coding`](../coding/SKILL.md) skill are not repo rules: they serve Axis 🧹.
+
+- **The repository prevails**: documented project rules always override general standards; if a rule endorses a pattern that general guidelines discourage, discard the finding.
+- **Do not duplicate automated tooling**: ignore issues already flagged by linters and formatters; those surface through Phase 1.
+
+---
+
+## 6. Launch the Four Subagents in Parallel
+
+Send a single prompt launching four subagents concurrently using the harness subagent tool (see [subagent-delegation.md](../ai-assisted-software-development/references/subagent-delegation.md); in Claude Code, `Agent` with `general-purpose` type). In briefs below, `<skills>` represents the skills folder: replace with the absolute path before sending. Embed the **Section 4 severity scale** in each brief. Subagents never modify code.
+
+**🔧 Quality and Rules**: pass diff command, commit list, worktree path, Section 5 rule sources, and severity scale. Brief:
+> *"Apply phases 1 and 2 of `<skills>/agent-self-review/SKILL.md` to this PR, without fixing anything. (a) In the worktree, run linters, typecheckers, and tests; if unable to run, use `gh pr checks <pr>` and state that. Report strictly failures introduced or touched by the diff. (b) Report every diff location violating a documented project rule, citing file and rule. Do not report code smells or general design judgments: those belong to another axis. Cite `file:line` for all findings. Prefix each finding with its severity emoji (🔴/🟡/🟢). Max 400 words."*
+
+**✅ Behaviors and Tests**: pass diff command, commit list, Section 2 behavior list, and severity scale, instructing to first read `<skills>/coding/references/testing.md`. Brief:
+> *"Apply phases 3 and 4 of `<skills>/agent-self-review/SKILL.md` to this PR, without fixing anything. For each behavior, classify using the DoD legend from `<skills>/human-review/SKILL.md` (Section 2.3): ✅, 🔎, 👤 (state manual validation steps), or 🚨. Report findings: (a) implemented behavior that is testable but lacks adequate tests (🟡); (b) behavior in diff that was not requested (scope creep); (c) tests in diff violating `testing.md` (coupled to text, markup, or internals; exposed private symbols; mocked internal collaborators), with concrete failure scenarios. Cite requirement and `file:line`. Prefix each finding with severity emoji (🔴/🟡/🟢). Max 400 words."*
+
+**🏗️ Architecture and Contracts**: pass diff command, commit list, Section 3 intended architecture, and severity scale, instructing to first read `<skills>/human-review/SKILL.md` and all files in `<skills>/software-designing/references/`. Brief:
+> *"Review the architectural design of the diff, not syntax or business logic. Following `human-review`, report: (a) new, modified, or removed modules and dependency direction, with a module map in `visualize-it` notation, highlighting any arrows pointing away from business rules; (b) public interfaces and contracts created or altered: promises and failure modes; (c) architectural concerns prioritized by impact: describe the issue, concrete scenario (what breaks or becomes rigid), and suggested direction using reference concepts (shallow module, information leakage, pass-through method); (d) strengths to preserve. Balance trade-offs. Cite files, functions, lines. Prefix concerns with severity emoji (🔴/🟡/🟢); strengths carry no emoji. Max 500 words."*
+
+**🧹 Code Quality**: pass diff command, commit list, Section 5 project rules, and severity scale, instructing to first read files in `<skills>/coding/references/`. Brief:
+> *"Apply Phase 5 of `<skills>/agent-self-review/SKILL.md` to this PR, without fixing anything. Inspect strictly lines added or altered by the diff. Report **at most 5** findings (naming, functions, comments, error handling, or code smells), prioritized by impact per `code-smells.md` (bug risk → change cost → readability). For each: the issue, concrete failure scenario, suggested refactoring by name, and `file:line`. Discard items lacking concrete scenarios, style preferences, or anything covered by linters. Do not report module-scale architectural smells: those belong to the architecture axis. Maximum severity 🟡. Max 300 words."*
+
+---
+
+## 7. Present and Discuss
+
+Format the report for quick scanning. **Never combine or re-order findings across axes**: a PR might pass on tooling while failing on architecture; separation prevents masking.
 
 ```markdown
-### 🔧 Qualidade e Regras — 🔴 1 · 🟡 2 · 🟢 0
+### 🔧 Quality and Rules — 🔴 1 · 🟡 2 · 🟢 0
 
-- 🔴 **<título em uma linha>** — <por que importa, cenário concreto, arquivo:linha>
-- 🟡 **<título>** — <detalhe>
+- 🔴 **<one-line title>** — <why it matters, concrete scenario, file:line>
+- 🟡 **<title>** — <detail>
 
-### ✅ Comportamentos e Testes — 🔴 0 · 🟡 1 · 🟢 0
+### ✅ Behaviors and Tests — 🔴 0 · 🟡 1 · 🟢 0
 
-| Status | Comportamento (DoD) | Evidência | O que o revisor deve fazer |
+| Status | Behavior (DoD) | Evidence | Action for Reviewer |
 | :---: | :--- | :--- | :--- |
-| ✅ | ... | `tests/...` | Nada |
-| 👤 | ... | Não testável por código | Verificar manualmente: ... |
-| 🚨 | ... | Ausente | Bloqueante |
+| ✅ | ... | `tests/...` | None |
+| 👤 | ... | Not code-testable | Manually verify: ... |
+| 🚨 | ... | Missing | Blocker |
 
-- 🟡 **<título>** — <detalhe>
+- 🟡 **<title>** — <detail>
 
-### 🏗️ Arquitetura e Contratos — 🔴 0 · 🟡 1 · 🟢 1
+### 🏗️ Architecture and Contracts — 🔴 0 · 🟡 1 · 🟢 1
 
-<mapa de módulos via visualize-it, na notação dele>
+<module map via visualize-it>
 
-- 🟡 **<título>** — <detalhe>
-- 🟢 **<título>** — <detalhe>
-- ✅ <ponto forte a preservar>
+- 🟡 **<title>** — <detail>
+- 🟢 **<title>** — <detail>
+- ✅ <strength to preserve>
 
-### 🧹 Qualidade do Código — 🔴 0 · 🟡 1 · 🟢 2
+### 🧹 Code Quality — 🔴 0 · 🟡 1 · 🟢 2
 
-- 🟡 **<problema>** — <cenário concreto, refatoração sugerida, arquivo:linha>
-- 🟢 **<problema>** — <detalhe>
+- 🟡 **<issue>** — <concrete scenario, suggested refactoring, file:line>
+- 🟢 **<issue>** — <detail>
 ```
 
-Se um eixo foi pulado (sem especificação, ferramental impossível de rodar etc.) ou voltou limpo, diga isso numa linha sob o título, sem omitir o título.
+If an axis was skipped (missing spec, unable to run tooling), state that in a single line under the heading without omitting the heading.
 
-Feche com o resumo e a **recomendação de veredito**:
+Conclude with summary and **recommended verdict**:
 
 ```markdown
-## 📊 Resumo
+## 📊 Summary
 
-🔴 Crítico:  N   — precisa de atenção antes do merge
-🟡 Atenção:  N   — vale discutir
-🟢 Sugestão: N   — opcional
+🔴 Critical:   N   — requires attention prior to merge
+🟡 Warning:    N   — worth discussing
+🟢 Suggestion: N   — optional
 
-Pior eixo: **<eixo>** (<pior achado em uma linha>)
+Highest-risk axis: **<axis>** (<key finding in one line>)
 
-**Veredito sugerido:** ✅ Aprovar | 💬 Aprovar com comentários | 🔁 Pedir alterações
-<uma frase justificando>
+**Suggested Verdict:** ✅ Approve | 💬 Approve with comments | 🔁 Request changes
+<single sentence rationale>
 ```
 
-Regra do veredito sugerido: qualquer 🔴 (ou 🚨 na tabela DoD) → **Pedir alterações**; só 🟡/🟢 → **Aprovar com comentários**; limpo → **Aprovar**. É uma sugestão: **o veredito é do usuário**.
+Verdict rule: any 🔴 (or 🚨 in DoD table) → **Request changes**; strictly 🟡/🟢 → **Approve with comments**; clean → **Approve**. This is a recommendation: **the verdict belongs to the user**.
 
-Depois, ofereça sem insistir: qualquer achado pode ser visto em detalhe com [`visualize-it`](../visualize-it/SKILL.md), apontando para o arquivo, função ou fluxo por trás dele. Continue na conversa e responda às dúvidas. O usuário pode rebaixar, promover ou descartar achados.
+Engage in conversation and answer questions. The user may promote, demote, or discard findings.
 
 ---
 
-## 8. Transformar os pontos aceitos em comentários
+## 8. Format Accepted Points into Comments
 
-Quando o usuário estiver pronto, **pergunte quais achados ele considera válidos e qual veredito vai dar.** Só esses viram comentários: nunca publique a revisão inteira.
+When the user is ready, **ask which findings they consider valid and what final verdict they choose.** Only accepted findings become review comments: never publish the unfiltered report.
 
-### 8.1. Comentários de linha
+### 8.1. Line Comments
 
-Para cada achado aceito, gere um comentário pronto para colar, em **PT-BR**. Rascunhe e depois passe pela skill [`humanize-writing`](../humanize-writing/SKILL.md) antes de apresentar: são lidos por um colega, e um comentário que parece gerado por IA quebra o tom colaborativo.
+For each accepted finding, generate a ready-to-paste comment in the language of the PR/repository (or user session language). Draft and pass through the [`humanize-writing`](../humanize-writing/SKILL.md) skill before presenting: comments are read by teammates, and formulaic AI phrasing damages collaborative rapport.
 
 <comment-template>
 
-**Arquivo:** `caminho/do/arquivo.ext`
-**Linha:** N (ou intervalo N-M)
+**File:** `path/to/file.ext`
+**Line:** N (or range N-M)
 
-{{explicação do problema, profissional e colaborativa, cobrindo o *porquê*: o cenário concreto que falha, o risco, o custo}}
+{{professional, collaborative explanation covering the *why*: concrete failure scenario, maintenance risk, or cost}}
 
-{{se houver uma sugestão de código ou abordagem já discutida: inclua-a aqui ao final, em bloco de código quando aplicável}}
+{{if a specific code snippet or approach was agreed upon: include it here at the end in a code block}}
 
 </comment-template>
 
-### 8.2. Comentário geral da revisão
+### 8.2. General Review Summary Comment
 
-Um texto curto para o corpo da revisão, coerente com o veredito escolhido pelo usuário:
-- **Aprovar**: reconhece o que ficou bom (use os pontos fortes do eixo 🏗️) em duas ou três frases.
-- **Aprovar com comentários**: resume que os comentários são não bloqueantes.
-- **Pedir alterações**: lista em prosa curta o que precisa mudar antes do merge (só os 🔴 aceitos) e aponta para os comentários de linha.
+A concise summary for the overall PR review body, aligned with the user's verdict:
+- **Approve**: acknowledges what was done well (leverage strengths from Axis 🏗️) in 2–3 sentences.
+- **Approve with comments**: notes that comments are non-blocking suggestions.
+- **Request changes**: summarizes in brief prose what needs remediation prior to merge (accepted 🔴 findings) and links to line comments.
 
-Passe também pelo `humanize-writing`.
+Run through `humanize-writing`.
 
-### Regras dos comentários
+### Comment Guidelines
 
-- **Arquivo e linha exatos.** Se o achado não traz a localização, volte ao diff e encontre. Nunca invente uma localização.
-- **[sem referências locais](../ai-assisted-software-development/references/no-local-references.md)**. Para apontar para a especificação, use a issue vinculada (Jira/GitHub), se existir; senão, reescreva o requisito com suas próprias palavras.
-- **Profissional e colaborativo.** Apresente como uma observação para discutir, não uma ordem. Prefira *"podemos considerar"* a *"você deveria ter feito"*. Nada que soe como julgamento de quem escreveu.
-- **Explique o porquê**, não só o quê.
-- **Sem correções inventadas.** Se nenhuma solução foi discutida, termine na explicação.
-- **Sem assinatura.** Nenhuma linha de coautoria, assinatura de IA ou rodapé.
-- Termos técnicos, identificadores e código ficam no idioma original.
-- Apresente na ordem em que os achados foram discutidos, um bloco por comentário, pronto para copiar.
+- **Exact file and line.** If the finding lacks precise location, inspect the diff. Never guess.
+- **[No local references](../ai-assisted-software-development/references/no-local-references.md)**. Reference linked issues (Jira/GitHub), or rephrase requirements.
+- **Professional and collaborative.** Phrase as observations for discussion, not unilateral demands. Prefer *"we might consider"* over *"you should have"*.
+- **Explain the why**, not merely what.
+- **No speculative fixes.** If no solution was discussed, conclude with the explanation.
+- **No signature lines.** Zero co-authorship tags, AI disclaimers, or footers.
+- Technical terms, code identifiers, and snippets remain in their original form.
+- Present in the order findings were discussed, ready to copy.
 
-### Publicação
+### Publishing
 
-Nunca publique nada automaticamente. Se o usuário pedir explicitamente para publicar, mostre exatamente o que será enviado e use `gh pr review <pr>` com `--approve`, `--comment` ou `--request-changes`, conforme o veredito dele, só depois da confirmação.
+Never publish automatically. If the user explicitly requests publication, display the exact payload and invoke `gh pr review <pr>` with `--approve`, `--comment`, or `--request-changes`, strictly upon confirmation.
 
 ---
 
-## 9. Validação de Sucesso
+## 9. Success Validation
 
-- [ ] O diff foi capturado uma única vez e validado antes dos subagentes; o working tree do usuário não foi alterado, e o worktree de revisão foi removido.
-- [ ] Os quatro eixos rodaram (ou o relatório diz por que algum foi pulado), cada um com contagem por severidade.
-- [ ] Todo achado tem `arquivo:linha` e emoji de severidade; nenhum foi misturado entre eixos.
-- [ ] O eixo 🏗️ declara qual fonte de arquitetura pretendida usou.
-- [ ] O veredito sugerido segue a regra da seção 7, e o veredito final foi dado pelo usuário.
-- [ ] Só os achados aceitos pelo usuário viraram comentários, com localização exata, em PT-BR, humanizados e sem linha de coautoria.
-- [ ] Nada foi publicado no GitHub sem pedido e confirmação explícitos.
+- [ ] Diff captured once and validated prior to subagents; user's working tree untouched, review worktree removed.
+- [ ] Four axes executed (or omissions declared), each with severity breakdown.
+- [ ] Every finding contains `file:line` and severity badge; zero cross-axis contamination.
+- [ ] Axis 🏗️ declares which intended architecture baseline was used.
+- [ ] Recommended verdict adheres to Section 7 rules, with final verdict determined by user.
+- [ ] Only user-accepted findings became comments, with exact line locations, humanized, and free of AI co-authorship footers.
+- [ ] Zero content published to GitHub without explicit request and confirmation.

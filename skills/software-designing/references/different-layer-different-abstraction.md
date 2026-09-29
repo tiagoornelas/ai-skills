@@ -1,30 +1,30 @@
-# Camada Diferente, Abstração Diferente
+# Different Layer, Different Abstraction
 
-> **Tese central**: em um sistema bem projetado, **cada camada oferece uma abstração diferente** das camadas acima e abaixo dela. Se duas camadas adjacentes têm abstrações parecidas, provavelmente há um problema na decomposição.
-
----
-
-## Quando consultar
-
-- Ao desenhar arquiteturas em camadas (UI → aplicação → domínio → infraestrutura; controller → service → repository; etc.).
-- Ao encontrar métodos que só repassam chamadas, wrappers e decorators.
-- Ao notar um parâmetro atravessando uma longa cadeia de funções sem ser usado por elas.
+> **Central thesis**: in a well-designed system, **each layer provides a distinctly different abstraction** from the layers above and below it. If two adjacent layers share similar abstractions, there is likely a flaw in the system's decomposition.
 
 ---
 
-## 1. Camadas com abstrações distintas
+## When to consult
 
-- Sistemas de software são compostos em camadas: as mais altas usam as facilidades das mais baixas. Cada camada deve fornecer uma abstração **diferente**.
-- Exemplos:
-  - **Sistema de arquivos**: a camada de cima implementa a abstração de *arquivo* (sequência de bytes de tamanho variável); a do meio, um *cache* de blocos de tamanho fixo em memória; a de baixo, *drivers de dispositivo* que movem blocos entre o armazenamento e a memória.
-  - **Protocolo de rede**: TCP oferece um *fluxo de bytes* confiável; a camada abaixo transmite *pacotes* de tamanho limitado, sem garantia de entrega.
-- Se as abstrações de camadas adjacentes são muito parecidas, a separação provavelmente não está pagando o próprio custo.
+- When designing layered architectures (UI → application → domain → infrastructure; controller → service → repository; etc.).
+- When identifying pass-through methods, wrappers, and decorators.
+- When noticing a parameter traversing a long chain of functions without being used by them.
 
 ---
 
-## 2. Métodos repassadores (*pass-through methods*)
+## 1. Layers with Distinct Abstractions
 
-- Um método repassador faz pouca coisa além de chamar outro método, com assinatura igual ou muito parecida.
+- Software systems are composed of layers: higher layers leverage the facilities of lower ones. Each layer must provide a **different** abstraction.
+- Examples:
+  - **File System**: the top layer provides the *file* abstraction (variable-length stream of bytes); the middle layer manages a memory *buffer cache* of fixed-size blocks; the bottom layer consists of *device drivers* transferring blocks between storage devices and memory.
+  - **Network Protocols**: TCP provides a reliable, ordered *byte stream*; the layer beneath transports variable-sized, best-effort *packets* without delivery guarantees.
+- If adjacent layers feature nearly identical abstractions, the separation likely fails to pay for itself.
+
+---
+
+## 2. Pass-Through Methods
+
+- A pass-through method does little more than forward its invocation to another method with an identical or near-identical signature.
 
   ```java
   public class TextDocument ... {
@@ -41,89 +41,89 @@
   }
   ```
 
-- Métodos repassadores tornam as classes **mais rasas**: aumentam a interface sem aumentar a funcionalidade. Também criam dependência: se a assinatura do método de baixo muda, o de cima muda junto.
-- Eles indicam **confusão na divisão de responsabilidades** entre as classes.
-- **Como corrigir**:
-  1. Expor a classe de baixo diretamente aos chamadores da de cima, removendo a responsabilidade da classe de cima.
-  2. Redistribuir a funcionalidade entre as classes, para que cada uma tenha responsabilidades distintas e coerentes.
-  3. Se as classes não podem ser separadas de forma limpa, **fundi-las**.
+- Pass-through methods make classes **shallower**: they inflate interface surface area without increasing functionality. They also introduce tight coupling: if the lower method signature changes, the wrapper must change in lockstep.
+- They signal **confusion in the division of responsibilities** between classes.
+- **Remediation**:
+  1. Expose the lower-level class directly to callers of the upper class, removing the pass-through methods entirely.
+  2. Redistribute responsibilities between classes so each has a distinct, cohesive role.
+  3. If the classes cannot be cleanly separated, **merge them**.
 
-### Quando duplicar a interface é aceitável
+### When Duplicated Signatures Are Justified
 
-- Ter métodos com a mesma assinatura não é sempre ruim. O importante é que **cada novo método contribua com funcionalidade significativa**.
-- **Despachante** (*dispatcher*): um método que usa seus argumentos para escolher qual de vários métodos chamar, e repassa a chamada (ex.: o roteador de um servidor web que escolhe o handler pela URL). A assinatura pode ser igual à dos métodos chamados, mas ele entrega uma funcionalidade útil: escolher.
-- **Múltiplas implementações de uma mesma interface** (ex.: drivers de disco diferentes sob um mesmo contrato do sistema operacional). Eles estão na **mesma camada** e não chamam uns aos outros. Isso reduz carga cognitiva: quem trabalhou com um já sabe usar os outros.
+- Methods sharing signatures are not always an anti-pattern. What matters is that **each method contributes significant new value**.
+- **Dispatchers**: a method that inspects arguments to route execution to one of several target handlers (e.g., a web router selecting a controller by URL path). Signatures may match targets, but the dispatcher delivers a vital capability: routing decisions.
+- **Multiple implementations of an interface** (e.g., diverse disk drivers implementing an OS storage contract). They sit at the **same layer** and do not call each other. This reduces cognitive load: mastering one gives familiarity with all others.
 
 ---
 
 ## 3. Decorators
 
-- O padrão *decorator* (ou wrapper) recebe um objeto existente e estende sua funcionalidade, com uma API igual ou parecida. Exemplo: `BufferedInputStream` envolve um `InputStream` e adiciona buffering, mantendo a mesma interface.
-- A motivação é separar extensões especializadas de um núcleo mais geral. Mas decorators **tendem a ser rasos**: introduzem muito código de repasse para uma funcionalidade pequena.
-- Antes de criar um decorator, considere:
-  1. Adicionar a funcionalidade **diretamente na classe base**, se ela for de propósito relativamente geral, logicamente relacionada à classe base, ou necessária para a maioria dos usos. (Ex.: buffering em I/O deveria ser padrão.)
-  2. Se a funcionalidade é especializada para um caso de uso, **fundi-la com o caso de uso** em vez de criar uma classe separada.
-  3. **Fundir com um decorator existente**, em vez de criar mais um: fica um decorator mais profundo em vez de vários rasos.
-  4. Implementar a nova funcionalidade como uma **classe independente**, que não envolve a classe base. Exemplo: rolagem de janela (*scrolling*) pode ser implementada separadamente da janela, em vez de "envolver" cada método da janela.
+- The decorator (or wrapper) pattern wraps an existing object to augment its behavior while preserving a matching or similar API. Example: `BufferedInputStream` wraps an `InputStream` to provide buffering over the same interface.
+- While intended to decouple specialized additions from a general core, decorators **tend to be shallow**: they introduce substantial pass-through boilerplate for modest added functionality.
+- Before introducing a decorator, consider:
+  1. Adding the capability **directly into the base class**, if it is relatively general-purpose, logically cohesive with the base class, or needed by most use cases. (Buffering in I/O should be the default.)
+  2. If the feature is specialized to a specific caller, **merge it directly into that caller** rather than creating an intermediate wrapper.
+  3. **Merge with an existing decorator** instead of adding another layer: yields a deeper decorator rather than multiple shallow wrappers.
+  4. Implement the feature as an **independent class** that does not wrap the base abstraction. Example: window scrolling can be implemented independently alongside a window rather than intercepting every window rendering call.
 
 ---
 
-## 4. Interface versus implementação
+## 4. Interface vs. Implementation
 
-- A interface de uma classe normalmente deve ser **diferente** de sua implementação: a representação interna não deve ditar a abstração oferecida.
-- Exemplo: no editor de texto, é natural armazenar o texto como uma lista de linhas. Se a classe expõe uma interface orientada a linhas (`getLine`, `putLine`), as operações mais comuns da UI (inserir e apagar caracteres no meio de uma linha, ou atravessando linhas) exigem que os chamadores façam contas de divisão e junção de linhas. Uma interface **orientada a caracteres** (`insert`, `delete` por posição) é mais simples para quem usa e esconde a representação em linhas dentro da classe.
-- Se a interface é idêntica à implementação, a classe é rasa.
+- A class's interface should typically be **different** from its internal implementation: internal data structures should not dictate the exposed abstraction.
+- Example: in a text editor, internal text storage might naturally be an array of lines. If the class exposes a line-oriented interface (`getLine`, `putLine`), common operations (inserting or deleting characters spanning line breaks) force callers to perform tedious line-splitting and concatenation arithmetic. A **character-oriented interface** (`insert`, `delete` by coordinate/offset) is far simpler for callers and cleanly encapsulates line-splitting mechanics internally.
+- If the interface mirrors the implementation, the class is shallow.
 
 ---
 
-## 5. Variáveis repassadas (*pass-through variables*)
+## 5. Pass-Through Variables
 
-- Uma variável repassada é passada por uma longa cadeia de métodos. Os métodos intermediários não a usam; só existem para levá-la até quem usa.
-- Ela adiciona complexidade: força todos os métodos intermediários a saberem de sua existência. Se uma nova variável desse tipo surgir, é preciso mudar muitas assinaturas.
+- A pass-through variable is handed down through a long chain of intermediate functions. Intermediate functions never use the value; they exist solely to shuttle it to downstream callees.
+- Inflates complexity: every intermediary must know about the variable. Adding another parameter requires modifying every method signature along the chain.
 
 ```text
-main(cert) → m1(…, cert) → m2(…, cert) → m3(…, cert) → abrirSocket(cert)
-             (não usa)      (não usa)      (não usa)      (usa)
+main(cert) → m1(…, cert) → m2(…, cert) → m3(…, cert) → openSocket(cert)
+             (unused)       (unused)       (unused)       (used)
 ```
 
-- Opções para eliminar:
-  1. Verificar se já existe um **objeto compartilhado** entre o topo e a base da cadeia (algo que ambos já acessam) e guardar a informação ali.
-  2. Usar uma **variável global**. Evita repasse, mas cria outros problemas: impede, por exemplo, ter duas instâncias do sistema no mesmo processo, e cria dependências invisíveis.
-  3. Usar um **objeto de contexto** (a solução mais usada): ele guarda o estado global da aplicação (opções de configuração, subsistemas compartilhados, contadores de desempenho) e existe um por instância do sistema. As referências ao contexto ficam em variáveis de instância dos objetos principais, então **não precisam ser passadas como argumento** em cada chamada. Novos dados globais são adicionados ao contexto sem mudar assinaturas.
-- Contextos não são uma solução perfeita. Sem disciplina viram um "saco de tudo" com dependências não óbvias. Recomendações: variáveis do contexto devem ser, idealmente, **imutáveis** (evita problemas de concorrência), e deve ficar claro por que cada variável está ali.
+- Remediation strategies:
+  1. Check if a **shared object** already links the top and bottom of the chain (something both already access) and store the information there.
+  2. Use a **global variable**. Avoids pass-through plumbing, but creates drawbacks: precludes multiple system instances within a process and introduces invisible dependencies.
+  3. Use a **context object** (the industry-standard solution): encapsulates application-wide runtime state (configuration options, shared subsystems, telemetry counters) with one instance per system lifecycle. References to the context reside in instance variables of core objects, so they **do not need to be passed as function arguments** on every call. New shared state can be added to the context without modifying method signatures.
+- Context objects require discipline: without it, they degenerate into an untyped junk drawer. Recommendations: context properties should ideally be **immutable** (preventing concurrency races), and the rationale for each property must be explicit.
 
 ---
 
-## 6. Conclusão da camada
+## 6. Net Complexity Benefit
 
-Cada peça de infraestrutura de design adicionada (uma interface, um argumento, uma função, uma classe, uma definição) adiciona complexidade, porque os desenvolvedores precisam aprendê-la. **Para que um elemento ofereça ganho líquido, ele precisa eliminar mais complexidade do que adiciona.**
-
----
-
-## Red flags
-
-- **Método repassador**: um método que não faz nada além de repassar argumentos para outro método com assinatura parecida.
-- Duas camadas adjacentes com vocabulário e operações quase idênticos (ex.: `Service.create()` que só chama `Repository.create()`).
-- Decorators ou wrappers em cadeia, cada um com pouca funcionalidade.
-- Interface que espelha a representação interna.
-- Parâmetro que atravessa várias funções sem ser usado por elas.
+Every added design artifact (an interface, argument, class, or abstraction layer) introduces complexity because developers must learn it. **For any design element to justify its existence, it must eliminate more complexity than it introduces.**
 
 ---
 
-## Como aplicar
+## Red Flags
 
-1. Para cada camada, escreva **em uma frase** a abstração que ela oferece. Se duas camadas adjacentes tiverem a mesma frase, reveja a divisão.
-2. Procure métodos repassadores e decida entre expor, redistribuir ou fundir.
-3. Para cada decorator/wrapper proposto, passe pelas quatro alternativas antes de aceitá-lo.
-4. Confirme que a interface de cada módulo é expressa nos conceitos de quem usa, não na representação interna.
-5. Mapeie variáveis repassadas e proponha um contexto ou objeto compartilhado quando fizer sentido.
-
-Ao reportar ao humano, desenhe as camadas (via [`visualize-it`](../../visualize-it/SKILL.md)) com a abstração de cada uma escrita ao lado e com a direção das dependências explícita.
+- **Pass-through method**: a method that does nothing beyond forwarding arguments to another method with a matching signature.
+- Adjacent layers with nearly identical vocabulary and operations (e.g., `Service.create()` doing nothing but calling `Repository.create()`).
+- Chained decorators or wrappers, each adding minuscule functionality.
+- An interface that directly exposes the internal data representation.
+- A parameter passed through multiple functions without being read or modified by them.
 
 ---
 
-## Relações
+## How to Apply
 
-- Repassadores e decorators são casos de módulos rasos: [deep-modules.md](deep-modules.md).
-- Onde cada complexidade deve morar entre as camadas: [pull-complexity-downwards.md](pull-complexity-downwards.md).
-- Quando fundir camadas: [together-or-apart.md](together-or-apart.md).
+1. For each architectural layer, write **one sentence** summarizing the abstraction it provides. If two adjacent layers share the same description, reconsider the boundary.
+2. Search for pass-through methods and decide whether to expose, redistribute, or merge.
+3. For every proposed decorator/wrapper, evaluate the four alternatives before adopting it.
+4. Ensure each module's interface is expressed in caller concepts, not internal storage structures.
+5. Identify pass-through variables and introduce a context object or shared state where appropriate.
+
+When presenting to the human, diagram the layers (via [`visualize-it`](../../visualize-it/SKILL.md)), annotating the unique abstraction of each layer alongside explicit dependency direction.
+
+---
+
+## Relationships
+
+- Pass-through methods and wrappers are symptoms of shallow modules: [deep-modules.md](deep-modules.md).
+- Where complexity should live across layers: [pull-complexity-downwards.md](pull-complexity-downwards.md).
+- When to merge layers: [together-or-apart.md](together-or-apart.md).

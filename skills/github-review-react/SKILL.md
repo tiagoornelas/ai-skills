@@ -1,33 +1,31 @@
 ---
 name: github-review-react
 description: >-
-  Reage à revisão que um colega fez num Pull Request do usuário no GitHub: coleta
-  os comentários pendentes, avalia cada um por pertinência e aplicabilidade,
-  mostra de forma clara e visual o problema e a sugestão, e decide junto com o
-  usuário o que acatar, ajustar, adiar ou não acatar, com justificativa. Depois
-  aplica as mudanças aceitas com a skill coding, em commits rastreáveis, e redige
-  respostas corteses e concisas para cada comentário, citando o commit da correção
-  ou o motivo de não acatar. Deve ser acionada quando o usuário pedir para
-  analisar, responder ou aplicar a revisão recebida num PR dele.
+  Responds to review comments left by a teammate on the user's GitHub Pull Request:
+  collects pending comments, evaluates each for validity and feasibility,
+  visualizes problems and proposed solutions, collaborates with the user to
+  determine whether to accept, adjust, defer, or reject, applies accepted
+  modifications via the coding skill in traceable commits, and crafts courteous,
+  concise replies referencing the fix commit or rejection rationale.
 disable-model-invocation: true
-argument-hint: "[número/URL do PR — por padrão, o PR da branch atual]"
+argument-hint: "[PR number/URL — by default, current branch's PR]"
 ---
 
 # GitHub Review React
 
-O outro lado da [`github-code-review`](../github-code-review/SKILL.md): aqui o PR é **do usuário**, e quem revisou foi um colega. A entrega é **cada comentário pendente com um destino decidido**, as mudanças aceitas aplicadas e uma resposta pronta para cada thread.
+The counterpart to [`github-code-review`](../github-code-review/SKILL.md): here the PR belongs **to the user**, and a peer provided the review. The deliverable is **every pending review comment assigned a clear disposition**, accepted changes implemented, and a polished reply prepared for each thread.
 
-> Um comentário de revisão não é uma ordem nem um ataque. Ele é avaliado pelo **mérito**: o problema existe? A sugestão resolve? Cabe neste PR? O revisor pode ter contexto que o agente não tem; o agente pode ter visto o código mais de perto. **A decisão é do usuário.**
+> A review comment is neither an order nor an attack. It is evaluated purely on **merit**: does the issue genuinely exist? Does the suggested change resolve it? Does it belong in this PR? The reviewer may have context the agent lacks; the agent may have inspected implementation details more closely. **The decision belongs to the user.**
 
 ---
 
-## 1. Coletar a revisão
+## 1. Collect Review Comments
 
 ```bash
 gh pr view <pr> --json number,title,body,url,author,headRefName,baseRefName,reviews,comments
 ```
 
-Comentários de linha e o estado de cada thread (resolvida, desatualizada), via GraphQL:
+Fetch line comments and thread status (resolved, outdated) via GraphQL:
 
 ```bash
 gh api graphql -F owner=<owner> -F repo=<repo> -F pr=<pr> -f query='
@@ -43,176 +41,176 @@ query($owner:String!,$repo:String!,$pr:Int!){
 }'
 ```
 
-Registre, para cada item, **de onde ele veio e como respondê-lo**. Por padrão, a resposta vai **direto para o comentário original** (as exceções estão na §6):
+Record for each item **its origin and reply target**. By default, replies go **directly to the original comment** (exceptions detailed in §6):
 
-| Origem | Guarde | Como responder |
+| Origin | Preserved Context | How to Reply |
 | :--- | :--- | :--- |
-| **Thread de linha** (`reviewThreads`) | `id` da thread e `databaseId` do **primeiro** comentário dela | Resposta dentro da própria thread. |
-| **Corpo de uma review** (`reviews[].body`) | autor e `url` da review | *Quote reply* na conversa do PR. |
-| **Comentário na conversa** (`comments`) | autor e `url` do comentário | *Quote reply* na conversa do PR. |
+| **Line thread** (`reviewThreads`) | thread `id` and `databaseId` of the **first** comment | Inline reply within the thread. |
+| **Review body** (`reviews[].body`) | reviewer login and review `url` | *Quote reply* in main PR conversation. |
+| **Conversation comment** (`comments`) | author login and comment `url` | *Quote reply* in main PR conversation. |
 
-> O GitHub não encadeia respostas em comentários da conversa nem no corpo de reviews. A forma equivalente é o *quote reply* do próprio GitHub: a resposta abre citando o trecho, menciona o autor e aponta o comentário original (ver §6).
+> GitHub does not natively thread responses inside general conversation comments or review bodies. The equivalent pattern is GitHub's *quote reply*: open by quoting the key sentence, mentioning the reviewer, and linking the original comment (see §6).
 
-- Considere **threads não resolvidas** e comentários gerais das revisões (corpo da review e comentários na conversa do PR).
-- Ignore comentários do próprio usuário, a não ser como contexto de uma thread.
-- Threads **desatualizadas** (`isOutdated`) entram, marcadas: o código pode já ter mudado, então confira se o ponto ainda vale.
+- Evaluate **unresolved threads** and general review comments (review bodies and conversation comments).
+- Ignore comments authored by the user themselves, except as conversation context.
+- **Outdated threads** (`isOutdated`) are included with a note: code may have shifted, so verify whether the feedback remains relevant.
 
-Prepare o código: confirme que o working tree está limpo e que a branch local é o head do PR, atualizada (`gh pr checkout <pr>`). Se estiver sujo, avise e pare.
+Prepare working tree: confirm working tree is clean and local branch is up to date (`gh pr checkout <pr>`). If dirty, notify the user and stop.
 
-Encontre também a especificação (issue vinculada, descrição do PR) e as regras do projeto (`AGENTS.md`/`CLAUDE.md`, `docs/rules/`, `CONTRIBUTING.md`): são o critério para julgar se uma sugestão cabe.
+Locate the specification (linked issue, PR description) and project rules (`AGENTS.md`/`CLAUDE.md`, `docs/rules/`, `CONTRIBUTING.md`): these provide the criteria to judge whether a suggestion belongs.
 
 ---
 
-## 2. Entender e avaliar cada comentário
+## 2. Understand and Evaluate Each Comment
 
-Para cada comentário, leia o código atual no local indicado (não só o `diffHunk`) e o entorno necessário. Responda:
+For each comment, read the current code at the indicated location (not just `diffHunk`) and surrounding context. Answer:
 
-1. **O que pede?** Resuma em uma linha. Classifique o tipo: 🐛 bug · 🏗️ design · 🧪 teste · 🧹 legibilidade · 🎨 estilo/nit · ❓ pergunta · 👍 elogio.
-2. **É pertinente?** O problema descrito existe de verdade? Tente reproduzir o cenário, seguir o fluxo ou escrever o teste que o provaria. Não aceite nem rejeite por autoridade.
-3. **É aplicável?** Cabe no escopo deste PR? Conflita com uma regra documentada do projeto, com a especificação ou com outro comentário? Qual o custo e o risco da mudança?
-4. **A sugestão é o melhor caminho?** Às vezes a preocupação é válida e a solução proposta não; às vezes existe uma alternativa mais simples.
+1. **What is requested?** Summarize in one sentence. Categorize type: 🐛 bug · 🏗️ design · 🧪 test · 🧹 readability · 🎨 style/nit · ❓ question · 👍 praise.
+2. **Is it valid?** Does the reported problem truly exist? Reproduce the scenario, trace data flow, or draft a test that demonstrates it. Never accept or reject based purely on authority.
+3. **Is it applicable?** Does it fit within this PR's scope? Does it conflict with project rules, the specification, or another comment? What is the implementation risk and cost?
+4. **Is the suggested solution optimal?** Frequently the concern is valid while the proposed implementation is sub-optimal; an alternative clean solution may exist.
 
-Use como lente as referências de [`coding`](../coding/SKILL.md) e de [`software-designing`](../software-designing/SKILL.md). Uma regra documentada do repositório prevalece sobre preferências gerais, tanto do agente quanto do revisor.
+Use references from [`coding`](../coding/SKILL.md) and [`software-designing`](../software-designing/SKILL.md). Documented repository rules always take precedence over general preferences.
 
-Recomendação para cada comentário:
+Disposition recommendation per comment:
 
-| Destino | Quando |
+| Disposition | When to Apply |
 | :---: | :--- |
-| ✅ **Acatar** | Pertinente, aplicável, e a sugestão resolve bem. |
-| 🔀 **Acatar com ajuste** | A preocupação é válida, mas outra solução a resolve melhor. Diga qual e por quê. |
-| 📌 **Adiar** | Válido, mas fora do escopo deste PR. Vira issue de follow-up. |
-| ❌ **Não acatar** | Não pertinente (o problema não existe, ou já está tratado) ou o custo supera o benefício. Justificativa concreta obrigatória. |
-| 💬 **Só responder** | Pergunta, pedido de esclarecimento ou elogio: não pede mudança de código. |
+| ✅ **Accept** | Valid, applicable, and suggested solution is effective. |
+| 🔀 **Accept with Adjustment** | Concern is valid, but an alternative approach resolves it better. State what and why. |
+| 📌 **Defer** | Valid, but outside current PR scope. Becomes a follow-up tracking issue. |
+| ❌ **Reject** | Not valid (issue does not exist or is already handled) or cost outweighs benefit. Concrete rationale mandatory. |
+| 💬 **Reply Only** | Question, clarification, or praise: requires no code changes. |
 
 ---
 
-## 3. Apresentar e discutir
+## 3. Present and Discuss
 
-Um cartão por comentário, na ordem das threads no diff:
+One structured card per comment, ordered by thread appearance in diff:
 
 ```markdown
-### #1 · 🐛 `src/billing/invoice.ts:42` — @revisor
+### #1 · 🐛 `src/billing/invoice.ts:42` — @reviewer
 
-> <trecho curto do comentário original>
+> <concise quote from original comment>
 
-**O que pede:** <uma linha>
-**Código atual:**
-<trecho mínimo>
+**Requested:** <one line>
+**Current Code:**
+<minimal snippet>
 
-**Avaliação:** <pertinência e aplicabilidade em 1–3 frases, com o cenário concreto>
-**Recomendação:** ✅ Acatar — <o que mudar, em uma linha>
+**Assessment:** <validity and applicability in 1–3 sentences with concrete scenario>
+**Recommendation:** ✅ Accept — <what to change, in one line>
 ```
 
-Quando o ponto é estrutural (dependência, fronteira, fluxo), mostre o antes/depois com [`visualize-it`](../visualize-it/SKILL.md), na notação dele.
+When an item is structural (dependency, boundary, flow), illustrate before/after using [`visualize-it`](../visualize-it/SKILL.md).
 
-Feche com a tabela de resumo:
+Conclude with summary table:
 
 ```markdown
-| # | Local | Tipo | Revisor | Recomendação |
+| # | Location | Type | Reviewer | Recommendation |
 | :-: | :--- | :-: | :--- | :-: |
-| 1 | `src/billing/invoice.ts:42` | 🐛 | @revisor | ✅ |
-| 2 | `src/billing/tax.ts:10` | 🎨 | @revisor | ❌ |
+| 1 | `src/billing/invoice.ts:42` | 🐛 | @reviewer | ✅ |
+| 2 | `src/billing/tax.ts:10` | 🎨 | @reviewer | ❌ |
 
 ✅ N · 🔀 N · 📌 N · ❌ N · 💬 N
 ```
 
-Discuta com o usuário e responda às dúvidas. Ele pode mudar qualquer destino. **Nada é aplicado antes de ele fechar a lista.**
+Discuss with user and resolve questions. The user can adjust any disposition. **Zero code changes are applied until the user finalizes the list.**
 
 ---
 
-## 4. Planejar as mudanças
+## 4. Plan Changes
 
-Com os destinos decididos, proponha o plano:
+Once dispositions are approved, propose an execution plan:
 
-- **Um commit por comentário** (ou por grupo de comentários sobre o mesmo ponto), para que cada resposta aponte um commit exato.
-- Ordem: 🐛 primeiro, depois 🏗️/🧪, por fim 🧹/🎨. Mudanças que dependem umas das outras seguem a dependência.
-- Para cada 📌, um rascunho curto da issue de follow-up (título e duas linhas), a ser criada só com confirmação.
+- **One commit per comment** (or per group addressing the exact same point), allowing each reply to reference a precise commit SHA.
+- Order: 🐛 bugs first, then 🏗️/🧪 architecture and tests, finally 🧹/🎨 readability and polish. Dependent changes follow dependency order.
+- For each 📌 deferred item, draft a concise follow-up issue (title and 2 lines), created only upon user confirmation.
 
-Confirme o plano com o usuário.
-
----
-
-## 5. Aplicar
-
-Para cada item do plano:
-
-1. Implemente com a skill [`coding`](../coding/SKILL.md): teste primeiro quando o comentário aponta um comportamento (🐛, 🧪), refatoração segura quando é estrutura ou legibilidade.
-2. Rode o portão [`agent-self-review`](../agent-self-review/SKILL.md) sobre a mudança e corrija até ficar limpo.
-3. Faça o commit com a skill [`commit`](../commit/SKILL.md) e **registre o SHA** ao lado do número do comentário.
-
-Se, ao implementar, a mudança se mostrar mais cara ou arriscada do que parecia, pare e volte ao usuário: o destino pode virar 📌 ou 🔀.
-
-**Push só com confirmação**: as respostas citam commits, então eles precisam estar no remoto antes de publicar as respostas.
+Confirm the plan with the user.
 
 ---
 
-## 6. Redigir as respostas
+## 5. Implement Changes
 
-Uma resposta por thread, no idioma em que o revisor escreveu (PT-BR por padrão). Rascunhe e passe pela skill [`humanize-writing`](../humanize-writing/SKILL.md): quem lê é um colega.
+For each planned item:
 
-| Destino | Modelo |
+1. Implement via [`coding`](../coding/SKILL.md): test-first when addressing behaviors (🐛, 🧪), refactor safely when addressing structure or readability.
+2. Run [`agent-self-review`](../agent-self-review/SKILL.md) over modifications and iterate until clean.
+3. Commit via [`commit`](../commit/SKILL.md) and **record the commit SHA** alongside the comment number.
+
+If during implementation a change proves significantly more complex or risky than anticipated, pause and return to the user: disposition can transition to 📌 or 🔀.
+
+**Push only with confirmation**: replies reference commit SHAs, which must exist on remote prior to publishing replies.
+
+---
+
+## 6. Author Replies
+
+One reply per thread, matching the language of the review (or reviewer's language). Draft and pass through [`humanize-writing`](../humanize-writing/SKILL.md): these are read by teammates.
+
+| Disposition | Response Template |
 | :---: | :--- |
-| ✅ | `Corrigido em <sha>: <o que mudou, em uma frase>.` |
-| 🔀 | `Boa observação. Fui por um caminho um pouco diferente em <sha>: <o que foi feito>, porque <motivo>. Resolve <a preocupação> do mesmo jeito.` |
-| 📌 | `Faz sentido, mas foge do escopo deste PR. Abri <link da issue> para tratar separado.` |
-| ❌ | `Vou manter como está: <motivo concreto, em uma ou duas frases>. Se tiver outro cenário em mente, me fala.` |
-| 💬 | Resposta direta à pergunta, em poucas frases. |
+| ✅ | `Addressed in <sha>: <what changed, in one sentence>.` |
+| 🔀 | `Good catch. Took a slightly different approach in <sha>: <what was done>, because <rationale>. Resolves <the concern> cleanly.` |
+| 📌 | `Makes sense, but outside the scope of this PR. Opened <issue link> to track separately.` |
+| ❌ | `Keeping this as-is: <concrete rationale in 1–2 sentences>. Open to exploring if you have a specific failure scenario in mind.` |
+| 💬 | Direct answer to the question in a few clear sentences. |
 
-Regras:
+Guidelines:
 
-- **Direta e concisa**: uma a três frases. Sem agradecimento em toda resposta, sem pedir desculpas pelo código.
-- **Cortês sem ceder no mérito**: um ❌ explica o motivo concreto (o cenário não ocorre porque X; a regra do projeto Y pede o contrário; o custo é Z) e deixa a porta aberta. Nunca soa como "você está errado".
-- **SHA curto** (7 caracteres): o GitHub transforma em link automaticamente.
-- **[sem referências locais](../ai-assisted-software-development/references/no-local-references.md)**, **sem assinatura** e sem linha de coautoria ou de IA.
-- Termos técnicos, identificadores e código ficam no idioma original.
-- **Resposta a comentário da conversa ou a corpo de review** (sem thread no GitHub): abra no formato do *quote reply*, citando o trecho a que responde (a frase-chave, não o comentário inteiro), mencionando o autor e linkando o original. Assim a resposta fica visivelmente ligada ao comentário:
+- **Direct and concise**: 1 to 3 sentences. No boilerplate thank-yous on every reply; no apologies for code.
+- **Courteous without conceding merit**: a ❌ rejection states objective rationale (scenario cannot happen because X; repository guideline Y specifies otherwise; cost is Z) and keeps dialogue open. Never sounds defensive.
+- **Short SHAs** (7 characters): GitHub auto-links them.
+- **[No local references](../ai-assisted-software-development/references/no-local-references.md)**, **no signatures**, and zero AI co-authorship tags.
+- Technical terms, identifiers, and snippets remain in their original form.
+- **Replying to conversation comments or review bodies** (no inline thread): use *quote reply* format, quoting the key sentence, mentioning author, and linking original comment:
 
   ```markdown
-  > <trecho curto do comentário original>
+  > <short quote of original comment>
 
-  @<revisor> <resposta, no modelo do destino> ([comentário](<url do comentário original>))
+  @<reviewer> <reply following template> ([comment](<url of original comment>))
   ```
 
-  Se um mesmo comentário geral levanta vários pontos, responda todos num único *quote reply*, com uma citação curta antes de cada resposta.
-- **Comentário solto só como exceção**: responder direto ao comentário é o padrão. Um comentário novo na conversa, sem citar nenhum comentário, cabe quando a mensagem não é resposta a um comentário específico. Por exemplo: um resumo de tudo que mudou depois da revisão, um ponto que atravessa vários comentários ou revisores, ou um aviso que ninguém pediu. Nesses casos, sinalize a escolha ao usuário.
+  If a single general comment raises multiple points, address all in one unified quote reply with distinct blockquotes.
+- **Standalone comment strictly as exception**: replying directly is standard. A new standalone conversation comment is only appropriate when communicating information not tied to a single comment (e.g. summary of post-review changes, cross-cutting notice).
 
-Apresente todas as respostas juntas, um bloco por thread, com o local, a origem (thread de linha, corpo de review ou conversa), o destino e a forma de publicação (na thread, *quote reply* ou, na exceção, comentário solto).
+Present all replies together for review, grouped by thread, displaying location, origin, disposition, and delivery channel.
 
 ---
 
-## 7. Publicar
+## 7. Publish
 
-Nunca publique automaticamente. Com pedido explícito, mostre exatamente o que será enviado e, após a confirmação:
+Never publish automatically. Upon explicit user request, show the exact payload and, after confirmation:
 
 ```bash
-# thread de linha: resposta DENTRO da thread (threadId = id da thread coletado na §1)
-gh api graphql -f threadId='<thread_id>' -f body='<resposta>' -f query='
+# Line thread: reply INSIDE thread (threadId = id from §1)
+gh api graphql -f threadId='<thread_id>' -f body='<reply>' -f query='
 mutation($threadId:ID!,$body:String!){
   addPullRequestReviewThreadReply(input:{pullRequestReviewThreadId:$threadId, body:$body}){
     comment{ url }
   }
 }'
-# alternativa REST (comment_id = databaseId do PRIMEIRO comentário da thread, nunca de uma resposta)
-gh api repos/<owner>/<repo>/pulls/<pr>/comments/<comment_id>/replies -f body='<resposta>'
+# REST alternative (comment_id = databaseId of FIRST comment in thread, never a reply)
+gh api repos/<owner>/<repo>/pulls/<pr>/comments/<comment_id>/replies -f body='<reply>'
 
-# comentário da conversa ou corpo de review: quote reply (corpo no formato da §6)
-gh pr comment <pr> --body-file <arquivo com o quote reply>
+# Conversation comment or review body: quote reply
+gh pr comment <pr> --body-file <file with quote reply>
 ```
 
-- **Responda onde o comentário está**: a resposta de uma thread de linha fica dentro da thread, e a de um comentário da conversa ou corpo de review sai como *quote reply*. Comentário solto só nas exceções da §6, já combinadas com o usuário.
-- **Confira depois de publicar**: a resposta de thread aparece na thread (`in_reply_to_id` igual ao primeiro comentário, ou o novo comentário listado em `reviewThreads`); o *quote reply* abre com a citação, a menção e o link do original. Se uma resposta saiu solta sem ser uma exceção combinada, avise o usuário e proponha apagar e republicar.
-- **Não resolva threads por conta própria**: em muitos times quem resolve é o revisor. Pergunte ao usuário.
-- Ofereça pedir nova revisão (`gh pr edit <pr> --add-reviewer <login>`) quando houver mudanças acatadas.
-- Issues de follow-up (📌) só são criadas com confirmação, antes das respostas que as citam.
+- **Reply where the comment lives**: line threads get replies in-thread; conversation comments get quote replies.
+- **Post-publish verification**: verify the reply attached correctly to the thread or conversation.
+- **Do not resolve threads unilaterally**: in many teams, the reviewer resolves threads. Ask the user.
+- Offer to re-request review (`gh pr edit <pr> --add-reviewer <login>`) when accepted changes are pushed.
+- Follow-up issues (📌) are created with confirmation prior to publishing replies referencing them.
 
 ---
 
-## 8. Validação de Sucesso
+## 8. Success Validation
 
-- [ ] Todas as threads não resolvidas e comentários gerais foram coletados; os desatualizados foram conferidos contra o código atual.
-- [ ] Cada comentário tem tipo, avaliação de pertinência e aplicabilidade, e um destino decidido pelo usuário.
-- [ ] Todo ❌ tem justificativa concreta, e todo 🔀 diz por que a alternativa resolve a preocupação.
-- [ ] As mudanças aceitas foram aplicadas com `coding`, passaram no `agent-self-review`, e cada uma tem o SHA do commit registrado.
-- [ ] Cada thread tem uma resposta concisa, cortês, humanizada, sem referências locais e sem assinatura, citando o commit ou o motivo.
-- [ ] Cada resposta foi publicada **respondendo ao comentário original**: dentro da thread, nas threads de linha; como *quote reply* (citação, menção ao autor e link), nos comentários da conversa e corpos de review. Comentário solto, só nas exceções da §6 combinadas com o usuário.
-- [ ] Nada foi enviado ao GitHub (push, respostas, issues, threads resolvidas) sem pedido e confirmação explícitos.
+- [ ] Unresolved threads and review comments collected; outdated ones verified against current code.
+- [ ] Every comment categorized with validity, applicability, and user-approved disposition.
+- [ ] Every ❌ rejection has concrete rationale, and every 🔀 adjustment explains why the alternative resolves the concern.
+- [ ] Accepted modifications implemented via `coding`, passed `agent-self-review`, and committed with recorded SHA.
+- [ ] Every thread has a concise, courteous, humanized reply free of local paths and signatures.
+- [ ] Replies delivered to original locations (in-thread for line comments; quote reply for review bodies/comments).
+- [ ] Zero items published to GitHub (push, replies, issues, thread resolutions) without explicit request and confirmation.

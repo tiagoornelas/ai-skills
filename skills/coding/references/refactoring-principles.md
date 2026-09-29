@@ -1,61 +1,61 @@
-# Princípios de Refatoração
+# Refactoring Principles
 
-> **Tese central**: refatorar é **mudar a estrutura interna do código sem mudar o comportamento observável**. Refatoração só é segura quando vem em passos pequenos, com testes verdes antes e depois, e nunca misturada com mudança de comportamento.
-
----
-
-## Quando consultar
-
-- Antes de alterar código existente que está difícil de mudar.
-- No passo "refactor" do ciclo red → green → refactor.
-- Ao corrigir um achado de code smell (ver [code-smells.md](code-smells.md)).
-- Ao decidir se uma melhoria de estrutura vale a pena agora.
+> **Central thesis**: refactoring is **altering internal code structure without changing observable behavior**. Refactoring is only safe when executed in small, incremental steps, with green tests before and after, and never conflated with functional behavior changes.
 
 ---
 
-## 1. Regras
+## When to consult
 
-- **Comportamento preservado.** Se o comportamento observável muda, não é refatoração: é uma mudança de funcionalidade, com seus próprios testes e sua própria DoD.
-- **Testes verdes antes e depois.** Se a área não tem testes que observem o comportamento, escreva-os primeiro, ou não refatore.
-- **Passos pequenos.** Cada passo deixa os testes verdes. Se um passo quebra algo, desfaça o passo em vez de depurar uma mudança grande.
-- **Dois chapéus.** Num dado momento, ou se acrescenta comportamento, ou se refatora. Nunca os dois no mesmo passo, e nunca no mesmo commit.
-
----
-
-## 2. Quando refatorar
-
-- **Preparatória**: antes de uma mudança, reestruture para que a mudança fique fácil; depois, faça a mudança fácil. É a refatoração de maior retorno.
-- **De compreensão**: se foi preciso esforço para entender um trecho que a tarefa altera, deixe esse entendimento no código (nome melhor, condicional mais clara).
-- **Depois do verde**: no passo "refactor", limpe o que a própria tarefa acabou de escrever.
-
-Em todos os casos, **só no código que a tarefa toca**. Refatorar o que está ao redor, sem relação com a tarefa, aumenta o diff, o risco e o custo de revisão.
+- Before modifying existing code that is difficult to change.
+- In the "refactor" phase of the red → green → refactor cycle.
+- When resolving a code smell finding (see [code-smells.md](code-smells.md)).
+- When deciding whether a structural refactoring is worth the investment right now.
 
 ---
 
-## 3. Quando não refatorar
+## 1. Rules
 
-- O código funciona, não precisa mudar e ninguém precisa entendê-lo agora.
-- Vai ser reescrito ou removido em breve.
-- Não há testes, e escrevê-los custaria mais que o benefício.
-- A melhoria é preferência de estilo, sem um cenário concreto de leitura ou mudança que fique mais fácil.
-
----
-
-## 4. Refatoração e a Camada Humana
-
-- Refatoração do agente acontece **abaixo dos contratos**. Uma mudança que alguém fora do módulo perceberia (assinatura pública, responsabilidade entre módulos, fronteiras, direção das dependências) não é refatoração: é Camada Humana, pelo teste da fronteira de [`ai-assisted-software-development`](../../ai-assisted-software-development/SKILL.md) (seção 4). Não aplique; escale com [`software-designing`](../../software-designing/SKILL.md).
+- **Preserve observable behavior.** If observable behavior changes, it is not a refactoring: it is a feature modification, requiring its own tests and Definition of Done.
+- **Green tests before and after.** If the affected area lacks automated tests verifying behavior, author them first, or do not refactor.
+- **Small steps.** Every micro-step leaves the test suite green. If a step breaks tests, revert the step immediately rather than debugging across a large diff.
+- **Two distinct hats.** At any given moment, you are either adding new behavior or refactoring. Never combine both in the same step, and never in the same commit.
 
 ---
 
-## 5. Desempenho
+## 2. When to Refactor
 
-- Escreva primeiro o código claro. Otimize depois, só onde uma **medição** mostrar que é necessário, e isole a otimização.
+- **Preparatory refactoring**: before introducing a change, restructure the code to make the change easy; then, make the easy change. This yields the highest return on investment.
+- **Comprehension refactoring**: if deciphering a piece of code required significant effort, embed that understanding into the code (clearer naming, decomposing confusing conditionals).
+- **Post-green cleanup**: during the "refactor" step of TDD, clean up the implementation code just written.
+
+In all cases, **restrict refactoring to the code touched by the current task**. Refactoring adjacent, unrelated files expands diff size, elevates regression risk, and inflates review costs.
 
 ---
 
-## Relações
+## 3. When Not to Refactor
 
-- O que refatorar e como: [code-smells.md](code-smells.md).
-- Por que estrutura importa: [nature-of-complexity.md](../../software-designing/references/nature-of-complexity.md).
-- Mudanças em código existente, no nível de design: [strategic-programming.md](../../software-designing/references/strategic-programming.md) (seção 5).
-- Commits de refatoração separados dos de comportamento: [`commit`](../../commit/SKILL.md).
+- The code works, does not need modification, and no one needs to understand it today.
+- The component is slated for rewrite or deprecation in the immediate future.
+- Automated tests are absent, and creating them exceeds the value of the refactoring.
+- The change reflects personal stylistic preference without a concrete maintenance or readability scenario.
+
+---
+
+## 4. Refactoring and the Human Layer
+
+- Agent-driven refactoring takes place strictly **below contracts**. Any modification detectable by callers outside the module (public signatures, cross-module responsibilities, architectural boundaries, dependency direction) is not refactoring: it is a Human Layer concern, governed by the boundary test in [`ai-assisted-software-development`](../../ai-assisted-software-development/SKILL.md) (Section 4). Do not alter unilaterally; escalate via [`software-designing`](../../software-designing/SKILL.md).
+
+---
+
+## 5. Performance
+
+- Author clean, obvious code first. Optimize later, strictly where **profiling and benchmarking** prove it is necessary, and isolate the optimization.
+
+---
+
+## Relationships
+
+- What to refactor and concrete remediation patterns: [code-smells.md](code-smells.md).
+- Why internal structure matters: [nature-of-complexity.md](../../software-designing/references/nature-of-complexity.md).
+- Modifying existing systems at the architectural level: [strategic-programming.md](../../software-designing/references/strategic-programming.md) (Section 5).
+- Separating refactoring commits from feature commits: [`commit`](../../commit/SKILL.md).

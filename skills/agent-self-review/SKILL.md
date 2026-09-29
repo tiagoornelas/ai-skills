@@ -1,126 +1,129 @@
 ---
 name: agent-self-review
 description: >-
-  Portão de qualidade autônomo executado pelo próprio agente sobre seu código antes da revisão humana. Analisa ferramentas estáticas, regras do projeto, cobertura da Definition of Done (DoD), sanidade de testes e qualidade do código abaixo dos contratos, num loop de auto-correção com orçamento e limite de rodadas, até aprovação.
+  Autonomous quality gate executed by the coding agent on its own work prior to
+  human review. Audits static tooling, project rules, Definition of Done (DoD)
+  coverage, test sanity, and code quality below contracts, in a self-correction
+  loop with an iteration budget and round limit, until approved.
 ---
 
 # Agent Self-Review
 
-Portão de qualidade pré-humano executado de forma autônoma pelo agente de código.
+Pre-human quality gate executed autonomously by the coding agent.
 
 ---
 
-## 1. Princípio Operacional
+## 1. Operational Principle
 
-O objetivo é que nenhum erro mecânico, quebra de tipagem, regressão de linter, violação de regra do projeto ou falta de cobertura da DoD chegue até o desenvolvedor humano.
+The goal is to ensure zero mechanical defects, typing errors, linter regressions, project rule violations, or unverified DoD behaviors reach the human developer.
 
-O objetivo **não** é código perfeito. É código **correto, coberto e sem problemas que custem caro**. Uma melhoria marginal nunca justifica mais uma rodada do loop. O agente busca o 80/20: poucas correções, as de maior impacto, e para.
+The goal is **not** flawless aesthetic perfection. The goal is code that is **correct, covered, and devoid of high-cost defects**. Marginal stylistic improvements never justify an additional loop iteration. The agent focuses on the 80/20 rule: apply the few highest-impact corrections and stop.
 
-A "tolerância zero" à complexidade de [`software-designing`](../software-designing/SKILL.md) vale para **decisões de design**. Abaixo dos contratos, vale o orçamento da seção 5.
+The "zero-tolerance" posture from [`software-designing`](../software-designing/SKILL.md) applies to **architectural design decisions**. Below contracts, the budget rules in Section 5 apply.
 
-O loop é **avaliar → corrigir → reavaliar**, com as regras de convergência da seção 5.
+The operational cycle is **evaluate → fix → re-evaluate**, adhering to convergence rules in Section 5.
 
 ---
 
-## 2. Classes de Achado
+## 2. Finding Classifications
 
-Todo achado cai numa destas quatro classes. A classe decide o que fazer com ele.
+Every discovered finding falls into one of four distinct categories. The category determines the exact action to take.
 
-| Classe | O que é | Ação |
+| Category | Definition | Action |
 | :--- | :--- | :--- |
-| **Blocking** | Objetivo e verificável: falha de ferramental ou teste, violação de regra documentada do projeto, comportamento da DoD sem cobertura e sem declaração. | Corrigir sempre. |
-| **Should fix** | Julgamento **com cenário concreto**: dá para dizer em uma frase qual bug provável, qual mudança cara ou qual confusão do leitor ele causa. | Corrigir dentro do orçamento (seção 5) ou justificar em uma linha por que fica. |
-| **Descartar** | Julgamento sem cenário concreto, preferência de estilo, "poderia ser mais elegante". | Não corrigir e não registrar. |
-| **Escalar** | A correção mudaria um contrato público, uma fronteira de módulo ou a direção das dependências. | Não aplicar. Registrar como pendência da Camada Humana. |
+| **Blocking** | Objective and deterministic: tool or test failure, documented project rule violation, DoD behavior lacking test coverage and lacking explicit declaration. | Always fix. |
+| **Should fix** | Subjective judgment **with a concrete failure scenario**: able to articulate in a single sentence what probable bug, expensive future change, or reader confusion it causes. | Fix within the budget (Section 5) or justify in one line why it remains. |
+| **Discard** | Judgment lacking a concrete scenario, personal style preference, "could be slightly cleaner". | Do not fix and do not record. |
+| **Escalate** | The remediation would alter a public contract, module boundary, or dependency direction. | Do not apply. Record as a pending Human Layer decision. |
 
-Na dúvida entre **Should fix** e **Descartar**: se o cenário concreto não vem à mente de imediato, descarte.
-
----
-
-## 3. Escopo
-
-- Avalie **só o que a tarefa criou ou alterou**. Problemas pré-existentes em código não tocado ficam fora, mesmo que sejam reais.
-- Exceção: se um problema pré-existente impede o ferramental de passar, trate-o como **Escalar**, e não como uma limpeza a fazer.
+When uncertain between **Should fix** and **Discard**: if a concrete failure scenario does not come to mind immediately, discard it.
 
 ---
 
-## 4. As Fases de Verificação
+## 3. Scope
 
-### Fase 1: Ferramental Estático e Testes (objetiva → Blocking)
-- Execute os linters, verificadores de tipo (`tsc`, `mypy`, etc.) e a suíte de testes do projeto.
-- Corrija qualquer erro de sintaxe, estilo, tipagem ou teste quebrado. Não silencie alertas com anotações de supressão sem justificativa imperativa.
-
-### Fase 2: Regras do Projeto (objetiva → Blocking)
-- Leia as regras documentadas: `AGENTS.md`/`CLAUDE.md` do repositório e tudo em `docs/rules/`, se existir.
-- Violação de regra **documentada** é **Blocking**. Julgamentos gerais de qualidade não entram aqui: ficam na Fase 5.
-
-### Fase 3: Cobertura BDD da Definition of Done (objetiva → Blocking)
-Para cada requisito ou critério de aceite da tarefa:
-1. **Verificado por código**: confirme que existe um teste que observa o comportamento pela interface pública, conforme [testing.md](../coding/references/testing.md). Testes que observam detalhes internos ou algo adjacente não contam como cobertura.
-2. **Não testável por código**: se o comportamento não é testável por código ([testing.md](../coding/references/testing.md), seção 5), declare explicitamente:
-   - qual é o comportamento;
-   - por que não é testável via código;
-   - como foi verificado alternativamente;
-   - o passo a passo exato para o humano validar manualmente.
-
-3. **Falta infraestrutura**: se o comportamento só seria testável com infraestrutura que o projeto não tem, declare-o como no item 2 e registre a falta como **Escalar**. Não construa a infraestrutura.
-
-> 🚨 Um comportamento da DoD sem teste automatizado e sem declaração explícita é **Blocking**.
-
-### Fase 4: Sanidade dos Testes (julgamento → Should fix)
-- Aplique [testing.md](../coding/references/testing.md) aos testes da tarefa. Teste com cenário concreto de quebra sem mudança de comportamento (acoplado a texto, estrutura ou internos), ou que exponha internos só para testar, é **Should fix**, dentro do orçamento da seção 5.
-
-### Fase 5: Qualidade do Código (julgamento → Should fix)
-- Aplique as referências de [`coding`](../coding/SKILL.md) (nomes, funções, comentários, tratamento de erro e code smells) ao código da tarefa, seguindo a prioridade por impacto de [code-smells.md](../coding/references/code-smells.md) (risco de bug → custo de mudança → legibilidade).
-- Tradução para as classes da seção 2: com cenário concreto → **Should fix**; sem cenário concreto → **Descartar**; mudaria contrato ou fronteira → **Escalar**.
-- Toda correção segue [refactoring-principles.md](../coding/references/refactoring-principles.md): comportamento preservado, testes verdes.
-- Smells na escala de módulo ou de contrato são **Escalar**, nunca correção local.
+- Inspect **strictly what the current task created or altered**. Pre-existing defects in untouched files are out of scope, even if genuine.
+- Exception: if a pre-existing issue causes project build/lint tooling to fail, treat it as **Escalate**, rather than scope-creeping cleanup.
 
 ---
 
-## 5. Loop e Convergência
+## 4. Verification Phases
 
-### Ordem
-Rode primeiro as fases objetivas (1, 2, 3) e corrija os **Blocking**. Só depois rode as fases de julgamento (4, 5), sobre o código já corrigido.
+### Phase 1: Static Tooling and Tests (Objective → Blocking)
+- Run project linters, static type checkers (`tsc`, `mypy`, etc.), and automated test suites.
+- Resolve any syntax error, formatting defect, typing mismatch, or broken test. Never silence alerts with suppression directives without imperative justification.
 
-### Orçamento
-- No máximo **5 correções Should fix** por tarefa, somando as fases 4 e 5, escolhidas pelo maior impacto.
-- Achados de julgamento além do orçamento são **descartados**, não adiados.
+### Phase 2: Project Rules (Objective → Blocking)
+- Inspect documented guidelines: repository `AGENTS.md`/`CLAUDE.md` and rules under `docs/rules/`, if present.
+- Violating a **documented** project rule is **Blocking**. General quality judgments belong in Phase 5.
 
-### Reavaliação
-- Depois de corrigir, rode de novo as fases **1, 2 e 3** completas. São baratas e objetivas.
-- As fases **4 e 5 não rodam de novo** sobre o código inteiro. Verifique apenas se as linhas alteradas pelas correções continuam passando nas fases 1–3.
-- **Sem achados de segunda ordem**: um smell que aparece no código produzido por uma correção não abre uma nova rodada de julgamento.
+### Phase 3: BDD Definition of Done Coverage (Objective → Blocking)
+For each requirement or acceptance criterion of the task:
+1. **Verified via code**: confirm an automated test verifies the behavior through the public interface, adhering to [testing.md](../coding/references/testing.md). Tests verifying internal details or adjacent concerns do not qualify as coverage.
+2. **Untestable via code**: if the behavior cannot be code-tested ([testing.md](../coding/references/testing.md), Section 5), explicitly declare:
+   - what the behavior is;
+   - why it cannot be tested via code;
+   - how it was verified through alternative means;
+   - step-by-step instructions for human manual validation.
 
-### Limite de rodadas
-- No máximo **3 rodadas** de avaliar → corrigir → reavaliar.
-- Se ainda houver **Blocking** depois da 3ª rodada, pare. Registre o impedimento (o que falha, o que foi tentado) como pendência para o humano. Não continue tentando.
+3. **Missing infrastructure**: if the behavior could only be tested with infrastructure the project currently lacks, declare it per Item 2 and flag the missing infrastructure as **Escalate**. Do not build the infrastructure.
 
-### Anti-oscilação
-- Se uma correção desfaria uma correção anterior, ou um achado contradiz uma decisão já tomada nesta revisão, **mantenha a versão atual** e siga em frente.
+> 🚨 Any DoD behavior lacking automated tests and lacking an explicit declaration is **Blocking**.
 
-### Commits
-- As correções do self-review são commits separados, depois do commit da implementação, seguindo [`commit`](../commit/SKILL.md).
+### Phase 4: Test Suite Sanity (Judgment → Should fix)
+- Apply [testing.md](../coding/references/testing.md) to the task's tests. Tests prone to breaking during refactoring without behavior change (coupled to text copy, markup structure, or internals), or exposing private symbols solely for testing, are **Should fix**, subject to the Section 5 budget.
 
----
-
-## 6. Veredito
-
-A entrega está **clean** no nível do agente quando:
-
-- não há **Blocking** (ou o impedimento restante foi registrado depois da 3ª rodada);
-- cada **Should fix** reportado foi corrigido ou tem justificativa de uma linha;
-- cada item **Escalar** está listado como pendência da Camada Humana.
-
-Registre, em poucas linhas, para rastreabilidade: o que foi corrigido, o que ficou justificado e o que foi escalado. Achados descartados não são registrados.
+### Phase 5: Code Quality (Judgment → Should fix)
+- Apply [`coding`](../coding/SKILL.md) references (naming, functions, comments, error handling, code smells) to modified code, prioritized by impact per [code-smells.md](../coding/references/code-smells.md) (bug risk → change cost → readability).
+- Category mapping per Section 2: concrete scenario → **Should fix**; no concrete scenario → **Discard**; touches contract/boundary → **Escalate**.
+- All remediations adhere to [refactoring-principles.md](../coding/references/refactoring-principles.md): preserved behavior, green tests.
+- Architectural smells at module or contract scale are always **Escalate**, never local refactorings.
 
 ---
 
-## 7. Validação de Sucesso
+## 5. Loop and Convergence
 
-- [ ] As fases objetivas (1–3) rodaram antes das de julgamento (4–5).
-- [ ] Só o código da tarefa foi avaliado.
-- [ ] No máximo 5 correções Should fix e no máximo 3 rodadas.
-- [ ] Nenhuma rodada nova foi aberta por achados de segunda ordem.
-- [ ] Nenhuma mudança de contrato, fronteira ou direção de dependência foi aplicada: tudo isso foi escalado.
-- [ ] Os testes passam depois da última correção.
+### Phase Ordering
+Execute objective phases (1, 2, 3) first and resolve all **Blocking** issues. Only then execute judgment phases (4, 5) on the stabilized code.
+
+### Budget
+- Maximum of **5 Should fix remediations** per task, combining Phases 4 and 5, prioritized strictly by impact.
+- Judgment findings exceeding the budget are **discarded**, not deferred.
+
+### Re-evaluation
+- After applying fixes, re-run Phases **1, 2, and 3** in their entirety (they are fast and deterministic).
+- Phases **4 and 5 do not run again** over the whole codebase. Verify only that modified lines continue satisfying Phases 1–3.
+- **Zero second-order findings**: smells introduced by a remediation never trigger an additional round of judgment review.
+
+### Iteration Limit
+- Maximum of **3 rounds** of evaluate → fix → re-evaluate.
+- If **Blocking** issues persist after round 3, stop. Document the roadblock (what is failing, what was attempted) as a pending blocker for the human. Do not loop indefinitely.
+
+### Anti-Oscillation
+- If a proposed fix would revert a previous fix, or contradicts a decision already finalized in this review, **preserve the current implementation** and move forward.
+
+### Commit Traceability
+- Self-review fixes are separate commits, authored after the implementation commit, adhering to [`commit`](../commit/SKILL.md).
+
+---
+
+## 6. Verdict
+
+The deliverable is **clean** at the agent layer when:
+
+- zero **Blocking** issues exist (or persistent blockers are documented after round 3);
+- every reported **Should fix** was remediated or justified in a single sentence;
+- every **Escalate** finding is logged as a pending Human Layer decision.
+
+Record a concise traceability log: what was fixed, what was justified, and what was escalated. Discarded findings are not recorded.
+
+---
+
+## 7. Success Validation
+
+- [ ] Objective phases (1–3) executed prior to judgment phases (4–5).
+- [ ] Strictly the task's modified code was evaluated.
+- [ ] Maximum 5 Should fix remediations applied across at most 3 iteration rounds.
+- [ ] Zero new rounds opened for second-order findings.
+- [ ] Zero contract, boundary, or dependency direction changes applied: all were escalated.
+- [ ] Automated tests pass following the final remediation commit.

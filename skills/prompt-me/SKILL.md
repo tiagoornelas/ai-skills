@@ -1,98 +1,98 @@
 ---
 name: prompt-me
 description: >-
-  Guia o usuário, passo a passo, numa tarefa que só ele consegue executar (login
-  interativo, ação em outro sistema ou painel web, configuração de hardware ou de
-  conta, aprovação manual, qualquer coisa fora do alcance do agente). Entrega um
-  passo por vez, espera a confirmação, tira dúvidas e corrige a rota quando algo
-  dá errado. Deve ser acionada quando o usuário pedir para ser guiado numa tarefa
-  manual, ou quando um fluxo do agente esbarrar numa etapa que só o humano pode
-  realizar.
-argument-hint: "[a tarefa manual a realizar]"
+  Guides the user step-by-step through a task that only a human can execute
+  (interactive login, actions in third-party web portals, hardware or account
+  setup, manual approvals, or anything outside agent capabilities). Delivers one
+  actionable step at a time, waits for confirmation, answers questions, and
+  corrects course when roadblocks arise. Triggered when the user asks to be
+  guided through a manual task, or when an agent workflow encounters an action
+  that requires human execution.
+argument-hint: "[manual task to execute]"
 ---
 
 # Prompt Me
 
-Para o momento em que o trabalho não pode (ou não deve) ser feito pelo agente. Quem executa é o usuário, com as próprias mãos; o agente **indica o caminho, confere cada passo e responde às dúvidas**. Não faz o passo no lugar dele.
+For moments when work cannot (or should not) be automated by the agent. The user executes with their own hands; the agent **charts the path, verifies each step, and resolves questions**. It never acts in place of the user.
 
 ---
 
-## 1. Entender a tarefa antes de guiar
+## 1. Understand the Task Before Guiding
 
-1. **Confirme o objetivo em uma linha**: o que precisa estar diferente quando a tarefa acabar.
-2. **Investigue o contexto** que o agente consegue ler: sistema operacional, versões instaladas, arquivos de configuração, documentação oficial da ferramenta. Guiar com base num menu que não existe mais faz o usuário perder mais tempo do que a tarefa em si.
-3. **Pré-requisitos**: diga de uma vez o que ter em mãos antes de começar (acesso, senha, dispositivo, permissão de admin). Se faltar algo, é melhor saber agora.
-4. **Monte o roteiro mentalmente** e estime o total de passos (`N`). Não mostre o roteiro inteiro.
+1. **Confirm the objective in one line**: what state must be true when the task completes.
+2. **Investigate observable context**: operating system, installed CLI versions, config files, official vendor documentation. Guiding based on an obsolete UI menu wastes more user time than doing the task from scratch.
+3. **Prerequisites**: state upfront what materials the user must have ready (credentials, physical devices, admin access, MFA).
+4. **Draft the mental sequence** and estimate total steps (`N`). Do not reveal the whole checklist in one burst.
 
-Se houver mais de um caminho razoável (ex.: pela interface web ou pelo CLI), pergunte qual o usuário prefere, com uma recomendação.
+If multiple viable paths exist (e.g. web UI vs. CLI), present the options with a clear recommendation.
 
 ---
 
-## 2. Um passo por mensagem
+## 2. One Step Per Message
 
-Cada passo tem uma ação só, que se lê e executa em segundos, e diz como saber se deu certo.
+Every step contains exactly one action, scannable and executable in seconds, with a clear success criterion.
 
 ```markdown
-**Passo 2 de 5** — Autorizar o dispositivo
+**Step 2 of 5** — Authorize the device
 
-**Faça:** abra Configurações → Privacidade → clique em **Autorizar dispositivo**.
+**Action:** Navigate to Settings → Privacy → click **Authorize device**.
 
-**Deu certo se:** aparecer "Dispositivo autorizado" com a data de hoje.
+**Verification:** You should see "Device authorized" with today's date.
 
-Me diga **feito**, **travei** ou mande sua dúvida.
+Reply **done**, **stuck**, or ask your question.
 ```
 
-- **Numere sempre** (`Passo X de N`). Se o roteiro mudar, atualize o `N` e diga isso.
-- **Texto exato**: nomes de botões, menus e campos entre `**negrito**`; comandos em bloco de código prontos para copiar.
-- **Espere a resposta** antes do próximo passo. Uma resposta ambígua ("ok", "acho que foi") pede a confirmação do critério de sucesso.
-- **Verifique o que o agente consegue verificar**: se o resultado aparece num arquivo, comando ou API a que o agente tem acesso, confira você mesmo antes de seguir, em vez de só confiar no "feito".
-- **Incerteza declarada**: se não tiver certeza de como a tela está, diga isso e peça ao usuário o que ele vê (texto da tela ou print). Não invente localização de botão.
+- **Always number steps** (`Step X of N`). If the plan shifts, update `N` and state the change.
+- **Exact typography**: button labels, menu items, and field names in `**bold**`; terminal commands in clean copyable code blocks.
+- **Wait for confirmation** before issuing the next step. Ambiguous replies ("ok", "think so") require confirming the success criterion.
+- **Verify what the agent can inspect**: if the outcome reflects in local files, CLI commands, or APIs accessible to the agent, verify it yourself rather than relying solely on a verbal "done".
+- **Acknowledge uncertainty**: if screen layouts are uncertain, say so and ask what the user sees (text snippet or screenshot). Never guess button locations.
 
 ---
 
-## 3. Dúvidas e tropeços
+## 3. Roadblocks and Clarifications
 
-- **Dúvida** no meio do passo: responda de forma curta e volte ao mesmo passo. Não avance sem a confirmação.
-- **Erro ou trava**: peça a evidência (mensagem exata, print, saída do comando), diagnostique e mande o passo corrigido, ainda um de cada vez. Se o problema mudar o plano, diga o novo `N`.
-- **Beco sem saída** (sem permissão, recurso indisponível, a ferramenta não oferece a opção): pare, explique o bloqueio e ofereça alternativas. Não empurre o usuário para contornos arriscados.
-
----
-
-## 4. Segurança
-
-- **Nunca peça segredos no chat**: senhas, tokens, chaves privadas ou códigos 2FA. Quando um segredo precisa chegar a um arquivo ou variável, mostre como o usuário o coloca lá sem colar na conversa.
-- **Avise antes do irreversível**: passos que apagam, revogam, publicam, cobram ou afetam outras pessoas levam `⚠️` e uma linha dizendo o que acontece e se dá para desfazer. Espere a confirmação explícita.
-- **Não rebaixe a segurança para facilitar** (desativar 2FA, dar permissão ampla, desligar verificação) sem dizer o custo e oferecer o caminho seguro primeiro.
+- **Questions mid-step**: answer concisely and stay on the current step. Never advance without confirmation.
+- **Errors or roadblocks**: request evidence (exact error message, terminal output, screenshot), diagnose, and provide a corrected step. If the plan shifts, declare the updated `N`.
+- **Dead ends** (insufficient permissions, deprecated feature): stop, explain the constraint, and offer alternative routes. Never push users toward unsafe workarounds.
 
 ---
 
-## 5. Encerrar
+## 4. Security Principles
 
-Quando o último passo for confirmado:
+- **Never ask for secrets in chat**: passwords, private tokens, API keys, or 2FA codes. When a secret belongs in a config file or environment variable, instruct the user on how to inject it locally without pasting into the conversation.
+- **Warn prior to irreversible actions**: steps that delete data, revoke credentials, incur billing, or affect teammates must carry `⚠️` and explain consequences and reversibility. Require explicit confirmation.
+- **Never compromise security for convenience** (disabling 2FA, granting `chmod 777`, bypassing SSL verification) without stating risks and offering the hardened path first.
+
+---
+
+## 5. Conclude
+
+When the final step is confirmed:
 
 ```markdown
-✅ **Concluído:** <o que ficou diferente, em uma linha>
+✅ **Completed:** <what state was achieved, in one line>
 
-- <o que foi feito, em 2–4 tópicos curtos>
-- <o que o usuário deve guardar ou lembrar, se houver: onde ficou a config, quando o token expira>
+- <summary of actions taken, in 2–4 concise bullet points>
+- <important details to remember or store: config path, expiration dates>
 ```
 
-Se esta skill foi acionada no meio de outro fluxo, devolva o controle a ele e diga qual etapa retoma.
+If invoked mid-flow by another skill, return control and state which step resumes.
 
 ---
 
-## 6. Não fazer
+## 6. What Not to Do
 
-- Despejar o roteiro inteiro numa mensagem.
-- Executar a ação do usuário "para adiantar", ou avançar sem confirmação.
-- Encher o passo de contexto: explicação longa só quando o usuário pedir.
+- Dumping the entire multi-step guide in a single message.
+- Executing the user's manual action "to get ahead", or advancing without confirmation.
+- Overwhelming steps with excessive conceptual background.
 
 ---
 
-## 7. Validação de Sucesso
+## 7. Success Validation
 
-- [ ] O objetivo foi confirmado em uma linha e os pré-requisitos foram listados antes do primeiro passo.
-- [ ] Cada mensagem trouxe um único passo numerado (`X de N`), com ação exata e critério de sucesso.
-- [ ] Nenhum passo avançou sem a confirmação do usuário; o que o agente podia verificar, ele verificou.
-- [ ] Nenhum segredo foi pedido no chat, e todo passo irreversível foi sinalizado e confirmado.
-- [ ] O encerramento resumiu o que mudou e, se aplicável, devolveu o controle ao fluxo de origem.
+- [ ] Objective confirmed in a single line and prerequisites listed prior to Step 1.
+- [ ] Every message contained a single numbered step (`X of N`) with exact action and verification criterion.
+- [ ] Zero steps advanced without user confirmation; verifiable outcomes were confirmed directly by the agent.
+- [ ] Zero credentials or secrets requested in chat; irreversible actions carried warnings and explicit confirmation.
+- [ ] Conclusion summarized changes and returned control to calling workflows where applicable.

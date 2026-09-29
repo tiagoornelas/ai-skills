@@ -1,58 +1,58 @@
-# Nomes
+# Naming
 
-> **Tese central**: um bom nome diz **o que a coisa é e por que existe**, e poupa o leitor de ler a implementação para descobrir. Esta referência trata de nomes **internos** (variáveis, funções, classes e campos privados). Nomes de contratos públicos são decisões de design: ver [obvious-code.md](../../software-designing/references/obvious-code.md).
-
----
-
-## Quando consultar
-
-- Ao nomear qualquer coisa interna.
-- Ao revisar nomes num diff.
-- Quando for difícil encontrar um nome.
+> **Central thesis**: a good name explains **what the element is and why it exists**, sparing the reader from inspecting the implementation to figure it out. This reference covers **internal** names (variables, functions, classes, and private fields). Public contract names are architectural decisions: see [obvious-code.md](../../software-designing/references/obvious-code.md).
 
 ---
 
-## 1. Regras
+## When to consult
 
-- **Revele a intenção**: o nome responde por que aquilo existe, o que faz e como se usa. Se o nome precisa de comentário, ele não revela a intenção.
-- **Não desinforme**: não use um nome que sugere outra coisa (`accountList` para algo que não é uma lista, `isValid` que também altera estado).
-- **Faça distinções com significado**: nada de `data1`/`data2`, e nada de palavras de ruído que não distinguem (`Info`, `Data`, `Object`, `Manager`, `Helper`). `Product` e `ProductInfo` lado a lado não dizem qual é qual.
-- **Tamanho proporcional ao escopo**: `i` num laço de três linhas está ótimo; uma variável usada ao longo de um módulo precisa de um nome que se entenda e se encontre numa busca.
-- **Uma palavra por conceito**: escolha entre `fetch`, `get` e `retrieve` e use sempre a mesma para a mesma ideia.
-- **Uma ideia por palavra**: nunca use a mesma palavra para duas semânticas. Se `add` soma valores num lugar, não use `add` para inserir numa coleção em outro.
-- **Domínio do problema e da solução**: use termos do negócio para conceitos do negócio, e termos técnicos conhecidos (`queue`, `visitor`, `cache`) para conceitos técnicos.
-- **Contexto com significado, sem contexto gratuito**: `state` sozinho é ambíguo, e dentro de um `Address` basta `state`. Mas não prefixe tudo com o nome do módulo ou do projeto.
-- **Forma gramatical**: classes e tipos são substantivos; funções são verbos; booleanos são predicados (`isActive`, `hasItems`).
-
-As convenções do repositório (prefixos, capitalização, idioma dos nomes) prevalecem sobre estas regras.
+- When naming any internal identifier.
+- When reviewing names in a code diff.
+- Whenever struggling to find an appropriate name.
 
 ---
 
-## 2. Nome difícil é sinal
+## 1. Rules
 
-- Se é difícil achar um nome simples e preciso, a coisa provavelmente faz mais de uma coisa ou não tem um propósito claro. Antes de aceitar um nome vago, reveja o que ela faz (ver [functions.md](functions.md)).
+- **Reveal intent**: the name states why the symbol exists, what it does, and how it is used. If a name requires a comment, it fails to reveal intent.
+- **Avoid disinformation**: never choose a name suggesting something contradictory (`accountList` for a map or set, `isValid` that mutates state as a side effect).
+- **Make meaningful distinctions**: avoid `data1`/`data2`, and eliminate noise words that add zero disambiguation (`Info`, `Data`, `Object`, `Manager`, `Helper`). `Product` and `ProductInfo` side by side fail to convey how they differ.
+- **Length proportional to scope**: a single letter `i` in a tiny three-line loop is fine; a variable referenced across an entire module requires an unambiguous, searchable name.
+- **One word per concept**: pick one term from `fetch`, `get`, and `retrieve`, and apply it consistently for the same conceptual operation.
+- **One concept per word**: never reuse the same word for two different semantics. If `add` performs arithmetic addition in one context, do not use `add` to append an item to a collection elsewhere.
+- **Problem and solution domain**: use business domain terms for business logic, and standard computer science terminology (`queue`, `visitor`, `cache`) for technical infrastructure.
+- **Meaningful context without redundancy**: `state` alone is ambiguous; inside an `Address` entity, `state` is clear. Do not prefix every variable with the enclosing module or project name.
+- **Grammatical form**: classes and types are nouns; functions are verbs; booleans are predicates (`isActive`, `hasItems`).
 
----
-
-## Red flags
-
-- Nomes genéricos (`data`, `info`, `result`, `temp`, `obj`, `handle`) fora de escopos mínimos.
-- Nome que sugere algo que o código não faz.
-- O mesmo conceito com nomes diferentes, ou o mesmo nome para conceitos diferentes.
-- Palavras de ruído distinguindo nomes parecidos.
-- Abreviações que só o autor entende.
-
----
-
-## Como aplicar
-
-- **Ao escrever**: nomeie pela intenção; se travar, reveja o que a coisa faz.
-- **Ao revisar**: nome **desinformativo** (sugere o que não é) ou **inconsistente** com o conceito já usado no código tem cenário concreto e vale corrigir. Nome apenas melhorável não tem: não vale apontar.
+Repository conventions (prefixes, casing, naming language) take precedence over these rules.
 
 ---
 
-## Relações
+## 2. Difficult Names Signal Design Smells
 
-- Nomes de contratos públicos e consistência no design: [obvious-code.md](../../software-designing/references/obvious-code.md).
-- Nomes que dispensam comentários: [comments.md](comments.md).
-- Função que é difícil de nomear: [functions.md](functions.md).
+- When finding a concise and precise name is difficult, the underlying element likely has multiple responsibilities or lacks a well-defined purpose. Before accepting a vague name, re-evaluate what the component actually does (see [functions.md](functions.md)).
+
+---
+
+## Red Flags
+
+- Generic catch-all names (`data`, `info`, `result`, `temp`, `obj`, `handle`) outside minimal local scopes.
+- Names that falsely imply capabilities or types the code does not possess.
+- The same concept named differently across files, or the same name applied to disparate concepts.
+- Arbitrary noise words used to distinguish related symbols.
+- Cryptic abbreviations that only the original author understands.
+
+---
+
+## How to Apply
+
+- **When writing**: name for intent; if stuck, re-evaluate the responsibility.
+- **When reviewing**: a name that is **misleading** (suggests what it is not) or **inconsistent** with existing repository vocabulary has a concrete maintenance scenario and warrants correction. A name that is merely stylistic or mildly sub-optimal lacks a concrete failure scenario: do not flag it.
+
+---
+
+## Relationships
+
+- Public contract names and architectural consistency: [obvious-code.md](../../software-designing/references/obvious-code.md).
+- Names that eliminate the need for comments: [comments.md](comments.md).
+- Functions that resist naming: [functions.md](functions.md).

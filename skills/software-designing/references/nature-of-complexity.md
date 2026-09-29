@@ -1,122 +1,122 @@
-# A Natureza da Complexidade
+# The Nature of Complexity
 
-> **Tese central**: o maior limitador do software é a nossa capacidade de entendê-lo. Complexidade é **qualquer coisa na estrutura de um sistema que o torna difícil de entender e de modificar**. O trabalho de design é, antes de tudo, reconhecer complexidade e combatê-la.
-
----
-
-## Quando consultar
-
-- Antes de avaliar qualquer design: é o vocabulário base usado por todas as outras referências.
-- Quando for preciso justificar ao humano **por que** uma alternativa é melhor que outra.
-- Ao diagnosticar um código "difícil de mexer" e for preciso nomear o problema com precisão.
+> **Central thesis**: the greatest limitation in software development is our ability to understand systems. Complexity is **anything related to the structure of a software system that makes it hard to understand and modify**. The work of design is, above all, to recognize complexity and fight it.
 
 ---
 
-## 1. Definição prática
+## When to consult
 
-Complexidade não é tamanho nem sofisticação técnica. É algo que o desenvolvedor **sente** quando tenta alcançar um objetivo:
+- Before evaluating any design: this is the foundational vocabulary used across all other design references.
+- When justifying to the human **why** one alternative is superior to another.
+- When diagnosing code that is "hard to touch" and needing to name the problem with precision.
 
-- Se é difícil entender como um trecho funciona, ou se uma melhoria pequena exige muito esforço, o sistema é complexo.
-- Se é fácil entender e modificar, o sistema é simples, mesmo que seja grande e faça coisas sofisticadas.
-- Um sistema grande e sofisticado pode ser simples de trabalhar; um sistema pequeno pode ser complexo.
+---
 
-### A complexidade é ponderada pelo uso
+## 1. Practical Definition
 
-A complexidade total de um sistema pode ser pensada como a soma da complexidade de cada parte, **ponderada pela fração de tempo que os desenvolvedores passam trabalhando naquela parte**:
+Complexity is not size or technical sophistication. It is something the developer **experiences** when trying to achieve a goal:
+
+- If it is hard to understand how a piece of code works, or if a small improvement requires outsized effort, the system is complex.
+- If it is easy to understand and modify, the system is simple, even if it is large and performs sophisticated tasks.
+- A large, sophisticated system can be simple to work in; a tiny system can be complex.
+
+### Complexity is weighted by activity
+
+Total system complexity can be modeled as the sum of complexity across parts, **weighted by the fraction of time developers spend working in that part**:
 
 ```text
 C = Σ (c_p × t_p)
 ```
 
-Consequências:
+Key takeaways:
 
-- Isolar complexidade num lugar onde ela raramente é vista é **quase tão bom quanto eliminá-la**.
-- Uma parte feia mas nunca tocada contribui pouco; uma parte levemente confusa e tocada todo dia contribui muito.
+- Isolating complexity in a place where it is rarely seen is **nearly as good as eliminating it**.
+- An ugly piece of code that is never touched contributes very little; a mildly confusing piece touched daily contributes enormously.
 
-### O leitor é o juiz
+### The reader is the judge
 
-A complexidade é mais evidente para quem lê do que para quem escreve. Se você escreveu um código que parece simples para você, mas outras pessoas o acham complexo, **ele é complexo**. O papel de quem projeta é criar código fácil de trabalhar **para os outros**, não para si mesmo.
+Complexity is more evident to the reader than to the author. If you wrote code that feels simple to you, but others find it complex, **it is complex**. The role of design is to make code easy to work with **for others**, not for yourself.
 
 ---
 
-## 2. Os três sintomas
+## 2. The Three Symptoms
 
-| Sintoma | O que é | Exemplo típico |
+| Symptom | Definition | Typical Example |
 | :--- | :--- | :--- |
-| **Amplificação de mudança** (*change amplification*) | Uma mudança aparentemente simples exige alterações em muitos lugares. | A cor do banner de um site está repetida explicitamente em cada página; mudar a cor exige editar todas elas. |
-| **Carga cognitiva** (*cognitive load*) | Quanto o desenvolvedor precisa saber para completar uma tarefa. Mais informação para absorver = mais tempo e mais risco de bug. | Uma API de alocação de memória que exige que quem chama libere cada bloco, ou uma função com muitos parâmetros que precisam ser entendidos antes do uso. |
-| **Incógnitas desconhecidas** (*unknown unknowns*) | Não é óbvio quais partes do código precisam mudar, nem qual informação é necessária para fazer a mudança corretamente. | Após trocar a cor do banner centralizada, algumas páginas usam uma variação mais escura calculada à mão; nada indica que elas também precisam mudar. |
+| **Change amplification** | A seemingly simple change requires edits in many different places. | The banner color of a site is explicitly repeated across every template; changing it requires editing all of them. |
+| **Cognitive load** | How much a developer needs to know to complete a task. More information to absorb = more time and higher bug risk. | A memory allocation API requiring callers to explicitly free each internal block, or a function with numerous interdependent parameters. |
+| **Unknown unknowns** | It is not obvious which parts of the code must change, or what information is needed to make the change correctly. | After centralizing the banner color, some pages use a darkened variation computed ad-hoc; nothing indicates they also need updating. |
 
-- **Incógnitas desconhecidas são o pior sintoma.** Com amplificação de mudança você ao menos sabe o que precisa editar; com carga cognitiva você sabe o que precisa ler. Aqui você não sabe o que não sabe, e só descobre quando o bug aparece.
-- **Menos linhas não significa menos carga cognitiva.** Uma abordagem que exige mais linhas de código pode ser mais simples se reduz o que o desenvolvedor precisa saber.
-- Um dos objetivos mais importantes de um bom design é que o sistema seja **óbvio**: o desenvolvedor adivinha rapidamente o que fazer, e adivinha certo (ver [obvious-code.md](obvious-code.md)).
+- **Unknown unknowns are the worst symptom of complexity.** With change amplification you at least know what to edit; with cognitive load you know what to read. With unknown unknowns, you don't know what you don't know, and you only find out when a bug surfaces.
+- **Fewer lines of code does not imply lower cognitive load.** An approach requiring more lines can be simpler if it reduces what the developer must hold in their head.
+- A paramount goal of good design is to make the system **obvious**: the developer quickly guesses what to do, and guesses correctly (see [obvious-code.md](obvious-code.md)).
 
 ---
 
-## 3. As duas causas
+## 3. The Two Causes
 
-Complexidade é causada por **dependências** e por **obscuridade**.
+Complexity is caused by **dependencies** and **obscurity**.
 
-### Dependências
+### Dependencies
 
-- Existe uma dependência quando um trecho de código **não pode ser entendido e modificado isoladamente**: ele se relaciona com outro código, que precisa ser considerado ou alterado junto.
-- Exemplo: a assinatura de um método cria dependência entre sua implementação e cada chamador; mudar a assinatura obriga a mudar todos eles. Um protocolo de rede cria dependência entre quem envia e quem recebe.
-- Dependências são parte fundamental do software e **não podem ser eliminadas**. O objetivo é **reduzir o número** de dependências e **tornar as restantes simples e óbvias**.
+- A dependency exists when a piece of code **cannot be understood and modified in isolation**: it relates to other code that must be considered or modified concurrently.
+- Example: a method signature creates a dependency between its implementation and every caller; changing the signature forces updates to all callers. A network protocol couples senders and receivers.
+- Dependencies are fundamental to software and **cannot be eliminated completely**. The goal is to **minimize the number** of dependencies and **make remaining ones simple and obvious**.
 
-### Obscuridade
+### Obscurity
 
-- Ocorre quando **informação importante não é óbvia**.
-- Exemplos: uma variável com nome tão genérico que não carrega significado (`time`, `data`); uma unidade de medida que não está documentada; uma dependência entre dois módulos que não é visível em lugar nenhum; **inconsistência** (o mesmo nome usado para coisas diferentes, ou a mesma coisa feita de jeitos diferentes).
-- Obscuridade anda junto com dependências: é comum uma dependência existir sem ser óbvia.
-- **A necessidade de documentação extensa costuma ser um sinal de alerta de que o design não está certo.** A melhor forma de reduzir obscuridade é simplificar o design; documentação vem depois.
+- Occurs when **important information is not obvious**.
+- Examples: a variable name so generic that it carries no meaning (`time`, `data`); an undocumented unit of measurement; an invisible dependency between two modules; **inconsistency** (the same term used for different concepts, or the same operation done in disparate ways).
+- Obscurity goes hand-in-hand with dependencies: dependencies frequently exist without being obvious.
+- **The need for extensive documentation is often a warning sign that the design is suboptimal.** The best way to reduce obscurity is to simplify the design; documentation comes after.
 
-### Mapa causa → sintoma
+### Cause → Symptom Map
 
 ```text
-Dependências ──► amplificação de mudança
-             └─► carga cognitiva
-Obscuridade  ──► incógnitas desconhecidas
-             └─► carga cognitiva
+Dependencies ──► change amplification
+             └─► cognitive load
+Obscurity    ──► unknown unknowns
+             └─► cognitive load
 ```
 
 ---
 
-## 4. A complexidade é incremental
+## 4. Complexity is Incremental
 
-- Complexidade não vem de um único erro catastrófico. Ela se **acumula** a partir de centenas ou milhares de pequenas dependências e obscuridades.
-- Cada uma, isoladamente, parece inofensiva ("é só uma dependência a mais"). Juntas, tornam o sistema difícil de mudar.
-- Por ser incremental, é difícil de controlar e fácil de justificar. Por isso é preciso uma postura de **tolerância zero**: tratar cada pequena complexidade adicionada como um problema real.
-- Depois de acumulada, a complexidade é difícil de remover: consertar uma única dependência ou obscuridade quase não muda nada.
-
----
-
-## Red flags
-
-- A mesma decisão ou valor aparece em vários lugares (amplificação de mudança).
-- Para usar um módulo é preciso entender detalhes da implementação dele (carga cognitiva).
-- Uma mudança "funcionou" mas quebrou algo distante e sem relação aparente (incógnita desconhecida).
-- Um trecho só pode ser entendido lendo outro trecho (dependência não óbvia).
-- A explicação de um design exige um documento extenso para fazer sentido (obscuridade).
+- Complexity rarely results from a single catastrophic mistake. It **accumulates** from hundreds or thousands of small dependencies and obscurities.
+- Individually, each shortcut seems harmless ("it's just one extra dependency"). Together, they make the system rigid and fragile.
+- Because it is incremental, it is difficult to control and easy to rationalize. This demands a **zero-tolerance mindset**: treating every small piece of added complexity as a real problem.
+- Once accumulated, complexity is notoriously hard to remove: fixing a single dependency or obscurity barely moves the needle.
 
 ---
 
-## Como aplicar
+## Red Flags
 
-Para cada alternativa de design, perguntar e registrar:
-
-1. **Amplificação**: que tipo de mudança provável neste sistema exigiria editar vários lugares?
-2. **Carga cognitiva**: o que alguém de fora precisa saber para usar este módulo? Isso pode ser reduzido?
-3. **Incógnitas desconhecidas**: existe alguma dependência que não fica visível no código ou na interface?
-4. **Dependências**: quantas são criadas, e cada uma é simples e óbvia?
-5. **Obscuridade**: nomes, unidades, invariantes e ordens de chamada estão claros onde precisam estar?
-6. **Ponderação pelo uso**: a complexidade que sobra está concentrada em partes raramente tocadas?
-
-Use estes termos ao comunicar trade-offs ao humano: são precisos e comparáveis.
+- The same decision or value appears in multiple places (change amplification).
+- Using a module requires understanding its internal implementation details (cognitive load).
+- A change "worked" but unexpectedly broke an unrelated area (unknown unknown).
+- Code can only be understood by reading distant, separate code (non-obvious dependency).
+- Explaining a design requires an extensive document to make sense (obscurity).
 
 ---
 
-## Relações
+## How to Apply
 
-- A postura necessária para combater a complexidade incremental: [strategic-programming.md](strategic-programming.md).
-- A principal ferramenta estrutural contra dependências: [deep-modules.md](deep-modules.md) e [information-hiding.md](information-hiding.md).
-- A principal ferramenta contra obscuridade: [obvious-code.md](obvious-code.md).
+For every design alternative, examine and record:
+
+1. **Amplification**: what likely future changes would require editing multiple places?
+2. **Cognitive load**: what must an external caller know to use this module? Can this be reduced?
+3. **Unknown unknowns**: are there dependencies not visible in the code or interface?
+4. **Dependencies**: how many are introduced, and is each one simple and obvious?
+5. **Obscurity**: are names, units, invariants, and call orders unmistakably clear where needed?
+6. **Usage weighting**: is remaining complexity concentrated in rarely touched components?
+
+Use these terms when communicating trade-offs to the human: they are precise and objective.
+
+---
+
+## Relationships
+
+- The mindset required to combat incremental complexity: [strategic-programming.md](strategic-programming.md).
+- Primary structural defenses against dependencies: [deep-modules.md](deep-modules.md) and [information-hiding.md](information-hiding.md).
+- Primary defense against obscurity: [obvious-code.md](obvious-code.md).

@@ -1,154 +1,155 @@
 # ai-skills ✨
 
-O meu jeito de desenvolver software com agentes de IA, escrito como **skills** e instalado a partir de uma fonte única em **Claude Code**, **Codex** e **Antigravity CLI**.
+My way of developing software with AI agents, written as **skills** and installed from a single source across **Claude Code**, **Codex**, and **Antigravity CLI**.
 
-Mais do que um catálogo de prompts, trata-se da divisão de trabalho em que acredito: o que o humano decide e o que o agente executa sozinho. Isso passa por estruturar essas camadas e aplicar princípios de design e código que direcionem o comportamento do agente, permitindo que o humano confie no que não precisa ler e que seja chamado à atenção apenas no que realmente precisa ver e decidir.
-
----
-
-## 🧭 O problema
-
-Um agente escreve código mais rápido do que qualquer pessoa consegue ler. Revisar tudo linha a linha transforma o humano no gargalo; não revisar nada transforma o software em uma pilha de decisões que ninguém tomou: um emaranhado arquitetural feito de escolhas bem-intencionadas, mas imediatistas.
-
-A saída que adoto é separar **o que é caro de errar e barato de revisar** do **que é barato de refazer e caro de ler**, e dar cada metade a quem faz melhor.
+More than a catalog of prompts, this represents the division of labor I believe in: what the human decides and what the agent executes autonomously. It structures these layers and applies design and coding principles that guide agent behavior, allowing humans to trust what they don't need to read and bringing their attention only to what truly demands their review and decision.
 
 ---
 
-## 🧱 Duas camadas
+## 🧭 The Problem
+
+An agent writes code faster than any human can read. Reviewing everything line-by-line turns the human into a bottleneck; reviewing nothing turns software into a pile of decisions no one actually made: an architectural tangle of well-intentioned but short-sighted choices.
+
+The approach I adopt is to separate **what is expensive to get wrong and cheap to review** from **what is cheap to redo and expensive to read**, assigning each half to whoever does it best.
+
+---
+
+## 🧱 Two Layers
 
 ```mermaid
 graph TB
-  subgraph H["👤 Camada Humana — governança"]
+  subgraph H["👤 Human Layer — governance"]
     direction LR
-    H1["Módulos e fronteiras"]
-    H2["Direção das dependências"]
-    H3["Contratos e modos de falha"]
-    H4["Comportamentos da DoD"]
-    H5["Trade-offs e decisões de negócio"]
+    H1["Modules and boundaries"]
+    H2["Dependency direction"]
+    H3["Contracts and failure modes"]
+    H4["DoD behaviors"]
+    H5["Trade-offs and business decisions"]
   end
-  subgraph A["🤖 Camada do Agente — implementação"]
+  subgraph A["🤖 Agent Layer — implementation"]
     direction LR
-    A1["Código abaixo dos contratos"]
-    A2["Estruturas internas"]
-    A3["Testes que provam a DoD"]
-    A4["Higiene mecânica"]
-    A5["Self-review até ficar limpo"]
+    A1["Code below contracts"]
+    A2["Internal structures"]
+    A3["Tests proving the DoD"]
+    A4["Mechanical hygiene"]
+    A5["Self-review until clean"]
   end
-  H -- "contratos e critérios de aceite" --> A
-  A -- "só o que é da Camada Humana" --> H
+  H -- "contracts and acceptance criteria" --> A
+  A -- "only what belongs to the Human Layer" --> H
 ```
 
-| | 👤 Camada Humana | 🤖 Camada do Agente |
+| | 👤 Human Layer | 🤖 Agent Layer |
 | :--- | :--- | :--- |
-| **Decide** | Quais módulos existem, o que cada um promete, para onde apontam as dependências, o que é "pronto". | Como cada módulo cumpre o que promete. |
-| **Revisa** | Mapas de módulos, contratos e a tabela de comportamentos, nunca o diff inteiro. | O próprio código, em loop, antes de qualquer humano ver. |
-| **Recebe do outro lado** | Só o que pertence à sua camada: decisões pendentes, contratos novos, verificações manuais. | Contratos e critérios de aceite claros. |
+| **Decides** | Which modules exist, what each promises, where dependencies point, what defines "done". | How each module fulfills its promises. |
+| **Reviews** | Module maps, contracts, and the behavior table—never the entire diff. | Its own code, in an automated loop, before any human sees it. |
+| **Receives from the other side** | Only what belongs to its layer: pending decisions, new contracts, manual verifications. | Clear contracts and acceptance criteria. |
 
-**O teste da fronteira**, quando não está claro de quem é a decisão:
+**The boundary test**, whenever it is unclear who owns a decision:
 
-> *Mudar isso exigiria renegociar um contrato com quem chama de fora, ou dá para reescrever amanhã sem ninguém fora do módulo perceber?*
-> Renegociar → 👤 humano. Reescrever em silêncio → 🤖 agente.
+> *Would changing this require renegotiating a contract with external callers, or can it be rewritten tomorrow without anyone outside the module noticing?*
+> Renegotiate → 👤 human. Silently rewrite → 🤖 agent.
 
 ---
 
-## 🔁 O ciclo de uma entrega
+## 🔁 The Delivery Cycle
 
 ```mermaid
 graph LR
-  D["Entender e decidir<br/><i>entrevista, design,<br/>alternativas</i>"] --> I["Implementar<br/><i>guiado por testes</i>"]
-  I --> S["Self-review<br/><i>avaliar → corrigir →<br/>reavaliar</i>"]
-  S -- "achado bloqueante" --> I
-  S -- "limpo" --> P["Pull Request<br/><i>síntese e diagramas</i>"]
-  P --> R["Revisão humana<br/><i>só a Camada Humana</i>"]
-  R -- "decisão de design" --> D
+  D["Understand & decide<br/><i>interview, design,<br/>alternatives</i>"] --> I["Implement<br/><i>test-driven</i>"]
+  I --> S["Self-review<br/><i>evaluate → fix →<br/>re-evaluate</i>"]
+  S -- "blocking finding" --> I
+  S -- "clean" --> P["Pull Request<br/><i>synthesis & diagrams</i>"]
+  P --> R["Human review<br/><i>Human Layer only</i>"]
+  R -- "design decision" --> D
 ```
 
-- **Antes de codar**, as decisões caras de mudar passam pelo humano. Quando uma decisão pesa, o agente projeta **duas vezes**, com alternativas radicalmente diferentes, e leva uma recomendação em vez de um único caminho.
-- **Durante**, o agente testa primeiro sempre que há um comportamento observável e um jeito de testá-lo.
-- **Antes do humano**, o agente revisa a si mesmo com orçamento e limite de rodadas: corrige o bloqueante, corrige o que tem cenário concreto de dano, descarta preferência de estilo e **escala** o que mexeria num contrato.
-- **Na revisão**, o humano vê o que foi construído contra o que foi pedido, em diagramas e numa tabela de comportamentos, e não num mar de linhas.
+- **Before coding**, high-consequence decisions pass through the human. When a decision carries heavy weight, the agent designs **twice**, exploring radically different alternatives, and brings a recommendation instead of a single path.
+- **During**, the agent writes tests first whenever an observable behavior and a way to test it exist.
+- **Before the human**, the agent reviews itself with an iteration budget and limit: fixes blocking issues, fixes anything with a concrete failure scenario, discards style preferences, and **escalates** anything that would touch a contract.
+- **In review**, the human evaluates what was built against what was requested, in diagrams and a behavior table, rather than wading through a sea of lines.
 
-Uso as mesmas lentes no trabalho dos outros: revisar o PR de um colega, responder à revisão recebida, resolver um conflito entre trabalhos paralelos sem descartar nenhum dos dois.
+I use the same lenses for collaborating on other people's work: reviewing a peer's PR, responding to received reviews, and resolving conflicts between parallel branches without discarding either work.
 
 ---
 
-## 📚 As teorias por trás
+## 📚 The Theories Behind It
 
-Não deixo o critério ao acaso. Cada julgamento de design ou de código se apoia numa ideia com nome, tirada dos livros que adotei como referência, para que o achado seja "isto é um módulo raso" e não "eu faria diferente".
+I don't leave criteria to chance. Every design or code judgment is grounded in an established concept with a name, drawn from foundational reference books, so findings are "this is a shallow module" rather than "I would have done it differently".
 
-| Fonte | O que adotei | Onde aparece |
+| Source | What was adopted | Where it appears |
 | :--- | :--- | :--- |
-| **John Ousterhout**, *A Philosophy of Software Design* | Complexidade como o inimigo central (dependências e obscuridade). **Módulos profundos**: interface pequena, implementação rica. Ocultação de informação e vazamento. Puxar a complexidade para baixo. Definir erros fora da existência. Camada diferente, abstração diferente. Programação **estratégica** em vez de tática. **Design it twice**. Comentários que dizem o porquê. | Todo o design e a revisão de arquitetura. |
-| **Robert C. Martin**, *Clean Architecture* | A regra de dependência: **as dependências apontam para as regras de negócio**; a política nunca depende de banco, framework ou provedor. | Direção de dependências, na Camada Humana. |
-| **Martin Fowler**, *Refactoring* | O catálogo de **code smells** e de refatorações nomeadas, em passos pequenos, sempre com testes verdes, sem misturar com mudança de comportamento. | Qualidade abaixo dos contratos. |
-| **Kent Beck**, *Test-Driven Development* | **Red → green → refactor.** Um teste que nunca falhou não prova nada. | Implementação. |
-| **Escola clássica de testes** (Vladimir Khorikov, *Unit Testing Principles, Practices, and Patterns*) | A unidade de teste é um **comportamento observável pela interface pública**. Colaboradores internos rodam de verdade; dublês só para o que está fora do controle (rede, relógio, LLM). Teste que quebra numa refatoração é teste ruim. | Testes e revisão de testes. |
+| **John Ousterhout**, *A Philosophy of Software Design* | Complexity as the central enemy (dependencies and obscurity). **Deep modules**: small interface, rich implementation. Information hiding and leakage. Pulling complexity downwards. Defining errors out of existence. Different layer, different abstraction. **Strategic** rather than tactical programming. **Design it twice**. Comments that explain why. | All software design and architecture review. |
+| **Robert C. Martin**, *Clean Architecture* | The dependency rule: **dependencies point toward business rules**; policy never depends on databases, frameworks, or external providers. | Dependency direction, on the Human Layer. |
+| **Martin Fowler**, *Refactoring* | The catalog of **code smells** and named refactorings, in small steps, always with green tests, never mixed with behavioral changes. | Code quality below contracts. |
+| **Kent Beck**, *Test-Driven Development* | **Red → green → refactor.** A test that has never failed proves nothing. | Implementation. |
+| **Classical Testing School** (Vladimir Khorikov, *Unit Testing Principles, Practices, and Patterns*) | The unit of testing is an **observable behavior via public interface**. Internal collaborators run for real; test doubles only for things outside process control (network, system clock, LLMs). A test that breaks upon refactoring is a bad test. | Testing and test review. |
 
-Onde as escolas discordam, declaro minha posição. Um exemplo: entre as funções minúsculas do *Clean Code* e as funções longas e profundas de Ousterhout, a regra que sigo é extrair **quando o pedaço extraído é independente**, e não extrair quando isso só espalha o que precisa ser lido junto.
+Where schools diverge, I state my position. For instance: between the tiny functions of *Clean Code* and the deep, cohesive functions of Ousterhout, my rule is to extract **when the extracted piece is independent**, avoiding extractions that merely scatter what should be read together.
 
-Algumas práticas de trabalho com agentes (entrevistar em rodadas sobre uma árvore de decisões, prototipar o que conversa não resolve, fazer handoff entre sessões) vêm das [skills de Matt Pocock](https://github.com/mattpocock/skills), adaptadas ao meu fluxo.
-
----
-
-## 🧩 O que as skills têm em comum
-
-- **O agente propõe, o humano decide.** Nada sai para o mundo (push, comentário, issue, mensagem) sem confirmação explícita.
-- **Fatos são trabalho do agente; decisões são do humano.** O agente não pergunta o que pode descobrir sozinho, e não responde às próprias perguntas de decisão.
-- **Achado precisa de cenário concreto.** Julgamento sem um bug provável, uma mudança cara ou uma confusão real do leitor é preferência, e preferência não vira achado.
-- **Mostrar antes de descrever.** Estrutura, dependências, fluxos e conflitos aparecem como diagrama, numa notação única.
-- **Nada que o leitor não consiga abrir.** Commits, PRs e comentários nunca citam caminhos locais da máquina.
-- **Escrita de gente.** Texto que um colega vai ler passa por uma revisão contra os vícios de escrita de IA.
-- **Toda skill diz como verificar que deu certo.**
-
-O catálogo atual está em [`skills/`](skills/). Ele muda com o tempo; a filosofia acima é o que deve permanecer.
+Some agent collaboration practices (interviewing in rounds along a decision tree, prototyping what conversation cannot resolve, handing off across sessions) originate from [Matt Pocock's skills](https://github.com/mattpocock/skills), adapted to my workflow.
 
 ---
 
-## 🚀 Instalação
+## 🧩 What the Skills Have in Common
 
-| Harness | Regras (SSOT) | Skills no projeto | Skills globais |
+- **The agent proposes, the human decides.** Nothing goes out to the world (push, comment, issue, message) without explicit confirmation.
+- **Facts are the agent's job; decisions belong to the human.** The agent doesn't ask what it can discover on its own, and doesn't answer its own decision questions.
+- **Findings require concrete failure scenarios.** Judgment without a probable bug, an expensive change, or real reader confusion is preference, and preference does not become a finding.
+- **Show before describing.** Structure, dependencies, flows, and conflicts are visualized as diagrams using consistent notation.
+- **Nothing the reader cannot open.** Commits, PRs, and comments never reference local machine paths.
+- **Human writing.** Text meant for human teammates undergoes review against formulaic AI writing habits.
+- **Every skill specifies how to verify success.**
+
+The current catalog is in [`skills/`](skills/). It evolves over time; the philosophy above is what remains.
+
+---
+
+## 🚀 Installation
+
+| Harness | Rules (SSOT) | Project skills | Global skills |
 | :--- | :--- | :--- | :--- |
 | **Claude Code** | `CLAUDE.md` → `AGENTS.md` | `.claude/skills/` | `~/.claude/skills/` |
 | **Codex** | `AGENTS.md` | `.agents/skills/` | `~/.codex/skills/` |
-| **Antigravity CLI** | `AGENTS.md` ou `GEMINI.md` | `.agents/skills/` | `~/.gemini/config/skills/` |
+| **Antigravity CLI** | `AGENTS.md` or `GEMINI.md` | `.agents/skills/` | `~/.gemini/config/skills/` |
 
-### Global (recomendado)
+### Global (recommended)
 
 ```bash
 ./scripts/setup-global.sh
 ```
 
-1. Vincula, por symlink, cada skill de `skills/` nas três pastas globais. Uma pasta real com o mesmo nome (cópia antiga) é movida para `~/.ai-skills-backup/<data>/` antes de o link ser criado, e links para skills que saíram do repositório são removidos.
-2. Pergunta se deve vincular o [`global/AGENTS.md`](global/AGENTS.md) como instrução global dos três harnesses (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md` e `~/.gemini/config/AGENTS.md`). Arquivos existentes vão para o mesmo backup. Use `--global-instructions` para vincular sem perguntar, ou `--skills-only` para instalar só as skills.
+1. Symlinks each skill from `skills/` into the three global folders. Any real folder with the same name (legacy copy) is moved to `~/.ai-skills-backup/<timestamp>/` before the link is created, and dangling links to skills removed from the repo are pruned.
+2. Prompts whether to link [`global/AGENTS.md`](global/AGENTS.md) as the global instruction across the three harnesses (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`, and `~/.gemini/config/AGENTS.md`). Existing files are moved to the same backup. Use `--global-instructions` to link without prompting, or `--skills-only` to install only the skills.
 
-O [`global/AGENTS.md`](global/AGENTS.md) é o que torna o fluxo obrigatório em qualquer projeto: ele diz, por gatilho, quando carregar cada skill (por exemplo, `coding` antes de editar qualquer arquivo de código). O [`AGENTS.md`](AGENTS.md) da raiz serve só para manter este repositório.
+[`global/AGENTS.md`](global/AGENTS.md) is what makes the workflow mandatory across any project: it specifies, by trigger, when to load each skill (for example, `coding` before editing any code file). The root [`AGENTS.md`](AGENTS.md) serves strictly to maintain this repository.
 
-Como tudo é symlink, um `git pull` já atualiza as skills e as instruções em todos os harnesses. Rode o script de novo só quando skills forem adicionadas ou removidas.
+Because everything is symlinked, a `git pull` instantly updates skills and instructions across all harnesses. Re-run the script only when skills are added or removed.
 
-### Num projeto específico
+### In a specific project
 
 ```bash
-./scripts/link-project.sh /caminho/para/o-projeto
+./scripts/link-project.sh /path/to/project
 ```
 
-1. Cria um `AGENTS.md` base, se não houver, e aponta `CLAUDE.md` e `GEMINI.md` para ele.
-2. Aponta `.claude/skills` e `.agents/skills` para `skills/`. Se o projeto já tiver skills próprias, elas são preservadas e as deste repositório são vinculadas uma a uma, sem sobrescrever homônimas.
+1. Creates a baseline `AGENTS.md` if one doesn't exist, and points `CLAUDE.md` and `GEMINI.md` to it.
+2. Points `.claude/skills` and `.agents/skills` to `skills/`. If the project already has its own skills, they are preserved and skills from this repo are symlinked individually without overwriting homonyms.
 
 ---
 
-## ✍️ Criando uma skill
+## ✍️ Creating a Skill
 
-O padrão completo está no [`AGENTS.md`](AGENTS.md), seção 3. Em resumo:
+The full standard is in [`AGENTS.md`](AGENTS.md), section 3. In summary:
 
 ```text
-skills/<nome-em-kebab-case>/
-├── SKILL.md       # obrigatório: frontmatter (name, description) + instruções
-├── references/    # detalhe carregado sob demanda
-├── scripts/       # utilitários executáveis
-└── resources/     # templates e ativos
+skills/<kebab-case-name>/
+├── SKILL.md       # required: frontmatter (name, description) + instructions
+├── references/    # in-depth guidance loaded on demand
+├── scripts/       # executable utilities
+└── resources/     # templates and assets
 ```
 
-- A `description` diz, em 3ª pessoa, o que a skill faz e **quando** deve ser acionada.
-- O `SKILL.md` fica enxuto; o aprofundamento vai para `references/`.
-- Toda skill termina com uma seção de **Validação de Sucesso**.
-- Depois de criar, rode `./scripts/setup-global.sh`.
+- The `description` states in 3rd person what the skill does and **when** it should be triggered.
+- Keep `SKILL.md` lean; deep-dive material belongs in `references/`.
+- Skills and documentation are authored in English by default.
+- Every skill ends with a **Success Validation** section.
+- After creating, run `./scripts/setup-global.sh`.

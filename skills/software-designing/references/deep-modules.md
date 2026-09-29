@@ -1,80 +1,80 @@
-# Módulos Devem Ser Profundos
+# Modules Should Be Deep
 
-> **Tese central**: os melhores módulos são aqueles cuja **interface é muito mais simples que sua implementação**. Um módulo profundo oferece muita funcionalidade por trás de uma interface pequena, escondendo complexidade do resto do sistema.
-
----
-
-## Quando consultar
-
-- Ao definir novos módulos, classes, serviços, pacotes ou funções públicas.
-- Ao avaliar se uma decomposição está gerando pedaços demais (e rasos demais).
-- Ao revisar uma interface proposta e decidir se ela "paga o próprio custo".
+> **Central thesis**: the best modules are those whose **interface is substantially simpler than their implementation**. A deep module provides powerful functionality behind a small, focused interface, hiding complexity from the rest of the system.
 
 ---
 
-## 1. Design modular
+## When to consult
 
-- O objetivo do design modular é decompor o sistema em módulos **relativamente independentes**, de modo que um desenvolvedor só precise entender uma pequena parte da complexidade total para trabalhar em qualquer um deles.
-- "Módulo" é qualquer unidade de código com **interface e implementação**: uma classe, um subsistema, um serviço, uma função, um pacote.
-- Independência total é impossível: módulos trabalham juntos chamando funções uns dos outros, então existem dependências. O objetivo é **minimizá-las**.
-
-### Interface vs. implementação
-
-- **Interface**: tudo o que um desenvolvedor trabalhando em *outro* módulo precisa saber para usar este. Descreve **o quê** o módulo faz, não **como**.
-- **Implementação**: o código que cumpre as promessas da interface.
-- Quem trabalha dentro de um módulo precisa entender a interface e a implementação dele, e as interfaces dos módulos que ele usa. **Não** precisa entender a implementação de outros módulos.
-
-### Partes formais e informais da interface
-
-- **Formal**: especificado explicitamente no código (assinaturas, nomes e tipos de parâmetros, tipo de retorno, exceções). A linguagem ou o compilador pode verificar.
-- **Informal**: comportamento de alto nível, efeitos colaterais, restrições de ordem de chamada ("só chame `b` depois de `a`"), invariantes. Só pode ser descrito em comentários e documentação, e costuma ser **maior e mais complexa** que a parte formal.
-- Uma interface bem especificada reduz as **incógnitas desconhecidas**: diz exatamente o que se precisa saber para usar o módulo.
-
-### Várias implementações de uma mesma interface
-
-- Quando uma interface tem várias implementações (adaptadores, drivers, provedores, uma versão em memória para testes), **todas precisam cumprir o contrato completo**, formal e informal. Quem usa a interface não pode precisar saber qual implementação recebeu.
-- Uma implementação que exige pré-condições a mais, entrega garantias a menos, lança "não suportado" ou muda um efeito colateral **quebra o contrato**, mesmo que as assinaturas batam.
-- O sintoma é o chamador verificar o tipo ou a origem da implementação para decidir o que fazer. Cada verificação dessas é conhecimento da implementação vazando para fora. Absorva a diferença dentro da própria implementação, ou num adaptador, em vez de espalhá-la pelos chamadores (ver [pull-complexity-downwards.md](pull-complexity-downwards.md)).
+- When defining new modules, classes, services, packages, or public functions.
+- When evaluating whether a decomposition creates too many (and excessively shallow) components.
+- When reviewing a proposed interface to decide if it "pays for itself".
 
 ---
 
-## 2. Abstração
+## 1. Modular Design
 
-- Abstração é uma **visão simplificada de uma entidade que omite detalhes sem importância**. Módulos fornecem abstrações por meio de suas interfaces.
-- Quanto mais detalhes sem importância forem omitidos, melhor. Mas um detalhe só pode ser omitido **se não for importante** para quem usa.
-- Dois modos de errar:
-  1. **Incluir detalhes que não são importantes**: a abstração fica mais complicada do que precisa e aumenta a carga cognitiva de quem usa.
-  2. **Omitir detalhes que são importantes**: gera obscuridade. Quem usa não tem a informação necessária. É uma **falsa abstração**: parece simples, mas não é.
-- Exemplo: um sistema de arquivos omite como os blocos são escolhidos no disco; isso não importa para quem lê e escreve. Mas em alguns casos o momento em que os dados chegam ao armazenamento durável **importa** (ex.: um banco de dados que precisa garantir persistência após um crash), então a interface precisa expor algo como `flush`/`fsync`.
+- The goal of modular design is to decompose a system into **relatively independent modules**, such that a developer only needs to understand a small fraction of the total system complexity to work on any single module.
+- A "module" is any code unit with an **interface and an implementation**: a class, subsystem, service, function, or package.
+- Total independence is impossible: modules interact by calling each other's functions, inevitably creating dependencies. The goal is to **minimize them**.
+
+### Interface vs. Implementation
+
+- **Interface**: everything a developer working in *another* module needs to know to use this one. Describes **what** the module does, not **how**.
+- **Implementation**: the internal code that fulfills the promises of the interface.
+- A developer working inside a module needs to understand its interface and implementation, plus the interfaces of any modules it calls. They do **not** need to understand the implementations of those other modules.
+
+### Formal vs. Informal Interface Components
+
+- **Formal**: explicitly specified in code (signatures, parameter names and types, return types, exceptions). Verified by the compiler or runtime.
+- **Informal**: high-level behavior, side effects, call order constraints ("call `a` before `b`"), and invariants. Documented in comments and specifications, this is usually **larger and more complex** than the formal interface.
+- A well-specified interface reduces **unknown unknowns**: it tells callers precisely what they need to know to use the module correctly.
+
+### Multiple Implementations of an Interface
+
+- When an interface has multiple implementations (adapters, drivers, providers, in-memory test doubles), **all must fulfill the complete contract**, formal and informal. Callers using the interface must not need to know which implementation they received.
+- Any implementation requiring extra preconditions, offering fewer guarantees, throwing "not supported", or changing side effects **violates the contract**, even if function signatures match.
+- The red flag is a caller inspecting the concrete type or origin of the implementation to decide how to behave. Every such branch represents internal implementation knowledge leaking outward. Absorb differences inside the implementation or via dedicated adapters instead of scattering checks across callers (see [pull-complexity-downwards.md](pull-complexity-downwards.md)).
 
 ---
 
-## 3. Profundidade: a metáfora do retângulo
+## 2. Abstraction
+
+- An abstraction is a **simplified view of an entity that omits unimportant details**. Modules provide abstractions through their interfaces.
+- The more unimportant details omitted, the better. But a detail can only be omitted **if it is truly unimportant** to the caller.
+- Two ways to fail:
+  1. **Including unimportant details**: the abstraction becomes cluttered, inflating cognitive load for callers.
+  2. **Omitting important details**: creates obscurity. Callers lack necessary information. This is a **false abstraction**: it looks simple on the surface, but is deceptively difficult to use correctly.
+- Example: a file system hides disk block allocation algorithms; callers reading and writing files do not care. But the moment data hits durable non-volatile storage **does matter** in certain scenarios (e.g., a database needing crash-consistency guarantees), so the interface must expose an explicit `flush`/`fsync` mechanism.
+
+---
+
+## 3. Depth: The Rectangle Metaphor
 
 ```text
-Módulo profundo                  Módulo raso
-┌──────┐  ← interface (custo)    ┌──────────────────────┐ ← interface (custo)
+Deep Module                      Shallow Module
+┌──────┐  ← interface (cost)     ┌──────────────────────┐ ← interface (cost)
 │      │                         │                      │
 │      │                         └──────────────────────┘
-│      │  ← funcionalidade         ↑ pouca funcionalidade
-│      │     (benefício)
+│      │  ← functionality          ↑ little functionality
+│      │     (benefit)
 │      │
 └──────┘
 ```
 
-- A área representa a funcionalidade entregue (benefício). A borda de cima representa a interface (custo, em complexidade imposta a quem usa).
-- **Profundidade = benefício ÷ custo.** O melhor módulo entrega muita funcionalidade com uma interface pequena.
+- Area represents the delivered functionality (benefit). The top edge represents the interface (cost in complexity imposed on callers).
+- **Depth = benefit ÷ cost.** The best modules deliver massive functionality through a compact interface.
 
-### Exemplos canônicos de módulos profundos
+### Canonical Examples of Deep Modules
 
-- **I/O de arquivos no Unix**: cinco chamadas básicas (`open`, `read`, `write`, `lseek`, `close`) com assinaturas simples. Por trás, a implementação esconde centenas de milhares de linhas: representação em disco, diretórios e caminhos, permissões, escalonamento de acesso ao disco, cache de blocos, independência de dispositivo. Essa implementação mudou radicalmente ao longo de décadas sem que a interface mudasse.
-- **Coletor de lixo**: praticamente **não tem interface**. Funciona de forma invisível e ainda *reduz* a interface do sistema, eliminando a necessidade de liberar memória.
+- **Unix File I/O**: five fundamental system calls (`open`, `read`, `write`, `lseek`, `close`) with straightforward signatures. Behind them, the kernel encapsulates hundreds of thousands of lines: on-disk structures, directories, path resolution, permissions, block scheduling, buffer caching, and device drivers. This implementation evolved radically over decades without altering the interface.
+- **Garbage Collectors**: have virtually **no interface**. They operate invisibly and actually *reduce* total system interface by eliminating explicit memory deallocation calls.
 
-### Módulos rasos
+### Shallow Modules
 
-- Um módulo raso tem interface relativamente complexa em comparação com a funcionalidade que entrega. Ele não ajuda muito na batalha contra a complexidade: o benefício de não precisar entender a implementação é anulado pelo custo de aprender e usar a interface.
-- Exemplo: uma classe de lista encadeada esconde pouquíssimo (algumas linhas de ponteiros) por trás de uma interface quase tão complexa quanto a implementação.
-- Exemplo extremo de método raso:
+- A shallow module has a relatively complex interface compared to the functionality it encapsulates. It contributes little to combating complexity: the benefit of not having to read the implementation is cancelled out by the cost of learning and navigating the interface.
+- Example: a linked list class hiding only a few lines of pointer manipulation behind an interface almost as complex as the implementation itself.
+- Extreme example of a shallow method:
 
   ```java
   private void addNullValueForAttribute(String attribute) {
@@ -82,15 +82,15 @@ Módulo profundo                  Módulo raso
   }
   ```
 
-  Não oferece abstração nenhuma: toda a funcionalidade é visível na interface. Pensar no método é tão caro quanto pensar no código que ele contém. E ainda adiciona mais uma interface para aprender e mais código para ler.
+  Provides no abstraction whatsoever: the entire functionality is exposed in the interface. Thinking about calling the method is just as costly as thinking about the code it contains, while adding another symbol to learn and navigate.
 
 ---
 
-## 4. "Classite" (*classitis*)
+## 4. "Classitis"
 
-- Existe uma sabedoria convencional de que classes (e funções) devem ser pequenas: "quebre qualquer coisa com mais de N linhas".
-- Levada ao extremo, isso gera **classite**: um grande número de classes pequenas e rasas. Cada uma parece simples, mas o sistema como um todo fica mais complexo: há mais interfaces, e cada interface adiciona complexidade. Também gera um estilo verboso, com muito código de amarração.
-- Exemplo: na biblioteca clássica de I/O do Java, para ler objetos serializados de um arquivo é preciso criar três objetos:
+- Conventional wisdom often pushes classes (and functions) to be as small as possible: "split anything over N lines".
+- Taken to extremes, this causes **classitis**: an explosion of tiny, shallow classes. Each looks simple in isolation, but the system as a whole becomes drastically more complex: interfaces proliferate, and every interface carries a cost. It also breeds boilerplate pass-through code.
+- Example: in classic Java I/O, reading serialized objects from a file required chaining three separate stream classes:
 
   ```java
   FileInputStream fileStream = new FileInputStream(fileName);
@@ -98,41 +98,41 @@ Módulo profundo                  Módulo raso
   ObjectInputStream objectStream = new ObjectInputStream(bufferedStream);
   ```
 
-  O buffering, que quase todo mundo quer, precisa ser pedido explicitamente. Esquecer significa nenhum buffering e I/O lento, sem nenhum aviso. Seria melhor que o buffering fosse o **padrão**, com uma forma de desligá-lo nos raros casos em que não é desejado.
-- **Princípio**: interfaces devem ser desenhadas para tornar o **caso comum o mais simples possível**. Se quase todo usuário de uma classe precisa de um recurso, ele deve vir por padrão.
-- Por contraste, os projetistas do Unix tornaram o caso comum simples: I/O sequencial é o padrão; acesso aleatório é possível (`lseek`), mas quem só lê sequencialmente não precisa saber disso.
+  Buffering, which virtually every caller needs, had to be explicitly requested. Forgetting it caused silent performance degradation. Buffering should have been the **default**, with an option to disable it for the rare cases where it wasn't wanted.
+- **Principle**: interfaces should make the **common case as simple as possible**. If nearly every user of a class requires a feature, provide it by default.
+- By contrast, Unix designers made the common case simple: sequential I/O is default; random access is available (`lseek`), but sequential readers never need to think about it.
 
 ---
 
-## Red flags
+## Red Flags
 
-- **Módulo raso**: a interface não é muito mais simples que a implementação.
-- Recurso que quase todo chamador precisa, mas que precisa ser ativado explicitamente.
-- Muitas classes ou funções pequenas que só fazem sentido juntas, cada uma com sua própria interface.
-- Uma interface formal simples que esconde uma interface informal complexa (restrições de ordem, efeitos colaterais não documentados).
-- A abstração omite algo que o chamador realmente precisa saber (falsa abstração).
-- Chamador que verifica o tipo ou a origem da implementação para decidir o que fazer.
-
----
-
-## Como aplicar
-
-Para cada módulo proposto:
-
-1. **Escreva a interface primeiro** (assinaturas + comportamento informal em uma ou duas frases). Se não conseguir descrever de forma curta, o módulo provavelmente está mal definido.
-2. **Compare interface e implementação**: a interface é muito mais simples do que aquilo que ela esconde? Se não, considere fundir com outro módulo ou mover mais responsabilidade para dentro dele.
-3. **Identifique o caso comum** e verifique se ele é trivial de usar, sem configuração ou passos obrigatórios.
-4. **Conte as interfaces** do design inteiro, não só as linhas por arquivo: menos módulos, mais profundos, costumam ser melhores que muitos rasos.
-5. **Verifique a abstração**: algo importante foi omitido? Algo sem importância foi exposto?
-
-Ao reportar ao humano, apresente cada módulo como um cartão de interface (via [`visualize-it`](../../visualize-it/SKILL.md)): o que ele promete, o que ele esconde, e por que isso é profundo.
+- **Shallow module**: interface complexity is comparable to implementation complexity.
+- A feature required by almost every caller that must be manually configured or activated.
+- Clusters of small classes or functions that only make sense together, each with its own interface.
+- A simple formal interface masking a complex informal interface (undocumented order requirements, hidden side effects).
+- An abstraction that omits information callers genuinely need (false abstraction).
+- Callers inspecting concrete types or origins to branch on behavior.
 
 ---
 
-## Relações
+## How to Apply
 
-- O conteúdo que torna um módulo profundo é o conhecimento que ele esconde: [information-hiding.md](information-hiding.md).
-- Interfaces gerais tendem a ser mais profundas: [general-purpose-modules.md](general-purpose-modules.md).
-- Quando dividir ou juntar módulos: [together-or-apart.md](together-or-apart.md).
-- Exceções também fazem parte da interface e a tornam mais rasa: [define-errors-out-of-existence.md](define-errors-out-of-existence.md).
-- Portas entre regras de negócio e infraestrutura, e suas implementações substituíveis: [dependency-direction.md](dependency-direction.md).
+For each proposed module:
+
+1. **Write the interface first** (signatures + informal behavior in 1–2 sentences). If you cannot describe it succinctly, the module boundary is likely flawed.
+2. **Compare interface and implementation**: is the interface dramatically simpler than what it hides? If not, consider merging with a peer module or moving more responsibility inside.
+3. **Identify the common case** and ensure it is effortless to use without mandatory configuration rituals.
+4. **Count total interfaces** across the entire design, not just lines per file: fewer, deeper modules are consistently superior to a sprawling collection of shallow ones.
+5. **Verify the abstraction**: was critical information omitted? Were trivial details exposed?
+
+When presenting to the human, format each module as an interface card (via [`visualize-it`](../../visualize-it/SKILL.md)): what it promises, what it encapsulates, and why it qualifies as deep.
+
+---
+
+## Relationships
+
+- What makes a module deep is the knowledge it encapsulates: [information-hiding.md](information-hiding.md).
+- General-purpose interfaces tend to be deeper: [general-purpose-modules.md](general-purpose-modules.md).
+- When to split or combine modules: [together-or-apart.md](together-or-apart.md).
+- Exceptions are part of the interface and make it shallower: [define-errors-out-of-existence.md](define-errors-out-of-existence.md).
+- Ports decoupling business rules from infrastructure, and their swappable implementations: [dependency-direction.md](dependency-direction.md).

@@ -1,111 +1,111 @@
-# Defina Erros Fora da Existência
+# Define Errors Out of Existence
 
-> **Tese central**: o tratamento de exceções é uma das maiores fontes de complexidade em software. A melhor forma de reduzi-la é **diminuir o número de lugares onde exceções precisam ser tratadas**, idealmente redefinindo a semântica das operações para que a condição de erro simplesmente não exista.
-
----
-
-## Quando consultar
-
-- Ao definir os modos de falha de um contrato (erros, exceções, códigos de retorno).
-- Quando uma interface lista muitas exceções ou erros possíveis.
-- Ao projetar recuperação de falhas em sistemas distribuídos.
-- Ao encontrar casos especiais que espalham condicionais.
+> **Central thesis**: exception handling is one of the worst sources of complexity in software. The most effective way to eliminate this complexity is to **reduce the number of places where exceptions must be handled**, ideally by redefining operation semantics so that the error condition ceases to exist.
 
 ---
 
-## 1. Por que exceções adicionam tanta complexidade
+## When to consult
 
-- "Exceção" aqui é qualquer condição incomum que altera o fluxo normal: exceções da linguagem, códigos de erro, casos especiais.
-- Surgem de várias formas: o chamador passa argumentos ou configuração inválida; o método chamado não consegue completar (falha de I/O, recurso indisponível); em sistemas distribuídos, pacotes se perdem ou chegam atrasados, servidores caem; o código detecta um bug, uma inconsistência interna ou uma situação para a qual não foi preparado.
-- **Tratar é difícil**: é preciso decidir entre seguir em frente contornando a falha ou abortar e reportar. Abortar exige desfazer mudanças parciais para manter consistência. Recuperação frequentemente gera novas exceções (falhas durante a recuperação).
-- **Código de tratamento raramente executa**, então bugs nele passam despercebidos por muito tempo, e aparecem justamente quando algo já deu errado.
-- **Lançar é fácil; tratar é difícil.** Isso cria a tentação de lançar exceções para qualquer coisa.
-- Exceções são sintaticamente verbosas (blocos `try/catch` quebram o fluxo e tornam o código normal mais difícil de ler).
-
-### Exceções demais
-
-- É comum programadores lançarem exceções para situações que poderiam tratar, só para se livrar do problema ("se não sei o que fazer, lanço"). Também há a crença de que "quanto mais erros detectados e reportados, melhor".
-- **As exceções que um módulo lança fazem parte da sua interface.** Um módulo com muitas exceções tem uma interface complexa, e por isso é **mais raso**.
-- Cada exceção lançada empurra complexidade para todos os chamadores (o oposto de [pull-complexity-downwards.md](pull-complexity-downwards.md)).
+- When defining failure modes in a contract (errors, exceptions, return codes).
+- When an interface enumerates many potential exceptions or error branches.
+- When architecting fault-tolerant recovery in distributed systems.
+- When discovering special-case branches scattered across business logic.
 
 ---
 
-## 2. As quatro técnicas
+## 1. Why Exceptions Add Outsized Complexity
 
-### 2.1. Defina erros fora da existência
+- An "exception" here refers to any non-standard condition altering normal execution flow: language exceptions, error codes, special status returns.
+- They arise from diverse sources: callers passing invalid arguments or misconfiguration; callees unable to fulfill requests (I/O failures, resource exhaustion); in distributed networks, packets dropping, latency spikes, server crashes; internal bugs or unhandled edge cases.
+- **Handling is difficult**: developers must decide whether to attempt recovery or abort and unwind. Aborting requires rolling back partial mutations to preserve system invariants. Recovery attempts frequently trigger secondary failures (exceptions during recovery).
+- **Handling code rarely executes**, allowing bugs in error-handling paths to lie dormant for months, only detonating during active production incidents.
+- **Throwing is easy; handling is hard.** This asymmetry creates a dangerous incentive to throw exceptions for every minor inconvenience.
+- Syntactic clutter (`try/catch` cascades) fragments code flow and obscures the happy path.
 
-Redefina a semântica da operação para que a condição de erro deixe de ser um erro.
+### Exception Overload
 
-- **`unset` no Tcl**: o comando remove uma variável e lança erro se ela não existe. Mas o uso mais comum de `unset` é limpar estado temporário, e muitas vezes não se sabe se a variável chegou a ser criada. O resultado é que quase todo uso precisa capturar o erro. Uma definição melhor seria: **`unset` garante que a variável não exista mais**. Se ela já não existe, não há nada a fazer, e não há erro.
-- **Remoção de arquivos**: no Windows, tentar apagar um arquivo aberto por algum processo resulta em erro, e o usuário precisa descobrir quem está com o arquivo aberto. No Unix, o arquivo pode ser apagado mesmo aberto: ele sai do diretório imediatamente (novos processos não o veem), mas os dados só são liberados quando o último processo que o usa o fecha. O processo que tinha o arquivo aberto continua funcionando normalmente. Nenhum dos lados precisa tratar erro.
-- **`substring` em Java**: lança `IndexOutOfBoundsException` se os índices estiverem fora dos limites da string. Isso força o chamador a checar e ajustar índices antes de chamar. Uma definição melhor é a das *slices* em Python: índices fora do intervalo são **ajustados** aos limites, e o resultado é o trecho da string que se sobrepõe ao intervalo pedido (possivelmente vazio). O código fica mais simples e não perde nada.
-
-### 2.2. Mascare exceções
-
-Detecte e trate a condição **num nível baixo**, para que os níveis superiores não precisem saber dela.
-
-- **TCP**: pacotes perdidos são detectados e retransmitidos pelo protocolo. A aplicação recebe um fluxo confiável e nunca vê a perda.
-- **NFS**: se o servidor fica indisponível, o cliente não reporta erro à aplicação; ele continua tentando até o servidor voltar (a aplicação apenas espera). Pode ser frustrante para o usuário, mas é melhor do que fazer cada aplicação tratar a falha, o que a maioria faria mal, ou nem faria.
-- Mascarar exceções é uma forma de **puxar complexidade para baixo**: o módulo que mascara fica mais complexo, mas todos os que o usam ficam mais simples.
-
-### 2.3. Agregue exceções
-
-Trate muitas exceções com **um único trecho de código**, em vez de um tratamento para cada uma.
-
-- **Servidor web e parâmetros ausentes**: em vez de cada handler de URL checar e tratar cada parâmetro obrigatório ausente, o método que busca o parâmetro lança uma exceção padronizada, e **o despachante de nível mais alto** a captura e gera uma resposta de erro única, com a mensagem apropriada. Os handlers não têm nenhum código de tratamento.
-- Isso é o oposto de capturar e tratar exceções o mais perto possível de onde ocorrem. A agregação move o tratamento para um lugar mais alto, onde **um único ponto** trata muitas situações.
-- **Promova exceções raras a exceções comuns**: em um sistema de armazenamento distribuído, um objeto corrompido pode ser tratado como se o servidor onde ele está tivesse caído: o sistema de recuperação de falhas (que já existe e é testado com frequência) recupera o objeto a partir das réplicas. Um mecanismo único cobre várias falhas, e o caminho raro passa a usar código bem exercitado.
-
-### 2.4. Simplesmente deixe quebrar (*just crash*)
-
-- Para algumas condições, **não vale a pena tratar**. O mais simples é imprimir informação de diagnóstico e abortar a aplicação.
-- Exemplos: falta de memória em aplicações comuns (um alocador que aborta em vez de devolver nulo evita que cada chamador cheque o retorno); erros de I/O inesperados; inconsistências em estruturas de dados internas (sinal de bug).
-- Se aplica a erros **raros e difíceis ou impossíveis de tratar**. A decisão depende da aplicação: um sistema de armazenamento replicado **não** deve abortar por um erro de I/O; deve recuperar a partir das réplicas.
+- Developers frequently throw exceptions for situations they could easily absorb internally, simply to offload responsibility ("if I'm unsure what to do, I'll throw"). Compounded by the misconception that "more explicit errors equal higher robustness".
+- **The exceptions a module throws are an inseparable part of its public interface.** A module with numerous thrown exceptions has a complex, shallow interface.
+- Every thrown exception pushes complexity upward onto all callers (the exact opposite of [pull-complexity-downwards.md](pull-complexity-downwards.md)).
 
 ---
 
-## 3. Elimine casos especiais da existência
+## 2. The Four Techniques
 
-- O mesmo raciocínio vale para casos especiais em geral: eles espalham `if`s e tornam o código mais difícil de entender.
-- Exemplo: no editor de texto, tratar "não há seleção" como um estado especial exige checagens antes de cada operação sobre a seleção. Se a seleção **sempre existe** e pode estar **vazia**, as operações funcionam sem nenhuma checagem.
-- Sempre que possível, projete o **caso normal** para tratar automaticamente os casos extremos.
+### 2.1. Define Errors Out of Existence
 
----
+Redefine operation semantics so that the error condition becomes a valid, normal state.
 
-## 4. Levando longe demais
+- **`unset` in Tcl**: originally unsetting an undefined variable threw an error. But `unset` is primarily used to clean up temporary state, and callers rarely know if the variable was instantiated. Callers were forced to wrap every call in error traps. A superior definition: **`unset` guarantees the variable no longer exists**. If it didn't exist in the first place, the postcondition is already satisfied: no error.
+- **File Deletion**: in Windows, attempting to delete an open file fails with an error, requiring users or applications to hunt down file lock handles. In Unix, an open file can be deleted immediately: its directory entry is removed instantly (invisible to new processes), while data blocks persist until the last holding process terminates. Neither side requires error handling.
+- **`substring` in Java vs. Python**: Java throws `IndexOutOfBoundsException` if offsets exceed string boundaries, forcing callers to clamp bounds beforehand. Python string slices **clamp gracefully**: out-of-range bounds yield the overlapping slice (or empty string). Call sites are dramatically cleaner with zero loss in utility.
 
-- Definir erros fora da existência ou mascarar exceções só faz sentido se **a informação sobre a exceção não é necessária fora do módulo**.
-- Exemplo: um módulo de rede que mascara **todas** as exceções de rede (sem avisar o chamador) seria um erro, porque aplicações muitas vezes precisam saber que a comunicação falhou para tomar decisões.
-- Assim como na ocultação de informação, é preciso discernimento: exponha a exceção quando quem está acima realmente precisa dela; nesses casos, ela deve ser **parte explícita do contrato**.
+### 2.2. Mask Exceptions
 
----
+Detect and resolve the condition **at a low level** so upper architectural layers never need to know it occurred.
 
-## Red flags
+- **TCP**: dropped packets are detected and retransmitted by the transport layer. Applications receive a reliable byte stream and remain oblivious to transient packet loss.
+- **NFS**: if a file server becomes unreachable, client drivers do not bubble up I/O errors; they retry indefinitely until the server recovers. Applications simply pause. While potentially causing latency pauses, this is far superior to forcing thousands of client applications to independently invent distributed retry policies.
+- Masking exceptions is an application of **pulling complexity downwards**: the masking module absorbs complexity, relieving all downstream callers.
 
-- Uma interface com muitas exceções ou códigos de erro diferentes.
-- Chamadores que sempre capturam a mesma exceção e fazem a mesma coisa (sinal de que a exceção nem deveria existir, ou deveria ser tratada abaixo).
-- Tratamento de erro idêntico espalhado por muitos handlers (candidato a agregação).
-- Checagens de pré-condição repetidas antes de cada chamada (sinal de semântica mal definida).
-- Estados especiais ("nenhum", "não inicializado") que exigem checagem em todo uso.
+### 2.3. Aggregate Exceptions
 
----
+Handle numerous diverse exceptions with **a single centralized recovery handler** rather than fragmented ad-hoc handlers at every call site.
 
-## Como aplicar
+- **Web Routers and Missing Parameters**: instead of each HTTP handler checking and trapping missing query parameters, the parameter extraction utility throws a standardized bad-request exception. A **top-level dispatcher/middleware** intercepts it and formats the appropriate 400 response. Individual controllers contain zero error-handling boilerplate.
+- Aggregation is the structural opposite of catching exceptions as close as possible to the throw site. It concentrates handling where **a single policy** governs many failure modes.
+- **Promote rare exceptions to common ones**: in a distributed storage cluster, handling a corrupted data chunk by treating the hosting node as dead leverages the existing, rigorously tested node-recovery machinery. One battle-tested failover path replaces custom recovery code for obscure edge cases.
 
-Para cada modo de falha de um contrato, percorra na ordem:
+### 2.4. Just Crash
 
-1. **Posso redefinir a operação para que esta condição não seja erro?** (idempotência, "garante que X" em vez de "faz X", ajuste de limites, coleções vazias em vez de nulos)
-2. **Posso mascarar a condição dentro do módulo?** (retry, fallback, recuperação local), desde que o chamador não precise dessa informação.
-3. **Posso agregar o tratamento num único ponto de nível mais alto?** (despachante, middleware, mecanismo de recuperação existente)
-4. **Vale a pena tratar, ou é melhor abortar com diagnóstico?**
-5. Só então: **expor a exceção no contrato**, documentada, com a informação que o chamador precisa para agir.
-
-Os modos de falha que sobrarem no contrato são **decisões da Camada Humana**: apresente-os ao humano no cartão de interface, junto com os que foram eliminados e a técnica usada para cada um.
+- For certain catastrophic conditions, **attempting recovery is not worth the complexity**. The simplest and safest strategy is to log rich diagnostic telemetry and terminate the process.
+- Examples: out-of-memory errors in standard applications (an allocator that aborts rather than returning null spares every caller from null checks); unexpected disk corruption; broken internal invariants signaling bugs.
+- Applies strictly to **rare, non-recoverable errors**. Applicability depends on domain: a replicated distributed storage engine must **not** crash on local I/O failure; it should failover to replicas.
 
 ---
 
-## Relações
+## 3. Define Special Cases Out of Existence
 
-- Exceções como parte da interface, e interfaces menores: [deep-modules.md](deep-modules.md).
-- Mascarar é puxar complexidade para baixo: [pull-complexity-downwards.md](pull-complexity-downwards.md).
-- Eliminar casos especiais: [general-purpose-modules.md](general-purpose-modules.md).
+- The same philosophy applies to edge cases: they scatter branching logic and impair readability.
+- Example: in a text editor, treating "no text selection" as a null special state requires conditional checks before every selection operation. If a selection **always exists** and simply has a length of zero when collapsed, all selection commands execute uniformly without conditional branches.
+- Whenever possible, design the **normal flow** to encompass boundary conditions seamlessly.
+
+---
+
+## 4. Taking It Too Far
+
+- Defining errors out of existence or masking them is only appropriate if **callers do not genuinely need that information**.
+- Example: a network layer that silently swallows **all** transmission failures without notifying callers would be disastrous, as applications must know when external commands fail in order to maintain business consistency.
+- Exercise sound engineering judgment: expose exceptions when callers legitimately require them to make control decisions; in those cases, exceptions must be **explicitly declared in the contract**.
+
+---
+
+## Red Flags
+
+- A public interface throwing a sprawling catalog of distinct exceptions or error codes.
+- Callers consistently catching the same exception and executing identical recovery logic (signals the error should be absorbed or defined away).
+- Identical error-handling logic replicated across dozens of handlers (candidate for aggregation).
+- Callers repeatedly validating preconditions prior to method invocation (signals poorly defined semantics).
+- Special sentinel states ("uninitialized", "none") requiring checks at every consumption point.
+
+---
+
+## How to Apply
+
+For every failure mode in a contract, evaluate in sequence:
+
+1. **Can I redefine the operation so this condition is not an error?** (idempotency, "ensure X exists", boundary clamping, empty collections instead of nulls).
+2. **Can I mask the condition internally?** (retries, fallbacks, local healing), provided callers do not need the event for decision-making.
+3. **Can I aggregate handling at a higher architectural level?** (middleware, dispatchers, existing health recovery mechanisms).
+4. **Is recovery unwarranted, making termination with diagnostics preferable?**
+5. Only then: **expose the exception in the public contract**, documented with actionable information callers need to recover.
+
+Remaining failure modes are **Human Layer decisions**: present them on interface cards, documenting both preserved errors and those successfully defined out of existence.
+
+---
+
+## Relationships
+
+- Exceptions as interface surface area and module depth: [deep-modules.md](deep-modules.md).
+- Masking as pulling complexity downwards: [pull-complexity-downwards.md](pull-complexity-downwards.md).
+- Eliminating special cases: [general-purpose-modules.md](general-purpose-modules.md).

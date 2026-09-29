@@ -1,64 +1,66 @@
 ---
 name: human-review
 description: >-
-  Assiste o desenvolvedor humano na revisão de entregas exclusivamente na Camada Humana (arquitetura, direção de dependências, contratos de interface e comportamentos da DoD). Invocada sob demanda pelo usuário.
+  Assists the human developer in reviewing deliverables strictly at the Human
+  Layer (architecture, dependency direction, interface contracts, and DoD
+  behaviors). Invoked on demand by the user.
 ---
 
 # Human Review
 
-Assistência para revisão e deliberação humana de alto nível.
+Assistance for high-level human review and deliberation.
 
 ---
 
-## 1. Princípio Fundamental
+## 1. Core Principle
 
-O agente **não realiza a revisão humana; ele a prepara**. A prerrogativa de aprovação e julgamento é do humano.
+The agent **does not perform the human review; it prepares it**. Approval and judgment are the exclusive prerogative of the human.
 
-O papel do agente é tornar a entrega visível na **Camada Humana**, filtrando ruídos de implementação de baixo nível que já foram aprovados pelo [`agent-self-review`](../agent-self-review/SKILL.md).
+The agent's role is to make the deliverable visible at the **Human Layer**, filtering out low-level implementation noise already validated by [`agent-self-review`](../agent-self-review/SKILL.md).
 
-> 🎨 **Visualização Nativa Obrigatória**: Esta skill utiliza nativamente a skill [`visualize-it`](../visualize-it/SKILL.md). O humano deve ser capaz de *enxergar* os limites, dependências e contratos através de diagramas (ASCII ou Mermaid), e não apenas ler descrições textuais.
+> 🎨 **Mandatory Native Visualization**: This skill natively invokes [`visualize-it`](../visualize-it/SKILL.md). The human must be able to *see* boundaries, dependencies, and contracts through diagrams (ASCII or Mermaid), not merely read textual descriptions.
 
 ---
 
-## 2. Estrutura da Apresentação para o Humano
+## 2. Presentation Structure for the Human
 
-Ao ser acionada, esta skill deve gerar uma apresentação estruturada contendo:
+When invoked, this skill generates a structured presentation containing:
 
-### 1. Mapa de Módulos e Dependências (via `visualize-it`)
-- Desenhe o mapa de componentes com [`visualize-it`](../visualize-it/SKILL.md), na notação dele, evidenciando o que mudou, a direção das dependências (confirmando que as setas apontam para as regras de negócio) e qualquer desvio em relação ao planejado.
+### 1. Module and Dependency Map (via `visualize-it`)
+- Render the component map with [`visualize-it`](../visualize-it/SKILL.md) notation, highlighting what changed, dependency direction (confirming arrows point inward toward business rules), and any architectural deviations.
 
-### 2. Contratos e Interfaces Públicas
-- Interfaces, endpoints, tipos e assinaturas públicas criadas ou alteradas.
-- O que cada método/contrato promete e seus possíveis modos de falha.
+### 2. Contracts and Public Interfaces
+- Public interfaces, endpoints, types, and signatures created or altered.
+- What each contract guarantees and its failure modes.
 
-### 3. Tabela de Validação de Comportamentos (DoD)
-Apresente uma tabela direta mapeando cada critério de aceite. Esta é a **legenda única** dos status de DoD, usada também por outras skills:
+### 3. Behavior Validation Table (DoD)
+Present a direct table mapping each acceptance criterion. This is the **canonical legend** for DoD statuses across skills:
 
-| Status | Significado |
+| Status | Meaning |
 | :---: | :--- |
-| ✅ | Coberto por teste automatizado que observa o comportamento pela interface pública. |
-| 🔎 | Não testável por código; o agente verificou por outro meio e diz como. |
-| 👤 | Precisa de validação manual do humano. |
-| 🚨 | Ausente, ou sem cobertura e sem declaração. |
+| ✅ | Covered by an automated test verifying behavior through the public interface. |
+| 🔎 | Not code-testable; verified by alternative means, with method disclosed. |
+| 👤 | Requires manual human validation. |
+| 🚨 | Missing, or lacking both test coverage and declaration. |
 
-| Status | Comportamento (DoD) | Como foi Verificado | O que o Humano deve Fazer |
+| Status | Delivered Behavior (DoD) | Verification Evidence | Action for Human |
 | :---: | :--- | :--- | :--- |
-| ✅ | Regra de cálculo de juros | Teste unitário em `tests/interest.test.ts` | Nenhuma ação necessária |
-| 🔎 | Envio do e-mail de boas-vindas pelo provedor real | Não testável por código; verificado em staging, com o log do envio | Opcional conferir |
-| 👤 | Responsividade visual no mobile | Não testável via código | Testar manualmente no navegador com viewport 375px |
-| 🚨 | Critério X não testado | Sem cobertura e sem declaração | **Bloqueio crítico para o humano avaliar** |
+| ✅ | Interest calculation rules | Unit test in `tests/interest.test.ts` | No action required |
+| 🔎 | Welcome email dispatched via real vendor | Not code-testable; verified in staging with dispatch logs | Optional to inspect |
+| 👤 | Responsive visual layout on mobile | Not code-testable | Manually verify in browser viewport (375px) |
+| 🚨 | Acceptance Criterion X unverified | No test and no declaration | **Critical blocker for human evaluation** |
 
-### 4. Itens que Exigem Decisão Humana
-Destaque no final apenas o que realmente demanda a atenção do humano:
-- Comportamentos marcados como verificação manual (👤);
-- Decisões de trade-off ou contratos novos a serem validados;
-- Dúvidas de negócio em aberto.
+### 4. Items Requiring Human Decision
+Highlight at the conclusion strictly what demands human judgment:
+- Behaviors flagged for manual verification (👤);
+- Architectural trade-offs or new public contracts to approve;
+- Unresolved business domain questions.
 
 ---
 
-## 3. Validação de Sucesso
+## 3. Success Validation
 
-- [ ] A apresentação contém exclusivamente elementos da Camada Humana (arquitetura, contratos, comportamentos).
-- [ ] O mapa de módulos e a direção das dependências foram desenhados via [`visualize-it`](../visualize-it/SKILL.md).
-- [ ] Cada comportamento da DoD está mapeado na tabela com seu status oficial (✅, 🔎, 👤, 🚨) e evidência clara.
-- [ ] Apenas itens que demandam deliberação humana real foram destacados para decisão.
+- [ ] Presentation contains strictly Human Layer concerns (architecture, contracts, behaviors).
+- [ ] Module map and dependency direction diagrammed via [`visualize-it`](../visualize-it/SKILL.md).
+- [ ] Every DoD behavior mapped in the table using canonical status indicators (✅, 🔎, 👤, 🚨) with clear evidence.
+- [ ] Strictly items demanding genuine human deliberation were highlighted for decision.
