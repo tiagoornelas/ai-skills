@@ -16,6 +16,24 @@ Centralizar as diretrizes, padrões de qualidade e fluxos operacionais para escr
 - Correção de bugs e refatoração.
 - Criação e execução de testes automatizados.
 
+## Testes
+Implemente guiado por testes conforme [test-driven-development.md](references/test-driven-development.md), com os critérios de [testing.md](references/testing.md).
+
+## Refatoração
+Refatore antes de alterar código difícil de mudar e depois de cada teste verde, só no código que a tarefa toca, conforme [refactoring-principles.md](references/refactoring-principles.md).
+
+## Referências
+
+| Referência | Carregar quando… |
+| :--- | :--- |
+| [test-driven-development.md](references/test-driven-development.md) | For começar a implementar uma tarefa ou corrigir um bug. |
+| [testing.md](references/testing.md) | For escrever ou revisar testes. |
+| [refactoring-principles.md](references/refactoring-principles.md) | For refatorar, ou decidir se uma melhoria de estrutura vale a pena agora. |
+| [naming.md](references/naming.md) | For nomear variáveis, funções, classes ou campos internos. |
+| [functions.md](references/functions.md) | For escrever, dividir ou revisar funções. |
+| [comments.md](references/comments.md) | For escrever, manter ou revisar comentários. |
+| [error-handling.md](references/error-handling.md) | O código puder falhar (I/O, rede, entrada externa, terceiros), ou houver `try/catch`, retornos de erro ou nulos. |
+| [code-smells.md](references/code-smells.md) | For avaliar ou limpar código abaixo dos contratos (condicionais, estado, dados internos, lugar do código). |
+
 ## Portão de Qualidade
 Ao concluir alterações de código, o agente deve obrigatoriamente executar a skill [`agent-self-review`](../agent-self-review/SKILL.md) e iterar até que seu código e testes estejam aprovados.
-
