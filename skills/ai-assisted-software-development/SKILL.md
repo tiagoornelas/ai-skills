@@ -26,7 +26,7 @@ A esfera de governança e decisão humana. **Somente o que pertence a esta camad
 
 ### Responsabilidades Humanas:
 - **Sistemas e Módulos**: Quais componentes existem, suas responsabilidades e seus limites.
-- **Direção de Dependências**: Garantir que as dependências apontem para dentro (regras de negócio nunca dependem de detalhes de infraestrutura ou frameworks).
+- **Direção de Dependências**: Garantir que as dependências apontem em direção às regras de negócio (a política nunca depende de detalhes de infraestrutura ou frameworks). Ver [dependency-direction.md](../software-designing/references/dependency-direction.md).
 - **Contratos e Interfaces Públicas**: O que cada módulo promete a quem o consome (assinaturas, garantias e modos de falha).
 - **Comportamentos (Definition of Done)**: Validação dos critérios de aceite observáveis pelo usuário ou cliente da API.
 - **Trade-offs e Inspeções Manuais**: Julgamento de negócios e execução de verificações que não puderem ser automatizadas.

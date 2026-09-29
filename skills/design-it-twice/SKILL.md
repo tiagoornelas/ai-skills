@@ -18,8 +18,6 @@ Garante que nenhuma decisão de design importante seja fixada com base na primei
 
 ## 1. Princípio Fundamental
 
-> A primeira ideia raramente é o melhor design. **Alternativas radicalmente diferentes**, comparadas com honestidade, produzem designs melhores, mesmo quando a vencedora é a primeira ideia.
-
 Esta skill **não substitui** o arquiteto. Ela o executa **uma vez por alternativa**, em contextos isolados, e depois conduz a comparação. Todo o raciocínio de design de cada alternativa vem de [`software-designing`](../software-designing/SKILL.md) e de suas referências.
 
 ---
@@ -61,7 +59,7 @@ Descarte eixos que produziriam a mesma decomposição com outro nome.
 Para cada eixo, execute `software-designing` com a instrução da seção 4. Cada execução produz **uma única alternativa**, levada a sério, sem comparar com as outras.
 
 ### Passo 4: Comparar
-Monte a matriz de comparação (seção 5). Para cada alternativa, liste prós e contras honestos, usando os termos das referências do arquiteto: profundidade, vazamento, generalidade, camadas, onde mora a complexidade, modos de falha e obviedade.
+Monte a matriz de comparação (seção 5), com os critérios de [references/design-it-twice.md](references/design-it-twice.md) (seção 3). Para cada alternativa, liste prós e contras honestos, usando os termos das referências do arquiteto: profundidade, vazamento, generalidade, camadas, onde mora a complexidade, modos de falha e obviedade.
 
 ### Passo 5: Escolher, combinar ou recomeçar
 - **Uma vence com clareza** → recomende-a.

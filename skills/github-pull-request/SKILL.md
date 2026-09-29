@@ -68,26 +68,26 @@ Utilize a estrutura abaixo:
 graph LR
   Client[Cliente / Rota] --> Controller[🆕 AuthController]
   Controller --> Service[AuthService]
-  Service --> Repo[🔒 UserRepository]
+  Service --> Repo[UserRepository]
 ```
 
-- **Módulos / Componentes**: Resumo dos componentes novos (`🆕`), alterados (`🔧`) ou removidos (`🗑️`).
+- **Módulos / Componentes**: Resumo dos componentes novos, alterados ou removidos, na notação do [`visualize-it`](../visualize-it/SKILL.md).
 - **Interfaces e Contratos**: O que as interfaces ou contratos públicos criados/alterados prometem e quais são seus comportamentos em caso de falha.
-- **Direção de Dependências**: Confirmação de que as dependências continuam apontando para dentro (para a regra de negócio).
+- **Direção de Dependências**: Confirmação de que as dependências continuam apontando em direção às regras de negócio ([dependency-direction.md](../software-designing/references/dependency-direction.md)).
 
 ---
 
 ## Comportamentos Entregues (Definition of Done)
 
-Tabela direta mapeando os comportamentos implementados e seu status de verificação:
+Tabela direta mapeando os comportamentos implementados e seu status de verificação, conforme a legenda do [`human-review`](../human-review/SKILL.md) (seção 2.3):
 
 | Status | Comportamento Entregue | Verificação | Ação para o Revisor |
 | :---: | :--- | :--- | :--- |
 | ✅ | Bloqueio de token expirado com HTTP 401 | Teste unitário em `tests/auth.test.ts` | Nenhuma (coberto por teste) |
-| 🔎 | Redirecionamento após login bem-sucedido | Verificado localmente no fluxo web | Opcional testar |
+| 🔎 | Envio do e-mail de confirmação pelo provedor real | Não testável por código; verificado em staging | Opcional testar |
 | 👤 | Layout responsivo do formulário de login | Verificação visual necessária | Abrir `/login` e validar em tela mobile (375px) |
 
-*Legenda: ✅ Testado por código · 🔎 Verificado alternativamente · 👤 Requer validação manual humana · 🚨 Alerta crítico*
+*Legenda: ✅ Coberto por teste automatizado · 🔎 Não testável por código, verificado por outro meio · 👤 Requer validação manual humana · 🚨 Ausente ou sem cobertura*
 
 ---
 

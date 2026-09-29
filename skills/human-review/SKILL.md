@@ -25,22 +25,26 @@ O papel do agente é tornar a entrega visível na **Camada Humana**, filtrando r
 Ao ser acionada, esta skill deve gerar uma apresentação estruturada contendo:
 
 ### 1. Mapa de Módulos e Dependências (via `visualize-it`)
-- Desenhe o mapa de componentes com [`visualize-it`](../visualize-it/SKILL.md), evidenciando:
-  - Módulos e pacotes novos (`🆕`), alterados (`🔧`) ou removidos (`🗑️`).
-  - Direção exata das dependências (confirmando que as setas apontam para as regras de negócio).
-  - Alertas visuais (`⚠️`) para qualquer desvio arquitetural em relação ao planejado.
+- Desenhe o mapa de componentes com [`visualize-it`](../visualize-it/SKILL.md), na notação dele, evidenciando o que mudou, a direção das dependências (confirmando que as setas apontam para as regras de negócio) e qualquer desvio em relação ao planejado.
 
 ### 2. Contratos e Interfaces Públicas
 - Interfaces, endpoints, tipos e assinaturas públicas criadas ou alteradas.
 - O que cada método/contrato promete e seus possíveis modos de falha.
 
 ### 3. Tabela de Validação de Comportamentos (DoD)
-Apresente uma tabela direta mapeando cada critério de aceite:
+Apresente uma tabela direta mapeando cada critério de aceite. Esta é a **legenda única** dos status de DoD, usada também por outras skills:
+
+| Status | Significado |
+| :---: | :--- |
+| ✅ | Coberto por teste automatizado que observa o comportamento pela interface pública. |
+| 🔎 | Não testável por código; o agente verificou por outro meio e diz como. |
+| 👤 | Precisa de validação manual do humano. |
+| 🚨 | Ausente, ou sem cobertura e sem declaração. |
 
 | Status | Comportamento (DoD) | Como foi Verificado | O que o Humano deve Fazer |
 | :---: | :--- | :--- | :--- |
 | ✅ | Regra de cálculo de juros | Teste unitário em `tests/interest.test.ts` | Nenhuma ação necessária |
-| 🔎 | Redirecionamento após login | Verificado em ambiente local de teste | Opcional conferir |
+| 🔎 | Envio do e-mail de boas-vindas pelo provedor real | Não testável por código; verificado em staging, com o log do envio | Opcional conferir |
 | 👤 | Responsividade visual no mobile | Não testável via código | Testar manualmente no navegador com viewport 375px |
 | 🚨 | Critério X não testado | Sem cobertura e sem declaração | **Bloqueio crítico para o humano avaliar** |
 

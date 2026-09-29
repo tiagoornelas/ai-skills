@@ -29,7 +29,7 @@ Toda visualização deve responder a **uma única pergunta com clareza**. Uma im
 1. **Uma pergunta por diagrama**: Divida diagramas complexos em visões de sobrevoo (*overview*) e visões de detalhe (*zoom*).
 2. **Desenhe fronteiras, não árvores de arquivos**: Pastas não são necessariamente módulos. Agrupe por responsabilidade e ciclo de vida.
 3. **Sentido único para setas**: Sempre declare a convenção utilizada (ex.: `→` significa "depende de").
-4. **Evidencie o novo**: Em revisões de entrega ou comparações, marque novos componentes com `🆕`, alterados com `🔧` e removidos com `🗑️`.
+4. **Evidencie o que mudou**: Em revisões de entrega ou comparações, marque novos componentes com `🆕`, alterados com `🔧`, removidos com `🗑️`, e desvios em relação ao planejado (ou setas que apontam para fora das regras de negócio) com `⚠️`. Esta é a notação única dos mapas; nenhuma outra marca é usada.
 5. **Máximo de 7 caixas principais**: Acima disso, reduza o nível de detalhe ou crie dois diagramas em altitudes diferentes.
 
 ---
