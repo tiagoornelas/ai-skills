@@ -53,3 +53,12 @@ Destaque no final apenas o que realmente demanda a atenção do humano:
 - Comportamentos marcados como verificação manual (👤);
 - Decisões de trade-off ou contratos novos a serem validados;
 - Dúvidas de negócio em aberto.
+
+---
+
+## 3. Validação de Sucesso
+
+- [ ] A apresentação contém exclusivamente elementos da Camada Humana (arquitetura, contratos, comportamentos).
+- [ ] O mapa de módulos e a direção das dependências foram desenhados via [`visualize-it`](../visualize-it/SKILL.md).
+- [ ] Cada comportamento da DoD está mapeado na tabela com seu status oficial (✅, 🔎, 👤, 🚨) e evidência clara.
+- [ ] Apenas itens que demandam deliberação humana real foram destacados para decisão.

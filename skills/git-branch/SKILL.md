@@ -66,3 +66,12 @@ Se não houver uma issue formal vinculada, utilize o prefixo semântico do tipo 
      ```
 4. **Confirmação**:
    - Confirme para o desenvolvedor o nome da branch criada e a base de onde ela partiu.
+
+---
+
+## 4. Validação de Sucesso
+
+- [ ] A árvore de trabalho estava limpa antes de criar a branch (`git status`).
+- [ ] A branch base foi atualizada com o remoto (`git pull --ff-only`).
+- [ ] O nome da branch segue rigorosamente a convenção kebab-case com chave de issue (`DEV-123-slug`) ou tipo semântico (`feat/slug`).
+- [ ] A nova branch foi criada e confirmada para o desenvolvedor.

@@ -37,3 +37,12 @@ Refatore antes de alterar código difícil de mudar e depois de cada teste verde
 
 ## Portão de Qualidade
 Ao concluir alterações de código, o agente deve obrigatoriamente executar a skill [`agent-self-review`](../agent-self-review/SKILL.md) e iterar até que seu código e testes estejam aprovados.
+
+---
+
+## Validação de Sucesso
+
+- [ ] A implementação foi guiada por testes (TDD) conforme [test-driven-development.md](references/test-driven-development.md).
+- [ ] Os testes comprovam comportamentos observáveis pela interface pública conforme [testing.md](references/testing.md).
+- [ ] Refatorações preservaram o comportamento com testes passando conforme [refactoring-principles.md](references/refactoring-principles.md).
+- [ ] As alterações passaram no portão [`agent-self-review`](../agent-self-review/SKILL.md) até o veredito limpo (*clean*).

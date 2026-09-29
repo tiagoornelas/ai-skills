@@ -44,3 +44,13 @@ Toda visualização deve responder a **uma única pergunta com clareza**. Uma im
   - Use `graph TD` ou `graph LR` para mapas de módulos e `sequenceDiagram` para fluxos.
 
 > **Regra de Ouro**: Sempre acompanhe o diagrama de um parágrafo conciso explicando o que o leitor deve notar (ex.: seta invertida, fronteira respeitada ou novo contrato introduzido).
+
+---
+
+## 4. Validação de Sucesso
+
+- [ ] O diagrama responde a uma única pergunta com clareza.
+- [ ] A convenção de direção das setas foi declarada explicitamente (ex.: `→` significa "depende de").
+- [ ] Notação única aplicada: `🆕` novo, `🔧` alterado, `🗑️` removido, `⚠️` desvio ou alerta.
+- [ ] O diagrama respeita o limite de 7 caixas principais por altitude/nível.
+- [ ] O diagrama é acompanhado de parágrafo conciso destacando o que o leitor deve observar.

@@ -37,8 +37,10 @@ skills/<nome-da-skill>/
 └── resources/          # [Opcional] Templates, dados e ativos estáticos
 ```
 
-### 3.2. Frontmatter Obrigatório no `SKILL.md`
-```markdown
+### 3.2. Frontmatter no `SKILL.md`
+
+Campos obrigatórios:
+```yaml
 ---
 name: nome-da-skill
 description: >-
@@ -47,8 +49,13 @@ description: >-
 ---
 ```
 
+Campos opcionais reconhecidos pelos harnesses (usar quando aplicável):
+- `argument-hint: "[dica]"`: dica visual do argumento esperado ao acionar a skill (ex.: `"[número/URL do PR]"`).
+- `disable-model-invocation: true`: indica que a skill é restrita ao acionamento manual do humano via chat/comando, impedindo o acionamento autônomo pelo modelo.
+
 ### 3.3. Boas Práticas para Skills
 - **Progressive Disclosure**: mantenha o `SKILL.md` conciso e focado nas decisões e passos essenciais. Delegue referências extensas para arquivos em `references/`.
 - **Nomes Padronizados**: use `kebab-case` para nomes de pastas e skills (ex.: `code-review`, `deploy-helper`).
-- **Validação de Sucesso**: toda skill orienta o agente sobre como verificar se os passos foram executados com êxito.
+- **Pastas Limpas**: não crie pastas `references/` ou `scripts/` vazias sem arquivos reais.
+- **Validação de Sucesso**: toda skill termina obrigatoriamente com uma seção de checklist orientando o agente sobre como verificar se os passos foram executados com êxito.
 - **Depois de adicionar ou remover uma skill**, rode `./scripts/setup-global.sh`.

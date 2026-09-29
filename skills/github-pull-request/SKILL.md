@@ -38,11 +38,13 @@ Todo PR deve, idealmente, estar associado a uma issue de acompanhamento para inf
 ```text
 Tipo/Breve Descrição em Português
 ```
-*Tipos aceitos:* `Feat/`, `Fix/`, `Refac/`, `Chore/`, `Perf/`, `Docs/`.  
+*Tipos aceitos:* `Feat/`, `Fix/`, `Refactor/`, `Chore/`, `Perf/`, `Docs/`.  
 *Exemplos:*
 - `Feat/Autenticação com refresh token e rotação de chaves`
 - `Fix/Timeout intermitente na chamada do gateway de pagamento`
-- `Refac/Isolamento de persistência do módulo de pedidos`
+- `Refactor/Isolamento de persistência do módulo de pedidos`
+
+> **Nota de convenção**: O título do PR utiliza prefixo PascalCase e descrição em português para facilitar a triagem pela equipe no GitHub, enquanto os commits individuais seguem Conventional Commits em inglês (`feat(auth): ...`).
 
 ---
 
@@ -114,3 +116,13 @@ Tabela direta mapeando os comportamentos implementados e seu status de verifica�
    - Por padrão, crie como `--draft` (rascunho) para permitir que o desenvolvedor dê uma última conferida na interface do GitHub, a menos que ele solicite explicitamente a abertura como PR definitivo.
 4. **Retorno**:
    - Retorne o link clicável do PR gerado no GitHub.
+
+---
+
+## 6. Validação de Sucesso
+
+- [ ] A rastreabilidade com issue foi verificada ou acordada com o desenvolvedor.
+- [ ] O título segue o formato padronizado (`Tipo/Descrição em Português`).
+- [ ] O corpo inclui resumo direto, diagrama de arquitetura (via `visualize-it`) e a tabela de DoD com a legenda oficial.
+- [ ] O rascunho completo foi apresentado e aprovado pelo usuário antes do envio.
+- [ ] O PR foi aberto (por padrão como `--draft`) e o link retornado.

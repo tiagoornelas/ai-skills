@@ -84,7 +84,7 @@ fi
 echo ""
 echo "⚙️ Instruções Globais ($GLOBAL_AGENTS_FILE):"
 echo "  - Claude Code: ~/.claude/CLAUDE.md"
-echo "  - Antigravity: ~/.gemini/config/AGENTS.md"
+echo "  - Antigravity: ~/.gemini/GEMINI.md (e ~/.gemini/config/AGENTS.md)"
 echo "  - Codex:       ~/.codex/AGENTS.md"
 echo ""
 
@@ -104,6 +104,8 @@ if [ "$GLOBAL_INSTRUCTIONS" = "yes" ]; then
   echo "  ✓ ~/.claude/CLAUDE.md -> $GLOBAL_AGENTS_FILE"
   safe_link "$GLOBAL_AGENTS_FILE" "$HOME/.gemini/config/AGENTS.md" gemini
   echo "  ✓ ~/.gemini/config/AGENTS.md -> $GLOBAL_AGENTS_FILE"
+  safe_link "$GLOBAL_AGENTS_FILE" "$HOME/.gemini/GEMINI.md" gemini
+  echo "  ✓ ~/.gemini/GEMINI.md -> $GLOBAL_AGENTS_FILE"
   safe_link "$GLOBAL_AGENTS_FILE" "$HOME/.codex/AGENTS.md" codex
   echo "  ✓ ~/.codex/AGENTS.md -> $GLOBAL_AGENTS_FILE"
 else

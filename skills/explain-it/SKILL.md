@@ -28,3 +28,12 @@ Explique o assunto com foco em **clareza, intencionalidade e estrutura**:
 3. **Visão Estrutural / Fluxo (Visual)**: Diagrama em ASCII ou Mermaid (via `visualize-it`) mostrando como ele interage com o restante da aplicação.
 4. **Pontos de Atenção**: Casos de borda, regras de negócio críticas ou armadilhas comuns.
 5. **Resumo / Takeaway**: Conclusão em tópicos curtos.
+
+---
+
+## 3. Validação de Sucesso
+
+- [ ] O alvo da explicação foi identificado e contextualizado em 1–2 frases.
+- [ ] Inclui representação visual via [`visualize-it`](../visualize-it/SKILL.md) quando há relações estruturais, sequências ou estados.
+- [ ] Pontos de atenção e regras críticas foram destacados sem jargões desnecessários.
+- [ ] A explicação foi concluída com takeaway conciso em tópicos curtos.

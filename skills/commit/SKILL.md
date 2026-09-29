@@ -1,51 +1,52 @@
 ---
 name: commit
-description: Use when preparing or validating a git commit message.
-mandatory: true
-enforcement: "This skill MUST be invoked before any git commit. The agent will not call git commit directly without first running this skill."
+description: >-
+  Prepara e valida mensagens de commit padronizadas no formato Conventional Commits,
+  obrigatoriamente em inglês, garantindo mensagens concisas, rastreáveis e sem referências locais.
 ---
 
 # Commit
 
-## Goal
+Produz mensagens de commit de alta qualidade que aderem estritamente às regras obrigatórias abaixo.
 
-Produce the final best commit message that adheres to all mandatory rules below.
+---
 
-## Mandatory Rules
+## 1. Regras Obrigatórias
 
-These rules are non-negotiable and apply to **every** commit created by Claude, Codex, or Antigravity.
+Estas regras são inegociáveis e se aplicam a **todo** commit criado por Claude, Codex ou Antigravity.
 
-- **Title Only, By Default:** The commit title (first line) is the entire message in the vast majority of cases. Do not add a body. Do not explain the "why" or the "how" unless the user explicitly asks for it.
-- **No Task References in Title:** The first line must describe what was done, without any task or issue key (e.g., `DEV-1234`, `PROJ-56`). If a task reference is relevant, place it alone on a second line below the title, separated by a blank line.
-- **No Local File References** ([no-local-references](../ai-assisted-software-development/references/no-local-references.md)): the task reference on that second line must be a real Jira key. If the ticket has no linked Jira issue, omit the reference line entirely.
-- **Body Is the Exception, Not the Default:** Only add a body paragraph when the user explicitly asks for more context, or the change is genuinely inexplicable from the title alone (e.g., a non-obvious workaround). When in doubt, leave it out. If added, it must be a single paragraph of **maximum 3 lines** — never more.
-- **No Bullet Points:** Never use bullet points or lists in the commit body, under any circumstance.
-- **English Only:** All messages must be in English.
+- **Apenas Título por Padrão**: Na grande maioria dos casos, o título (primeira linha) é a mensagem inteira. Não adicione corpo. Não explique o "porquê" nem o "como", a menos que o usuário peça explicitamente.
+- **Sem Chave de Tarefa no Título**: A primeira linha deve descrever o que foi feito, sem qualquer chave de issue ou tarefa (ex.: `DEV-1234`, `PROJ-56`). Se houver referência a uma issue, coloque-a isolada na terceira linha (após uma linha em branco).
+- **Sem Referências Locais** ([no-local-references](../ai-assisted-software-development/references/no-local-references.md)): A referência de tarefa deve ser uma chave real (Jira, GitHub, Linear). Se não houver issue formal vinculada, omita a linha de referência.
+- **Corpo É Exceção, Não Regra**: Adicione corpo apenas quando o usuário solicitar contexto adicional ou quando a alteração for impossível de compreender apenas pelo título (ex.: contorno não óbvio de um bug externo). Na dúvida, omita. Quando adicionado, deve ser um parágrafo único de **no máximo 3 linhas** — nunca mais.
+- **Sem Listas ou Tópicos**: Nunca use marcadores (*bullet points*) ou listas no corpo do commit.
+- **Mensagem Exclusivamente em Inglês**: Todas as mensagens de commit devem ser escritas em inglês (*English Only*).
 
-## Conventional Commit Format
+---
+
+## 2. Formato Conventional Commits
 
 `<type>(<scope>): <short description>`
 
-**Types:** `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `style`, `perf`, `ci`.
+**Tipos:** `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `style`, `perf`, `ci`.
 
-## Message Structure
+---
 
-- Default — title only:
+## 3. Estrutura da Mensagem
 
+- **Padrão — apenas título:**
 ```text
 <type>(<scope>): <description>
 ```
 
-- If a task reference is relevant, place it alone on the line after the title:
-
+- **Com referência de tarefa isolada:**
 ```text
 <type>(<scope>): <description>
 
 TASK-123
 ```
 
-- Only when a body is truly warranted (see Mandatory Rules above), add it as a single paragraph (max 3 lines) after the task reference:
-
+- **Com corpo explicativo (quando estritamente justificado):**
 ```text
 <type>(<scope>): <description>
 
@@ -54,11 +55,13 @@ TASK-123
 <single paragraph, maximum 3 lines>
 ```
 
-## Self-Review Fix Commits
+---
 
-Fixes the coding agent makes in response to its own `agent-self-review` are **separate commits, always after the implementation commit** — never squashed into it and never amended onto it. That separation is what lets a reader trace what the review caught and how the agent responded.
+## 4. Commits de Correção do Self-Review
 
-These commits are the one case where a body is **required**, because the trace is the point.
+Correções feitas pelo agente em resposta ao [`agent-self-review`](../agent-self-review/SKILL.md) são **commits separados, sempre posteriores ao commit da implementação** — nunca aglutinados (*squashed*) nem emendados (*amended*). Essa separação permite ao leitor rastrear o que a revisão pegou e como o agente respondeu.
+
+Esses commits são o único caso em que o corpo é **obrigatório**, pois a rastreabilidade é o objetivo central.
 
 ```text
 <type>(<scope>): <what the fix does>
@@ -68,14 +71,29 @@ TASK-123
 Self-review: <the review finding, in one line>
 ```
 
-Rules specific to these:
+Regras específicas para estes commits:
+- A última linha do corpo deve iniciar com o prefixo `Self-review:` seguido pelo achado que ela soluciona — um achado por linha, um commit por achado sempre que as correções forem separáveis.
+- O título continua descrevendo a alteração em si, e não o ato de revisar: `fix(auth): reject expired tokens at the boundary`, e não `fix: address review comment`.
+- Mantenha a linha `Self-review:` restrita ao achado. O raciocínio pertence ao relatório do review, não à mensagem do commit.
 
-- Prefix the body's final line with `Self-review:` followed by the finding it answers — one finding per line, one commit per finding wherever the fixes are separable.
-- The title still describes the change itself, not the review. `fix(auth): reject expired tokens at the boundary`, not `fix: address review comment`.
-- Keep the `Self-review:` line to the finding. The reasoning belongs in the review output, not here.
+---
 
-## Enforcement
+## 5. Aplicação e Validação
 
-- Write the resulting message directly into the `git commit -m` command. Do not wrap it in fences or add commentary before or after it.
-- **Never skip this skill** — invoking it is the only way to ensure consistency across commits.
-- Run `scripts/validate-msg.sh` against the message before committing. If it fails, regenerate — do not commit and fix afterwards.
+- Escreva a mensagem diretamente no comando `git commit -m`. Não a envolva em blocos de texto nem adicione comentários antes ou depois.
+- Antes de commitar, valide deterministicamente a mensagem contra as regras (tamanho máximo de 72 caracteres no título, ausência de ponto final, ausência de listas/bullet points, estrutura de linhas). Se o script utilitário da skill estiver acessível no ambiente local, execute-o:
+  ```bash
+  <pasta-da-skill>/scripts/validate-msg.sh -m "<mensagem>"
+  ```
+  Se falhar, reformule a mensagem antes de efetuar o commit.
+
+---
+
+## 6. Validação de Sucesso
+
+- [ ] A mensagem está escrita em inglês e segue o formato Conventional Commits `<type>(<scope>): <desc>`.
+- [ ] O título tem até 72 caracteres, não termina com ponto e não inclui chave de issue.
+- [ ] A referência de tarefa (se presente) está na linha 3, isolada entre linhas em branco.
+- [ ] O corpo (se presente) possui no máximo 3 linhas e não contém listas ou marcadores.
+- [ ] Commits de self-review possuem a linha final `Self-review: <achado>`.
+- [ ] A validação passou sem rejeições antes da execução de `git commit`.

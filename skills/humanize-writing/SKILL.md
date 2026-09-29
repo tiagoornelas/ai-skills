@@ -43,7 +43,7 @@ Uma revisão de estilo, **nunca uma lista mecânica de proibições**. O texto m
 - **Confie no leitor**: corte explicações óbvias; mantenha elipses e subentendidos quando a compreensão continua intacta.
 - **Ritmo variado**: alterne o tamanho de frases e parágrafos conforme a intenção. Uma frase curta pode bastar. Uma longa também pode merecer o espaço.
 - **Opinião com lastro**: sustente opiniões com evidência verificável quando existir. Sem evidência, apresente a afirmação honestamente como visão pessoal, não como certeza.
-- **Travessão proibido na prosa**: nunca use travessão (ou meia-risca no lugar dele) como pausa reflexiva, enfeite ou aparte. Reescreva com ponto, vírgula, ponto e vírgula, dois-pontos, parênteses ou outra estrutura. **Regra rígida, não julgamento**: se a frase parece precisar de travessão, reescreva a frase.
+- **Travessão proibido na prosa de comunicação**: em textos destinados a outras pessoas (e-mails, artigos, comentários e respostas de PR, mensagens), nunca use travessão (ou meia-risca no lugar dele) como pausa reflexiva, enfeite ou aparte. Esse é um dos vícios mais evidentes de texto gerado por IA. Reescreva com ponto, vírgula, ponto e vírgula, dois-pontos, parênteses ou outra estrutura. **Regra rígida, não julgamento**: se a frase parece precisar de travessão, reescreva a frase. (Esta restrição não se aplica a elementos estruturais de código, limites de tabelas Markdown, marcadores de lista ou rótulos de identificação como `E1 — Título`).
 
 ---
 
@@ -52,7 +52,7 @@ Uma revisão de estilo, **nunca uma lista mecânica de proibições**. O texto m
 - Escreva como alguém com história, preferências e contradições plausíveis, sem fabricar biografia ou experiência.
 - Desconfie da figura de linguagem que veio fácil demais.
 - Quebre o ritmo de propósito para dar ênfase, não para encenar espontaneidade.
-- O contexto decide. Nenhum item do checklist é absoluto (exceto o travessão); o problema é a repetição automática.
+- O contexto decide. Nenhum item do checklist é absoluto (exceto o travessão na prosa); o problema é a repetição automática.
 
 ---
 
@@ -69,5 +69,5 @@ Uma revisão de estilo, **nunca uma lista mecânica de proibições**. O texto m
 - [ ] O texto está no idioma pedido (ou no de origem) e respeita o registro e as convenções desse idioma.
 - [ ] Fatos, propósito e tom profissional foram preservados; nada foi inventado.
 - [ ] A passada final pelo checklist da seção 3 foi feita, e só os trechos com automatismo foram reescritos.
-- [ ] Não há travessão nem meia-risca na prosa.
+- [ ] Não há travessão nem meia-risca na prosa do texto gerado.
 - [ ] O texto foi entregue pronto, sem explicação das edições, salvo pedido ou escolha editorial relevante.

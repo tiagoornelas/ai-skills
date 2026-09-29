@@ -62,3 +62,12 @@ Esta teoria orienta dois fluxos de execução complementares:
 
 1. **[`agent-self-review`](../agent-self-review/SKILL.md)**: Executado de forma autônoma pelo agente. O agente inspeciona sua própria implementação (linter/tipos, cobertura de DoD e testes), corrigindo problemas recursivamente até aprovação.
 2. **[`human-review`](../human-review/SKILL.md)**: Invocado pelo desenvolvedor humano sob demanda. O agente sintetiza a entrega exclusivamente no nível de governança humana (mapa de dependências, interfaces alteradas e tabela de validação do DoD).
+
+---
+
+## 6. Validação de Sucesso
+
+- [ ] A fronteira entre a Camada Humana e a Camada do Agente foi respeitada.
+- [ ] Decisões sobre módulos, contratos, direção de dependências ou comportamentos da DoD foram levadas ao humano.
+- [ ] Detalhes internos abaixo dos contratos foram resolvidos de forma autônoma pelo agente com testes e self-review.
+- [ ] Nenhum caminho local ou não versionado foi exposto em artefatos compartilhados.
