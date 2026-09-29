@@ -2,13 +2,13 @@
 
 O meu jeito de desenvolver software com agentes de IA, escrito como **skills** e instalado a partir de uma fonte única em **Claude Code**, **Codex** e **Antigravity CLI**.
 
-Mais do que um catálogo de prompts, é a divisão de trabalho em que acredito: o que o humano decide, o que o agente faz sozinho e as teorias de design e de código que o agente segue para que o humano possa confiar no que não leu.
+Mais do que um catálogo de prompts, trata-se da divisão de trabalho em que acredito: o que o humano decide e o que o agente executa sozinho. Isso passa por estruturar essas camadas e aplicar princípios de design e código que direcionem o comportamento do agente, permitindo que o humano confie no que não precisa ler e que seja chamado à atenção apenas no que realmente precisa ver e decidir.
 
 ---
 
 ## 🧭 O problema
 
-Um agente escreve código mais rápido do que qualquer pessoa consegue ler. Revisar tudo linha a linha transforma o humano no gargalo; não revisar nada transforma o software numa pilha de decisões que ninguém tomou.
+Um agente escreve código mais rápido do que qualquer pessoa consegue ler. Revisar tudo linha a linha transforma o humano no gargalo; não revisar nada transforma o software em uma pilha de decisões que ninguém tomou: um emaranhado arquitetural feito de escolhas bem-intencionadas, mas imediatistas.
 
 A saída que adoto é separar **o que é caro de errar e barato de revisar** do **que é barato de refazer e caro de ler**, e dar cada metade a quem faz melhor.
 
