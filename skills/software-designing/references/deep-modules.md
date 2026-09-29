@@ -30,6 +30,12 @@
 - **Informal**: comportamento de alto nível, efeitos colaterais, restrições de ordem de chamada ("só chame `b` depois de `a`"), invariantes. Só pode ser descrito em comentários e documentação, e costuma ser **maior e mais complexa** que a parte formal.
 - Uma interface bem especificada reduz as **incógnitas desconhecidas**: diz exatamente o que se precisa saber para usar o módulo.
 
+### Várias implementações de uma mesma interface
+
+- Quando uma interface tem várias implementações (adaptadores, drivers, provedores, uma versão em memória para testes), **todas precisam cumprir o contrato completo**, formal e informal. Quem usa a interface não pode precisar saber qual implementação recebeu.
+- Uma implementação que exige pré-condições a mais, entrega garantias a menos, lança "não suportado" ou muda um efeito colateral **quebra o contrato**, mesmo que as assinaturas batam.
+- O sintoma é o chamador verificar o tipo ou a origem da implementação para decidir o que fazer. Cada verificação dessas é conhecimento da implementação vazando para fora. Absorva a diferença dentro da própria implementação, ou num adaptador, em vez de espalhá-la pelos chamadores (ver [pull-complexity-downwards.md](pull-complexity-downwards.md)).
+
 ---
 
 ## 2. Abstração
@@ -105,6 +111,7 @@ Módulo profundo                  Módulo raso
 - Muitas classes ou funções pequenas que só fazem sentido juntas, cada uma com sua própria interface.
 - Uma interface formal simples que esconde uma interface informal complexa (restrições de ordem, efeitos colaterais não documentados).
 - A abstração omite algo que o chamador realmente precisa saber (falsa abstração).
+- Chamador que verifica o tipo ou a origem da implementação para decidir o que fazer.
 
 ---
 
@@ -128,3 +135,4 @@ Ao reportar ao humano, apresente cada módulo como um cartão de interface (via 
 - Interfaces gerais tendem a ser mais profundas: [general-purpose-modules.md](general-purpose-modules.md).
 - Quando dividir ou juntar módulos: [together-or-apart.md](together-or-apart.md).
 - Exceções também fazem parte da interface e a tornam mais rasa: [define-errors-out-of-existence.md](define-errors-out-of-existence.md).
+- Portas entre regras de negócio e infraestrutura, e suas implementações substituíveis: [dependency-direction.md](dependency-direction.md).

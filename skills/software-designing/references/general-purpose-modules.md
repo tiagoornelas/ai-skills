@@ -95,9 +95,7 @@ text.delete(cursor, text.changePosition(cursor, 1));
 
 ### Eliminar casos especiais
 
-- Casos especiais espalham condicionais (`if`) pelo código, deixando-o mais difícil de entender e mais propenso a bugs.
-- A melhor forma é **projetar o caso normal de modo que ele trate automaticamente os casos extremos**, sem código extra.
-- Exemplo: tratar "não há seleção" como um caso especial exige checagens em todo lugar que usa a seleção. Se, em vez disso, a seleção **sempre existe** e pode estar **vazia** (início = fim), a maioria dos códigos funciona sem nenhuma checagem: copiar uma seleção vazia copia nada, apagar uma seleção vazia não apaga nada.
+- Especialização também aparece como casos especiais espalhados. Como eliminá-los: [define-errors-out-of-existence.md](define-errors-out-of-existence.md) (seção 3).
 
 ---
 
@@ -128,3 +126,4 @@ text.delete(cursor, text.changePosition(cursor, 1));
 - A classe de texto e a UI como camadas com abstrações distintas: [different-layer-different-abstraction.md](different-layer-different-abstraction.md).
 - Separar código geral e especializado também guia a decisão de juntar/separar: [together-or-apart.md](together-or-apart.md).
 - Eliminar casos especiais é o mesmo raciocínio de eliminar erros: [define-errors-out-of-existence.md](define-errors-out-of-existence.md).
+- Exceção na fronteira com a infraestrutura: a porta usa o vocabulário das regras de negócio: [dependency-direction.md](dependency-direction.md).

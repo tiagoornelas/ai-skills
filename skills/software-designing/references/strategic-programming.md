@@ -9,6 +9,7 @@
 - Sempre que houver pressão para "só fazer funcionar" ou para um atalho "só dessa vez".
 - Ao decidir quanto esforço de design investir numa tarefa.
 - Ao explicar ao humano o custo de longo prazo de uma solução rápida.
+- Em toda tarefa que altera um sistema existente (seção 5).
 
 ---
 
@@ -36,9 +37,9 @@
 
 ### Investimentos proativos
 
-- Em vez de pegar a primeira ideia, experimentar alguns designs alternativos e escolher o mais limpo.
+- Em vez de pegar a primeira ideia, experimentar designs alternativos e escolher o mais limpo ([`design-it-twice`](../../design-it-twice/SKILL.md)).
 - Imaginar como o sistema provavelmente vai precisar mudar no futuro e deixar isso fácil.
-- Escrever boa documentação (comentários de interface, invariantes, decisões).
+- Documentar contratos e decisões (como comentar: [comments.md](../../coding/references/comments.md)).
 
 ### Investimentos reativos
 
@@ -81,6 +82,26 @@ No início o tático parece à frente; em pouco tempo o estratégico ultrapassa 
 
 ---
 
+## 5. Mudando código existente
+
+- O design de um sistema é definido muito mais pela evolução do código do que pelo desenho inicial. Ao terminar cada mudança, o sistema deveria ter **a estrutura que teria se tivesse sido projetado desde o início com essa mudança em mente**.
+- A tentação é fazer a **menor mudança possível** ("não quero mexer no que funciona"). Cada mudança mínima tende a acrescentar um caso especial, uma dependência ou uma obscuridade. **Se você não está melhorando o design, provavelmente está piorando.**
+- A pergunta de cada mudança: **"este é o melhor design possível para o sistema, dado o que sei agora e a mudança que preciso fazer?"**
+
+Ao desenhar uma mudança:
+
+1. **Leia o design atual** da área afetada: módulos, contratos, decisões escondidas.
+2. **Imagine o design ideal** considerando a nova necessidade, como se o sistema estivesse sendo projetado do zero com ela.
+3. **Meça a distância** entre o atual e o ideal:
+   - Pequena → faça a mudança já no formato ideal, incluindo a refatoração necessária.
+   - Grande → procure uma alternativa quase tão limpa que caiba no escopo; se não houver, **escale ao humano** como trade-off explícito (custo agora × custo futuro).
+4. **Melhore no caminho, dentro do que a tarefa toca**: o escopo da refatoração segue [refactoring-principles.md](../../coding/references/refactoring-principles.md).
+5. **Atualize no mesmo movimento** a documentação de contratos e decisões, e os comentários conforme [comments.md](../../coding/references/comments.md).
+
+Mudanças de contrato identificadas neste processo são decisões da Camada Humana; refatorações internas que preservam contratos são da Camada do Agente.
+
+---
+
 ## Red flags
 
 - A justificativa "é só dessa vez" ou "depois a gente arruma".
@@ -88,6 +109,9 @@ No início o tático parece à frente; em pouco tempo o estratégico ultrapassa 
 - A solução foi escolhida porque é a primeira que funciona, sem alternativas consideradas.
 - Mudança que exige conhecimento especial ("não esquece de também mexer em X") para não quebrar.
 - Produtividade medida só pela velocidade de entrega da tarefa atual.
+- Uma mudança que adiciona um caso especial (`if` para a nova situação) em vez de ajustar a abstração.
+- "Não mexe nisso, só adiciona aqui do lado."
+- A mesma mudança precisou ser replicada em vários lugares (a estrutura não comportava a mudança).
 
 ---
 
@@ -96,9 +120,9 @@ No início o tático parece à frente; em pouco tempo o estratégico ultrapassa 
 Em toda tarefa de design, o agente deve:
 
 1. **Recusar complexidade gratuita**: se a solução mais rápida adiciona dependência ou obscuridade evitável, apresentar a alternativa limpa e seu custo real.
-2. **Considerar alternativas** antes de fixar uma solução (ao menos duas, de preferência radicalmente diferentes).
+2. **Considerar alternativas** antes de fixar uma solução, seguindo [`design-it-twice`](../../design-it-twice/SKILL.md).
 3. **Pensar na próxima mudança**: qual é a próxima mudança provável nesta área? O design a torna fácil?
-4. **Consertar em vez de contornar** quando encontrar um problema de design no caminho, desde que dentro do escopo razoável (~10–20% de investimento). Se o conserto for grande demais, **escalar ao humano** como decisão de trade-off, com o custo de cada caminho explícito.
+4. **Consertar em vez de contornar** quando encontrar um problema de design no caminho, desde que dentro do que a tarefa toca e de um escopo razoável (~10–20% de investimento). Se o conserto for grande demais, **escalar ao humano** como decisão de trade-off, com o custo de cada caminho explícito.
 5. **Tornar a dívida visível**: quando uma solução tática for conscientemente escolhida pelo humano, registrar a decisão e o que ficou pendente.
 
 ---
@@ -106,4 +130,4 @@ Em toda tarefa de design, o agente deve:
 ## Relações
 
 - O que exatamente se acumula quando se programa taticamente: [nature-of-complexity.md](nature-of-complexity.md).
-- Como manter a postura estratégica ao mexer em código existente: [modifying-existing-code.md](modifying-existing-code.md).
+- O leitor futuro do código modificado: [obvious-code.md](obvious-code.md).

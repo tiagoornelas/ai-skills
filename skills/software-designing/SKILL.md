@@ -58,13 +58,14 @@ Em ambos os modos, o contexto recebido deve ser preservado integralmente (*ipsis
 Aplique as referências pertinentes (seção 4). No mínimo, para cada alternativa:
 - **Profundidade**: a interface de cada módulo é muito mais simples que a implementação? → [deep-modules.md](references/deep-modules.md)
 - **Ocultação**: cada decisão de design tem um único dono? → [information-hiding.md](references/information-hiding.md)
-- **Generalidade**: as interfaces usam os conceitos do próprio módulo, não os do cliente? → [general-purpose-modules.md](references/general-purpose-modules.md)
+- **Generalidade**: as interfaces usam os conceitos do próprio módulo, não os do cliente (exceto as portas para a infraestrutura, que usam o vocabulário das regras de negócio)? → [general-purpose-modules.md](references/general-purpose-modules.md)
 - **Camadas**: cada camada oferece uma abstração diferente? → [different-layer-different-abstraction.md](references/different-layer-different-abstraction.md)
 - **Onde mora a complexidade**: foi absorvida pelos módulos ou empurrada aos chamadores? → [pull-complexity-downwards.md](references/pull-complexity-downwards.md)
 - **Fronteiras**: juntar ou separar reduz a complexidade total? → [together-or-apart.md](references/together-or-apart.md)
 - **Modos de falha**: quais erros podem deixar de existir? → [define-errors-out-of-existence.md](references/define-errors-out-of-existence.md)
 - **Legibilidade**: nomes, consistência e fluxos são óbvios? → [obvious-code.md](references/obvious-code.md)
-- **Evolução** (se houver código existente): o resultado fica como se a mudança tivesse sido prevista desde o início? → [modifying-existing-code.md](references/modifying-existing-code.md)
+- **Direção das dependências**: toda seta que cruza a fronteira entre regras de negócio e infraestrutura aponta para as regras de negócio? → [dependency-direction.md](references/dependency-direction.md)
+- **Evolução** (se houver código existente): o resultado fica como se a mudança tivesse sido prevista desde o início? → [strategic-programming.md](references/strategic-programming.md) (seção 5)
 
 ### Passo 5: Recomendar e comunicar pela Camada Humana
 - Escolha uma recomendação e justifique com os termos das referências (ex.: "a alternativa B elimina o vazamento do formato entre leitor e escritor").
@@ -85,7 +86,7 @@ Carregue apenas as referências necessárias para a decisão em questão.
 | Referência | Carregar quando… |
 | :--- | :--- |
 | [nature-of-complexity.md](references/nature-of-complexity.md) | For preciso diagnosticar ou justificar por que um design é melhor. **Base de todas as outras.** |
-| [strategic-programming.md](references/strategic-programming.md) | Houver pressão por atalho, ou for preciso decidir quanto investir em design. |
+| [strategic-programming.md](references/strategic-programming.md) | Houver pressão por atalho, for preciso decidir quanto investir em design, ou o trabalho alterar um sistema existente. |
 | [deep-modules.md](references/deep-modules.md) | Houver definição ou revisão de módulos, classes, serviços ou APIs. |
 | [information-hiding.md](references/information-hiding.md) | For preciso decidir o que cada módulo sabe e expõe, ou quando houver decomposição por etapas. |
 | [general-purpose-modules.md](references/general-purpose-modules.md) | Houver desenho de interfaces, ou casos especiais espalhados. |
@@ -93,8 +94,8 @@ Carregue apenas as referências necessárias para a decisão em questão.
 | [pull-complexity-downwards.md](references/pull-complexity-downwards.md) | Houver a tentação de deixar o chamador lidar (exceção, configuração, pré-requisito). |
 | [together-or-apart.md](references/together-or-apart.md) | For preciso decidir fronteiras: dividir, juntar, extrair ou fundir. |
 | [define-errors-out-of-existence.md](references/define-errors-out-of-existence.md) | Houver definição de modos de falha, erros ou exceções de um contrato. |
-| [modifying-existing-code.md](references/modifying-existing-code.md) | O trabalho alterar um sistema existente. |
 | [obvious-code.md](references/obvious-code.md) | Houver definição de nomes, tipos de contrato, fluxos por eventos, ou revisão de legibilidade do design. |
+| [dependency-direction.md](references/dependency-direction.md) | For preciso definir a direção das dependências, separar regras de negócio de infraestrutura (persistência, UI, frameworks, provedores) ou decidir quando escolher esses detalhes. |
 
 ### Red flags → referência
 
@@ -105,10 +106,11 @@ Carregue apenas as referências necessárias para a decisão em questão.
 | Mistura de especial com geral, método para um único uso | [general-purpose-modules.md](references/general-purpose-modules.md) |
 | Método repassador, variável repassada, decorators rasos | [different-layer-different-abstraction.md](references/different-layer-different-abstraction.md) |
 | Configuração exposta sem necessidade, "o chamador deve…" | [pull-complexity-downwards.md](references/pull-complexity-downwards.md) |
-| Repetição, métodos conjugados | [together-or-apart.md](references/together-or-apart.md) |
+| Repetição da mesma decisão, módulos sempre alterados juntos | [together-or-apart.md](references/together-or-apart.md) |
 | Excesso de exceções, tratamento repetido | [define-errors-out-of-existence.md](references/define-errors-out-of-existence.md) |
-| Remendo tático, comentário desatualizado | [modifying-existing-code.md](references/modifying-existing-code.md) |
+| Remendo tático, caso especial para encaixar a mudança | [strategic-programming.md](references/strategic-programming.md) |
 | Código não óbvio, nome vago, contêiner genérico | [obvious-code.md](references/obvious-code.md) |
+| Regra de negócio conhecendo banco, framework ou provedor; núcleo não testável sem infraestrutura | [dependency-direction.md](references/dependency-direction.md) |
 
 ---
 
@@ -147,7 +149,7 @@ O design só está pronto quando:
 - [ ] Cada módulo tem uma **interface descrita em poucas frases** e é **profundo** (a interface é muito mais simples que o que ela esconde).
 - [ ] Cada decisão de design relevante tem **um único módulo dono** (sem vazamento).
 - [ ] Os **modos de falha** de cada contrato passaram pelas técnicas de eliminação, e os que restaram estão explícitos.
-- [ ] A **direção das dependências** está desenhada e aponta para as regras de negócio.
+- [ ] A **direção das dependências** está desenhada e aponta para as regras de negócio ([dependency-direction.md](references/dependency-direction.md)).
 - [ ] Nenhum red flag da seção 4 ficou sem tratamento ou justificativa.
 - [ ] Todas as **decisões da Camada Humana** foram decididas pelo humano (modo interativo) ou marcadas como pendentes (modo agente).
 - [ ] Um leitor que não participou da conversa entenderia o design só pelo mapa de módulos e pelos contratos.

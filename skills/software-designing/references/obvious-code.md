@@ -24,16 +24,16 @@
 
 ## 2. O que torna o código mais óbvio
 
-- **Bons nomes**: nomes precisos e significativos esclarecem comportamento e reduzem a necessidade de documentação. Nomes vagos ou genéricos (`data`, `info`, `manager`, `result`, `x`) forçam o leitor a ler o código para deduzir o significado. Se é difícil encontrar um nome simples e preciso para algo, isso é um sinal de que o design dele pode estar confuso.
+- **Bons nomes**: nos contratos (módulos, tipos, operações e campos públicos), nomes precisos esclarecem o comportamento e reduzem a necessidade de documentação. Um nome difícil de escolher é sinal de conceito confuso. Regras para nomes: [naming.md](../../coding/references/naming.md).
 - **Consistência**: coisas parecidas feitas de forma parecida, e coisas diferentes feitas de forma diferente. Se o leitor reconhece um padrão já visto, pode tirar conclusões com segurança sem analisar tudo de novo. Nomes, estilo de codificação, interfaces, padrões de design e invariantes devem ser consistentes.
 - **Uso criterioso de espaço em branco**: a forma como o código é formatado afeta a facilidade de leitura. Linhas em branco separando blocos lógicos, alinhamento de parâmetros documentados e espaçamento consistente ajudam o leitor a enxergar a estrutura.
-- **Comentários**: às vezes não é possível evitar código não óbvio. Nesse caso, comentários devem fornecer a informação que falta. Para isso, o autor precisa se colocar no lugar do leitor e perguntar: o que vai confundir quem ler isto?
+- **Comentários**: quando o código não consegue dizer tudo, um comentário curto fornece a informação que falta. O que comentar e como: [comments.md](../../coding/references/comments.md).
 
 ---
 
 ## 3. O que torna o código menos óbvio
 
-- **Programação orientada a eventos**: o fluxo de controle é difícil de acompanhar, porque handlers não são chamados diretamente; são invocados indiretamente por um mecanismo de eventos. Nunca é óbvio *quando* ou *por quem* um handler é chamado. **Compensação**: no comentário de interface de cada handler, documente quando ele é invocado.
+- **Programação orientada a eventos**: o fluxo de controle é difícil de acompanhar, porque handlers não são chamados diretamente; são invocados indiretamente por um mecanismo de eventos. Nunca é óbvio *quando* ou *por quem* um handler é chamado. **Compensação**: documente quando e por quem cada handler é invocado ([comments.md](../../coding/references/comments.md)).
 - **Contêineres genéricos**: estruturas como `Pair<Integer, Boolean>` ou tuplas agrupam valores sem dar nome a eles. Quem usa vê `getKey()` e `getValue()` (ou `t[0]`, `t[1]`), que não dizem nada sobre o significado. O código fica mais fácil de **escrever**, mas mais difícil de **ler**. Melhor definir um tipo nomeado para o caso específico, com campos significativos.
 - **Tipos diferentes na declaração e na alocação**: por exemplo, declarar uma variável como `List<Message>` e atribuir uma `ArrayList`. O leitor vê a declaração e pode não perceber o tipo real, que pode afetar desempenho ou thread-safety. Quando o tipo concreto importa para o comportamento, torne-o visível.
 - **Código que viola as expectativas do leitor**: por exemplo, uma função `main` que retorna logo depois de inicializar, enquanto a aplicação continua rodando em uma thread criada por um construtor. O leitor espera que a aplicação termine ao fim da `main`. Se o código faz algo diferente do esperado, isso **precisa ser documentado** de forma explícita.
@@ -78,4 +78,4 @@ Ao finalizar um design, revise-o **como leitor**, não como autor:
 
 - Obscuridade como causa de complexidade: [nature-of-complexity.md](nature-of-complexity.md).
 - Reduzir a informação necessária via abstração: [deep-modules.md](deep-modules.md) e [information-hiding.md](information-hiding.md).
-- Manter comentários e documentação corretos ao longo das mudanças: [modifying-existing-code.md](modifying-existing-code.md).
+- Escrever e manter comentários: [comments.md](../../coding/references/comments.md).
