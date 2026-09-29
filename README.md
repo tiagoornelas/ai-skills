@@ -1,141 +1,152 @@
 # ai-skills
 
-Hub central de **Skills** e diretrizes de **Agentes de IA** compartilhado entre **Claude Code**, **Antigravity CLI** e **Codex**.
+Um jeito de desenvolver software com agentes de IA, escrito como **skills** e instalado a partir de uma fonte única em **Claude Code**, **Codex** e **Antigravity CLI**.
 
-O objetivo deste repositório é manter uma fonte única da verdade (**Single Source of Truth - SSOT**) para instruções operacionais e disponibilizar runbooks/skills modulares que podem ser consumidos por qualquer um dos harnesses.
+O repositório não é um catálogo de prompts. É uma divisão de trabalho: o que o humano decide, o que o agente faz sozinho, e as teorias de design e de código que o agente segue para que o humano possa confiar no que não leu.
 
 ---
 
-## 📌 Como Funciona a Arquitetura
+## 🧭 O problema
 
-| Harness | Regras do Projeto (SSOT) | Skills no Projeto | Skills Globais |
+Um agente escreve código mais rápido do que qualquer pessoa consegue ler. Revisar tudo linha a linha transforma o humano no gargalo; não revisar nada transforma o software numa pilha de decisões que ninguém tomou.
+
+A saída adotada aqui é separar **o que é caro de errar e barato de revisar** do **que é barato de refazer e caro de ler**, e dar cada metade a quem faz melhor.
+
+---
+
+## 🧱 Duas camadas
+
+```mermaid
+graph TB
+  subgraph H["👤 Camada Humana — governança"]
+    direction LR
+    H1["Módulos e fronteiras"]
+    H2["Direção das dependências"]
+    H3["Contratos e modos de falha"]
+    H4["Comportamentos da DoD"]
+    H5["Trade-offs e decisões de negócio"]
+  end
+  subgraph A["🤖 Camada do Agente — implementação"]
+    direction LR
+    A1["Código abaixo dos contratos"]
+    A2["Estruturas internas"]
+    A3["Testes que provam a DoD"]
+    A4["Higiene mecânica"]
+    A5["Self-review até ficar limpo"]
+  end
+  H -- "contratos e critérios de aceite" --> A
+  A -- "só o que é da Camada Humana" --> H
+```
+
+| | 👤 Camada Humana | 🤖 Camada do Agente |
+| :--- | :--- | :--- |
+| **Decide** | Quais módulos existem, o que cada um promete, para onde apontam as dependências, o que é "pronto". | Como cada módulo cumpre o que promete. |
+| **Revisa** | Mapas de módulos, contratos e a tabela de comportamentos, nunca o diff inteiro. | O próprio código, em loop, antes de qualquer humano ver. |
+| **Recebe do outro lado** | Só o que pertence à sua camada: decisões pendentes, contratos novos, verificações manuais. | Contratos e critérios de aceite claros. |
+
+**O teste da fronteira**, quando não está claro de quem é a decisão:
+
+> *Mudar isso exigiria renegociar um contrato com quem chama de fora, ou dá para reescrever amanhã sem ninguém fora do módulo perceber?*
+> Renegociar → 👤 humano. Reescrever em silêncio → 🤖 agente.
+
+---
+
+## 🔁 O ciclo de uma entrega
+
+```mermaid
+graph LR
+  D["Entender e decidir<br/><i>entrevista, design,<br/>alternativas</i>"] --> I["Implementar<br/><i>guiado por testes</i>"]
+  I --> S["Self-review<br/><i>avaliar → corrigir →<br/>reavaliar</i>"]
+  S -- "achado bloqueante" --> I
+  S -- "limpo" --> P["Pull Request<br/><i>síntese e diagramas</i>"]
+  P --> R["Revisão humana<br/><i>só a Camada Humana</i>"]
+  R -- "decisão de design" --> D
+```
+
+- **Antes de codar**, as decisões caras de mudar passam pelo humano. Quando uma decisão pesa, o agente projeta **duas vezes**, com alternativas radicalmente diferentes, e leva uma recomendação em vez de um único caminho.
+- **Durante**, o agente testa primeiro sempre que há um comportamento observável e um jeito de testá-lo.
+- **Antes do humano**, o agente revisa a si mesmo com orçamento e limite de rodadas: corrige o bloqueante, corrige o que tem cenário concreto de dano, descarta preferência de estilo e **escala** o que mexeria num contrato.
+- **Na revisão**, o humano vê o que foi construído contra o que foi pedido, em diagramas e numa tabela de comportamentos, e não num mar de linhas.
+
+As mesmas lentes servem para o trabalho dos outros: revisar o PR de um colega, responder à revisão recebida, resolver um conflito entre trabalhos paralelos sem descartar nenhum dos dois.
+
+---
+
+## 📚 As teorias por trás
+
+As skills não inventam critério. Cada julgamento de design ou de código se apoia numa ideia com nome, tirada de livros, para que o achado seja "isto é um módulo raso" e não "eu faria diferente".
+
+| Fonte | O que adotamos | Onde aparece |
+| :--- | :--- | :--- |
+| **John Ousterhout**, *A Philosophy of Software Design* | Complexidade como o inimigo central (dependências e obscuridade). **Módulos profundos**: interface pequena, implementação rica. Ocultação de informação e vazamento. Puxar a complexidade para baixo. Definir erros fora da existência. Camada diferente, abstração diferente. Programação **estratégica** em vez de tática. **Design it twice**. Comentários que dizem o porquê. | Todo o design e a revisão de arquitetura. |
+| **Robert C. Martin**, *Clean Architecture* | A regra de dependência: **as dependências apontam para as regras de negócio**; a política nunca depende de banco, framework ou provedor. | Direção de dependências, na Camada Humana. |
+| **Martin Fowler**, *Refactoring* | O catálogo de **code smells** e de refatorações nomeadas, em passos pequenos, sempre com testes verdes, sem misturar com mudança de comportamento. | Qualidade abaixo dos contratos. |
+| **Kent Beck**, *Test-Driven Development* | **Red → green → refactor.** Um teste que nunca falhou não prova nada. | Implementação. |
+| **Escola clássica de testes** (Vladimir Khorikov, *Unit Testing Principles, Practices, and Patterns*) | A unidade de teste é um **comportamento observável pela interface pública**. Colaboradores internos rodam de verdade; dublês só para o que está fora do controle (rede, relógio, LLM). Teste que quebra numa refatoração é teste ruim. | Testes e revisão de testes. |
+
+Onde as escolas discordam, a posição é declarada. Um exemplo: entre as funções minúsculas do *Clean Code* e as funções longas e profundas de Ousterhout, a regra aqui é extrair **quando o pedaço extraído é independente**, e não extrair quando isso só espalha o que precisa ser lido junto.
+
+Algumas práticas de trabalho com agentes (entrevistar em rodadas sobre uma árvore de decisões, prototipar o que conversa não resolve, fazer handoff entre sessões) vêm das [skills de Matt Pocock](https://github.com/mattpocock/skills), adaptadas a este fluxo.
+
+---
+
+## 🧩 O que as skills têm em comum
+
+- **O agente propõe, o humano decide.** Nada sai para o mundo (push, comentário, issue, mensagem) sem confirmação explícita.
+- **Fatos são trabalho do agente; decisões são do humano.** O agente não pergunta o que pode descobrir sozinho, e não responde às próprias perguntas de decisão.
+- **Achado precisa de cenário concreto.** Julgamento sem um bug provável, uma mudança cara ou uma confusão real do leitor é preferência, e preferência não vira achado.
+- **Mostrar antes de descrever.** Estrutura, dependências, fluxos e conflitos aparecem como diagrama, numa notação única.
+- **Nada que o leitor não consiga abrir.** Commits, PRs e comentários nunca citam caminhos locais da máquina.
+- **Escrita de gente.** Texto que um colega vai ler passa por uma revisão contra os vícios de escrita de IA.
+- **Toda skill diz como verificar que deu certo.**
+
+O catálogo atual está em [`skills/`](skills/). Ele muda com o tempo; a filosofia acima é o que deve permanecer.
+
+---
+
+## 🚀 Instalação
+
+| Harness | Regras (SSOT) | Skills no projeto | Skills globais |
 | :--- | :--- | :--- | :--- |
-| **Antigravity CLI** | `AGENTS.md` (nativo) ou `GEMINI.md` | `.agents/skills/` | `~/.gemini/config/skills/` |
-| **Claude Code** | `CLAUDE.md` *(symlink → `AGENTS.md`)* | `.claude/skills/` | `~/.claude/skills/` |
-| **Codex** | `AGENTS.md` (nativo) | `.agents/skills/` | `~/.codex/skills/` |
+| **Claude Code** | `CLAUDE.md` → `AGENTS.md` | `.claude/skills/` | `~/.claude/skills/` |
+| **Codex** | `AGENTS.md` | `.agents/skills/` | `~/.codex/skills/` |
+| **Antigravity CLI** | `AGENTS.md` ou `GEMINI.md` | `.agents/skills/` | `~/.gemini/config/skills/` |
 
----
+### Global (recomendado)
 
-## 🚀 Como Apontar os Harnesses
-
-### 1. Configuração Global (Recomendado)
-
-Disponibiliza as skills deste repositório para serem usadas em qualquer terminal/sessão dos harnesses.
-
-Execute o script de setup global:
 ```bash
 ./scripts/setup-global.sh
 ```
 
-**O que o script faz:**
-1. Cria symlinks de cada skill presente em `skills/` para:
-   - `~/.claude/skills/<skill>`
-   - `~/.gemini/config/skills/<skill>`
-   - `~/.codex/skills/<skill>`
+1. Vincula, por symlink, cada skill de `skills/` nas três pastas globais. Uma pasta real com o mesmo nome (cópia antiga) é movida para `~/.ai-skills-backup/<data>/` antes de o link ser criado, e links para skills que saíram do repositório são removidos.
+2. Pergunta se deve vincular o [`AGENTS.md`](AGENTS.md) como instrução global dos três harnesses, com backup dos arquivos existentes. Rode num terminal interativo para responder.
 
-   Se já existir uma pasta real com o mesmo nome (uma cópia antiga), ela é movida para `~/.ai-skills-backup/<data>/` antes de o link ser criado. Links que apontavam para skills removidas do repositório são apagados.
-2. Pergunta se você deseja vincular o `AGENTS.md` deste repositório como instrução global padrão nos três ambientes (com backup automático dos arquivos existentes).
+Como tudo é symlink, um `git pull` já atualiza as skills em todos os harnesses. Rode o script de novo só quando skills forem adicionadas ou removidas.
 
----
+### Num projeto específico
 
-### 2. Configuração em um Projeto Específico
-
-Para fazer um repositório existente usar as regras (`AGENTS.md`) e a pasta de skills deste repositório:
-
-Execute o script apontando para a pasta do projeto:
 ```bash
-./scripts/link-project.sh /caminho/para/seu-projeto
-```
-*(Ou entre no diretório do projeto e execute `/caminho/para/ai-skills/scripts/link-project.sh .`)*
-
-**O que o script faz no projeto de destino:**
-1. **Regras Unificadas:** Cria `AGENTS.md` base (se ainda não existir) e gera os symlinks `CLAUDE.md -> AGENTS.md` e `GEMINI.md -> AGENTS.md`.
-2. **Acesso às Skills:** Aponta `.claude/skills` e `.agents/skills` diretamente para a pasta `skills/` deste repositório. Se o projeto já tiver uma pasta de skills própria, ela é preservada e cada skill deste repositório é vinculada dentro dela, sem sobrescrever skills do projeto com o mesmo nome.
-
----
-
-### 3. Configuração Manual (Passo a Passo)
-
-Se preferir configurar manualmente sem usar os scripts:
-
-#### Em outro projeto/repositório:
-```bash
-cd /caminho/para/seu-projeto
-
-# 1. Vincular regras (CLAUDE.md e GEMINI.md lendo AGENTS.md)
-ln -sfn AGENTS.md CLAUDE.md
-ln -sfn AGENTS.md GEMINI.md
-
-# 2. Vincular pasta de skills
-mkdir -p .claude .agents
-ln -sfn /caminho/para/ai-skills/skills .claude/skills
-ln -sfn /caminho/para/ai-skills/skills .agents/skills
+./scripts/link-project.sh /caminho/para/o-projeto
 ```
 
-#### Globalmente na sua máquina:
-```bash
-AI_SKILLS_PATH="$HOME/Documents/dev/ai-skills"
+1. Cria um `AGENTS.md` base, se não houver, e aponta `CLAUDE.md` e `GEMINI.md` para ele.
+2. Aponta `.claude/skills` e `.agents/skills` para `skills/`. Se o projeto já tiver skills próprias, elas são preservadas e as deste repositório são vinculadas uma a uma, sem sobrescrever homônimas.
 
-# Vincular uma skill específica (exemplo: minha-skill)
-ln -sfn "$AI_SKILLS_PATH/skills/minha-skill" ~/.claude/skills/minha-skill
-ln -sfn "$AI_SKILLS_PATH/skills/minha-skill" ~/.gemini/config/skills/minha-skill
-ln -sfn "$AI_SKILLS_PATH/skills/minha-skill" ~/.codex/skills/minha-skill
+---
+
+## ✍️ Criando uma skill
+
+O padrão completo está no [`AGENTS.md`](AGENTS.md), seção 3. Em resumo:
+
+```text
+skills/<nome-em-kebab-case>/
+├── SKILL.md       # obrigatório: frontmatter (name, description) + instruções
+├── references/    # detalhe carregado sob demanda
+├── scripts/       # utilitários executáveis
+└── resources/     # templates e ativos
 ```
 
----
-
-## 🛠️ Como Adicionar Novas Skills no Futuro
-
-1. Crie uma nova pasta dentro de `skills/` seguindo a estrutura:
-   ```text
-   skills/<nome-da-skill>/
-   ├── SKILL.md            # Obrigatório: YAML frontmatter + instruções
-   ├── references/         # Opcional: Documentações aprofundadas
-   └── scripts/            # Opcional: Scripts auxiliares
-   ```
-2. No arquivo `SKILL.md`, inclua o cabeçalho YAML obrigatório:
-   ```markdown
-   ---
-   name: nome-da-skill
-   description: >-
-     O que a skill faz e exatamente quando o agente deve utilizá-la.
-   ---
-
-    # Nome da Skill
-   Passo a passo e instruções para o agente...
-   ```
-3. Execute `./scripts/setup-global.sh` para disponibilizar a nova skill imediatamente para todos os harnesses configurados.
-
----
-
-## 📝 Modelo Sugerido para `AGENTS.md` de Projetos
-
-Ao criar ou personalizar o `AGENTS.md` em um projeto de software, utilize uma estrutura enxuta como esta:
-
-```markdown
-# AGENTS.md
-
-> Instruções de desenvolvimento e governança para agentes de IA neste projeto.
-
----
-
-## 1. Visão Geral do Projeto
-- **Stack Tecnológica**: [ex.: TypeScript, Node.js, Next.js, Docker]
-- **Objetivo**: [Breve descrição do produto/serviço]
-
----
-
-## 2. Comandos Principais
-- Instalar dependências: `npm install`
-- Executar testes: `npm test`
-- Linter / Formatador: `npm run lint`
-- Ambiente dev: `npm run dev`
-
----
-
-## 3. Diretrizes de Código e Governança
-- Respostas concisas e estruturadas (priorize tabelas, listas e blocos de código).
-- Validação contínua: Execute testes ou linter antes de considerar tarefas concluídas.
-- Commits atômicos no imperativo (ex.: `feat: add user login endpoint`).
-```
-
+- A `description` diz, em 3ª pessoa, o que a skill faz e **quando** deve ser acionada.
+- O `SKILL.md` fica enxuto; o aprofundamento vai para `references/`.
+- Toda skill termina com uma seção de **Validação de Sucesso**.
+- Depois de criar, rode `./scripts/setup-global.sh`.
