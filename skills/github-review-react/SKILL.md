@@ -36,12 +36,22 @@ query($owner:String!,$repo:String!,$pr:Int!){
     pullRequest(number:$pr){
       reviewThreads(first:100){ nodes{
         id isResolved isOutdated path line
-        comments(first:50){ nodes{ databaseId author{login} body diffHunk createdAt } }
+        comments(first:50){ nodes{ databaseId url author{login} body diffHunk createdAt } }
       }}
     }
   }
 }'
 ```
+
+Registre, para cada item, **de onde ele veio e como respondê-lo**. Por padrão, a resposta vai **direto para o comentário original** (as exceções estão na §6):
+
+| Origem | Guarde | Como responder |
+| :--- | :--- | :--- |
+| **Thread de linha** (`reviewThreads`) | `id` da thread e `databaseId` do **primeiro** comentário dela | Resposta dentro da própria thread. |
+| **Corpo de uma review** (`reviews[].body`) | autor e `url` da review | *Quote reply* na conversa do PR. |
+| **Comentário na conversa** (`comments`) | autor e `url` do comentário | *Quote reply* na conversa do PR. |
+
+> O GitHub não encadeia respostas em comentários da conversa nem no corpo de reviews. A forma equivalente é o *quote reply* do próprio GitHub: a resposta abre citando o trecho, menciona o autor e aponta o comentário original (ver §6).
 
 - Considere **threads não resolvidas** e comentários gerais das revisões (corpo da review e comentários na conversa do PR).
 - Ignore comentários do próprio usuário, a não ser como contexto de uma thread.
@@ -155,8 +165,18 @@ Regras:
 - **SHA curto** (7 caracteres): o GitHub transforma em link automaticamente.
 - **[sem referências locais](../ai-assisted-software-development/references/no-local-references.md)**, **sem assinatura** e sem linha de coautoria ou de IA.
 - Termos técnicos, identificadores e código ficam no idioma original.
+- **Resposta a comentário da conversa ou a corpo de review** (sem thread no GitHub): abra no formato do *quote reply*, citando o trecho a que responde (a frase-chave, não o comentário inteiro), mencionando o autor e linkando o original. Assim a resposta fica visivelmente ligada ao comentário:
 
-Apresente todas as respostas juntas, um bloco por thread, com o local e o destino.
+  ```markdown
+  > <trecho curto do comentário original>
+
+  @<revisor> <resposta, no modelo do destino> ([comentário](<url do comentário original>))
+  ```
+
+  Se um mesmo comentário geral levanta vários pontos, responda todos num único *quote reply*, com uma citação curta antes de cada resposta.
+- **Comentário solto só como exceção**: responder direto ao comentário é o padrão. Um comentário novo na conversa, sem citar nenhum comentário, cabe quando a mensagem não é resposta a um comentário específico. Por exemplo: um resumo de tudo que mudou depois da revisão, um ponto que atravessa vários comentários ou revisores, ou um aviso que ninguém pediu. Nesses casos, sinalize a escolha ao usuário.
+
+Apresente todas as respostas juntas, um bloco por thread, com o local, a origem (thread de linha, corpo de review ou conversa), o destino e a forma de publicação (na thread, *quote reply* ou, na exceção, comentário solto).
 
 ---
 
@@ -165,13 +185,22 @@ Apresente todas as respostas juntas, um bloco por thread, com o local e o destin
 Nunca publique automaticamente. Com pedido explícito, mostre exatamente o que será enviado e, após a confirmação:
 
 ```bash
-# resposta numa thread de comentário de linha (id = databaseId do primeiro comentário da thread)
+# thread de linha: resposta DENTRO da thread (threadId = id da thread coletado na §1)
+gh api graphql -f threadId='<thread_id>' -f body='<resposta>' -f query='
+mutation($threadId:ID!,$body:String!){
+  addPullRequestReviewThreadReply(input:{pullRequestReviewThreadId:$threadId, body:$body}){
+    comment{ url }
+  }
+}'
+# alternativa REST (comment_id = databaseId do PRIMEIRO comentário da thread, nunca de uma resposta)
 gh api repos/<owner>/<repo>/pulls/<pr>/comments/<comment_id>/replies -f body='<resposta>'
 
-# resposta a comentário geral da revisão ou da conversa
-gh pr comment <pr> --body '<resposta>'
+# comentário da conversa ou corpo de review: quote reply (corpo no formato da §6)
+gh pr comment <pr> --body-file <arquivo com o quote reply>
 ```
 
+- **Responda onde o comentário está**: a resposta de uma thread de linha fica dentro da thread, e a de um comentário da conversa ou corpo de review sai como *quote reply*. Comentário solto só nas exceções da §6, já combinadas com o usuário.
+- **Confira depois de publicar**: a resposta de thread aparece na thread (`in_reply_to_id` igual ao primeiro comentário, ou o novo comentário listado em `reviewThreads`); o *quote reply* abre com a citação, a menção e o link do original. Se uma resposta saiu solta sem ser uma exceção combinada, avise o usuário e proponha apagar e republicar.
 - **Não resolva threads por conta própria**: em muitos times quem resolve é o revisor. Pergunte ao usuário.
 - Ofereça pedir nova revisão (`gh pr edit <pr> --add-reviewer <login>`) quando houver mudanças acatadas.
 - Issues de follow-up (📌) só são criadas com confirmação, antes das respostas que as citam.
@@ -185,4 +214,5 @@ gh pr comment <pr> --body '<resposta>'
 - [ ] Todo ❌ tem justificativa concreta, e todo 🔀 diz por que a alternativa resolve a preocupação.
 - [ ] As mudanças aceitas foram aplicadas com `coding`, passaram no `agent-self-review`, e cada uma tem o SHA do commit registrado.
 - [ ] Cada thread tem uma resposta concisa, cortês, humanizada, sem referências locais e sem assinatura, citando o commit ou o motivo.
+- [ ] Cada resposta foi publicada **respondendo ao comentário original**: dentro da thread, nas threads de linha; como *quote reply* (citação, menção ao autor e link), nos comentários da conversa e corpos de review. Comentário solto, só nas exceções da §6 combinadas com o usuário.
 - [ ] Nada foi enviado ao GitHub (push, respostas, issues, threads resolvidas) sem pedido e confirmação explícitos.
