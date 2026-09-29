@@ -5,6 +5,11 @@
 # - Claude Code   (~/.claude)
 # - Antigravity   (~/.gemini/config)
 # - Codex         (~/.codex)
+#
+# Uso:
+#   ./scripts/setup-global.sh                         # pergunta sobre as instruções globais
+#   ./scripts/setup-global.sh --global-instructions   # vincula sem perguntar
+#   ./scripts/setup-global.sh --skills-only           # só as skills
 # ==============================================================================
 
 set -euo pipefail
@@ -12,7 +17,16 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SKILLS_DIR="$REPO_ROOT/skills"
-AGENTS_FILE="$REPO_ROOT/AGENTS.md"
+GLOBAL_AGENTS_FILE="$REPO_ROOT/global/AGENTS.md"
+
+GLOBAL_INSTRUCTIONS="ask"
+for arg in "$@"; do
+  case "$arg" in
+    --global-instructions) GLOBAL_INSTRUCTIONS="yes" ;;
+    --skills-only)         GLOBAL_INSTRUCTIONS="no" ;;
+    *) echo "Opção desconhecida: $arg" >&2; exit 2 ;;
+  esac
+done
 
 # shellcheck source=lib/link.sh
 source "$SCRIPT_DIR/lib/link.sh"
@@ -66,43 +80,34 @@ else
   echo "  ✓ $count skill(s) vinculada(s) com sucesso!"
 fi
 
-# 3. Opção de vincular AGENTS.md como instrução global
+# 3. Instruções globais (global/AGENTS.md)
 echo ""
-echo "⚙️ Configuração de Instruções Globais (AGENTS.md):"
-echo "  Deseja vincular $AGENTS_FILE como instrução global?"
+echo "⚙️ Instruções Globais ($GLOBAL_AGENTS_FILE):"
 echo "  - Claude Code: ~/.claude/CLAUDE.md"
 echo "  - Antigravity: ~/.gemini/config/AGENTS.md"
 echo "  - Codex:       ~/.codex/AGENTS.md"
 echo ""
 
-read -p "Deseja criar os links simbólicos de instruções globais agora? [s/N]: " -r response || response="n"
-if [[ "$response" =~ ^([sS][iI][mM]|[sS])$ ]]; then
-  # Claude Code
-  if [ -f "$HOME/.claude/CLAUDE.md" ] && [ ! -L "$HOME/.claude/CLAUDE.md" ]; then
-    echo "  [backup] ~/.claude/CLAUDE.md existente -> ~/.claude/CLAUDE.md.bak"
-    cp "$HOME/.claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md.bak"
+if [ "$GLOBAL_INSTRUCTIONS" = "ask" ]; then
+  if [ -t 0 ]; then
+    read -p "Deseja vincular as instruções globais agora? [s/N]: " -r response || response="n"
+    [[ "$response" =~ ^([sS][iI][mM]|[sS])$ ]] && GLOBAL_INSTRUCTIONS="yes" || GLOBAL_INSTRUCTIONS="no"
+  else
+    echo "  Terminal não interativo: rode com --global-instructions para vincular sem perguntar."
+    GLOBAL_INSTRUCTIONS="no"
   fi
-  ln -sfn "$AGENTS_FILE" "$HOME/.claude/CLAUDE.md"
-  echo "  ✓ Link criado: ~/.claude/CLAUDE.md -> $AGENTS_FILE"
+fi
 
-  # Antigravity / Gemini CLI
-  mkdir -p "$HOME/.gemini/config"
-  if [ -f "$HOME/.gemini/config/AGENTS.md" ] && [ ! -L "$HOME/.gemini/config/AGENTS.md" ]; then
-    echo "  [backup] ~/.gemini/config/AGENTS.md existente -> ~/.gemini/config/AGENTS.md.bak"
-    cp "$HOME/.gemini/config/AGENTS.md" "$HOME/.gemini/config/AGENTS.md.bak"
-  fi
-  ln -sfn "$AGENTS_FILE" "$HOME/.gemini/config/AGENTS.md"
-  echo "  ✓ Link criado: ~/.gemini/config/AGENTS.md -> $AGENTS_FILE"
-
-  # Codex
-  if [ -f "$HOME/.codex/AGENTS.md" ] && [ ! -L "$HOME/.codex/AGENTS.md" ]; then
-    echo "  [backup] ~/.codex/AGENTS.md existente -> ~/.codex/AGENTS.md.bak"
-    cp "$HOME/.codex/AGENTS.md" "$HOME/.codex/AGENTS.md.bak"
-  fi
-  ln -sfn "$AGENTS_FILE" "$HOME/.codex/AGENTS.md"
-  echo "  ✓ Link criado: ~/.codex/AGENTS.md -> $AGENTS_FILE"
+if [ "$GLOBAL_INSTRUCTIONS" = "yes" ]; then
+  mkdir -p "$HOME/.claude" "$HOME/.gemini/config" "$HOME/.codex"
+  safe_link "$GLOBAL_AGENTS_FILE" "$HOME/.claude/CLAUDE.md" claude
+  echo "  ✓ ~/.claude/CLAUDE.md -> $GLOBAL_AGENTS_FILE"
+  safe_link "$GLOBAL_AGENTS_FILE" "$HOME/.gemini/config/AGENTS.md" gemini
+  echo "  ✓ ~/.gemini/config/AGENTS.md -> $GLOBAL_AGENTS_FILE"
+  safe_link "$GLOBAL_AGENTS_FILE" "$HOME/.codex/AGENTS.md" codex
+  echo "  ✓ ~/.codex/AGENTS.md -> $GLOBAL_AGENTS_FILE"
 else
-  echo "  Links de instruções globais ignorados (suas configurações globais atuais foram preservadas)."
+  echo "  Instruções globais não vinculadas (as configurações atuais foram preservadas)."
 fi
 
 echo ""

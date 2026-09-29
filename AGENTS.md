@@ -1,28 +1,26 @@
 # AGENTS.md
 
-> Diretrizes e instruções operacionais do repositório **ai-skills** (Hub Central de Skills e Regras Multi-Harness).
+> Regras para manter o repositório **ai-skills** (Hub Central de Skills e Regras Multi-Harness).
+>
+> As regras de trabalho que valem em qualquer projeto (como reportar, princípios, governança do desenvolvimento e subagentes) estão em [`global/AGENTS.md`](global/AGENTS.md). Elas também valem aqui: siga as duas.
 
 ---
 
 ## 1. Identidade e Propósito do Repositório
 
 Este repositório centraliza:
-1. **Skills reutilizáveis (`skills/`)**: Procedimentos e runbooks sob demanda em formato universal (`SKILL.md`), consumidos por Claude Code, Antigravity CLI e Codex.
-2. **Modelos e Governança de Agentes (`AGENTS.md`)**: Diretrizes operacionais e regras de contexto compartilhadas entre múltiplos harnesses.
-3. **Scripts de Automação (`scripts/`)**: Ferramentas para vincular (via symlinks) as regras e skills aos ambientes locais de desenvolvimento.
+1. **Skills reutilizáveis ([`skills/`](skills/))**: procedimentos sob demanda em formato universal (`SKILL.md`), consumidos por Claude Code, Antigravity CLI e Codex.
+2. **Instruções globais ([`global/AGENTS.md`](global/AGENTS.md))**: as regras de trabalho instaladas como instrução global nos três harnesses.
+3. **Scripts de automação ([`scripts/`](scripts/))**: vinculam, via symlinks, as skills e as instruções globais aos ambientes locais.
 
 ---
 
-## 2. Princípios Operacionais Globais
+## 2. Princípios de Manutenção
 
-Todo agente operando neste repositório (ou em repositórios configurados a partir dele) deve seguir estes princípios:
-
-- **Comunicação Concisa e Estruturada**: Priorize respostas diretas, estruturadas com tópicos, tabelas e blocos de código. Evite prolixidade.
-- **Single Source of Truth (SSOT)**: `AGENTS.md` é o arquivo primário de regras. Adaptações para harnesses específicos (ex.: `CLAUDE.md`, `GEMINI.md`) devem apontar para o `AGENTS.md` via symlinks ou diretivas de inclusão.
-- **Agnosticismo de Harness**: As instruções e skills devem ser descritas de forma portável, evitando dependências rígidas de um único motor quando houver equivalentes diretos (ex.: ferramentas de subagentes).
-- **Segurança e Não-Destrutividade**: Sempre preserve dados do usuário, não execute comandos destrutivos sem verificação e respeite arquivos existentes.
-- **Formatação de Arquivos**: Ao referenciar arquivos no Markdown, use links formatados (ex.: `[README.md](README.md)`).
-- **Sem Referências Locais em Artefatos Compartilhados**: Commits, PRs, comentários de revisão e relatórios nunca citam caminhos locais que o leitor não consegue abrir (`docs/tickets/`, `docs/prd/`, `docs/research/`, arquivos no `.gitignore`, caminhos da máquina). Use a issue vinculada (Jira/GitHub) ou reescreva a informação. Detalhes em [no-local-references.md](skills/ai-assisted-software-development/references/no-local-references.md).
+- **Single Source of Truth (SSOT)**: cada regra mora num lugar só. Regras de trabalho ficam em [`global/AGENTS.md`](global/AGENTS.md); regras compartilhadas entre skills ficam numa referência de skill e são ligadas por caminho relativo (ex.: `../ai-assisted-software-development/references/`). Arquivos específicos de harness (`CLAUDE.md`, `GEMINI.md`) apontam para o arquivo primário via symlink.
+- **Agnosticismo de harness**: instruções e skills são portáveis, sem dependência rígida de um único motor quando existe equivalente direto (ex.: ferramentas de subagentes).
+- **Skills autossuficientes**: uma skill nunca depende deste `AGENTS.md` nem de caminhos do repositório (`skills/...`); instalada globalmente, ela roda na pasta de outro projeto. Links entre skills são relativos à pasta de skills (`../<skill>/`).
+- **Instruções globais citam skills pelo nome**, não por caminho: o arquivo é instalado em pastas diferentes em cada harness.
 
 ---
 
@@ -50,30 +48,7 @@ description: >-
 ```
 
 ### 3.3. Boas Práticas para Skills
-- **Progressive Disclosure**: Mantenha o `SKILL.md` conciso e focado nas decisões/passos essenciais. Delegue referências extensas para arquivos em `references/`.
-- **Nomes Padronizados**: Use `kebab-case` para nomes de pastas e skills (ex.: `code-review`, `deploy-helper`).
-- **Validação de Sucesso**: Toda skill deve orientar o agente em como verificar se os passos foram executados com êxito.
-
----
-
-## 4. Subagentes e Delegação
-
-- Quando um fluxo exigir trabalho em segundo plano ou contexto isolado, utilize a ferramenta de subagentes disponível no harness atual:
-  - **Antigravity CLI**: `invoke_subagent` (com `TypeName: "self"` ou tipo específico).
-  - **Claude Code**: Ferramenta `Agent` (com tipo `general-purpose`).
-  - **Codex**: Execução em sub-processo / thread isolada.
-- O contexto e os requisitos devem ser passados integralmente e sem perda de fidelidade (*ipsis litteris*).
-- Caminhos de skills citados num brief são passados como caminhos absolutos: o subagente roda na pasta do projeto, não na pasta das skills. Detalhes em [subagent-delegation.md](skills/ai-assisted-software-development/references/subagent-delegation.md).
-
----
-
-## 5. Governança e Ciclo de Vida do Desenvolvimento
-
-- **Divisão de Responsabilidades (Human Layer vs. Agent Layer)**: Siga rigorosamente os princípios de [`ai-assisted-software-development`](skills/ai-assisted-software-development/SKILL.md).
-- **Desenho / Design de Software**: É **obrigatório** utilizar a skill [`software-designing`](skills/software-designing/SKILL.md) para modelagem, fronteiras e contratos.
-- **Alternativas de Design**: Decisões de design caras de mudar depois devem passar por [`design-it-twice`](skills/design-it-twice/SKILL.md) antes de serem fixadas.
-- **Implementação de Código**: É **obrigatório** utilizar a skill [`coding`](skills/coding/SKILL.md) para escrita, testes e refatoração.
-- **Portão Autônomo de Qualidade**: O agente deve rodar obrigatoriamente [`agent-self-review`](skills/agent-self-review/SKILL.md) e corrigir seus próprios achados até obter aprovação (*clean*) antes de submeter ao humano.
-- **Revisão Humana de Alto Nível**: Utilize [`human-review`](skills/human-review/SKILL.md) sempre que o humano solicitar revisão da entrega, focando exclusivamente na camada de governança humana.
-
-
+- **Progressive Disclosure**: mantenha o `SKILL.md` conciso e focado nas decisões e passos essenciais. Delegue referências extensas para arquivos em `references/`.
+- **Nomes Padronizados**: use `kebab-case` para nomes de pastas e skills (ex.: `code-review`, `deploy-helper`).
+- **Validação de Sucesso**: toda skill orienta o agente sobre como verificar se os passos foram executados com êxito.
+- **Depois de adicionar ou remover uma skill**, rode `./scripts/setup-global.sh`.

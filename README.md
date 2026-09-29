@@ -119,9 +119,11 @@ O catálogo atual está em [`skills/`](skills/). Ele muda com o tempo; a filosof
 ```
 
 1. Vincula, por symlink, cada skill de `skills/` nas três pastas globais. Uma pasta real com o mesmo nome (cópia antiga) é movida para `~/.ai-skills-backup/<data>/` antes de o link ser criado, e links para skills que saíram do repositório são removidos.
-2. Pergunta se deve vincular o [`AGENTS.md`](AGENTS.md) como instrução global dos três harnesses, com backup dos arquivos existentes. Rode num terminal interativo para responder.
+2. Pergunta se deve vincular o [`global/AGENTS.md`](global/AGENTS.md) como instrução global dos três harnesses (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/.gemini/config/AGENTS.md`). Arquivos existentes vão para o mesmo backup. Use `--global-instructions` para vincular sem perguntar, ou `--skills-only` para instalar só as skills.
 
-Como tudo é symlink, um `git pull` já atualiza as skills em todos os harnesses. Rode o script de novo só quando skills forem adicionadas ou removidas.
+O [`global/AGENTS.md`](global/AGENTS.md) é o que torna o fluxo obrigatório em qualquer projeto: ele diz, por gatilho, quando carregar cada skill (por exemplo, `coding` antes de editar qualquer arquivo de código). O [`AGENTS.md`](AGENTS.md) da raiz serve só para manter este repositório.
+
+Como tudo é symlink, um `git pull` já atualiza as skills e as instruções em todos os harnesses. Rode o script de novo só quando skills forem adicionadas ou removidas.
 
 ### Num projeto específico
 
