@@ -165,3 +165,10 @@ skills/<kebab-case-name>/
 - Skills and documentation are authored in English by default.
 - Every skill ends with a **Success Validation** section.
 - After creating, run `./scripts/setup-global.sh`.
+
+---
+
+## 📄 License
+
+This repository is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International](LICENSE) (CC BY-NC 4.0) license. You are free to share and adapt the materials for non-commercial purposes with appropriate attribution.
+

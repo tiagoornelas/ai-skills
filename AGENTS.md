@@ -21,6 +21,7 @@ This repository centralizes:
 - **Harness Agnosticism**: instructions and skills are portable, avoiding hard dependencies on a single engine when direct equivalents exist (e.g., subagent tooling).
 - **Self-contained Skills**: a skill never depends on this `AGENTS.md` nor on repository paths (`skills/...`); when installed globally, it runs in another project's directory. Links between skills are relative to the skills folder (`../<skill>/`).
 - **Global instructions reference skills by name**, not by path: the file is installed in different locations across harnesses.
+- **Language Standard**: all permanent assets (skills, scripts, documentation, commits) are strictly authored in English; see [`docs/rules/language.md`](docs/rules/language.md). Agents interact in the user's session language.
 
 ---
 

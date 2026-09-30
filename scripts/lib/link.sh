@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # scripts/lib/link.sh
-# Funções de vínculo compartilhadas pelos scripts do ai-skills.
-# Uso: source "$SCRIPT_DIR/lib/link.sh"
+# Shared linking functions used by ai-skills scripts.
+# Usage: source "$SCRIPT_DIR/lib/link.sh"
 #
-# Por que existe: `ln -sfn <origem> <destino>` só substitui o destino quando ele
-# é um symlink. Se o destino é uma pasta real, o link é criado DENTRO dela
-# (ex.: ~/.claude/skills/commit/commit), e a versão antiga continua sendo lida.
+# Rationale: `ln -sfn <source> <target>` only replaces the target when it is
+# a symlink. If the target is an existing real directory, the symlink is created
+# INSIDE it (e.g., ~/.claude/skills/commit/commit), and the old version continues to be read.
 # ==============================================================================
 
-# Pasta onde conteúdos reais substituídos são guardados, fora das pastas de
-# skills, para que nenhum harness carregue a cópia de backup como skill.
+# Directory where replaced real content is backed up, outside skill folders,
+# so no harness accidentally loads the backup copy as an active skill.
 AI_SKILLS_BACKUP_DIR="${AI_SKILLS_BACKUP_DIR:-$HOME/.ai-skills-backup/$(date +%Y%m%d-%H%M%S)}"
-# Vira 1 quando algo foi movido para o backup nesta execução.
+# Set to 1 when any file or folder was moved to backup during this execution.
 AI_SKILLS_BACKED_UP=0
 
-# safe_link <origem> <destino> <rótulo-do-backup>
-# - destino inexistente ou symlink: cria/atualiza o link;
-# - destino real (pasta ou arquivo): move para o backup e cria o link.
+# safe_link <source> <target> <backup-label>
+# - non-existent target or symlink: creates/updates the symlink;
+# - real target (directory or file): moves to backup, then creates the symlink.
 safe_link() {
   local src="$1" dest="$2" label="$3"
 
@@ -32,9 +32,9 @@ safe_link() {
   ln -sfn "$src" "$dest"
 }
 
-# prune_dangling_links <pasta> <prefixo-de-origem>
-# Remove symlinks quebrados que apontavam para <prefixo-de-origem>
-# (ex.: skills removidas ou renomeadas no repositório).
+# prune_dangling_links <directory> <source-prefix>
+# Removes broken symlinks pointing to <source-prefix>
+# (e.g., skills removed or renamed in the repository).
 prune_dangling_links() {
   local dir="$1" prefix="$2" entry target
   [ -d "$dir" ] || return 0
@@ -46,7 +46,7 @@ prune_dangling_links() {
     case "$target" in
       "$prefix"/*)
         rm "$entry"
-        echo "     [removido] link quebrado: $entry"
+        echo "     [removed] dangling link: $entry"
         ;;
     esac
   done

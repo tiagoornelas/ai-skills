@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # scripts/setup-global.sh
-# Vincula globalmente as skills e instruções do ai-skills aos harnesses:
+# Globally links ai-skills and instructions across supported harnesses:
 # - Claude Code   (~/.claude)
 # - Antigravity   (~/.gemini/config)
 # - Codex         (~/.codex)
 #
-# Uso:
-#   ./scripts/setup-global.sh                         # pergunta sobre as instruções globais
-#   ./scripts/setup-global.sh --global-instructions   # vincula sem perguntar
-#   ./scripts/setup-global.sh --skills-only           # só as skills
+# Usage:
+#   ./scripts/setup-global.sh                         # prompts before linking global instructions
+#   ./scripts/setup-global.sh --global-instructions   # links global instructions without prompting
+#   ./scripts/setup-global.sh --skills-only           # links skills only
 # ==============================================================================
 
 set -euo pipefail
@@ -24,44 +24,44 @@ for arg in "$@"; do
   case "$arg" in
     --global-instructions) GLOBAL_INSTRUCTIONS="yes" ;;
     --skills-only)         GLOBAL_INSTRUCTIONS="no" ;;
-    *) echo "Opção desconhecida: $arg" >&2; exit 2 ;;
+    *) echo "Unknown option: $arg" >&2; exit 2 ;;
   esac
 done
 
 # shellcheck source=lib/link.sh
 source "$SCRIPT_DIR/lib/link.sh"
 
-# Destinos globais de skills
+# Global skill destinations
 CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
 GEMINI_SKILLS_DIR="$HOME/.gemini/config/skills"
 CODEX_SKILLS_DIR="$HOME/.codex/skills"
 
 echo "=========================================================="
-echo "  ai-skills: Setup Global de Skills e Agentes"
-echo "  Repositório: $REPO_ROOT"
+echo "  ai-skills: Global Setup for Skills and Agents"
+echo "  Repository: $REPO_ROOT"
 echo "=========================================================="
 
-# 1. Garante que as pastas de destino existam
+# 1. Ensure target directories exist
 mkdir -p "$CLAUDE_SKILLS_DIR"
 mkdir -p "$GEMINI_SKILLS_DIR"
 mkdir -p "$CODEX_SKILLS_DIR"
 
-# 2. Vincula skills individuais encontradas em ai-skills/skills/
+# 2. Link individual skills found in ai-skills/skills/
 echo ""
-echo "🔗 Vinculando skills em ai-skills/skills/..."
+echo "🔗 Linking skills from ai-skills/skills/..."
 
 count=0
 for skill_path in "$SKILLS_DIR"/*; do
   [ -e "$skill_path" ] || continue
   skill_name="$(basename "$skill_path")"
 
-  # Ignora arquivos de controle como .gitkeep
+  # Ignore hidden control files like .gitkeep
   if [[ "$skill_name" =~ ^\. ]]; then
     continue
   fi
 
   if [ -d "$skill_path" ]; then
-    echo "  -> Vinculando skill: $skill_name"
+    echo "  -> Linking skill: $skill_name"
     safe_link "$skill_path" "$CLAUDE_SKILLS_DIR/$skill_name" claude
     safe_link "$skill_path" "$GEMINI_SKILLS_DIR/$skill_name" gemini
     safe_link "$skill_path" "$CODEX_SKILLS_DIR/$skill_name" codex
@@ -69,31 +69,31 @@ for skill_path in "$SKILLS_DIR"/*; do
   fi
 done
 
-# Links para skills que saíram do repositório
+# Prune dangling links for skills removed from repository
 prune_dangling_links "$CLAUDE_SKILLS_DIR" "$SKILLS_DIR"
 prune_dangling_links "$GEMINI_SKILLS_DIR" "$SKILLS_DIR"
 prune_dangling_links "$CODEX_SKILLS_DIR" "$SKILLS_DIR"
 
 if [ "$count" -eq 0 ]; then
-  echo "  (Nenhuma skill encontrada em $SKILLS_DIR ainda. Quando adicionar novas pastas de skills, execute este script novamente para vinculá-las automaticamente)."
+  echo "  (No skills found in $SKILLS_DIR yet. When adding new skill folders, run this script again to link them automatically)."
 else
-  echo "  ✓ $count skill(s) vinculada(s) com sucesso!"
+  echo "  ✓ Successfully linked $count skill(s)!"
 fi
 
-# 3. Instruções globais (global/AGENTS.md)
+# 3. Global instructions (global/AGENTS.md)
 echo ""
-echo "⚙️ Instruções Globais ($GLOBAL_AGENTS_FILE):"
+echo "⚙️ Global Instructions ($GLOBAL_AGENTS_FILE):"
 echo "  - Claude Code: ~/.claude/CLAUDE.md"
-echo "  - Antigravity: ~/.gemini/GEMINI.md (e ~/.gemini/config/AGENTS.md)"
+echo "  - Antigravity: ~/.gemini/GEMINI.md (and ~/.gemini/config/AGENTS.md)"
 echo "  - Codex:       ~/.codex/AGENTS.md"
 echo ""
 
 if [ "$GLOBAL_INSTRUCTIONS" = "ask" ]; then
   if [ -t 0 ]; then
-    read -p "Deseja vincular as instruções globais agora? [y/N | s/N]: " -r response || response="n"
-    [[ "$response" =~ ^([sS][iI][mM]|[sS]|[yY][eE][sS]|[yY])$ ]] && GLOBAL_INSTRUCTIONS="yes" || GLOBAL_INSTRUCTIONS="no"
+    read -p "Do you want to link global instructions now? [y/N]: " -r response || response="n"
+    [[ "$response" =~ ^([yY][eE][sS]|[yY]|[sS][iI][mM]|[sS])$ ]] && GLOBAL_INSTRUCTIONS="yes" || GLOBAL_INSTRUCTIONS="no"
   else
-    echo "  Terminal não interativo: rode com --global-instructions para vincular sem perguntar."
+    echo "  Non-interactive terminal: run with --global-instructions to link without prompting."
     GLOBAL_INSTRUCTIONS="no"
   fi
 fi
@@ -109,11 +109,11 @@ if [ "$GLOBAL_INSTRUCTIONS" = "yes" ]; then
   safe_link "$GLOBAL_AGENTS_FILE" "$HOME/.codex/AGENTS.md" codex
   echo "  ✓ ~/.codex/AGENTS.md -> $GLOBAL_AGENTS_FILE"
 else
-  echo "  Instruções globais não vinculadas (as configurações atuais foram preservadas)."
+  echo "  Global instructions not linked (existing configurations preserved)."
 fi
 
 echo ""
 if [ "$AI_SKILLS_BACKED_UP" -eq 1 ]; then
-  echo "📦 Conteúdos substituídos foram guardados em: $AI_SKILLS_BACKUP_DIR"
+  echo "📦 Replaced content was safely moved to: $AI_SKILLS_BACKUP_DIR"
 fi
-echo "✅ Concluído!"
+echo "✅ Done!"

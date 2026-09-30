@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # scripts/link-project.sh
-# Vincula as instruções e/ou skills do ai-skills a um projeto específico.
-# Uso:
-#   ./scripts/link-project.sh /caminho/para/outro-projeto
-#   ou rodando de dentro do próprio projeto de destino:
-#   /caminho/para/ai-skills/scripts/link-project.sh .
+# Links ai-skills instructions and/or skills to a target project.
+# Usage:
+#   ./scripts/link-project.sh /path/to/target-project
+#   or running from inside the target project:
+#   /path/to/ai-skills/scripts/link-project.sh .
 # ==============================================================================
 
 set -euo pipefail
@@ -21,23 +21,23 @@ TARGET_DIR="${1:-.}"
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
 
 echo "=========================================================="
-echo "  ai-skills: Linker de Projeto"
-echo "  Origem (ai-skills): $REPO_ROOT"
-echo "  Destino:            $TARGET_DIR"
+echo "  ai-skills: Project Linker"
+echo "  Source (ai-skills): $REPO_ROOT"
+echo "  Target:             $TARGET_DIR"
 echo "=========================================================="
 
 if [ "$TARGET_DIR" = "$REPO_ROOT" ]; then
-  echo "⚠️  O diretório de destino é o próprio repositório ai-skills."
-  echo "   Este script serve para configurar OUTROS projetos/repositórios."
+  echo "⚠️  Target directory is the ai-skills repository itself."
+  echo "   This script is intended to configure OTHER projects/repositories."
   exit 1
 fi
 
-# 1. Regras do Projeto (AGENTS.md como Single Source of Truth)
+# 1. Project Rules (AGENTS.md as Single Source of Truth)
 echo ""
-echo "📄 1. Configurando Regras do Projeto (SSOT)..."
+echo "📄 1. Configuring Project Rules (SSOT)..."
 
 if [ ! -f "$TARGET_DIR/AGENTS.md" ]; then
-  echo "  -> AGENTS.md não encontrado no destino. Criando arquivo base..."
+  echo "  -> AGENTS.md not found in target. Creating starter template..."
   cat <<'EOF' > "$TARGET_DIR/AGENTS.md"
 # AGENTS.md
 
@@ -61,29 +61,29 @@ if [ ! -f "$TARGET_DIR/AGENTS.md" ]; then
 - Concise and structured responses.
 - Verify tests before completing tasks.
 EOF
-  echo "  ✓ Criado: $TARGET_DIR/AGENTS.md"
+  echo "  ✓ Created: $TARGET_DIR/AGENTS.md"
 else
-  echo "  ✓ AGENTS.md já existe no projeto."
+  echo "  ✓ AGENTS.md already exists in target project."
 fi
 
 # Link CLAUDE.md -> AGENTS.md
-echo "  -> Apontando CLAUDE.md para AGENTS.md..."
+echo "  -> Pointing CLAUDE.md to AGENTS.md..."
 (cd "$TARGET_DIR" && ln -sfn "AGENTS.md" "CLAUDE.md")
-echo "  ✓ Link criado: $TARGET_DIR/CLAUDE.md -> AGENTS.md"
+echo "  ✓ Created link: $TARGET_DIR/CLAUDE.md -> AGENTS.md"
 
 # Link GEMINI.md -> AGENTS.md
-echo "  -> Apontando GEMINI.md para AGENTS.md..."
+echo "  -> Pointing GEMINI.md to AGENTS.md..."
 (cd "$TARGET_DIR" && ln -sfn "AGENTS.md" "GEMINI.md")
-echo "  ✓ Link criado: $TARGET_DIR/GEMINI.md -> AGENTS.md"
+echo "  ✓ Created link: $TARGET_DIR/GEMINI.md -> AGENTS.md"
 
-# 2. Vínculo de Skills no Projeto
+# 2. Link Skills to Project
 echo ""
-echo "🧩 2. Configurando Acesso às Skills no Projeto..."
+echo "🧩 2. Configuring Project Access to Skills..."
 
-# link_project_skills <pasta-de-skills-do-projeto> <rótulo>
-# - inexistente ou symlink: aponta a pasta inteira para ai-skills/skills;
-# - pasta real (o projeto tem skills próprias): preserva as skills do projeto e
-#   vincula cada skill do ai-skills dentro dela, sem sobrescrever homônimas.
+# link_project_skills <project-skills-dir> <label>
+# - non-existent or symlink: points entire folder to ai-skills/skills;
+# - real directory (project has its own skills): preserves existing skills and
+#   links each skill from ai-skills individually, without overwriting homonyms.
 link_project_skills() {
   local dest="$1" label="$2" skill_path skill_name
 
@@ -94,27 +94,27 @@ link_project_skills() {
     return
   fi
 
-  echo "  -> $label: $dest já tem skills próprias do projeto; vinculando uma a uma..."
+  echo "  -> $label: $dest already contains project-specific skills; linking individually..."
   for skill_path in "$SKILLS_DIR"/*; do
     [ -d "$skill_path" ] || continue
     skill_name="$(basename "$skill_path")"
     if [ -e "$dest/$skill_name" ] && [ ! -L "$dest/$skill_name" ]; then
-      echo "     [mantida] skill do projeto com o mesmo nome: $dest/$skill_name"
+      echo "     [preserved] existing project skill with same name: $dest/$skill_name"
       continue
     fi
     ln -sfn "$skill_path" "$dest/$skill_name"
   done
   prune_dangling_links "$dest" "$SKILLS_DIR"
-  echo "  ✓ $label: skills do ai-skills vinculadas em $dest"
+  echo "  ✓ $label: ai-skills linked into $dest"
 }
 
-# Claude Code lê localmente em .claude/skills
+# Claude Code reads locally from .claude/skills
 link_project_skills "$TARGET_DIR/.claude/skills" "Claude Code"
 
-# Antigravity CLI e Codex leem localmente em .agents/skills
+# Antigravity CLI and Codex read locally from .agents/skills
 link_project_skills "$TARGET_DIR/.agents/skills" "Antigravity / Codex"
 
 echo ""
-echo "✅ Projeto configurado com sucesso!"
-echo "   - Claude Code, Codex e Antigravity CLI agora compartilham as instruções de AGENTS.md."
-echo "   - Ambos têm acesso às skills de $SKILLS_DIR."
+echo "✅ Project configured successfully!"
+echo "   - Claude Code, Codex, and Antigravity CLI now share instructions from AGENTS.md."
+echo "   - All harnesses have access to skills from $SKILLS_DIR."
