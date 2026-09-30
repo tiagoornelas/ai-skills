@@ -128,6 +128,17 @@ Compared against upstream at the time of the port; later changes there are not t
 
 Because everything is symlinked, a `git pull` instantly updates skills and instructions across all harnesses. Re-run the script only when skills are added or removed.
 
+#### Uninstalling
+
+```bash
+./scripts/uninstall-global.sh
+```
+
+1. Removes what setup installed from this repository, in the three global skill folders and the four global instruction paths: links that point into the repo, and identical copies (Git Bash on Windows copies instead of linking when it lacks symlink permission). Your own skills, links to other sources, and anything that differs from the repo are left untouched and reported.
+2. Leaves `~/.ai-skills-backup/` alone and tells you it is there. Use `--restore` to move what setup replaced back to where it was. The most recent backup of each path wins, and a path already in use is never overwritten.
+
+Use `--skills-only` to keep the global instructions, and `--dry-run` to see what would change without changing anything. Run it from the same clone that ran setup: links are recognized by where they point, and copies by matching its content.
+
 ### In a specific project
 
 ```bash
@@ -155,6 +166,11 @@ skills/<kebab-case-name>/
 - Skills and documentation are authored in English by default.
 - Every skill ends with a **Success Validation** section.
 - After creating, run `./scripts/setup-global.sh`.
+
+
+## 🤝 Contributing
+
+Contributions are welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the workflow and the rules every change follows.
 
 
 ## 📄 License
