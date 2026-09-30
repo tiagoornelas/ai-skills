@@ -102,19 +102,26 @@ remove_skills() {
 }
 
 # original_path <label> <name>: where setup-global.sh found an item before
-# moving it to <backup>/<label>/<name>. Prints nothing for items outside the
-# current scope.
+# moving it to <backup>/<label>/<name>.
 original_path() {
   local label="$1" name="$2"
   case "$label:$name" in
-    claude:CLAUDE.md) [ "$SKILLS_ONLY" -eq 1 ] || echo "$HOME/.claude/CLAUDE.md" ;;
-    gemini:AGENTS.md) [ "$SKILLS_ONLY" -eq 1 ] || echo "$HOME/.gemini/config/AGENTS.md" ;;
-    gemini:GEMINI.md) [ "$SKILLS_ONLY" -eq 1 ] || echo "$HOME/.gemini/GEMINI.md" ;;
-    codex:AGENTS.md)  [ "$SKILLS_ONLY" -eq 1 ] || echo "$HOME/.codex/AGENTS.md" ;;
+    claude:CLAUDE.md) echo "$HOME/.claude/CLAUDE.md" ;;
+    gemini:AGENTS.md) echo "$HOME/.gemini/config/AGENTS.md" ;;
+    gemini:GEMINI.md) echo "$HOME/.gemini/GEMINI.md" ;;
+    codex:AGENTS.md)  echo "$HOME/.codex/AGENTS.md" ;;
     claude:*) echo "$CLAUDE_SKILLS_DIR/$name" ;;
     gemini:*) echo "$GEMINI_SKILLS_DIR/$name" ;;
     codex:*)  echo "$CODEX_SKILLS_DIR/$name" ;;
   esac
+}
+
+is_instruction_path() {
+  local path
+  for path in "${INSTRUCTION_PATHS[@]}"; do
+    [ "$path" = "$1" ] && return 0
+  done
+  return 1
 }
 
 # A dry run changes nothing on disk, so it tracks what it would have done:
@@ -161,9 +168,10 @@ restore_backups() {
       for item in "$stamp/$label"/* "$stamp/$label"/.[!.]*; do
         [ -e "$item" ] || [ -L "$item" ] || continue
         dest="$(original_path "$label" "$(basename "$item")")"
-        if [ -n "$dest" ]; then
-          restore_item "$item" "$dest"
+        if [ "$SKILLS_ONLY" -eq 1 ] && is_instruction_path "$dest"; then
+          continue
         fi
+        restore_item "$item" "$dest"
       done
       [ "$DRY_RUN" -eq 1 ] || rmdir "$stamp/$label" 2>/dev/null || true
     done
