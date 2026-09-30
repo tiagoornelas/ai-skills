@@ -1,16 +1,14 @@
 # ai-skills ✨
 
-My current take on AI-assisted software development, written as **skills** and installed from a single source across **Claude Code**, **Codex**, and **Antigravity CLI**.
+A curated, public distillation of my approach to AI-assisted software engineering. Packaged as universal **skills** installed from a single source across **Claude Code**, **Codex**, and **Antigravity CLI**.
 
-More than a catalog of prompts, this represents the division of labor I believe in: what the human decides and what the agent executes autonomously. It structures these layers and applies design and coding principles that guide agent behavior, allowing humans to trust what they don't need to check and bringing their attention only to what truly demands their review and decision.
+This project shares an opinionated baseline for AI pair programming: assigning what is expensive to get wrong to the human (architecture, contracts, boundaries) and what is expensive to read to the agent (mechanics, test suites, self-review).
 
 ---
 
 ## 🧭 The Problem
 
 An agent writes code faster than any human can read. Reviewing everything line-by-line turns the human into a bottleneck; reviewing nothing turns software into a pile of decisions no one actually made: an architectural tangle of well-intentioned but short-sighted choices.
-
-The approach I adopt is to separate **what is expensive to get wrong and cheap to review** from **what is cheap to redo and expensive to read**, assigning each half to whoever does it best.
 
 ---
 
