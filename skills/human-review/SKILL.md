@@ -18,7 +18,7 @@ The agent **does not perform the human review; it prepares it**. Approval and ju
 
 The agent's role is to make the deliverable visible at the **Human Layer**, filtering out low-level implementation noise already validated by [`agent-self-review`](../agent-self-review/SKILL.md).
 
-> 🎨 **Mandatory Native Visualization**: This skill natively invokes [`visualize-it`](../visualize-it/SKILL.md). The human must be able to *see* boundaries, dependencies, and contracts through diagrams (ASCII or Mermaid), not merely read textual descriptions.
+> 🎨 **Mandatory Native Visualization**: This skill natively invokes [`visualize-it`](../visualize-it/SKILL.md). The human must be able to *see* boundaries, dependencies, and contracts through diagrams (format chosen by `visualize-it`'s destination rule: terminal-native in conversation), not merely read textual descriptions.
 
 ---
 

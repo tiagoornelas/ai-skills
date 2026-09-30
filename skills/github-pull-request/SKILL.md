@@ -109,7 +109,7 @@ Status table mapping implemented behaviors to verification status, adhering to t
      git push -u origin <branch-name>
      ```
 2. **Review with Developer**:
-   - Present the full draft of title and description for developer approval before publishing.
+   - Present the full draft of title and description for developer approval before publishing. In that conversation preview, show a terminal-native rendering of each diagram (per `visualize-it`) so it is readable; the published body keeps the Mermaid block.
 3. **Create the PR**:
    - Run the command via GitHub CLI:
      ```bash

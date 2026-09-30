@@ -39,12 +39,31 @@ Every visual diagram must answer **a single question with undeniable clarity**. 
 
 ## 3. Output Formats
 
-- **Standard (Terminal-Native / Pure Markdown)**:
+Choose the format by **where the diagram will be read**, not by whether the destination renders Markdown. Terminals and chat panes render Markdown but **never render Mermaid**: a ```` ```mermaid ```` block there shows up as unreadable source code.
+
+| Destination | Format |
+| :--- | :--- |
+| Conversation reply (terminal, CLI, chat pane) | **Terminal-native** |
+| Preview in conversation of content that will be published elsewhere (PR draft, doc draft) | **Terminal-native** rendering of the diagram; the Mermaid source may follow, collapsed into the draft body |
+| GitHub PR/issue body or comment, `.md` file in a repository, artifact or doc that renders Mermaid | **Mermaid** |
+| Unknown destination | **Terminal-native** (readable everywhere) |
+
+- **Terminal-native**:
+  - Wrap the diagram in a plain fenced code block (no language tag) so alignment survives.
   - Use box-drawing characters (`┌ ┐ └ ┘ ─ │ ├ ┤ ┬ ┴ ┼`) and arrows (`→ ← ↔ ⇒ ▶`).
+  - Keep lines ≤ 80 columns; wide diagrams wrap and break in narrow panes.
   - Markdown tables for interface cards and before/after comparisons.
-- **Mermaid (````mermaid`)**:
-  - Use when the target renders rich Markdown (GitHub PRs, documentation, artifacts).
+- **Mermaid (```` ```mermaid ````)**:
+  - Use only when the destination row above says so.
   - Use `graph TD` or `graph LR` for module maps, and `sequenceDiagram` for execution flows.
+
+Terminal-native example (module map, `→` = "depends on"):
+
+```
+┌──────────────┐     ┌───────────────┐     ┌────────────────┐
+│ 🆕 AuthCtrl  │ ──→ │  AuthService  │ ──→ │ UserRepository │
+└──────────────┘     └───────────────┘     └────────────────┘
+```
 
 > **Golden Rule**: Always accompany diagrams with a concise paragraph explaining what the reader should specifically observe (e.g.: inverted dependency arrow, respected boundary, or newly introduced contract).
 
@@ -57,3 +76,4 @@ Every visual diagram must answer **a single question with undeniable clarity**. 
 - [ ] Canonical notation applied: `🆕` new, `🔧` modified, `🗑️` removed, `⚠️` deviation or warning.
 - [ ] Diagram respects the 7-box cognitive limit per layer/view.
 - [ ] Diagram is accompanied by a concise explanatory paragraph.
+- [ ] Format matches the destination: no ```` ```mermaid ```` block in a conversation reply.

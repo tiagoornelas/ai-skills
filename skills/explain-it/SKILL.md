@@ -27,7 +27,7 @@ Explain the subject focusing on **clarity, intentionality, and structure**:
 
 1. **Target of Explanation**: If no argument is provided, explain the last component, file, or flow discussed in the conversation.
 2. **What It Is and Core Purpose**: 1 to 2 sentence summary explaining the component's role in the wider system.
-3. **Structural View / Flow (Visual)**: ASCII or Mermaid diagram (via `visualize-it`) displaying how it interacts with surrounding modules.
+3. **Structural View / Flow (Visual)**: diagram via `visualize-it`, in the format its destination rule dictates (terminal-native in conversation) displaying how it interacts with surrounding modules.
 4. **Key Nuances & Pitfalls**: Edge cases, critical business rules, failure modes, or common traps.
 5. **Takeaway Summary**: Concise bullet-point conclusion.
 

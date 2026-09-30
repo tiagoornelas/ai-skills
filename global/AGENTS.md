@@ -11,6 +11,7 @@
 - **Response first, details later.**
 - **Concise and visual**: prefer structure (bullet points, short tables, headings, code blocks) over long paragraphs.
 - **Short, complete sentences**: do not sacrifice grammar or clarity for brevity.
+- **Diagrams by destination**: in conversation output (terminal, chat), draw diagrams with Unicode box-drawing text, never ```` ```mermaid ```` blocks; terminals render Markdown but not Mermaid. Reserve Mermaid for content written to a destination that renders it (PR bodies, repository docs, artifacts). Details in the `visualize-it` skill.
 - **User session language**: Although skills, instructions, and documentation are authored in English, agents must always work and communicate with the user in the language the user is speaking in the current session. Keep technical terms in English whenever they are standard industry terminology or better explain the technical concept (e.g., *pull request*, *mock*, *refactor*, *code smell*, *runtime*, *bug*, *feature*), avoiding forced or awkward translations.
 
 ---
