@@ -4,13 +4,11 @@ A curated, public distillation of my approach to AI-assisted software engineerin
 
 This project shares an opinionated baseline for AI pair programming: assigning what is expensive to get wrong to the human (architecture, contracts, boundaries) and what is expensive to read to the agent (mechanics, test suites, self-review).
 
----
 
 ## 🧭 The Problem
 
 An agent writes code faster than any human can read. Reviewing everything line-by-line turns the human into a bottleneck; reviewing nothing turns software into a pile of decisions no one actually made: an architectural tangle of well-intentioned but short-sighted choices.
 
----
 
 ## 🧱 Two Layers
 
@@ -47,7 +45,6 @@ graph TB
 > *Would changing this require renegotiating a contract with external callers, or can it be rewritten tomorrow without anyone outside the module noticing?*
 > Renegotiate → 👤 human. Silently rewrite → 🤖 agent.
 
----
 
 ## 🔁 The Delivery Cycle
 
@@ -68,7 +65,6 @@ graph LR
 
 I use the same lenses for collaborating on other people's work: reviewing a peer's PR, responding to received reviews, and resolving conflicts between parallel branches without discarding either work.
 
----
 
 ## 📚 The Theories Behind It
 
@@ -84,7 +80,6 @@ I don't leave criteria to chance. Every design or code judgment is grounded in a
 
 Where schools diverge, I state my position. For instance: between the tiny functions of *Clean Code* and the deep, cohesive functions of Ousterhout, my rule is to extract **when the extracted piece is independent**, avoiding extractions that merely scatter what should be read together.
 
----
 
 ## 🧩 What the Skills Have in Common
 
@@ -98,7 +93,6 @@ Where schools diverge, I state my position. For instance: between the tiny funct
 
 The current catalog is in [`skills/`](skills/). It evolves over time; the philosophy above is what remains.
 
----
 
 ## 🙏 Credits
 
@@ -112,7 +106,6 @@ Three skills come from [Matt Pocock's skills](https://github.com/mattpocock/skil
 
 Compared against upstream at the time of the port; later changes there are not tracked.
 
----
 
 ## 🚀 Installation
 
@@ -144,7 +137,6 @@ Because everything is symlinked, a `git pull` instantly updates skills and instr
 1. Creates a baseline `AGENTS.md` if one doesn't exist, and points `CLAUDE.md` and `GEMINI.md` to it.
 2. Points `.claude/skills` and `.agents/skills` to `skills/`. If the project already has its own skills, they are preserved and skills from this repo are symlinked individually without overwriting homonyms.
 
----
 
 ## ✍️ Creating a Skill
 
@@ -164,7 +156,6 @@ skills/<kebab-case-name>/
 - Every skill ends with a **Success Validation** section.
 - After creating, run `./scripts/setup-global.sh`.
 
----
 
 ## 📄 License
 
