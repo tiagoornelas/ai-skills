@@ -18,7 +18,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SKILLS_DIR="$REPO_ROOT/skills"
 GLOBAL_AGENTS_FILE="$REPO_ROOT/global/AGENTS.md"
-BACKUP_ROOT="$HOME/.ai-skills-backup"
 
 RESTORE=0
 SKILLS_ONLY=0
@@ -93,24 +92,6 @@ remove_skills() {
   done
 }
 
-# original_path <label> <name>: where setup-global.sh found an item before
-# moving it to <backup>/<label>/<name>.
-original_path() {
-  local label="$1" name="$2" target
-  for target in "${GLOBAL_INSTRUCTION_FILES[@]}"; do
-    if [ "${target%%:*}" = "$label" ] && [ "$(basename "${target#*:}")" = "$name" ]; then
-      echo "${target#*:}"
-      return 0
-    fi
-  done
-  for target in "${GLOBAL_SKILL_DIRS[@]}"; do
-    if [ "${target%%:*}" = "$label" ]; then
-      echo "${target#*:}/$name"
-      return 0
-    fi
-  done
-}
-
 is_instruction_path() {
   local target
   for target in "${GLOBAL_INSTRUCTION_FILES[@]}"; do
@@ -136,8 +117,13 @@ path_is_free() {
   return 0
 }
 
+# restore_item <item> <original-path>: callback for for_each_backup, which
+# walks backups newest first; older versions of a restored path stay put.
 restore_item() {
   local item="$1" dest="$2"
+  if [ "$SKILLS_ONLY" -eq 1 ] && is_instruction_path "$dest"; then
+    return 0
+  fi
   if ! path_is_free "$dest"; then
     echo "  [kept in backup] $item ($dest is in use)"
     return 0
@@ -150,30 +136,6 @@ restore_item() {
   mkdir -p "$(dirname "$dest")"
   mv "$item" "$dest"
   echo "  [restored] $dest"
-}
-
-# Walks backups newest first, so each path gets its latest backed-up version;
-# older versions of an already restored path stay in the backup.
-restore_backups() {
-  local stamps=("$BACKUP_ROOT"/*/) i stamp target label item dest
-  for ((i = ${#stamps[@]} - 1; i >= 0; i--)); do
-    stamp="${stamps[$i]%/}"
-    [ -d "$stamp" ] || continue
-    for target in "${GLOBAL_SKILL_DIRS[@]}"; do
-      label="${target%%:*}"
-      for item in "$stamp/$label"/* "$stamp/$label"/.[!.]*; do
-        [ -e "$item" ] || [ -L "$item" ] || continue
-        dest="$(original_path "$label" "$(basename "$item")")"
-        if [ "$SKILLS_ONLY" -eq 1 ] && is_instruction_path "$dest"; then
-          continue
-        fi
-        restore_item "$item" "$dest"
-      done
-      [ "$DRY_RUN" -eq 1 ] || rmdir "$stamp/$label" 2>/dev/null || true
-    done
-    [ "$DRY_RUN" -eq 1 ] || rmdir "$stamp" 2>/dev/null || true
-  done
-  [ "$DRY_RUN" -eq 1 ] || rmdir "$BACKUP_ROOT" 2>/dev/null || true
 }
 
 echo "=========================================================="
@@ -217,13 +179,16 @@ else
 fi
 
 # 3. Backups made by setup-global.sh
-if [ -d "$BACKUP_ROOT" ]; then
+if [ -d "$AI_SKILLS_BACKUP_ROOT" ]; then
   echo ""
   if [ "$RESTORE" -eq 1 ]; then
-    echo "📦 Restoring backed-up content from $BACKUP_ROOT..."
-    restore_backups
+    echo "📦 Restoring backed-up content from $AI_SKILLS_BACKUP_ROOT..."
+    for_each_backup restore_item
+    if [ "$DRY_RUN" -eq 0 ]; then
+      prune_empty_backups
+    fi
   else
-    echo "📦 Content replaced during setup is still in: $BACKUP_ROOT"
+    echo "📦 Content replaced during setup is still in: $AI_SKILLS_BACKUP_ROOT"
     echo "   Run with --restore to move it back."
   fi
 fi
