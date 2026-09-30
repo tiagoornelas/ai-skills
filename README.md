@@ -88,20 +88,6 @@ Where schools diverge, I state my position. For instance: between the tiny funct
 
 ---
 
-## 🙏 Credits
-
-Three skills come from [Matt Pocock's skills](https://github.com/mattpocock/skills). This is what was carried over and what I changed.
-
-| Skill | Original | What changed |
-| :--- | :--- | :--- |
-| `grill-me` | [`grilling`](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md) and [`grill-me`](https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md) | **Transposition.** The mechanics are his: decision tree, rounds that ask the whole frontier, a recommended answer per question, facts for the agent and decisions for the human, and a prototype when conversation cannot settle a question. Only structural changes: his two skills became one (the original `grill-me` just points to `grilling`), and it follows this repository's skill format. |
-| `handoff` | [`handoff`](https://github.com/mattpocock/skills/blob/main/skills/productivity/handoff/SKILL.md) | **Transposition with additions.** His behavior is intact: temporary directory, suggested skills, references instead of duplicated artifacts, secret redaction, and the argument that tailors the document. I added a table of when a handoff is justified (otherwise `/compact` or `/clear`) and the split between verified facts and assumptions. |
-| `prototype` | [`prototype`](https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md) | **Adaptation.** The logic branch (interactive HTML demo) follows his. The UI branch is different: he builds variants on a route of the app, switched by a URL parameter and a floating bar; mine builds a standalone HTML mockup **outside the repository**, using the project's real design system, with the variants side by side, and discards it afterwards. I also route the implementation of the winning variant through `coding`, and pushing a `prototype/<name>` branch requires confirmation. |
-
-Files were compared against the upstream repository at the time of the port. Later changes there are not tracked.
-
----
-
 ## 🧩 What the Skills Have in Common
 
 - **The agent proposes, the human decides.** Nothing goes out to the world (push, comment, issue, message) without explicit confirmation.
@@ -113,6 +99,20 @@ Files were compared against the upstream repository at the time of the port. Lat
 - **Every skill specifies how to verify success.**
 
 The current catalog is in [`skills/`](skills/). It evolves over time; the philosophy above is what remains.
+
+---
+
+## 🙏 Credits
+
+Three skills come from [Matt Pocock's skills](https://github.com/mattpocock/skills).
+
+| Skill | Original | What changed |
+| :--- | :--- | :--- |
+| `grill-me` | [`grilling`](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md), [`grill-me`](https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md) | **Transposition.** His two skills merged into one, in this repository's format. |
+| `handoff` | [`handoff`](https://github.com/mattpocock/skills/blob/main/skills/productivity/handoff/SKILL.md) | **Transposition, plus additions:** when a handoff is justified, and verified facts kept apart from assumptions. |
+| `prototype` | [`prototype`](https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md) | **Adaptation.** The UI branch builds a standalone mockup outside the repository, with the project's design system, instead of variants on an app route. |
+
+Compared against upstream at the time of the port; later changes there are not tracked.
 
 ---
 
