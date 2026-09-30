@@ -168,6 +168,11 @@ skills/<kebab-case-name>/
 - After creating, run `./scripts/setup-global.sh`.
 
 
+## 🤝 Contributing
+
+Contributions are welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the workflow and the rules every change follows.
+
+
 ## 📄 License
 
 This repository is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International](LICENSE) (CC BY-NC 4.0) license. You are free to share and adapt the materials for non-commercial purposes with appropriate attribution.
