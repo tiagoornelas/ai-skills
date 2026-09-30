@@ -45,11 +45,16 @@ INSTRUCTION_PATHS=(
 
 # links_into <path> <target>: true when <path> is a symlink to <target> or to
 # anything under it. Dangling links count, so skills deleted from the repo are
-# still recognized.
+# still recognized. setup-global.sh always links with absolute paths; a
+# relative link is resolved from its own folder, and left alone if that fails.
 links_into() {
   local path="$1" target="$2" dest
   [ -L "$path" ] || return 1
   dest="$(readlink "$path")"
+  case "$dest" in
+    /*) ;;
+    *) dest="$(cd "$(dirname "$path")" 2>/dev/null && cd "$(dirname "$dest")" 2>/dev/null && pwd)/$(basename "$dest")" || return 1 ;;
+  esac
   case "$dest" in
     "$target" | "$target"/*) return 0 ;;
     *) return 1 ;;
