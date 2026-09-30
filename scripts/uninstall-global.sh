@@ -32,16 +32,8 @@ for arg in "$@"; do
   esac
 done
 
-# Global destinations, as created by setup-global.sh
-CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
-GEMINI_SKILLS_DIR="$HOME/.gemini/config/skills"
-CODEX_SKILLS_DIR="$HOME/.codex/skills"
-INSTRUCTION_PATHS=(
-  "$HOME/.claude/CLAUDE.md"
-  "$HOME/.gemini/config/AGENTS.md"
-  "$HOME/.gemini/GEMINI.md"
-  "$HOME/.codex/AGENTS.md"
-)
+# shellcheck source=lib/link.sh
+source "$SCRIPT_DIR/lib/link.sh"
 
 # links_into <path> <target>: true when <path> is a symlink to <target> or to
 # anything under it. Dangling links count, so skills deleted from the repo are
@@ -104,22 +96,25 @@ remove_skills() {
 # original_path <label> <name>: where setup-global.sh found an item before
 # moving it to <backup>/<label>/<name>.
 original_path() {
-  local label="$1" name="$2"
-  case "$label:$name" in
-    claude:CLAUDE.md) echo "$HOME/.claude/CLAUDE.md" ;;
-    gemini:AGENTS.md) echo "$HOME/.gemini/config/AGENTS.md" ;;
-    gemini:GEMINI.md) echo "$HOME/.gemini/GEMINI.md" ;;
-    codex:AGENTS.md)  echo "$HOME/.codex/AGENTS.md" ;;
-    claude:*) echo "$CLAUDE_SKILLS_DIR/$name" ;;
-    gemini:*) echo "$GEMINI_SKILLS_DIR/$name" ;;
-    codex:*)  echo "$CODEX_SKILLS_DIR/$name" ;;
-  esac
+  local label="$1" name="$2" target
+  for target in "${GLOBAL_INSTRUCTION_FILES[@]}"; do
+    if [ "${target%%:*}" = "$label" ] && [ "$(basename "${target#*:}")" = "$name" ]; then
+      echo "${target#*:}"
+      return 0
+    fi
+  done
+  for target in "${GLOBAL_SKILL_DIRS[@]}"; do
+    if [ "${target%%:*}" = "$label" ]; then
+      echo "${target#*:}/$name"
+      return 0
+    fi
+  done
 }
 
 is_instruction_path() {
-  local path
-  for path in "${INSTRUCTION_PATHS[@]}"; do
-    [ "$path" = "$1" ] && return 0
+  local target
+  for target in "${GLOBAL_INSTRUCTION_FILES[@]}"; do
+    [ "${target#*:}" = "$1" ] && return 0
   done
   return 1
 }
@@ -160,11 +155,12 @@ restore_item() {
 # Walks backups newest first, so each path gets its latest backed-up version;
 # older versions of an already restored path stay in the backup.
 restore_backups() {
-  local stamps=("$BACKUP_ROOT"/*/) i stamp label item dest
+  local stamps=("$BACKUP_ROOT"/*/) i stamp target label item dest
   for ((i = ${#stamps[@]} - 1; i >= 0; i--)); do
     stamp="${stamps[$i]%/}"
     [ -d "$stamp" ] || continue
-    for label in claude gemini codex; do
+    for target in "${GLOBAL_SKILL_DIRS[@]}"; do
+      label="${target%%:*}"
       for item in "$stamp/$label"/* "$stamp/$label"/.[!.]*; do
         [ -e "$item" ] || [ -L "$item" ] || continue
         dest="$(original_path "$label" "$(basename "$item")")"
@@ -191,9 +187,9 @@ echo "=========================================================="
 # 1. Skills
 echo ""
 echo "🔗 Removing skills..."
-remove_skills "$CLAUDE_SKILLS_DIR"
-remove_skills "$GEMINI_SKILLS_DIR"
-remove_skills "$CODEX_SKILLS_DIR"
+for target in "${GLOBAL_SKILL_DIRS[@]}"; do
+  remove_skills "${target#*:}"
+done
 
 # 2. Global instructions
 echo ""
@@ -201,7 +197,8 @@ if [ "$SKILLS_ONLY" -eq 1 ]; then
   echo "⚙️ Global instructions kept (--skills-only)."
 else
   echo "⚙️ Removing global instructions..."
-  for path in "${INSTRUCTION_PATHS[@]}"; do
+  for target in "${GLOBAL_INSTRUCTION_FILES[@]}"; do
+    path="${target#*:}"
     if installed_by_setup "$path"; then
       remove_entry "$path"
     elif [ -e "$path" ] || [ -L "$path" ]; then

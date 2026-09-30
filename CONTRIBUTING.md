@@ -52,7 +52,7 @@ export HOME="$(mktemp -d)"
 - **Never delete or overwrite what the user owns.** Existing content is moved to `~/.ai-skills-backup/` (see `safe_link` in [`scripts/lib/link.sh`](scripts/lib/link.sh)), and uninstall only removes links into this repository or identical copies of it.
 - **Run [ShellCheck](https://www.shellcheck.net/)** on the scripts you touched.
 - **Commit new scripts as executable** with LF line endings. On Windows, add them with `git add --chmod=+x <file>`.
-- If you change where [`setup-global.sh`](scripts/setup-global.sh) installs something, update [`uninstall-global.sh`](scripts/uninstall-global.sh) to match.
+- Global destinations are listed once, in [`scripts/lib/link.sh`](scripts/lib/link.sh). Setup and uninstall both read them, so a new harness or path goes there.
 
 ---
 

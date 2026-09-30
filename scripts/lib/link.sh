@@ -9,6 +9,21 @@
 # INSIDE it (e.g., ~/.claude/skills/commit/commit), and the old version continues to be read.
 # ==============================================================================
 
+# Global destinations, shared by setup-global.sh and uninstall-global.sh.
+# Each entry is "<label>:<path>"; the label names the harness and its folder
+# inside the backup.
+GLOBAL_SKILL_DIRS=(
+  "claude:$HOME/.claude/skills"
+  "gemini:$HOME/.gemini/config/skills"
+  "codex:$HOME/.codex/skills"
+)
+GLOBAL_INSTRUCTION_FILES=(
+  "claude:$HOME/.claude/CLAUDE.md"
+  "gemini:$HOME/.gemini/config/AGENTS.md"
+  "gemini:$HOME/.gemini/GEMINI.md"
+  "codex:$HOME/.codex/AGENTS.md"
+)
+
 # Directory where replaced real content is backed up, outside skill folders,
 # so no harness accidentally loads the backup copy as an active skill.
 AI_SKILLS_BACKUP_DIR="${AI_SKILLS_BACKUP_DIR:-$HOME/.ai-skills-backup/$(date +%Y%m%d-%H%M%S)}"

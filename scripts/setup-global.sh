@@ -31,20 +31,15 @@ done
 # shellcheck source=lib/link.sh
 source "$SCRIPT_DIR/lib/link.sh"
 
-# Global skill destinations
-CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
-GEMINI_SKILLS_DIR="$HOME/.gemini/config/skills"
-CODEX_SKILLS_DIR="$HOME/.codex/skills"
-
 echo "=========================================================="
 echo "  ai-skills: Global Setup for Skills and Agents"
 echo "  Repository: $REPO_ROOT"
 echo "=========================================================="
 
 # 1. Ensure target directories exist
-mkdir -p "$CLAUDE_SKILLS_DIR"
-mkdir -p "$GEMINI_SKILLS_DIR"
-mkdir -p "$CODEX_SKILLS_DIR"
+for target in "${GLOBAL_SKILL_DIRS[@]}"; do
+  mkdir -p "${target#*:}"
+done
 
 # 2. Link individual skills found in ai-skills/skills/
 echo ""
@@ -62,17 +57,17 @@ for skill_path in "$SKILLS_DIR"/*; do
 
   if [ -d "$skill_path" ]; then
     echo "  -> Linking skill: $skill_name"
-    safe_link "$skill_path" "$CLAUDE_SKILLS_DIR/$skill_name" claude
-    safe_link "$skill_path" "$GEMINI_SKILLS_DIR/$skill_name" gemini
-    safe_link "$skill_path" "$CODEX_SKILLS_DIR/$skill_name" codex
+    for target in "${GLOBAL_SKILL_DIRS[@]}"; do
+      safe_link "$skill_path" "${target#*:}/$skill_name" "${target%%:*}"
+    done
     count=$((count + 1))
   fi
 done
 
 # Prune dangling links for skills removed from repository
-prune_dangling_links "$CLAUDE_SKILLS_DIR" "$SKILLS_DIR"
-prune_dangling_links "$GEMINI_SKILLS_DIR" "$SKILLS_DIR"
-prune_dangling_links "$CODEX_SKILLS_DIR" "$SKILLS_DIR"
+for target in "${GLOBAL_SKILL_DIRS[@]}"; do
+  prune_dangling_links "${target#*:}" "$SKILLS_DIR"
+done
 
 if [ "$count" -eq 0 ]; then
   echo "  (No skills found in $SKILLS_DIR yet. When adding new skill folders, run this script again to link them automatically)."
@@ -83,9 +78,10 @@ fi
 # 3. Global instructions (global/AGENTS.md)
 echo ""
 echo "⚙️ Global Instructions ($GLOBAL_AGENTS_FILE):"
-echo "  - Claude Code: ~/.claude/CLAUDE.md"
-echo "  - Antigravity: ~/.gemini/GEMINI.md (and ~/.gemini/config/AGENTS.md)"
-echo "  - Codex:       ~/.codex/AGENTS.md"
+for target in "${GLOBAL_INSTRUCTION_FILES[@]}"; do
+  path="${target#*:}"
+  echo "  - ${target%%:*}: ~${path#"$HOME"}"
+done
 echo ""
 
 if [ "$GLOBAL_INSTRUCTIONS" = "ask" ]; then
@@ -99,15 +95,12 @@ if [ "$GLOBAL_INSTRUCTIONS" = "ask" ]; then
 fi
 
 if [ "$GLOBAL_INSTRUCTIONS" = "yes" ]; then
-  mkdir -p "$HOME/.claude" "$HOME/.gemini/config" "$HOME/.codex"
-  safe_link "$GLOBAL_AGENTS_FILE" "$HOME/.claude/CLAUDE.md" claude
-  echo "  ✓ ~/.claude/CLAUDE.md -> $GLOBAL_AGENTS_FILE"
-  safe_link "$GLOBAL_AGENTS_FILE" "$HOME/.gemini/config/AGENTS.md" gemini
-  echo "  ✓ ~/.gemini/config/AGENTS.md -> $GLOBAL_AGENTS_FILE"
-  safe_link "$GLOBAL_AGENTS_FILE" "$HOME/.gemini/GEMINI.md" gemini
-  echo "  ✓ ~/.gemini/GEMINI.md -> $GLOBAL_AGENTS_FILE"
-  safe_link "$GLOBAL_AGENTS_FILE" "$HOME/.codex/AGENTS.md" codex
-  echo "  ✓ ~/.codex/AGENTS.md -> $GLOBAL_AGENTS_FILE"
+  for target in "${GLOBAL_INSTRUCTION_FILES[@]}"; do
+    path="${target#*:}"
+    mkdir -p "$(dirname "$path")"
+    safe_link "$GLOBAL_AGENTS_FILE" "$path" "${target%%:*}"
+    echo "  ✓ ~${path#"$HOME"} -> $GLOBAL_AGENTS_FILE"
+  done
 else
   echo "  Global instructions not linked (existing configurations preserved)."
 fi
