@@ -121,10 +121,12 @@ path_is_free() {
     return 1
   fi
   if [ -e "$1" ] || [ -L "$1" ]; then
-    [ "$DRY_RUN" -eq 1 ] && installed_by_setup "$1"
-  else
-    return 0
+    if [ "$DRY_RUN" -eq 1 ] && installed_by_setup "$1"; then
+      return 0
+    fi
+    return 1
   fi
+  return 0
 }
 
 restore_item() {
