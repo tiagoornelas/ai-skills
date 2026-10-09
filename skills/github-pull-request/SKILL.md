@@ -27,11 +27,29 @@ Every PR should ideally be linked to a tracking issue to keep the team informed 
 ### Agent Workflow:
 1. **If an issue exists in context** (Jira, GitHub Issues, Linear, etc.):
    - Link the identifier and URL in the PR traceability section.
+   - Link every issue the PR resolves, not only the main one.
 2. **If NO issue exists in context**:
    - **The agent must proactively recommend**:
      > *"This PR does not yet reference a tracking issue. I recommend creating an issue (in GitHub Issues, Jira, or your preferred tracker) to keep teammates informed about this work. Would you like to create an issue before we open the PR?"*
    - If the user wishes to create one, the agent assists or waits.
    - If the user opts out, the PR proceeds without an issue link.
+
+### Supporting References
+
+Beyond the issue, the traceability section records where the work came from and what it connects to, so any reader can follow the trail without asking:
+
+| Reference | What it links |
+| :--- | :--- |
+| **Origin** | The report or discussion that started the work (user report, support thread, team conversation). |
+| **Error** | The monitored error or alert the PR addresses. |
+| **Related PRs** | Companion changes in other repositories or layers. |
+| **Other** | Design docs, decision records, mockups, recordings, dashboards, or queries. |
+
+- **Gather before asking**: look in the conversation, the branch, the commits, and the issue itself (description and comments, when a tracker tool is available); the origin and error links usually live there.
+- **Ask once, only on evidence**: if a reference is clearly implied but its link is missing (e.g., a bug reported by a user with no link to the report), bundle all missing links into a single question.
+- **Label every link** with what it is (e.g., `[support report on checkout failure](<url>)`), never a bare URL.
+- **Include only lines that have a link**: omit empty categories instead of writing "N/A".
+- Every link must be reachable by the reader ([no-local-references](../ai-assisted-software-development/references/no-local-references.md)).
 
 ---
 
@@ -61,7 +79,12 @@ Use the structure below:
 ---
 
 ## Traceability & Issue
-- **Issue**: [Link and issue key, e.g.: `#42` or `PROJ-123`] *(or "N/A - Authorized standalone work")*
+- **Issue**: [Link and issue key, e.g.: `#42` or `PROJ-123`] (short summary of the issue) *(or "N/A - Authorized standalone work")*
+- **Origin**: [Labeled link to the report or discussion that started the work]
+- **Error**: [Labeled link to the monitored error or alert]
+- **Related PRs**: [Labeled links, e.g.: `#1235 (frontend)`]
+- **Other**: [Labeled links to docs, decision records, mockups, recordings, dashboards]
+<!-- Keep only the lines that have a link; Issue is always present. -->
 
 ---
 
@@ -128,3 +151,4 @@ Status table mapping implemented behaviors to verification status, adhering to t
 - [ ] Body includes direct summary, architecture diagram (via `visualize-it`), and DoD table with official legend.
 - [ ] Full draft was presented and approved by the user prior to publishing.
 - [ ] PR was opened (defaulting to `--draft`) and clickable link returned.
+- [ ] Supporting references found in context are listed with descriptive labels, with no empty categories.
