@@ -118,9 +118,20 @@ Status table mapping implemented behaviors to verification status, adhering to t
 
 ---
 
+## Screenshot
+<!-- Optional. Only when the PR changes what users see on screen. Drag the image into this box on GitHub. -->
+
+---
+
 ## Impact & Breaking Changes
 - [Describe API contract breaks, database migrations, or new environment variables. If none, write "None"].
 ```
+
+### Screenshot (Optional)
+
+When the diff changes the user-facing presentation layer (screens, components, styles, layouts), suggest adding **one** screenshot of the change. Never require it and never ask for specific screens or more than one image; omit the section when the developer declines or the change is not visible on screen.
+
+GitHub CLI and API cannot upload images into a PR body, so do not try to attach image files. If the developer provides an image URL readers can already open, embed it; otherwise keep the placeholder comment and remind the developer to paste the screenshot through GitHub's web interface. Never commit images to the repository or upload them to third-party hosts just to embed them.
 
 ---
 
@@ -133,6 +144,7 @@ Status table mapping implemented behaviors to verification status, adhering to t
      ```
 2. **Review with Developer**:
    - Present the full draft of title and description for developer approval before publishing. In that conversation preview, show a terminal-native rendering of each diagram (per `visualize-it`) so it is readable; the published body keeps the Mermaid block.
+   - If the diff changes the user-facing presentation layer, suggest one optional screenshot (see [Screenshot](#screenshot-optional)).
 3. **Create the PR**:
    - Run the command via GitHub CLI:
      ```bash
@@ -141,14 +153,16 @@ Status table mapping implemented behaviors to verification status, adhering to t
    - By default, create as `--draft` to give the developer a final pass on GitHub's interface, unless they explicitly request opening as ready for review.
 4. **Output**:
    - Return the clickable GitHub PR link.
+   - If a screenshot was accepted but not embedded, remind the developer to paste it through GitHub's web interface.
 
 ---
 
 ## 6. Success Validation
 
 - [ ] Issue traceability was verified or agreed with the developer.
+- [ ] Supporting references found in context are listed with descriptive labels, with no empty categories.
 - [ ] Title follows standardized format (`Type/Description`).
 - [ ] Body includes direct summary, architecture diagram (via `visualize-it`), and DoD table with official legend.
+- [ ] If the diff changes the user-facing presentation layer, one optional screenshot was suggested (and a reminder given if not embedded).
 - [ ] Full draft was presented and approved by the user prior to publishing.
 - [ ] PR was opened (defaulting to `--draft`) and clickable link returned.
-- [ ] Supporting references found in context are listed with descriptive labels, with no empty categories.
