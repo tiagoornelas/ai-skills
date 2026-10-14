@@ -107,6 +107,19 @@ Three skills come from [Matt Pocock's skills](https://github.com/mattpocock/skil
 Compared against upstream at the time of the port; later changes there are not tracked.
 
 
+## 🔧 External Tools
+
+Most skills need nothing beyond the harness. A few drive command-line tools, which must be installed and authenticated before those skills run. No skill depends on an MCP server.
+
+| Tool | Used by | Required for |
+| :--- | :--- | :--- |
+| [Git](https://git-scm.com/) | `commit`, `git-branch`, `github-code-review`, `report-work`, `resolve-branch-conflict` | Reading history and diffs, creating branches and commits. |
+| [GitHub CLI](https://cli.github.com/) (`gh`) | `github-code-review`, `github-pull-request`, `github-review-react`, `report-work`, `resolve-branch-conflict` | Reading and writing pull requests, reviews, and comments. Run `gh auth login` first. |
+| [Herdr](https://herdr.dev/) (`herdr`) | `herdr-handoff` | Opening workspaces, tabs, panes, and worktrees, and starting agents in them. The skill only runs inside a Herdr pane. |
+
+Issue trackers (Jira, GitHub Issues, Linear) are mentioned only as places to reference or file work: the skills use whatever access the harness already has and never require a specific integration.
+
+
 ## 🚀 Installation
 
 | Harness | Rules (SSOT) | Project skills | Global skills |
