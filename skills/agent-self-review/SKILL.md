@@ -31,7 +31,7 @@ Every discovered finding falls into one of four distinct categories. The categor
 
 | Category | Definition | Action |
 | :--- | :--- | :--- |
-| **Blocking** | Objective and deterministic: tool or test failure, documented project rule violation, DoD behavior lacking test coverage and lacking explicit declaration. | Always fix. |
+| **Blocking** | Objective and deterministic: tool or test failure, documented project rule violation, unsafe database migration (table-locking DDL per `database-and-migrations.md`), DoD behavior lacking test coverage and lacking explicit declaration. | Always fix. |
 | **Should fix** | Subjective judgment **with a concrete failure scenario**: able to articulate in a single sentence what probable bug, expensive future change, or reader confusion it causes. | Fix within the budget (Section 5) or justify in one line why it remains. |
 | **Discard** | Judgment lacking a concrete scenario, personal style preference, "could be slightly cleaner". | Do not fix and do not record. |
 | **Escalate** | The remediation would alter a public contract, module boundary, or dependency direction. | Do not apply. Record as a pending Human Layer decision. |
@@ -53,9 +53,10 @@ When uncertain between **Should fix** and **Discard**: if a concrete failure sce
 - Run project linters, static type checkers (`tsc`, `mypy`, etc.), and automated test suites.
 - Resolve any syntax error, formatting defect, typing mismatch, or broken test. Never silence alerts with suppression directives without imperative justification.
 
-### Phase 2: Project Rules (Objective → Blocking)
+### Phase 2: Project Rules and Migration Safety (Objective → Blocking)
 - Inspect documented guidelines: repository `AGENTS.md`/`CLAUDE.md` and rules under `docs/rules/`, if present.
-- Violating a **documented** project rule is **Blocking**. General quality judgments belong in Phase 5.
+- Violating a **documented** project rule is **Blocking**.
+- **Migration Safety**: if database schema migrations or DDL files were added or modified, audit them against [database-and-migrations.md](../coding/references/database-and-migrations.md). Any table-locking DDL on active tables, missing `lock_timeout`, non-concurrent index creation, or destructive single-step schema change is **Blocking**. General quality judgments belong in Phase 5.
 
 ### Phase 3: BDD Definition of Done Coverage (Objective → Blocking)
 For each requirement or acceptance criterion of the task:
@@ -73,8 +74,11 @@ For each requirement or acceptance criterion of the task:
 ### Phase 4: Test Suite Sanity (Judgment → Should fix)
 - Apply [testing.md](../coding/references/testing.md) to the task's tests. Tests prone to breaking during refactoring without behavior change (coupled to text copy, markup structure, or internals), or exposing private symbols solely for testing, are **Should fix**, subject to the Section 5 budget.
 
-### Phase 5: Code Quality (Judgment → Should fix)
-- Apply [`coding`](../coding/SKILL.md) references (naming, functions, comments, error handling, code smells) to modified code, prioritized by impact per [code-smells.md](../coding/references/code-smells.md) (bug risk → change cost → readability).
+### Phase 5: Code Quality and Query Performance (Judgment → Should fix)
+- Apply [`coding`](../coding/SKILL.md) references (naming, functions, comments, error handling, code smells, and [database-and-migrations.md](../coding/references/database-and-migrations.md)) to modified code, prioritized by impact:
+  1. **Operational and bug risk**: hot-path N+1 queries, unindexed filter/join predicates on growing tables, long transactions wrapping external I/O per `database-and-migrations.md`, and severe code smells per [code-smells.md](../coding/references/code-smells.md).
+  2. **Change cost**: architectural rigidity below contracts, duplicated queries, missing pagination limits.
+  3. **Readability**: function bloat, obscure naming, dead code.
 - Category mapping per Section 2: concrete scenario → **Should fix**; no concrete scenario → **Discard**; touches contract/boundary → **Escalate**.
 - All remediations adhere to [refactoring-principles.md](../coding/references/refactoring-principles.md): preserved behavior, green tests.
 - Architectural smells at module or contract scale are always **Escalate**, never local refactorings.
@@ -126,4 +130,5 @@ Record a concise traceability log: what was fixed, what was justified, and what 
 - [ ] Maximum 5 Should fix remediations applied across at most 3 iteration rounds.
 - [ ] Zero new rounds opened for second-order findings.
 - [ ] Zero contract, boundary, or dependency direction changes applied: all were escalated.
+- [ ] Schema migrations and queries audited against [database-and-migrations.md](../coding/references/database-and-migrations.md) if database code was modified.
 - [ ] Automated tests pass following the final remediation commit.
