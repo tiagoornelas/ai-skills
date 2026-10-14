@@ -55,6 +55,7 @@ In both modes, the received context must be preserved verbatim (*ipsis litteris*
 
 ### Step 4: Evaluate Through the Design Lenses
 Apply relevant references (Section 4). At a minimum, evaluate each alternative against:
+- **Two Fundamental Questions**: how will this software change tomorrow, and how will it break at runtime? → [changeability-and-fragility.md](references/changeability-and-fragility.md)
 - **Depth**: is each module's interface substantially simpler than its implementation? → [deep-modules.md](references/deep-modules.md)
 - **Information Hiding**: does each design decision have a single owner? → [information-hiding.md](references/information-hiding.md)
 - **Generality**: do interfaces speak the module's own concepts rather than caller concepts (except infrastructure gateways, which speak the domain's vocabulary)? → [general-purpose-modules.md](references/general-purpose-modules.md)
@@ -86,6 +87,7 @@ Load only the references needed for the specific design decision.
 | Reference | Load when… |
 | :--- | :--- |
 | [nature-of-complexity.md](references/nature-of-complexity.md) | Diagnosing or justifying why one design is superior. **Foundation for all other references.** |
+| [changeability-and-fragility.md](references/changeability-and-fragility.md) | Grounding architectural design and code review in the two foundational questions: future evolution cost vs. runtime failure paths. |
 | [strategic-programming.md](references/strategic-programming.md) | Under pressure for quick shortcuts, deciding how much to invest in design, or modifying existing systems. |
 | [deep-modules.md](references/deep-modules.md) | Defining or reviewing modules, classes, services, or APIs. |
 | [information-hiding.md](references/information-hiding.md) | Deciding what each module knows and reveals, or encountering temporal decomposition. |
@@ -108,6 +110,8 @@ Load only the references needed for the specific design decision.
 | Pass-through method, pass-through variable, shallow decorators | [different-layer-different-abstraction.md](references/different-layer-different-abstraction.md) |
 | Exposed configuration without need, "caller must…" | [pull-complexity-downwards.md](references/pull-complexity-downwards.md) |
 | Duplicated design decisions, modules always modified together | [together-or-apart.md](references/together-or-apart.md) |
+| Shotgun surgery across modules for a single business change | [changeability-and-fragility.md](references/changeability-and-fragility.md), [together-or-apart.md](references/together-or-apart.md) |
+| Happy-path myopia, unhandled runtime fragility, unexamined implicit assumptions | [changeability-and-fragility.md](references/changeability-and-fragility.md), [define-errors-out-of-existence.md](references/define-errors-out-of-existence.md) |
 | Exception overload, repetitive handling logic | [define-errors-out-of-existence.md](references/define-errors-out-of-existence.md) |
 | Tactical patch, special case to accommodate change | [strategic-programming.md](references/strategic-programming.md) |
 | Non-obvious code, vague name, generic container | [obvious-code.md](references/obvious-code.md) |
@@ -148,6 +152,7 @@ Load only the references needed for the specific design decision.
 A design is complete only when:
 
 - [ ] At least **two alternatives** were evaluated via [`design-it-twice`](../design-it-twice/SKILL.md), with a recommendation grounded in complexity analysis (unless this run evaluates a single axis requested by `design-it-twice`).
+- [ ] Both **fundamental questions** were evaluated: plausible future change vectors are localized, and runtime failure paths and implicit assumptions are surfaced and contained ([changeability-and-fragility.md](references/changeability-and-fragility.md)).
 - [ ] Each module has an **interface described in a few sentences** and is **deep** (interface is substantially simpler than what it encapsulates).
 - [ ] Every relevant design decision has **a single owner module** (no leakage).
 - [ ] **Failure modes** for each contract passed through elimination techniques, and remaining ones are explicit.
