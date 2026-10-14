@@ -36,6 +36,7 @@ Refactor before modifying code that is difficult to change, and after every pass
 | [comments.md](references/comments.md) | Writing, maintaining, or reviewing comments. |
 | [error-handling.md](references/error-handling.md) | Code may fail (I/O, network, external input, third-party services), or dealing with `try/catch`, error returns, or nullable types. |
 | [code-smells.md](references/code-smells.md) | Evaluating or cleaning up code below contracts (conditionals, state, internal data, code placement). |
+| [database-and-migrations.md](references/database-and-migrations.md) | Writing, reviewing, or refactoring database migrations, schema DDL, queries, or ORM access patterns. |
 
 ## Quality Gate
 Upon completing code changes, the agent must execute the [`agent-self-review`](../agent-self-review/SKILL.md) skill and iterate until its code and tests achieve a clean verdict.

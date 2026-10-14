@@ -2,13 +2,13 @@
 name: github-code-review
 description: >-
   Reviews a teammate's GitHub Pull Request (or a diff from a fixed reference point)
-  by combining criteria from agent-self-review (tooling, project rules, DoD coverage,
-  test sanity, code quality) with human-review (modules, dependency direction, contracts,
-  and behaviors). Evaluation axes run across parallel subagents. The skill then
-  discusses findings with the user, recommends approval or change requests, and formats
-  accepted points into humanized review comments ready to paste into GitHub.
+  across up to five parallel evaluation axes (quality & rules, behaviors & tests, architecture,
+  code quality, and database & migrations). Supports re-review mode to track resolution of
+  prior feedback against incremental commits. The skill discusses findings with the user,
+  recommends approval or change requests, and formats accepted points into humanized review
+  comments ready to paste into GitHub.
 disable-model-invocation: true
-argument-hint: "[PR number/URL, branch, SHA, or base ref]"
+argument-hint: "[PR number/URL, branch, SHA, or base ref] [--re-review]"
 ---
 
 # GitHub Code Review
@@ -17,7 +17,7 @@ For reviewing **other people's work**: a teammate's PR, or any diff from a fixed
 
 > This skill applies the same standards to a teammate's code that the development pipeline applies internally: the mechanical rigor of [`agent-self-review`](../agent-self-review/SKILL.md) and the architectural governance of [`human-review`](../human-review/SKILL.md). The difference is that here **nothing is modified unilaterally**: everything becomes a finding, and the user chooses what to comment on.
 
-Four review axes, executed via **parallel subagents** to prevent context contamination:
+Up to five review axes, executed via **parallel subagents** to prevent context contamination:
 
 | Axis | Origin | Core Question |
 | :--- | :--- | :--- |
@@ -25,17 +25,49 @@ Four review axes, executed via **parallel subagents** to prevent context contami
 | ✅ **Behaviors and Tests** | `agent-self-review` phases 3–4 + `human-review` DoD table | Does the change fulfill requirements, with each behavior verified by refactor-proof tests? |
 | 🏗️ **Architecture and Contracts** | `human-review` + `software-designing` references | Are modules, boundaries, dependency direction, and contracts architecturally sound? |
 | 🧹 **Code Quality** | `agent-self-review` phase 5 + `coding` references | Is newly added code below contracts clean, obvious, and maintainable? |
+| 🗄️ **Database and Migrations** | `coding` references ([database-and-migrations.md](../coding/references/database-and-migrations.md)) | Are queries efficient and schema migrations safe from table locks and downtime? |
 
 ---
 
 ## 1. Establish the Comparison Baseline
 
-Use the reference provided by the user: PR number/URL, SHA, branch, tag, `main`, `HEAD~5`.
+Use the reference provided by the user: PR number/URL, SHA, branch, tag, `main`, `HEAD~5`, optionally with `--re-review`.
 
+### 1.1. Fresh Review Baseline
 - **GitHub PR**: `gh pr view <pr> --json number,title,body,baseRefName,headRefName,url,author` and `gh pr diff <pr>`. The PR base is the fixed point.
 - **Local Ref**: `git diff <fixed-ref>...HEAD` (triple-dot, against merge-base) and `git log <fixed-ref>..HEAD --oneline`.
 
 Capture the diff **once**. Verify that the reference resolves and that the diff is non-empty **before** creating subagents: invalid refs must fail here, not inside subagent threads.
+
+### 1.2. Re-review Mode (`--re-review` or follow-up prompt)
+When the user indicates a re-review (via `--re-review` flag or session prompt):
+
+1. **Collect Previous Review Threads and Comments**:
+   Fetch PR reviews, conversation comments, and line threads via GraphQL:
+   ```bash
+   gh pr view <pr> --json number,title,body,baseRefName,headRefName,url,author,reviews,comments
+   gh api graphql -F owner=<owner> -F repo=<repo> -F pr=<pr> -f query='
+   query($owner:String!,$repo:String!,$pr:Int!){
+     repository(owner:$owner,name:$repo){
+       pullRequest(number:$pr){
+         reviewThreads(first:100){ nodes{
+           id isResolved isOutdated path line
+           comments(first:50){ nodes{ databaseId url author{login} body diffHunk createdAt } }
+         }}
+       }
+     }
+   }'
+   ```
+2. **Identify Incremental Commits**:
+   Determine commits added since the previous review round (`git log <previous-head>..HEAD --oneline` or commits committed after the latest previous review timestamp).
+3. **Audit Previous Findings (Resolution Matrix)**:
+   For every previous thread and feedback item, inspect current code and author responses:
+   - 🟢 **Resolved**: Problem was fixed in code and verified in the diff.
+   - 🔀 **Adjusted**: Addressed via an alternative sound approach; rationale verified.
+   - 🔴 **Unresolved**: Problem remains unaddressed or new fix is defective.
+   - 💬 **Discussed / Deferred**: Acknowledged without code change, or deferred with tracking issue.
+4. **Scope for Evaluation Axes**:
+   The parallel subagent axes evaluate the **incremental diff** (`<previous-head>..HEAD`), plus targeted inspection of lines altered to resolve previous comments. This prevents re-debating settled code while catching regressions, scope creep, or defects in newly added commits.
 
 To allow Axis 🔧 to run test and lint tooling, create an isolated worktree of the PR code **without altering the user's working tree**:
 
@@ -89,9 +121,9 @@ Consolidate documentation on repository coding guidelines: repository `AGENTS.md
 
 ---
 
-## 6. Launch the Four Subagents in Parallel
+## 6. Launch the Subagents in Parallel (Up to Five)
 
-Send a single prompt launching four subagents concurrently using the harness subagent tool (see [subagent-delegation.md](../ai-assisted-software-development/references/subagent-delegation.md); in Claude Code, `Agent` with `general-purpose` type). In briefs below, `<skills>` represents the skills folder: replace with the absolute path before sending. Embed the **Section 4 severity scale** in each brief. Subagents never modify code.
+Send a single prompt launching subagents concurrently using the harness subagent tool (see [subagent-delegation.md](../ai-assisted-software-development/references/subagent-delegation.md); in Claude Code, `Agent` with `general-purpose` type). In briefs below, `<skills>` represents the skills folder: replace with the absolute path before sending. Embed the **Section 4 severity scale** in each brief. Subagents never modify code.
 
 **🔧 Quality and Rules**: pass diff command, commit list, worktree path, Section 5 rule sources, and severity scale. Brief:
 > *"Apply phases 1 and 2 of `<skills>/agent-self-review/SKILL.md` to this PR, without fixing anything. (a) In the worktree, run linters, typecheckers, and tests; if unable to run, use `gh pr checks <pr>` and state that. Report strictly failures introduced or touched by the diff. (b) Report every diff location violating a documented project rule, citing file and rule. Do not report code smells or general design judgments: those belong to another axis. Cite `file:line` for all findings. Prefix each finding with its severity emoji (🔴/🟡/🟢). Max 400 words."*
@@ -104,6 +136,12 @@ Send a single prompt launching four subagents concurrently using the harness sub
 
 **🧹 Code Quality**: pass diff command, commit list, Section 5 project rules, and severity scale, instructing to first read files in `<skills>/coding/references/`. Brief:
 > *"Apply Phase 5 of `<skills>/agent-self-review/SKILL.md` to this PR, without fixing anything. Inspect strictly lines added or altered by the diff. Report **at most 5** findings (naming, functions, comments, error handling, or code smells), prioritized by impact per `code-smells.md` (bug risk → change cost → readability). For each: the issue, concrete failure scenario, suggested refactoring by name, and `file:line`. Discard items lacking concrete scenarios, style preferences, or anything covered by linters. Do not report module-scale architectural smells: those belong to the architecture axis. Maximum severity 🟡. Max 300 words."*
+
+**🗄️ Database and Migrations** (Conditional):
+Inspect whether the diff touches migration scripts (e.g. `migrations/`, `db/`, `*.sql`), schema files, ORM entities/repositories, query builders, or GraphQL resolvers.
+- **If touched**: launch the subagent with diff command, commit list, and severity scale, instructing to first read `<skills>/coding/references/database-and-migrations.md`. Brief:
+  > *"Apply `<skills>/coding/references/database-and-migrations.md` to this PR diff, without modifying code. Inspect schema migrations, DDL scripts, SQL queries, and ORM access patterns. Report: (a) Migration risks: table locks, missing `lock_timeout`, non-concurrent index creation (`CREATE INDEX CONCURRENTLY`), destructive single-step schema changes (🔴 Critical); (b) Query performance: N+1 query patterns in loops/endpoints, unindexed foreign keys or filter predicates on growing tables, unbounded queries lacking `LIMIT`, long-running transactions wrapping external I/O (🟡 Warning); (c) Optimization suggestions: compound index column ordering, cursor/keyset pagination (🟢 Suggestion). Cite `file:line` for all findings. Prefix each finding with severity emoji (🔴/🟡/🟢). Max 400 words."*
+- **If untouched**: skip launching this subagent. Under the axis heading in the Section 7 report, output: `*Skipped: no database migrations or queries touched by diff.*`
 
 ---
 
@@ -139,16 +177,35 @@ Format the report for quick scanning. **Never combine or re-order findings acros
 
 - 🟡 **<issue>** — <concrete scenario, suggested refactoring, file:line>
 - 🟢 **<issue>** — <detail>
+
+### 🗄️ Database and Migrations — 🔴 0 · 🟡 1 · 🟢 0
+
+- 🟡 **<issue>** — <operational hazard, suggested remediation, file:line>
 ```
 
-If an axis was skipped (missing spec, unable to run tooling), state that in a single line under the heading without omitting the heading.
+If an axis was skipped (missing spec, unable to run tooling, or no database changes touched), state that in a single line under the heading without omitting the heading (e.g. `*Skipped: no database migrations or queries touched by diff.*`).
+
+In **Re-review Mode**, open the report with the resolution audit table before presenting findings on the incremental commits:
+
+```markdown
+### 📋 Previous Review Resolution Matrix
+
+| # | Location | Original Finding | Author Response / Commit | Resolution Status |
+| :-: | :--- | :--- | :--- | :---: |
+| 1 | `src/billing/invoice.ts:42` | Missing lock timeout | Added `SET lock_timeout = '2s'` in `abc1234` | 🟢 Resolved |
+| 2 | `src/users/repo.ts:15` | N+1 query on roles | Eager loaded roles with `includes(:roles)` | 🟢 Resolved |
+| 3 | `src/orders/service.ts:88` | Unbounded list query | Author noted pagination deferred to follow-up | 💬 Deferred |
+| 4 | `src/auth/jwt.ts:24` | Token validation flaw | No commit addressing this | 🔴 Unresolved |
+
+🟢 N Resolved · 🔀 N Adjusted · 💬 N Deferred · 🔴 N Unresolved
+```
 
 Conclude with summary and **recommended verdict**:
 
 ```markdown
 ## 📊 Summary
 
-🔴 Critical:   N   — requires attention prior to merge
+🔴 Critical:   N   — requires attention prior to merge (or unresolved prior blocker)
 🟡 Warning:    N   — worth discussing
 🟢 Suggestion: N   — optional
 
@@ -158,7 +215,7 @@ Highest-risk axis: **<axis>** (<key finding in one line>)
 <single sentence rationale>
 ```
 
-Verdict rule: any 🔴 (or 🚨 in DoD table) → **Request changes**; strictly 🟡/🟢 → **Approve with comments**; clean → **Approve**. This is a recommendation: **the verdict belongs to the user**.
+Verdict rule: any 🔴 (unresolved previous blocker, new critical regression in incremental commits, or 🚨 in DoD table) → **Request changes**; strictly 🟡/🟢 and all previous blockers resolved → **Approve with comments**; all resolved and clean → **Approve**. This is a recommendation: **the verdict belongs to the user**.
 
 Engage in conversation and answer questions. The user may promote, demote, or discard findings.
 
@@ -192,6 +249,12 @@ A concise summary for the overall PR review body, aligned with the user's verdic
 
 Run through `humanize-writing`.
 
+### 8.3. Thread Replies in Re-review Mode
+
+When conducting a re-review, findings often continue existing unresolved conversations:
+- **Unresolved threads**: Draft replies to be posted directly into the existing review thread (`addPullRequestReviewThreadReply` with `threadId`), stating concisely why the point remains unresolved or what remains defective.
+- **New findings on incremental commits**: Format as standard line comments per Section 8.1.
+
 ### Comment Guidelines
 
 - **Exact file and line.** If the finding lacks precise location, inspect the diff. Never guess.
@@ -212,7 +275,9 @@ Never publish automatically. If the user explicitly requests publication, displa
 ## 9. Success Validation
 
 - [ ] Diff captured once and validated prior to subagents; user's working tree untouched, review worktree removed.
-- [ ] Four axes executed (or omissions declared), each with severity breakdown.
+- [ ] Up to five axes executed (or omissions/skips declared), each with severity breakdown.
+- [ ] In re-review mode, Previous Review Resolution Matrix audited every prior feedback item and incremental diff was evaluated without re-debating settled points.
+- [ ] Database and migration risks audited against `database-and-migrations.md` when database code was modified.
 - [ ] Every finding contains `file:line` and severity badge; zero cross-axis contamination.
 - [ ] Axis 🏗️ declares which intended architecture baseline was used.
 - [ ] Recommended verdict adheres to Section 7 rules, with final verdict determined by user.
