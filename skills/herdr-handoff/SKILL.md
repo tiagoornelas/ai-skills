@@ -67,6 +67,9 @@ Names must be semantic, short, and consistent across the request:
 
 - **Workspace and tab labels**: lowercase, 2–4 words, in the user's session language (e.g. `review pr 153`, `fix display name`).
 - **Agent names**: a slug of the mission matching `[a-z][a-z0-9_-]{0,31}`, unique among live agents (`herdr agent list`), e.g. `pr-review`.
+- **Pane labels**: the agent name.
+
+Every workspace, tab, and pane the skill creates gets its label. Herdr fills unlabeled ones with defaults (`1` for a new workspace's first tab, the harness name for a pane), which say nothing about the stream.
 
 ### 2.4. Confirm Only What Was Inferred
 
@@ -104,10 +107,13 @@ Keep the user's focus in the calling pane: pass `--no-focus` to every creation c
 1. **Create the container** for each stream:
    - Tab: `herdr tab create --workspace <id> --label <label> --cwd <dir> --no-focus` → `.result.root_pane`.
    - New workspace: `herdr workspace create --label <label> --cwd <dir> --no-focus` → `.result.root_pane`.
-   - Worktree workspace: `herdr worktree create … --no-focus` → read its root pane from the response.
+   - Worktree workspace: `herdr worktree create … --label <label> --no-focus` → read its root pane from the response.
+
+   A new workspace (plain or worktree) opens with a first tab labeled `1`: rename it with `herdr tab rename <tab-id> <label>`, taking the tab ID from the root pane.
 2. **Split** when two streams share a tab: `herdr pane split <root-pane> --direction right|down --cwd <dir> --no-focus` → `.result.pane`.
-3. **Start** the harness in each pane: `herdr agent start <agent-name> --kind <kind> --pane <pane-id> [-- <native-flags>]`.
-4. **Prompt** each agent to read its file, not a pasted summary:
+3. **Label** each stream's pane with its agent name: `herdr pane rename <pane-id> <agent-name>`. The label survives `agent start`.
+4. **Start** the harness in each pane: `herdr agent start <agent-name> --kind <kind> --pane <pane-id> [-- <native-flags>]`.
+5. **Prompt** each agent to read its file, not a pasted summary:
    ```bash
    herdr agent prompt <agent-name> "Read <absolute-handoff-path> and resume the work it describes." \
      --wait --until working --until blocked --timeout 30000
@@ -151,7 +157,7 @@ Then add:
 - [ ] Missions and every other inferred choice were confirmed by the user before anything was opened.
 - [ ] Each stream has its own handoff file, written per the `handoff` skill, with the stream's mission as its goal.
 - [ ] Code-writing streams running alongside another writer live in their own worktree workspace; branch names follow `git-branch`.
-- [ ] No tab holds more than two agents; labels and agent names are semantic and consistent.
+- [ ] No tab holds more than two agents; every created workspace, tab, and pane carries a semantic label (no `1` tab, no pane named after its harness), consistent with the agent names.
 - [ ] Each handoff lists its recommended skills with absolute `SKILL.md` paths; each stream with a lead skill was prompted with that skill's command.
 - [ ] Each agent ran the requested harness, received no flags the user did not ask for, and reached `working` (or was reported as failed without retry).
 - [ ] The final report lists every stream, the temporary-file notice, and the worktree removal commands.
