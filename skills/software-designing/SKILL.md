@@ -96,6 +96,7 @@ Load only the references needed for the specific design decision.
 | [define-errors-out-of-existence.md](references/define-errors-out-of-existence.md) | Defining failure modes, errors, or exceptions in a contract. |
 | [obvious-code.md](references/obvious-code.md) | Choosing names, contract types, event-driven flows, or reviewing design readability. |
 | [dependency-direction.md](references/dependency-direction.md) | Defining dependency direction, decoupling business rules from infrastructure (persistence, UI, frameworks, providers), or deciding when to defer detail choices. |
+| [`design-patterns`](../design-patterns/SKILL.md) | Considering creational, structural, or behavioral patterns (under strict parsimony). |
 
 ### Red Flags → Reference Mapping
 
@@ -111,6 +112,7 @@ Load only the references needed for the specific design decision.
 | Tactical patch, special case to accommodate change | [strategic-programming.md](references/strategic-programming.md) |
 | Non-obvious code, vague name, generic container | [obvious-code.md](references/obvious-code.md) |
 | Business rule aware of database, framework, or vendor; core untestable without infra | [dependency-direction.md](references/dependency-direction.md) |
+| Premature abstraction, patternitis, overengineering | [`design-patterns`](../design-patterns/SKILL.md) |
 
 ---
 

@@ -100,6 +100,7 @@ Three skills come from [Matt Pocock's skills](https://github.com/mattpocock/skil
 
 | Skill | Original | What changed |
 | :--- | :--- | :--- |
+| `design-patterns` | [Refactoring Guru](https://refactoring.guru/design-patterns/catalog) | **Transposition & Adaptation.** Classic patterns catalog transcribed to native on-demand skill format, filtered strictly through the Law of Parsimony and modern language idioms. |
 | `grill-me` | [`grilling`](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md), [`grill-me`](https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md) | **Transposition.** His two skills merged into one, in this repository's format. |
 | `handoff` | [`handoff`](https://github.com/mattpocock/skills/blob/main/skills/productivity/handoff/SKILL.md) | **Transposition, plus additions:** when a handoff is justified, and verified facts kept apart from assumptions. |
 | `prototype` | [`prototype`](https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md) | **Adaptation.** The UI branch builds a standalone mockup outside the repository, with the project's design system, instead of variants on an app route. |
