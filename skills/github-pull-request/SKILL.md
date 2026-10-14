@@ -66,6 +66,8 @@ Type/Concise Description
 
 > **Convention note**: PR titles use a PascalCase prefix followed by a description in the team/repository language for triage on GitHub, while individual commits strictly adhere to English Conventional Commits (`feat(auth): ...`).
 
+> **Body language**: all prose and section headings in the description, plus the DoD table header and legend, use the team/repository language (same rule as the title). The template headings below are placeholders: translate them. Keep technical terms (`Definition of Done`, `breaking changes`) and code identifiers as is. Do not copy the language of previous PRs if it conflicts with this rule.
+
 ---
 
 ## 4. PR Description Template (Body)
@@ -163,6 +165,7 @@ GitHub CLI and API cannot upload images into a PR body, so do not try to attach 
 - [ ] Supporting references found in context are listed with descriptive labels, with no empty categories.
 - [ ] Title follows standardized format (`Type/Description`).
 - [ ] Body includes direct summary, architecture diagram (via `visualize-it`), and DoD table with official legend.
+- [ ] Section headings, DoD table header, and legend are in the team/repository language, not the template's English.
 - [ ] If the diff changes the user-facing presentation layer, one optional screenshot was suggested (and a reminder given if not embedded).
 - [ ] Full draft was presented and approved by the user prior to publishing.
 - [ ] PR was opened (defaulting to `--draft`) and clickable link returned.
