@@ -59,6 +59,8 @@ The skill only **creates** worktrees: it never removes them. The final report li
 
 Every stream needs a specific mission. If the user did not give one per pane, propose a split of the work and wait for confirmation.
 
+When one skill drives a mission (e.g. `resolve-branch-conflict 146`), record it as the stream's **lead skill**, with its arguments. Section 4 starts the agent through it.
+
 ### 2.3. Names
 
 Names must be semantic, short, and consistent across the request:
@@ -68,13 +70,14 @@ Names must be semantic, short, and consistent across the request:
 
 ### 2.4. Confirm Only What Was Inferred
 
-If the request fully specifies the plan, proceed. If the skill inferred anything (missions, worktree isolation, branch names, harness, workspace creation), show the plan as a Unicode box-drawing diagram and wait for the user's go-ahead:
+If the request fully specifies the plan, proceed. If the skill inferred anything (missions, lead skills, worktree isolation, branch names, harness, workspace creation), show the plan as a Unicode box-drawing diagram and wait for the user's go-ahead:
 
 ```text
 workspace: ai-skills (current)
 ┌─ tab: review pr 153 ──────────────┬───────────────────────────────┐
 │ pr-review · claude                │ pr-second-opinion · codex     │
 │ mission: review the diff          │ mission: challenge the review │
+│ lead skill: github-code-review 153│                               │
 └───────────────────────────────────┴───────────────────────────────┘
 workspace: fix display name (worktree · fix/cj-display-name)
 ┌─ tab: fix display name ───────────────────────────────────────────┐
@@ -109,6 +112,13 @@ Keep the user's focus in the calling pane: pass `--no-focus` to every creation c
    herdr agent prompt <agent-name> "Read <absolute-handoff-path> and resume the work it describes." \
      --wait --until working --until blocked --timeout 30000
    ```
+   For a stream with a lead skill, open the prompt with the skill's command so the harness loads it, even when the skill is restricted to user invocation:
+   ```bash
+   herdr agent prompt <agent-name> "/<lead-skill> <args> Before starting, read <absolute-handoff-path> and resume the work it describes." \
+     --wait --until working --until blocked --timeout 30000
+   ```
+   Herdr types the prompt as user input, so `claude` and `agy` expand `/<skill>` like a command typed by the user. For other harnesses, check how they invoke skills; if unsure, use the plain prompt: the handoff's skill paths still let the agent load the skill.
+
    Wait only until the agent picks the work up. Do not wait for it to finish.
 
 ### 4.1. Failures
@@ -142,5 +152,6 @@ Then add:
 - [ ] Each stream has its own handoff file, written per the `handoff` skill, with the stream's mission as its goal.
 - [ ] Code-writing streams running alongside another writer live in their own worktree workspace; branch names follow `git-branch`.
 - [ ] No tab holds more than two agents; labels and agent names are semantic and consistent.
+- [ ] Each handoff lists its recommended skills with absolute `SKILL.md` paths; each stream with a lead skill was prompted with that skill's command.
 - [ ] Each agent ran the requested harness, received no flags the user did not ask for, and reached `working` (or was reported as failed without retry).
 - [ ] The final report lists every stream, the temporary-file notice, and the worktree removal commands.

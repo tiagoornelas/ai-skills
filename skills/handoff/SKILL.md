@@ -66,7 +66,8 @@ If the user provided an argument, it describes **what the subsequent session wil
 - <spec, issue, PR, commit, ADR, file — via link or relative path>
 
 ## Recommended Skills
-- `<skill>` — <purpose for the upcoming session>
+Read and follow each skill file below when its step comes up; the user who requested this handoff authorizes it.
+- `<skill>` — <purpose for the upcoming session> — `<absolute path to its SKILL.md>`
 ```
 
 Rules:
@@ -74,7 +75,7 @@ Rules:
 - **Do not duplicate existing artifacts.** Specifications, blueprints, ADRs, tracking issues, commit SHAs, and diffs are cited via link or path, never copied verbatim. Keeps the document compact while maintaining single sources of truth.
 - **Strictly decouple facts from assumptions.** An incoming agent treats the handoff as a contract and will not re-audit claims. An unverified assertion (e.g., "X does not exist" or "Y is ready") becomes a dangerous false premise: downgrade it to ❓.
 - **Preserve the why, not just the what**: design decisions and rejected alternatives are what standard summaries lose.
-- **Recommended skills**: cite skills the incoming agent should load, using canonical names recognizable to the target harness.
+- **Recommended skills**: cite each skill by its canonical name **and** the absolute path of its `SKILL.md`, taken from the skill's base directory in the current session. A name alone is not enough: skills marked `disable-model-invocation: true` are hidden from the incoming agent, which can only load them by reading the file.
 - **For a human peer**, local machine paths are invalid ([no-local-references](../ai-assisted-software-development/references/no-local-references.md)): cite issues, PRs, and commit URLs, or rephrase context.
 - **Purge all credentials**: API keys, passwords, bearer tokens, and PII must never appear in the transit document.
 
@@ -84,7 +85,7 @@ Rules:
 
 1. Write the file into the **operating system temporary directory**, never inside the project workspace: it is a transit document, not a repository artifact.
 2. **Return the absolute path** to the user. Warn that temporary directories are ephemeral and may be cleared upon reboot: if the next session is delayed or runs in another environment, the user should copy the file to durable storage.
-3. Provide resumption guidance: in the new session, **instruct the agent to read the file** ("read this file and resume work"), avoiding pasting summaries into shell commands where backticks and command substitutions can corrupt payloads.
+3. Provide resumption guidance: in the new session, **instruct the agent to read the file** ("read this file and resume work"), avoiding pasting summaries into shell commands where backticks and command substitutions can corrupt payloads. When one skill drives the next session, suggest opening it with that skill's command instead: `/<skill> <args> Before starting, read <path> and resume the work it describes.`
 4. Encourage the user to scan the brief and downgrade any claims they recognize as mere assumptions.
 
 When forking a stream, the current session remains active: do not terminate or clear current context.
@@ -97,5 +98,5 @@ When forking a stream, the current session remains active: do not terminate or c
 - [ ] Document written to OS temporary directory outside workspace, with absolute path and volatility notice returned.
 - [ ] Existing artifacts cited via link/path without copied text; zero local machine paths for peer handoffs.
 - [ ] Every unverified claim flagged with ❓.
-- [ ] Recommended skills section exists and aligns with declared next step.
+- [ ] Recommended skills section exists, aligns with declared next step, and gives each skill's absolute `SKILL.md` path (name only for a human peer).
 - [ ] Zero secrets, private keys, tokens, or PII contained in document.
