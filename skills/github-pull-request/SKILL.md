@@ -66,13 +66,13 @@ Type/Concise Description
 
 > **Convention note**: PR titles use a PascalCase prefix followed by a description in the team/repository language for triage on GitHub, while individual commits strictly adhere to English Conventional Commits (`feat(auth): ...`).
 
-> **Body language**: all prose and section headings in the description, plus the DoD table header and legend, use the team/repository language (same rule as the title). The template headings below are placeholders: translate them. Keep technical terms (`Definition of Done`, `breaking changes`) and code identifiers as is. Do not copy the language of previous PRs if it conflicts with this rule.
-
 ---
 
 ## 4. PR Description Template (Body)
 
 Use the structure below:
+
+> **Body language**: all prose and section headings in the description, plus the DoD table header and legend, use the team/repository language (same rule as the title). The template headings below are placeholders: translate them. Keep technical terms (`Definition of Done`, `breaking changes`) and code identifiers as is. Do not copy the language of previous PRs if it conflicts with this rule.
 
 ```markdown
 ## Summary
