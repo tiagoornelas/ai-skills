@@ -2,11 +2,12 @@
 name: git-cleanup
 description: >-
   Cleans up the local repository: syncs the default branch with the remote,
-  lists every local branch and worktree with a short summary of its work,
-  recommends which to remove (merged or stale work) and which to keep (recent
-  work or an open pull request), lets the user freely edit that list, and
-  removes only what the user explicitly approves. Triggered when the user asks
-  to clean, prune, or tidy local branches or worktrees.
+  lists every local branch and worktree (including Herdr-managed worktrees)
+  with a short summary of its work, recommends which to remove (merged or
+  stale work) and which to keep (recent work, open pull request, or active
+  agent), lets the user freely edit that list, and removes only what the
+  user explicitly approves. Triggered when the user asks to clean, prune,
+  or tidy local branches or worktrees.
 argument-hint: "[recent-work window in days, default 14]"
 ---
 
@@ -23,6 +24,7 @@ Removes useless local branches and worktrees without losing work the user still 
 - Confirm the directory is a Git repository and locate the **main worktree** (first entry of `git worktree list --porcelain`). Run every command from it.
 - Resolve the remote (`origin` unless the repository only has another one) and the **default branch** from `git symbolic-ref --short refs/remotes/<remote>/HEAD`, stripping the `<remote>/` prefix (fall back to `main`, then `master`).
 - Check whether the GitHub CLI is authenticated (`gh auth status`). Without it, open pull requests cannot be detected: say so, and keep every branch that has commits not in the default branch (status **PR unknown**).
+- Check whether Herdr is active (`test "${HERDR_ENV:-}" = 1 && command -v herdr >/dev/null 2>&1`). When active, record `$HERDR_WORKSPACE_ID` as the protected active session. When absent or disabled, operate as standard Git/GH CLI.
 
 ---
 
@@ -50,6 +52,9 @@ Gather everything up front, in as few calls as possible:
 | Open pull requests | `gh pr list --state open --limit 500 --json number,title,headRefName` |
 | Merged pull requests | `gh pr list --state merged --limit 500 --json number,title,headRefName,headRefOid` |
 | Commits not in the default branch | `git log --oneline <remote>/<default>..<branch>` |
+| Herdr worktrees & workspaces (when Herdr is active) | `herdr worktree list` and `herdr workspace list` |
+
+When Herdr is active, correlate each Git worktree path with Herdr worktree entries (`.result.worktrees[].path`). If matched, look up its `open_workspace_id` in `herdr workspace list` to obtain the workspace `label` and `agent_status` (`working`, `idle`, `done`).
 
 ### 3.1. Is the Work Merged?
 
@@ -83,7 +88,8 @@ Evaluate each branch together with the worktree that checks it out: they form on
 | **Open PR** | An open pull request has this branch as its head. |
 | **Recent work** | Last commit within the window (argument, default **14 days**). |
 | **Uncommitted changes** | The worktree has staged, unstaged, or untracked files. They cannot be recovered after removal. |
-| **Protected** | Default branch, or the branch/worktree the calling session is running in. Never removable, even on request. |
+| **Active agent in Herdr** | A Herdr workspace associated with this worktree has `agent_status: "working"`. Removing it would abort an in-flight agent task. |
+| **Protected** | Default branch, or the branch/worktree/Herdr workspace (`$HERDR_WORKSPACE_ID`) the calling session is running in. Never removable, even on request. |
 
 **Clean** everything else, split by risk so the user sees what would be lost:
 
@@ -101,18 +107,20 @@ Show both groups with **continuous numbering**, so the user can refer to rows by
 Default branch master: updated 3 commits (fast-forward) ✓
 
 CLEAN (recommended)
- #  Branch                     Worktree            Last commit  Status              Work
- 1  feat/login-sso             —                   2026-08-02   ✅ merged (#41)     SSO login via Google
- 2  fix/date-parse             ../app-date-fix     2026-07-19   ✅ merged (squash)  Date parsing in reports
- 3  spike/cache-redis          —                   2026-05-30   ⚠️ 2 commits, local Redis cache experiment
- 4  (detached)                 ../app-tmp          2026-06-11   🧹 prunable          —
+ #  Branch                     Worktree                          Last commit  Status              Work
+ 1  feat/login-sso             —                                 2026-08-02   ✅ merged (#41)     SSO login via Google
+ 2  fix/date-parse             ../app-date-fix [herdr:wAZ "fix"] 2026-07-19   ✅ merged (squash)  Date parsing in reports
+ 3  spike/cache-redis          —                                 2026-05-30   ⚠️ 2 commits, local Redis cache experiment
+ 4  (detached)                 ../app-tmp                        2026-06-11   🧹 prunable          —
 
 KEEP
- #  Branch                     Worktree            Last commit  Reason              Work
- 5  feat/billing-export        ../app-billing      2026-10-12   recent work         CSV export of invoices
- 6  fix/null-avatar            —                   2026-09-01   open PR #57         Avatar fallback for null
- 7  master                     (main)              2026-10-14   protected           —
+ #  Branch                     Worktree                          Last commit  Reason              Work
+ 5  feat/billing-export        ../app-billing [herdr:wAX "bill"] 2026-10-12   active agent        CSV export of invoices
+ 6  fix/null-avatar            —                                 2026-09-01   open PR #57         Avatar fallback for null
+ 7  master                     (main)                            2026-10-14   protected           —
 ```
+
+When a worktree is linked to an open Herdr workspace, annotate the **Worktree** column with its workspace ID and label: `../path [herdr:<id> "<label>"]`.
 
 Then ask the user to approve or edit the list. Accept free-form edits ("clean 5 and 6", "keep 3", "remove only the worktree of 2"):
 
@@ -127,7 +135,10 @@ Then ask the user to approve or edit the list. Accept free-form edits ("clean 5 
 Process the approved rows in this order, one command per item, never stopping the whole run on a single failure:
 
 1. **Record recovery data** for every branch before touching it: name and tip SHA.
-2. **Worktrees**: `git worktree remove <path>`. Use `--force` only for a worktree the user approved knowing it had uncommitted changes. Then `git worktree prune` for prunable entries.
+2. **Worktrees**:
+   - **Herdr worktree** (associated with an open Herdr workspace): `herdr worktree remove --workspace <id>`. Add `--force` only for a worktree the user approved knowing it had uncommitted changes. This atomically removes the worktree checkout and closes its Herdr workspace along with any child tabs.
+   - **Plain Git worktree**: `git worktree remove <path>`. Use `--force` only for a worktree the user approved knowing it had uncommitted changes.
+   - **Prunable entries**: `git worktree prune`.
 3. **Branches**: `git branch -d <branch>`. If Git refuses because it does not see the work as merged (squash merges, unmerged rows), use `git branch -D <branch>` only for rows the user approved in that state.
 
 Never run `git reset`, `git clean`, `git push --delete`, or any command on the remote.
@@ -146,9 +157,11 @@ Never run `git reset`, `git clean`, `git push --delete`, or any command on the r
 
 - [ ] The default branch was fetched and fast-forwarded (or the reason it could not be is reported); history was never rewritten.
 - [ ] Every local branch and every worktree appeared in exactly one group, with a short work summary.
-- [ ] Keep reasons were limited to open PR, recent work, uncommitted changes, or protected; unmerged and dirty items were flagged with what would be lost.
+- [ ] Keep reasons were limited to open PR, recent work, uncommitted changes, active agent in Herdr, or protected; unmerged and dirty items were flagged with what would be lost.
 - [ ] Nothing was removed before the user explicitly approved the final list; every edit was reflected and re-confirmed.
-- [ ] Protected rows (default branch, calling session's branch and worktree, main worktree) were never removed.
+- [ ] Protected rows (default branch, calling session's branch, worktree, and Herdr workspace, main worktree) were never removed.
+- [ ] Active agents in Herdr (`agent_status: "working"`) were kept unless the user explicitly chose otherwise.
+- [ ] Herdr-managed worktrees were removed via `herdr worktree remove --workspace <id>`, avoiding orphaned workspaces or zombie tabs.
 - [ ] `--force` and `-D` were used only on rows approved in that state.
 - [ ] Nothing on the remote was modified.
 - [ ] The report lists every removal, every failure, and a recovery command for each deleted branch.
