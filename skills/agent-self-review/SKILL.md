@@ -110,7 +110,7 @@ For each requirement or acceptance criterion of the task:
 
 4. **Removed tests**: list the test cases the range deletes, once per run:
    ```bash
-   git diff -U0 <range> | grep -E '^-\s*(it|test|describe)\(|^-\s*(async\s+)?def test_'
+   git diff -U0 <range> | grep -E '^-\s*(it|test|describe)(\.\w+)*\(|^-\s*(async\s+)?def test_'
    ```
    Each removed case needs a destination: the behavior was removed on purpose (cite the DoD item or decision), a named replacement test covers it, or it is declared per Item 2. A removed test with no destination is **Blocking**. Above 30 removed cases, group them by file.
 
