@@ -107,6 +107,10 @@ Test what the system **does** with these inputs. For instance: test how an LLM o
 - Assertions checking prompt strings, button copy, or HTML markup.
 - The same UI literal copied across tests instead of resolved from the component's source.
 - `data-testid` used where a role and accessible name would locate the element.
+- Assertions on log messages, or on collection sizes (`len == 6`) that are not themselves the contract.
+- Sentinel stand-ins (`object()`, empty casts, bare mocks) in place of a real collaborator or a fake implementing its port.
+- A behavior that exists only through registration or composition (plugin list, route table) with no test that fails when the registration is deleted.
+- Tests deleted without the behavior they covered being removed or covered elsewhere.
 - Functions, properties, or methods exported or broadened to public visibility solely for testing.
 - Mocking internal collaborators or verifying internal function call sequences.
 - Tests breaking during refactoring despite observable behavior remaining identical.

@@ -61,9 +61,9 @@ Inspect everything since the **last clean checkpoint**: `<checkpoint>..HEAD` plu
 
 Inspect the full branch diff against its merge-base with the target branch. Run it **once** before a pull request is opened or marked ready, and again only if commits land after it. Its purpose is what increment runs cannot see: issues that emerge across commits (the same logic duplicated by different increments, rules drifting between commits, a merge that reintroduced a violation).
 
-- Phases 1–3 run in full over the branch diff.
-- Phases 4–5 do not re-judge each line: increment runs already did. They look strictly for **cross-commit** concerns: duplicated logic or queries introduced by different commits, inconsistent patterns for the same problem, dead code left behind by later commits.
-- If the branch diff exceeds 60 changed files, run Phases 4–5 only over files changed in more than one commit, and state that limit in the verdict.
+- Phases 1–3 and 4a run in full over the branch diff.
+- Phases 4b–5 do not re-judge each line: increment runs already did. They look strictly for **cross-commit** concerns: duplicated logic or queries introduced by different commits, inconsistent patterns for the same problem, dead code left behind by later commits.
+- If the branch diff exceeds 60 changed files, run Phases 4b–5 only over files changed in more than one commit, and state that limit in the verdict.
 
 ### 3.3. Pre-existing Code
 
@@ -97,8 +97,10 @@ Reporting obligations:
 
 ### Phase 3: BDD Definition of Done Coverage (Objective → Blocking)
 For each requirement or acceptance criterion of the task:
-1. **Verified via code**: confirm an automated test verifies the behavior through the public interface, adhering to [testing.md](../coding/references/testing.md). Tests verifying internal details or adjacent concerns do not qualify as coverage.
-2. **Untestable via code**: if the behavior cannot be code-tested ([testing.md](../coding/references/testing.md), Section 5), explicitly declare:
+1. **Verified via code**: name the test that verifies the behavior through the public interface (`file::test name`, not just a file), adhering to [testing.md](../coding/references/testing.md), and answer in one line: *if this behavior were removed, which assertion would fail?* Tests verifying internal details, adjacent concerns, or the behavior only indirectly do not qualify as coverage. Reason about it; never run mutation testing.
+   - **Claims of enforcement** ("at most N", "never", "always", "rejected when"): name the code that enforces the claim (schema, validator, guard). A claim enforced only by prompt prose or documentation is not ✅.
+   - **Wiring**: when a behavior exists only because something is registered or composed (plugin list, route table, dependency container, event subscription), ask *if the registration line were deleted, which test would fail?* If none, the behavior lacks coverage: test it through the composed entry point, not the glue in isolation.
+2. **Untestable via code**: if the behavior cannot be code-tested ([testing.md](../coding/references/testing.md), Section 5), explicitly declare the following. A behavior that could be enforced by code (a limit a schema can express, a rule a validator can check) is testable: declaring it untestable is not allowed; if enforcing it requires a contract change, the behavior stays uncovered and the change is **Escalate**.
    - what the behavior is;
    - why it cannot be tested via code;
    - how it was verified through alternative means;
@@ -106,10 +108,26 @@ For each requirement or acceptance criterion of the task:
 
 3. **Missing infrastructure**: if the behavior could only be tested with infrastructure the project currently lacks, declare it per Item 2 and flag the missing infrastructure as **Escalate**. Do not build the infrastructure.
 
+4. **Removed tests**: list the test cases the range deletes, once per run:
+   ```bash
+   git diff -U0 <range> | grep -E '^-\s*(it|test|describe)\(|^-\s*(async\s+)?def test_'
+   ```
+   Each removed case needs a destination: the behavior was removed on purpose (cite the DoD item or decision), a named replacement test covers it, or it is declared per Item 2. A removed test with no destination is **Blocking**. Above 30 removed cases, group them by file.
+
 > 🚨 Any DoD behavior lacking automated tests and lacking an explicit declaration is **Blocking**.
 
-### Phase 4: Test Suite Sanity (Judgment → Should fix)
-- Apply [testing.md](../coding/references/testing.md) to the tests in scope. Tests prone to breaking during refactoring without behavior change (coupled to text copy, markup structure, CSS class names, or internals), or exposing private symbols solely for testing, are **Should fix**, subject to the Section 5 budget.
+### Phase 4: Test Suite Sanity
+
+Apply [testing.md](../coding/references/testing.md) to the tests in scope. Project testing rules (Phase 2 ledger) prevail over `testing.md` where they conflict: cite the project rule and do not "fix" a test toward the general guideline, or the next review reverts it.
+
+**4a. Objective checks (Blocking)**, on test lines added or altered in the range:
+- a production symbol that is private by convention or visibility (`_name`, `#field`, non-exported) imported or accessed by a test;
+- a spy, mock, or monkeypatch replacing an internal collaborator (a module, store method, or class this codebase owns) instead of a boundary listed in `testing.md` Section 3;
+- a sentinel stand-in (`object()`, `{}` cast to a type, bare `MagicMock()`) where the real collaborator or a fake implementing its port could run.
+
+When no public path exists to reach the behavior, the remedy is a module extraction: **Escalate** instead (`testing.md` Section 1). A pattern the range only extends, already present in the file before the range, is pre-existing (Section 3.3).
+
+**4b. Judgment checks (Should fix)**: tests prone to breaking during refactoring without behavior change (asserting copy, markup structure, CSS class names, log text, or collection sizes that are not the contract), subject to the Section 5 budget.
 
 ### Phase 5: Code Quality and Query Performance (Judgment → Should fix)
 - **Failure-path questions first.** Before judging style or structure, answer these over the code in scope; each "yes, and nothing handles it" is a candidate finding with a ready-made failure scenario:
@@ -131,17 +149,18 @@ For each requirement or acceptance criterion of the task:
 ## 5. Loop and Convergence
 
 ### Phase Ordering
-Execute objective phases (1, 2, 3) first and resolve all **Blocking** issues. Only then execute judgment phases (4, 5) on the stabilized code.
+Execute objective checks (Phases 1, 2, 3, and 4a) first and resolve all **Blocking** issues. Only then execute judgment checks (4b, 5) on the stabilized code.
 
 ### Budget
-- Maximum of **5 Should fix remediations** per run, combining Phases 4 and 5, prioritized strictly by impact.
-- Judgment findings exceeding the budget are **discarded**, not deferred.
+- Maximum of **5 Should fix remediations** per run, combining Phases 4b and 5, prioritized strictly by impact.
+- Judgment findings exceeding the budget are not deferred; they are named in a single line of the verdict (`Over budget: <title>, <title>`), so the human sees what was left.
+- A finding classified **Should fix** never disappears silently: it ends as fixed, justified in one line, or over budget.
 
 ### Re-evaluation
 - After applying fixes, re-run Phases **1 and 3** in their entirety (they are fast and deterministic).
 - Re-run Phase **2** against the existing rule ledger, over the lines changed by the fixes. Do not rebuild the ledger or re-read rule files. Fixes are code like any other: a fix that breaks a ledger rule is Blocking.
-- Phases **4 and 5 do not run again**.
-- **Zero second-order judgment findings**: judgment smells introduced by a remediation never trigger an additional round of Phases 4–5. Objective violations (Phases 1–3) introduced by a remediation are still Blocking.
+- Re-run Phase **4a** over test lines changed by the fixes. Phases **4b and 5 do not run again**.
+- **Zero second-order judgment findings**: judgment smells introduced by a remediation never trigger an additional round of Phases 4b–5. Objective violations (Phases 1–3 and 4a) introduced by a remediation are still Blocking.
 
 ### Iteration Limit
 - Maximum of **3 rounds** of evaluate → fix → re-evaluate.
@@ -163,13 +182,20 @@ The deliverable is **clean** at the agent layer when:
 - every reported **Should fix** was remediated or justified in a single sentence;
 - every **Escalate** finding is logged as a pending Human Layer decision.
 
-Record a concise traceability log: the reviewed range and mode, the rule files in the ledger, what was fixed, what was justified, and what was escalated. Discarded findings are not recorded.
+Record a concise traceability log: the reviewed range and mode, the rule files in the ledger, the DoD table with named tests, the removed-test destinations, what was fixed, what was justified, what was over budget, and what was escalated. Findings classified **Discard** are not recorded.
+
+**Evidence of execution**: a phase without its evidence in the log (Phase 1 commands and results, Phase 2 ledger, Phase 3 table and removed-test list, Phases 4–5 files examined) did not run, and the verdict is not clean. When the review is delegated to a subagent, its brief carries the absolute path to this skill, and a report lacking this evidence is rejected, not relayed.
+
+**Open escalations** are carried forward: branch mode lists every Escalate recorded on the branch that the human has not resolved, so it reaches the pull request instead of being lost in an earlier run.
 
 **Checkpoint**: when the verdict is clean (or blockers are documented after round 3) and all work is committed, mark `HEAD` so the next increment starts there:
 
 ```bash
-git notes --ref=self-review add -f -m "<increment|branch> clean <ISO-8601 date>" HEAD
+git notes --ref=self-review add -f -m "<increment|branch> clean <ISO-8601 date>" \
+  -m "Escalate: <title>" HEAD   # one -m per open escalation, if any
 ```
+
+Branch mode collects the open escalations recorded on the branch with `git log --notes=self-review --format=%N <merge-base>..HEAD | grep '^Escalate:'`.
 
 The note stays local (git does not push notes by default) and never alters commit history.
 
@@ -177,21 +203,25 @@ The note stays local (git does not push notes by default) and never alters commi
 
 ## 7. Escape Classification
 
-When a later review accepts a rules or code-quality finding on code this pipeline authored, the reviewing skill classifies why self-review let it through, per [escape-classification.md](references/escape-classification.md). Escaped findings never open a self-review round of their own.
+When a later review accepts a rules, tests, or code-quality finding on code this pipeline authored, the reviewing skill classifies why self-review let it through, per [escape-classification.md](references/escape-classification.md). Escaped findings never open a self-review round of their own.
 
 ---
 
 ## 8. Success Validation
 
 - [ ] Scope was a git range (increment from the checkpoint, or branch against the merge-base), including merges and subagent commits; never an author-written summary.
-- [ ] Objective phases (1–3) executed prior to judgment phases (4–5).
+- [ ] Objective checks (Phases 1–3, 4a) executed prior to judgment checks (4b, 5).
 - [ ] The rule ledger lists every applicable rule file, each read in full; test files were checked against it.
 - [ ] Every rule violation and every claimed exception quotes the rule text.
 - [ ] Mechanizable rules without automated checks were escalated once each.
+- [ ] Every ✅ DoD behavior names its test and the assertion that would fail without it; enforcement claims name the enforcing code; wiring behaviors have a test through the composed entry point.
+- [ ] Every removed test case has a destination (removed behavior, named replacement, or declaration).
+- [ ] Phase 4a objective checks ran on added test lines; project testing rules prevailed over `testing.md` where they conflict.
 - [ ] Failure-path questions answered before code-quality judgment.
-- [ ] Maximum 5 Should fix remediations applied across at most 3 iteration rounds.
+- [ ] Maximum 5 Should fix remediations applied across at most 3 iteration rounds; every Should fix ended fixed, justified, or named as over budget.
+- [ ] The log carries evidence for every phase; delegated runs without that evidence were rejected.
 - [ ] Fixes were re-checked against Phases 1–3; zero new judgment rounds opened for second-order findings.
 - [ ] Zero contract, boundary, or dependency direction changes applied: all were escalated.
 - [ ] Schema migrations and queries audited against [database-and-migrations.md](../coding/references/database-and-migrations.md) if database code was modified.
 - [ ] Automated tests pass following the final remediation commit, fixes committed separately, and the checkpoint note recorded on `HEAD`.
-- [ ] In branch mode, ran at most once per head commit, with Phases 4–5 restricted to cross-commit concerns.
+- [ ] In branch mode, ran at most once per head commit, with Phases 4b–5 restricted to cross-commit concerns.
