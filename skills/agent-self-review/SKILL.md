@@ -220,7 +220,7 @@ When a later review accepts a rules, tests, or code-quality finding on code this
 - [ ] Failure-path questions answered before code-quality judgment.
 - [ ] Maximum 5 Should fix remediations applied across at most 3 iteration rounds; every Should fix ended fixed, justified, or named as over budget.
 - [ ] The log carries evidence for every phase; delegated runs without that evidence were rejected.
-- [ ] Fixes were re-checked against Phases 1–3; zero new judgment rounds opened for second-order findings.
+- [ ] Fixes were re-checked against Phases 1–3 and 4a; zero new judgment rounds opened for second-order findings.
 - [ ] Zero contract, boundary, or dependency direction changes applied: all were escalated.
 - [ ] Schema migrations and queries audited against [database-and-migrations.md](../coding/references/database-and-migrations.md) if database code was modified.
 - [ ] Automated tests pass following the final remediation commit, fixes committed separately, and the checkpoint note recorded on `HEAD`.
