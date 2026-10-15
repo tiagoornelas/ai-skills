@@ -52,9 +52,7 @@ Inspect everything since the **last clean checkpoint**: `<checkpoint>..HEAD` plu
 
 - **Checkpoint**: the nearest ancestor of `HEAD` carrying a self-review note (Section 6):
   ```bash
-  for c in $(git rev-list HEAD); do
-    git notes --ref=self-review show "$c" >/dev/null 2>&1 && echo "$c" && break
-  done
+  git rev-list HEAD | grep -Fx -f <(git notes --ref=self-review list | cut -d' ' -f2) | head -1
   ```
 - **No checkpoint found**: fall back to the merge-base with the branch the work will merge into (`git merge-base HEAD origin/<base>`).
 - Merge commits: inspect the merge result (`git diff <checkpoint>..HEAD`), not each parent separately; conflict resolutions and code brought in by the merge that this branch did not author are out of scope.
