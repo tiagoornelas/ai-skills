@@ -219,6 +219,8 @@ Verdict rule: any 🔴 (unresolved previous blocker, new critical regression in 
 
 Engage in conversation and answer questions. The user may promote, demote, or discard findings.
 
+When the PR was authored by the agent pipeline (the user's own work), tag each **accepted** 🔧 and 🧹 finding with its escape cause per [`agent-self-review`](../agent-self-review/SKILL.md) Section 7 and add the one-line tally to the summary.
+
 ---
 
 ## 8. Format Accepted Points into Comments
@@ -281,5 +283,6 @@ Never publish automatically. If the user explicitly requests publication, displa
 - [ ] Every finding contains `file:line` and severity badge; zero cross-axis contamination.
 - [ ] Axis 🏗️ declares which intended architecture baseline was used.
 - [ ] Recommended verdict adheres to Section 7 rules, with final verdict determined by user.
+- [ ] On agent-authored PRs, accepted 🔧 and 🧹 findings carry an escape-cause tally.
 - [ ] Only user-accepted findings became comments, with exact line locations, humanized, and free of AI co-authorship footers.
 - [ ] Zero content published to GitHub without explicit request and confirmation.

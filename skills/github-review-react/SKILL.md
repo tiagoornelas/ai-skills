@@ -82,6 +82,8 @@ Disposition recommendation per comment:
 | ❌ **Reject** | Not valid (issue does not exist or is already handled) or cost outweighs benefit. Concrete rationale mandatory. |
 | 💬 **Reply Only** | Question, clarification, or praise: requires no code changes. |
 
+For each accepted (✅/🔀) 🧹, 🎨, or rule-violation comment on code the agent pipeline authored, tag the escape cause per [`agent-self-review`](../agent-self-review/SKILL.md) Section 7 and report the one-line tally with the discussion. **Mechanizable** escapes also get a proposed automated check for the user to accept or defer.
+
 ---
 
 ## 3. Present and Discuss
@@ -209,6 +211,7 @@ gh pr comment <pr> --body-file <file with quote reply>
 
 - [ ] Unresolved threads and review comments collected; outdated ones verified against current code.
 - [ ] Every comment categorized with validity, applicability, and user-approved disposition.
+- [ ] Accepted rules and code-quality comments on agent-authored code tagged with their self-review escape cause.
 - [ ] Every ❌ rejection has concrete rationale, and every 🔀 adjustment explains why the alternative resolves the concern.
 - [ ] Accepted modifications implemented via `coding`, passed `agent-self-review`, and committed with recorded SHA.
 - [ ] Every thread has a concise, courteous, humanized reply free of local paths and signatures.
