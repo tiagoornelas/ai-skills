@@ -139,21 +139,23 @@ GitHub CLI and API cannot upload images into a PR body, so do not try to attach 
 
 ## 5. PR Creation Workflow
 
-1. **Ensure Remote is Up to Date**:
+1. **Branch Self-Review**:
+   - If the branch carries code authored by the agent pipeline, run [`agent-self-review`](../agent-self-review/SKILL.md) in **branch mode** (Section 3.2) unless `HEAD` already carries a `branch` self-review note. Resolve its Blocking findings before continuing; list its Escalate findings for the developer.
+2. **Ensure Remote is Up to Date**:
    - Verify all commits are recorded and push the branch:
      ```bash
      git push -u origin <branch-name>
      ```
-2. **Review with Developer**:
+3. **Review with Developer**:
    - Present the full draft of title and description for developer approval before publishing. In that conversation preview, show a terminal-native rendering of each diagram (per `visualize-it`) so it is readable; the published body keeps the Mermaid block.
    - If the diff changes the user-facing presentation layer, suggest one optional screenshot (see [Screenshot](#screenshot-optional)).
-3. **Create the PR**:
+4. **Create the PR**:
    - Run the command via GitHub CLI:
      ```bash
      gh pr create --draft --title "<title>" --body "<body>"
      ```
    - By default, create as `--draft` to give the developer a final pass on GitHub's interface, unless they explicitly request opening as ready for review.
-4. **Output**:
+5. **Output**:
    - Return the clickable GitHub PR link.
    - If a screenshot was accepted but not embedded, remind the developer to paste it through GitHub's web interface.
 
@@ -161,6 +163,7 @@ GitHub CLI and API cannot upload images into a PR body, so do not try to attach 
 
 ## 6. Success Validation
 
+- [ ] Agent-authored branches passed `agent-self-review` in branch mode before the PR was opened.
 - [ ] Issue traceability was verified or agreed with the developer.
 - [ ] Supporting references found in context are listed with descriptive labels, with no empty categories.
 - [ ] Title follows standardized format (`Type/Description`).

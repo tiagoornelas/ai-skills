@@ -38,14 +38,14 @@ Present a direct table mapping each acceptance criterion. This is the **canonica
 
 | Status | Meaning |
 | :---: | :--- |
-| ✅ | Covered by an automated test verifying behavior through the public interface. |
+| ✅ | Covered by a named automated test verifying behavior through the public interface. |
 | 🔎 | Not code-testable; verified by alternative means, with method disclosed. |
 | 👤 | Requires manual human validation. |
 | 🚨 | Missing, or lacking both test coverage and declaration. |
 
 | Status | Delivered Behavior (DoD) | Verification Evidence | Action for Human |
 | :---: | :--- | :--- | :--- |
-| ✅ | Interest calculation rules | Unit test in `tests/interest.test.ts` | No action required |
+| ✅ | Interest calculation rules | `tests/interest.test.ts::applies compound interest monthly` | No action required |
 | 🔎 | Welcome email dispatched via real vendor | Not code-testable; verified in staging with dispatch logs | Optional to inspect |
 | 👤 | Responsive visual layout on mobile | Not code-testable | Manually verify in browser viewport (375px) |
 | 🚨 | Acceptance Criterion X unverified | No test and no declaration | **Critical blocker for human evaluation** |
