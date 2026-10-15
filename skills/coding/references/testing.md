@@ -31,16 +31,26 @@ Do not make assertions on:
 - **Structure**: markup trees, internal call sequences, private variable names, internal data formats.
 - **Snapshots** of DOM trees, markup, or internal representations. Snapshots are only acceptable when the captured payload **is** the observable contract (e.g., the public JSON response of a REST endpoint).
 
-In frontend tests, query elements by **role** (`role`) when unique on screen, without matching on transient label text. When non-unique, use a **stable identifier** (`data-testid`). Assert on the **observable effect** of the interaction (what happens after clicking), not on the presence of decorative copy.
+### UI Text: Locate, Assert, Source
+
+A frontend test touches UI text in three distinct ways, each with its own rule:
+
+| Operation | Rule |
+| :--- | :--- |
+| **Locate** an element | Query the way a user or assistive technology would: `getByRole(role, { name })` or `getByLabelText` first; `data-testid` only when no accessible semantics exist. The accessible name is part of the accessibility contract, so locating by it is not coupling. |
+| **Assert** text content | Do not assert copy (`toHaveTextContent("…")`, `getByText` as the assertion). Exception: the text is the contract itself, or is produced by logic under test (a count capped at `"9+"`, a formatted date). |
+| **Source** of the expected string | Resolve it from the same source the component renders (exported label constant, i18n catalog, registry lookup); never copy the literal. When no importable source exists, declare the literal **once per test file**. |
 
 ```ts
-// Brittle: breaks whenever copy changes, with zero behavioral change
+// Brittle: copied literal located and asserted; any rewording breaks it
 expect(screen.getByText("Save changes")).toBeInTheDocument();
 
-// Robust: selects by semantic role and asserts observable effect
-await user.click(screen.getByRole("button"));
+// Robust: located by role and resolved name, asserting the observable effect
+await user.click(screen.getByRole("button", { name: PROFILE_LABELS.save }));
 expect(await api.savedProfile()).toEqual(editedProfile);
 ```
+
+Exporting a component's labels for this purpose does not violate Section 1: the accessible name is part of the component's public contract.
 
 ---
 
@@ -95,6 +105,8 @@ Test what the system **does** with these inputs. For instance: test how an LLM o
 ## Red Flags
 
 - Assertions checking prompt strings, button copy, or HTML markup.
+- The same UI literal copied across tests instead of resolved from the component's source.
+- `data-testid` used where a role and accessible name would locate the element.
 - Functions, properties, or methods exported or broadened to public visibility solely for testing.
 - Mocking internal collaborators or verifying internal function call sequences.
 - Tests breaking during refactoring despite observable behavior remaining identical.
