@@ -82,7 +82,7 @@ Disposition recommendation per comment:
 | ❌ **Reject** | Not valid (issue does not exist or is already handled) or cost outweighs benefit. Concrete rationale mandatory. |
 | 💬 **Reply Only** | Question, clarification, or praise: requires no code changes. |
 
-For each accepted (✅/🔀) 🧹, 🎨, or rule-violation comment on code the agent pipeline authored, tag the escape cause per [`agent-self-review`](../agent-self-review/SKILL.md) Section 7 and report the one-line tally with the discussion. **Mechanizable** escapes also get a proposed automated check for the user to accept or defer.
+For each accepted (✅/🔀) 🧹, 🎨, or rule-violation comment on code the agent pipeline authored, tag the escape cause per [escape-classification.md](../agent-self-review/references/escape-classification.md) and report the one-line tally with the discussion. **Mechanizable** escapes also get a proposed automated check for the user to accept or defer.
 
 ---
 

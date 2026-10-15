@@ -219,7 +219,7 @@ Verdict rule: any 🔴 (unresolved previous blocker, new critical regression in 
 
 Engage in conversation and answer questions. The user may promote, demote, or discard findings.
 
-When the PR was authored by the agent pipeline (the user's own work), tag each **accepted** 🔧 and 🧹 finding with its escape cause per [`agent-self-review`](../agent-self-review/SKILL.md) Section 7 and add the one-line tally to the summary.
+When the PR was authored by the agent pipeline (the user's own work), tag each **accepted** 🔧 and 🧹 finding with its escape cause per [escape-classification.md](../agent-self-review/references/escape-classification.md) and add the one-line tally to the summary.
 
 ---
 
