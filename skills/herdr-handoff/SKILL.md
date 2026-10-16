@@ -93,7 +93,7 @@ If the request fully specifies the plan, proceed. If the skill inferred anything
 │ lead skill: github-code-review 153│                               │
 └───────────────────────────────────┴───────────────────────────────┘
 
-━━ workspace: fix display name ✚ new · worktree · fix/cj-display-name ━━━━━━
+━━ workspace: fix display name ✚ new · worktree · fix/user-display-name ━━━━
 ┌─ tab: fix display name ✚ new ─────────────────────────────────────┐
 │ display-fix · claude · mission: implement the fix                 │
 └───────────────────────────────────────────────────────────────────┘

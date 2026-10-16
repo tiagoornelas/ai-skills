@@ -123,7 +123,7 @@ After tasks:
 ## 4. Writing Guidelines
 
 - **Language**: User session language by default; follow another language if explicitly requested. Keep technical terms, identifiers, and code in their original form.
-- **Title**: imperative and specific, up to ~70 characters, describing the outcome (e.g., *"Enable Google OAuth login"*, *"Fix overdue installment interest calculation"*). No type prefixes, tracking keys, or emojis.
+- **Title**: imperative and specific, up to ~70 characters, describing the outcome (e.g., *"Enable Google OAuth login"*, *"Fix shipping cost calculation for multi-item carts"*). No type prefixes, tracking keys, or emojis.
 - **Concise Description**: readers must grasp the task in under a minute. Cut filler that does not clarify why, what, or how to verify.
 - **Outcomes, Not Mechanics**: describe capabilities and behaviors (Human Layer). Internal implementation minutiae (private helper names, directory paths) belong strictly when essential to task comprehension.
 - **Verifiable Acceptance Criteria**: each criterion is independently checkable. For completed tasks, describe what was delivered; for to-do tasks, describe what defines "done".
