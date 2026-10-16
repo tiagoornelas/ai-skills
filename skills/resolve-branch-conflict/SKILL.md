@@ -54,7 +54,7 @@ Summarize in a single sentence per side: **"We intended X. They intended Y."** I
 
 Diagram the divergence using `visualize-it`:
 - **Timeline**: merge-base, commits from each side, and where each modified the conflict area.
-- **Module Collision Map**: which modules each side modified using `visualize-it` badges (🆕 🔧 🗑️ ⚠️), marking points of collision with ⚠️.
+- **Module Collision Map**: which modules each side modified using `visualize-it` change notation (`+ ~ − !` in terminal diagrams, 🆕 🔧 🗑️ ⚠️ in rendered Markdown), marking points of collision as deviations (`!` / ⚠️).
 
 ---
 

@@ -29,9 +29,9 @@ When invoked, this skill generates a structured presentation containing:
 ### 1. Module and Dependency Map (via `visualize-it`)
 - Render the component map with [`visualize-it`](../visualize-it/SKILL.md) notation, highlighting what changed, dependency direction (confirming arrows point inward toward business rules), and any architectural deviations.
 
-### 2. Contracts and Public Interfaces
-- Public interfaces, endpoints, types, and signatures created or altered.
-- What each contract guarantees and its failure modes.
+### 2. Contracts and Public Interfaces (via `visualize-it`)
+- One interface card per component whose public interface was created, altered, or used by the change, separate from the map.
+- What each new or altered contract guarantees and its failure modes, in the card's contract layer when they changed.
 
 ### 3. Behavior Validation Table (DoD)
 Present a direct table mapping each acceptance criterion. This is the **canonical legend** for DoD statuses across skills:
@@ -61,6 +61,6 @@ Highlight at the conclusion strictly what demands human judgment:
 ## 3. Success Validation
 
 - [ ] Presentation contains strictly Human Layer concerns (architecture, contracts, behaviors).
-- [ ] Module map and dependency direction diagrammed via [`visualize-it`](../visualize-it/SKILL.md).
+- [ ] Module map and dependency direction diagrammed via [`visualize-it`](../visualize-it/SKILL.md), with interface cards for created, altered, or used public interfaces.
 - [ ] Every DoD behavior mapped in the table using canonical status indicators (✅, 🔎, 👤, 🚨) with clear evidence.
 - [ ] Strictly items demanding genuine human deliberation were highlighted for decision.

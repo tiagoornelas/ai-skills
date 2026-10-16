@@ -96,7 +96,8 @@ and do not dilute it: peer agents are covering the other axes.
 
 ## Deliverable
 A Design Brief containing ONE alternative (omit the "Alternatives Considered" table).
-Must include: module map, interface cards, failure modes, and a "Known Weaknesses"
+Must include: module map, interface cards with contract layer (promise, hidden
+knowledge, failure modes) as defined by visualize-it, and a "Known Weaknesses"
 section listing honest limitations of this approach.
 Cost strictly in relative terms (complexity, risk, change footprint), with zero
 schedule estimates or project delivery phases.
@@ -113,7 +114,7 @@ Do not write implementation code.
 
 ## Alternatives
 ### A — <Axis Name>
-<Core concept in 2–3 sentences + module map + primary interface>
+<Core concept in 2–3 sentences + module map + interface card of the primary interface>
 ### B — <Axis Name>
 ...
 
