@@ -73,20 +73,35 @@ Every workspace, tab, and pane the skill creates gets its label. Herdr fills unl
 
 ### 2.4. Confirm Only What Was Inferred
 
-If the request fully specifies the plan, proceed. If the skill inferred anything (missions, lead skills, worktree isolation, branch names, harness, workspace creation), show the plan as a Unicode box-drawing diagram and wait for the user's go-ahead:
+If the request fully specifies the plan, proceed. If the skill inferred anything (missions, lead skills, worktree isolation, branch names, harness, workspace creation), show the plan as a Unicode box-drawing diagram and wait for the user's go-ahead.
+
+**Make the calling session unmistakable.** Always draw the calling workspace and tab, even though nothing in them changes, so the user can locate the new streams relative to where they are:
+
+- The calling workspace header carries `◉ CURRENT WORKSPACE`; every other workspace header carries `✚ new` (or `✚ new · worktree · <branch>`).
+- The calling tab uses **double-line borders** (`╔ ═ ╗`) and `◉ YOU ARE HERE (untouched)`; new tabs use single-line borders and `✚ new`.
+- A new tab inside the current workspace sits under the current workspace header.
+- End with a one-line legend: `◉ current session · ✚ will be created`.
 
 ```text
-workspace: ai-skills (current)
-┌─ tab: review pr 153 ──────────────┬───────────────────────────────┐
+━━ workspace: ai-skills ◉ CURRENT WORKSPACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+╔═ tab: plan handoff ◉ YOU ARE HERE (untouched) ════════════════════════════╗
+║ this session · claude                                                     ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+┌─ tab: review pr 153 ✚ new ────────┬───────────────────────────────┐
 │ pr-review · claude                │ pr-second-opinion · codex     │
 │ mission: review the diff          │ mission: challenge the review │
 │ lead skill: github-code-review 153│                               │
 └───────────────────────────────────┴───────────────────────────────┘
-workspace: fix display name (worktree · fix/cj-display-name)
-┌─ tab: fix display name ───────────────────────────────────────────┐
+
+━━ workspace: fix display name ✚ new · worktree · fix/cj-display-name ━━━━━━
+┌─ tab: fix display name ✚ new ─────────────────────────────────────┐
 │ display-fix · claude · mission: implement the fix                 │
 └───────────────────────────────────────────────────────────────────┘
+
+◉ current session · ✚ will be created
 ```
+
+Resolve the calling workspace and tab labels from `herdr workspace get "$HERDR_WORKSPACE_ID"` and the tab of `$HERDR_PANE_ID` (check `herdr pane get --help` for the field), never from memory.
 
 ---
 
@@ -155,6 +170,7 @@ Then add:
 - [ ] Running inside Herdr was verified before any control command; no `--machine` command was issued.
 - [ ] Every created workspace, tab, and pane used `--no-focus`; the calling tab was left untouched.
 - [ ] Missions and every other inferred choice were confirmed by the user before anything was opened.
+- [ ] The plan diagram, when shown, highlights the calling workspace (`◉ CURRENT WORKSPACE`) and calling tab (double-line border, `◉ YOU ARE HERE`), and marks everything to be created with `✚ new`.
 - [ ] Each stream has its own handoff file, written per the `handoff` skill, with the stream's mission as its goal.
 - [ ] Code-writing streams running alongside another writer live in their own worktree workspace; branch names follow `git-branch`.
 - [ ] No tab holds more than two agents; every created workspace, tab, and pane carries a semantic label (no `1` tab, no pane named after its harness), consistent with the agent names.
