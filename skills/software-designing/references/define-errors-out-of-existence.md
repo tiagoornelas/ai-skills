@@ -100,7 +100,7 @@ For every failure mode in a contract, evaluate in sequence:
 4. **Is recovery unwarranted, making termination with diagnostics preferable?**
 5. Only then: **expose the exception in the public contract**, documented with actionable information callers need to recover.
 
-Remaining failure modes are **Human Layer decisions**: present them on interface cards, documenting both preserved errors and those successfully defined out of existence.
+Remaining failure modes are **Human Layer decisions**: present them in the contract layer of interface cards (via [`visualize-it`](../../visualize-it/SKILL.md)), documenting both preserved errors and those successfully defined out of existence.
 
 ---
 

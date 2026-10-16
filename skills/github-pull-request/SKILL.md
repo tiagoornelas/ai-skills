@@ -16,7 +16,7 @@ Skill for structuring, documenting, and opening Pull Requests on GitHub.
 
 - **Designed for the Reviewer**: The reviewer must understand the purpose of the PR within the first 5 seconds of reading.
 - **Focus on High-Level Review**: Grounded in the philosophy of [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md) and [`human-review`](../human-review/SKILL.md). Do not clutter the PR with internal implementation minutiae already validated by [`agent-self-review`](../agent-self-review/SKILL.md).
-- **Visuals via `visualize-it`**: Mermaid diagrams clearly communicate boundaries and contracts.
+- **Visuals via `visualize-it`**: a clean Mermaid module map shows boundaries and dependency direction; separate interface cards show what each component exposes and what changed.
 
 ---
 
@@ -74,7 +74,7 @@ Use the structure below:
 
 > **Body language**: all prose and section headings in the description, plus the DoD table header and legend, use the team/repository language (same rule as the title). The template headings below are placeholders: translate them. Keep technical terms (`Definition of Done`, `breaking changes`) and code identifiers as is. Do not copy the language of previous PRs if it conflicts with this rule.
 
-```markdown
+````markdown
 ## Summary
 [In 1 or 2 direct sentences, explain what this PR does and why it exists from the reader's perspective. Be direct: what does the system do now that it did not do before?]
 
@@ -92,17 +92,27 @@ Use the structure below:
 
 ## Architecture & Contracts
 
-<!-- Use the visualize-it skill to generate the Mermaid architecture diagram -->
+<!-- Module map via visualize-it: friendly names, type symbols, unlabeled arrows, its classDef styles, and the legend line below -->
 ```mermaid
 graph LR
-  Client[Client / Route] --> Controller[🆕 AuthController]
-  Controller --> Service[AuthService]
-  Service --> Repo[UserRepository]
+  L(["▶ Login 🆕"]):::entry --> S["◆ Sign-in 🔧"]:::domain
+  S --> U{{"◇ Users"}}:::port
+  P[["■ Postgres"]]:::infra --> U
 ```
+▶ entry · ◆ business rule · ◇ contract · ■ infra · arrow = depends on · 🆕 new · 🔧 modified · ⚠️ deviation
 
-- **Modules / Components**: Summary of new, modified, or removed components using [`visualize-it`](../visualize-it/SKILL.md) notation.
-- **Interfaces & Contracts**: What public interfaces created/modified guarantee and how they behave on failure.
-- **Dependency Direction**: Confirmation that dependencies continue pointing inward toward business rules ([dependency-direction.md](../software-designing/references/dependency-direction.md)).
+<One-paragraph reading of the map: what is new, and confirmation that dependencies keep pointing inward toward business rules ([dependency-direction.md](../software-designing/references/dependency-direction.md)), or the ⚠️ deviation.>
+
+### Interface Cards
+<!-- One card per component with a new, altered, or used public interface, in the visualize-it interface card format. Add the contract layer only to new or altered contracts whose guarantees or failure modes changed. -->
+
+#### ◆ Sign-in 🔧
+`SignInService` · 4 methods · 2 in scope
+
+- 🔧 `signIn(email, password, device) → Session` · before: `signIn(email, password)`
+- `refresh(token) → Session` · _used by this change_
+
+<sub>Out of scope: `signOut` · `revokeAll`</sub>
 
 ---
 
@@ -127,7 +137,7 @@ Status table mapping implemented behaviors to verification status, adhering to t
 
 ## Impact & Breaking Changes
 - [Describe API contract breaks, database migrations, or new environment variables. If none, write "None"].
-```
+````
 
 ### Screenshot (Optional)
 
@@ -167,7 +177,7 @@ GitHub CLI and API cannot upload images into a PR body, so do not try to attach 
 - [ ] Issue traceability was verified or agreed with the developer.
 - [ ] Supporting references found in context are listed with descriptive labels, with no empty categories.
 - [ ] Title follows standardized format (`Type/Description`).
-- [ ] Body includes direct summary, architecture diagram (via `visualize-it`), and DoD table with official legend.
+- [ ] Body includes direct summary, module map and interface cards (via `visualize-it`), and DoD table with official legend.
 - [ ] Section headings, DoD table header, and legend are in the team/repository language, not the template's English.
 - [ ] If the diff changes the user-facing presentation layer, one optional screenshot was suggested (and a reminder given if not embedded).
 - [ ] Full draft was presented and approved by the user prior to publishing.

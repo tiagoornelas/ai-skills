@@ -100,7 +100,7 @@ PostgresPersistence ──implements──┘
 6. **The plug-in test**: for each detail, ask "Can this be replaced with an in-memory double without editing business logic?" If not, the boundary is leaking.
 7. List **infrastructure decisions that can be deferred** and the criteria needed to make them.
 
-When presenting to the human, highlight core domain, plug-ins, and boundary lines on the module map, showing all boundary-crossing arrows pointing inward, accompanied by interface cards for each port. Dependency direction, ports, and deferred decisions belong to the Human Layer.
+When presenting to the human, use the [`visualize-it`](../../visualize-it/SKILL.md) type symbols to tell core domain (`◆`), ports (`◇`), and plug-ins (`■`) apart on the module map, showing all boundary-crossing arrows pointing inward, accompanied by interface cards for each port. Dependency direction, ports, and deferred decisions belong to the Human Layer.
 
 ---
 
