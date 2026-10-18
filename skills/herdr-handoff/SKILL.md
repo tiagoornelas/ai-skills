@@ -41,7 +41,7 @@ Turn the user's request into a plan. A **stream** is one agent with one mission,
 
 **Resolve a named workspace** by matching its label in `herdr workspace list`: one match → use it; no match → create it with that label; several matches → ask the user.
 
-**Layout limits**: at most **two agents per tab**. More streams become more tabs. All tabs created by one request are kept together in the same workspace. Never rename, move, or close the calling tab.
+**Layout limits**: at most **two agents per tab**. More streams become more tabs. All tabs created by one request are kept together in the same workspace, except for the worktree isolation in Section 2.1. Never rename, move, or close the calling tab.
 
 **Detect the calling harness** from `herdr agent get "$HERDR_PANE_ID"` (field `.result.agent.agent`, e.g. `claude`, `codex`, `agy`). Valid kinds are listed by `herdr agent start --help`.
 
@@ -57,7 +57,7 @@ The skill only **creates** worktrees: it never removes them. The final report li
 
 ### 2.2. Missions
 
-Every stream needs a specific mission. If the user did not give one per pane, propose a split of the work and wait for confirmation.
+Every stream needs a specific mission. If the user did not give one per pane, derive a coherent split from the requested outcome and available context. Ask only under the conditions in Section 2.4.
 
 When one skill drives a mission (e.g. `resolve-branch-conflict 146`), record it as the stream's **lead skill**, with its arguments. Section 4 starts the agent through it.
 
@@ -71,16 +71,20 @@ Names must be semantic, short, and consistent across the request:
 
 Every workspace, tab, and pane the skill creates gets its label. Herdr fills unlabeled ones with defaults (`1` for a new workspace's first tab, the harness name for a pane), which say nothing about the stream.
 
-### 2.4. Confirm Only What Was Inferred
+### 2.4. Proceed Autonomously by Default
 
-If the request fully specifies the plan, proceed. If the skill inferred anything (missions, lead skills, worktree isolation, branch names, harness, workspace creation), show the plan as a Unicode box-drawing diagram and wait for the user's go-ahead.
+Choose operational details from the user's request, available context, and the defaults above, then execute without asking for approval. This includes missions, lead skills, labels, stream distribution, layout, worktree isolation, branch names, harness, and workspace creation. An inferred choice alone is not a reason to pause. Honor explicit user choices and keep the plan within the requested scope; this autonomy does not authorize inferred native flags.
 
-**Make the calling session unmistakable.** Always draw the calling workspace and tab, even though nothing in them changes, so the user can locate the new streams relative to where they are:
+Ask only when essential information cannot be obtained or reasonably inferred, instructions conflict, or the user explicitly requests a preview before opening the layout. State the unresolved point and recommend a concrete plan. Wait for the answer before executing dependent steps; continue independent preparation when possible. A preview request is a gate for opening the layout until the user approves it.
 
-- The calling workspace header carries `◉ CURRENT WORKSPACE`; every other workspace header carries `✚ new` (or `✚ new · worktree · <branch>`).
-- The calling tab uses **double-line borders** (`╔ ═ ╗`) and `◉ YOU ARE HERE (untouched)`; new tabs use single-line borders and `✚ new`.
+**Show a Unicode box-drawing plan only when asking for confirmation or when the user explicitly requests a diagram.** A diagram request alone does not require approval unless the user asks to see it before execution. When shown, make the calling session unmistakable: draw the calling workspace and tab so the user can locate the new streams relative to where they are.
+
+- Mark the calling workspace header with `◉` and the meaning of “current workspace”; mark workspaces to be created with `✚` and the meaning of “new” (including worktree and branch details when applicable). Identify existing destination workspaces as existing.
+- The calling tab uses **double-line borders** (`╔ ═ ╗`), `◉`, and the meaning of “you are here / unchanged”; new tabs use single-line borders, `✚`, and the meaning of “new”.
 - A new tab inside the current workspace sits under the current workspace header.
-- End with a one-line legend: `◉ current session · ✚ will be created`.
+- End with a one-line legend explaining `◉` as the current session and `✚` as what will be created.
+
+Render all explanatory labels, mission descriptions, and the legend in the user's session language. Preserve actual resource names, skill names, and technical identifiers. The English wording below illustrates the required meanings; it is not mandatory literal text.
 
 ```text
 ━━ workspace: ai-skills ◉ CURRENT WORKSPACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -101,7 +105,7 @@ If the request fully specifies the plan, proceed. If the skill inferred anything
 ◉ current session · ✚ will be created
 ```
 
-Resolve the calling workspace and tab labels from `herdr workspace get "$HERDR_WORKSPACE_ID"` and the tab of `$HERDR_PANE_ID` (check `herdr pane get --help` for the field), never from memory.
+When drawing the plan, resolve the calling workspace and tab labels from `herdr workspace get "$HERDR_WORKSPACE_ID"` and the tab of `$HERDR_PANE_ID` (check `herdr pane get --help` for the field), never from memory.
 
 ---
 
@@ -169,8 +173,8 @@ Then add:
 
 - [ ] Running inside Herdr was verified before any control command; no `--machine` command was issued.
 - [ ] Every created workspace, tab, and pane used `--no-focus`; the calling tab was left untouched.
-- [ ] Missions and every other inferred choice were confirmed by the user before anything was opened.
-- [ ] The plan diagram, when shown, highlights the calling workspace (`◉ CURRENT WORKSPACE`) and calling tab (double-line border, `◉ YOU ARE HERE`), and marks everything to be created with `✚ new`.
+- [ ] Operational choices were resolved autonomously within the request and defaults; questions were limited to missing essential information, conflicting instructions, or an explicit preview request. Dependent steps waited for the answer, while independent preparation continued where possible.
+- [ ] A plan diagram was shown only when asking for confirmation or explicitly requested. When shown, it identifies the calling workspace and tab (double-line border, `◉`), marks resources to be created with `✚`, and uses the user's session language for explanatory labels and the legend.
 - [ ] Each stream has its own handoff file, written per the `handoff` skill, with the stream's mission as its goal.
 - [ ] Code-writing streams running alongside another writer live in their own worktree workspace; branch names follow `git-branch`.
 - [ ] No tab holds more than two agents; every created workspace, tab, and pane carries a semantic label (no `1` tab, no pane named after its harness), consistent with the agent names.
