@@ -96,7 +96,7 @@ and do not dilute it: peer agents are covering the other axes.
 
 ## Deliverable
 A Design Brief containing ONE alternative (omit the "Alternatives Considered" table).
-Must include: module map, interface cards with contract layer (promise, hidden
+Must include: module map, minimal interface cards and separate contract decisions (promise, hidden
 knowledge, failure modes) as defined by visualize-it, and a "Known Weaknesses"
 section listing honest limitations of this approach.
 Cost strictly in relative terms (complexity, risk, change footprint), with zero

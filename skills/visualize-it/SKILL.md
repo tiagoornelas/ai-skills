@@ -20,18 +20,18 @@ Every visual diagram must answer **a single question with undeniable clarity**. 
 | Question to Answer | Recommended Format |
 | :--- | :--- |
 | What are the components and where do dependencies point? | **Module Map**: directed graph (`A → B` = "A depends on B") |
-| What does each component expose, what changed, and what does it guarantee? | **Interface Card**: one per component, separate from the map |
+| What does each component expose, and which methods changed? | **Interface Card**: one per component, separate from the map |
 | What happens, in what sequence, crossing which boundaries? | **Sequence Diagram** |
 | What states can the system occupy and what triggers transitions? | **State Diagram** |
 | What changed between planned architecture and executed code? | **Before / After Comparison** with modified elements highlighted |
 
-**The map and the cards are separate views.** The map shows only who exists and where dependencies point; the cards hold names in code, methods, and contracts. Never move card detail into the map to "save a view": that detail is what makes maps unreadable.
+**The map and the cards are separate views.** The map shows only who exists and where dependencies point; a module index connects friendly labels to exact code names, and cards show public interfaces and methods. Never move card detail into the map to "save a view": that detail is what makes maps unreadable.
 
 ---
 
 ## 2. Module Map Rules
 
-1. **Friendly names**: label each component by the business concept it represents, in the reader's language (`Overdue reminders`, not `SendOverdueReminders`). Exact code names appear only on interface cards.
+1. **Friendly names**: label each component by the business concept it represents, in the reader's language (`Overdue reminders`, not `SendOverdueReminders`). Give each component a stable numeric ID and list its exact code name in a separate module index below the map. Reuse those IDs across views; identify cards by their code names.
 2. **Component type symbols**, always accompanied by a legend:
 
    | Symbol | Type |
@@ -52,9 +52,10 @@ Every visual diagram must answer **a single question with undeniable clarity**. 
    | Removed | `−` | 🗑️ |
    | Deviation or rule violation (e.g., arrow pointing away from business rules) | `!` | ⚠️ |
 
-   No other badges are used. Emojis are two columns wide in terminals and break box alignment, so box-drawn diagrams use the one-column markers.
+   No other badges are used in module maps. Emojis are two columns wide in terminals and break box alignment, so box-drawn diagrams use the one-column markers.
 6. **Maximum of 7 primary boxes**: above this threshold, reduce detail or split into multi-tier diagrams.
-7. **Diagram boundaries, not directory trees**: group by architectural responsibility and lifecycle; folders are not necessarily modules.
+7. **Group by responsibility**: place business rules and their owned contracts inside an explicit business-core boundary, with entry points and infrastructure outside. Use double-line borders for the terminal core and a Mermaid subgraph for the rendered core. Adapt groups to the actual architecture rather than inventing a domain layer; folders are not necessarily modules.
+8. **Explain direction**: state that `A → B` means "A depends on B in code", not execution order. In the usual ports-and-adapters view, entry points point toward business rules and infrastructure adapters toward the contracts they implement. Position infrastructure below its contracts in terminal diagrams so those arrows point up.
 
 Full terminal and Mermaid examples (shapes, styles, deviation edge): [`references/module-map.md`](references/module-map.md).
 
@@ -64,12 +65,12 @@ Full terminal and Mermaid examples (shapes, styles, deviation edge): [`reference
 
 One card per component whose public interface is **new or altered**, or **unchanged but used by the change**. Entry points and infrastructure adapters get a card only when they expose a new public interface.
 
-- **Header**: type symbol, friendly name, change badge; then the code name and the interface size: `` `InvoiceRepository` · 12 methods · 3 in scope ``.
-- **Methods in scope**, in fixed order: altered (with its previous signature), new, removed, then used by the change without modification. A new component lists its methods without per-method badges; the header badge already says everything is new.
-- **Methods out of scope**: name them when there are **at most 3**; above that, show only the count (collapsed in a `<details>` block where HTML renders).
-- **Contract layer** (promise, hidden knowledge, failure modes): mandatory in design work (`software-designing`, `design-it-twice`); in reviews and pull requests, add it only to new or altered contracts whose guarantees or failure modes changed.
+- **Minimal content**: exact public interface name and relevant method signatures only. No friendly-name heading, counts, previous signatures, out-of-scope methods, notes, or contract prose inside cards.
+- **Methods in scope**, in fixed order: 🔧 altered, 🆕 new, 🗑️ removed, 🔹 used without modification. Mark every method, including methods of a new interface. Removed methods retain their last signature.
+- **Same content, destination-specific rendering**: a plain fenced `class InterfaceName { ... }` block in terminal/chat; a Mermaid `classDiagram` in PRs and other Mermaid-rendering destinations. Cards contain no relationship arrows; dependencies belong to the module map.
+- **Contract decisions outside cards**: where design or review requires promises, hidden knowledge, or failure modes, explain them separately, keyed by interface/method. Do not append a mandatory detail layer to each card.
 
-Full format, terminal and GitHub variants, and the contract layer: [`references/interface-card.md`](references/interface-card.md).
+Full format and examples: [`references/interface-card.md`](references/interface-card.md).
 
 ---
 
@@ -88,39 +89,26 @@ Choose the format by **where the diagram will be read**, not by whether the dest
   - Wrap diagrams in a plain fenced code block (no language tag) so alignment survives.
   - Use box-drawing characters (`┌ ┐ └ ┘ ─ │ ├ ┤ ┬ ┴ ┼`), arrows (`→ ← ↑ ↓ ▲ ▼`), and the one-column change markers.
   - Keep lines ≤ 80 columns; wide diagrams wrap and break in narrow panes.
-  - Interface cards are plain Markdown (headings, lists, inline code), never boxes or tables.
+  - Interface cards use a plain fenced class-like block with emoji method markers. Unlike box-drawn maps, these blocks have no borders to align.
 - **Mermaid (```` ```mermaid ````)**:
   - Use only when the destination row above says so.
-  - Use `graph TD` or `graph LR` for module maps, and `sequenceDiagram` for execution flows.
+  - Use `graph TD` or `graph LR` with responsibility subgraphs for module maps, `classDiagram` for interface cards, and `sequenceDiagram` for execution flows.
   - Encode the component type as node shape and style as well as symbol (see [`references/module-map.md`](references/module-map.md)).
 
-Terminal-native example (module map):
+See the grouped map and module index in [`references/module-map.md`](references/module-map.md).
 
-```
-▶ entry   ◆ business rule   ◇ contract   ■ infra   → depends on
-+ new   ~ modified
-
-┌──────────────┐     ┌─────────────────┐     ┌──────────────┐
-│ ▶ Login    + │ ──→ │ ◆ Sign-in     ~ │ ──→ │ ◇ Users      │
-└──────────────┘     └─────────────────┘     └──────▲───────┘
-                                                    │
-                                             ┌──────┴───────┐
-                                             │ ■ Postgres   │
-                                             └──────────────┘
-```
-
-> **Golden Rule**: Always accompany diagrams with a concise paragraph explaining what the reader should specifically observe (e.g.: inverted dependency arrow, respected boundary, or newly introduced contract).
+> **Golden Rule**: Accompany module maps with a concise paragraph explaining what the reader should specifically observe (e.g.: inverted dependency arrow, respected boundary, or newly introduced contract).
 
 ---
 
 ## 5. Success Validation
 
 - [ ] Each diagram answers a single question and can be grasped at a glance.
-- [ ] The module map uses friendly names, type symbols, and unlabeled arrows, with a legend covering every symbol and marker used.
+- [ ] The module map uses friendly names, type symbols, and unlabeled arrows, with responsibility groups, stable IDs, a code-name index, and a legend covering every symbol and marker used.
 - [ ] No file paths, signatures, stereotypes, or method names appear on the map; they live on interface cards.
-- [ ] Change notation matches the destination: `+ ~ − !` in box-drawn terminal diagrams, `🆕 🔧 🗑️ ⚠️` elsewhere.
-- [ ] Every component with a new, altered, or used public interface has a card with interface size, methods in scope in canonical order, and out-of-scope methods named (≤ 3) or counted.
-- [ ] The contract layer is present where Section 3 requires it.
+- [ ] Map change notation matches the destination; interface methods use 🔧 🆕 🗑️ 🔹 in both destinations.
+- [ ] Every component with a new, altered, or used public interface has a minimal class-style card with only its code name and marked methods in scope, in canonical order.
+- [ ] Required contract decisions are explained outside cards, linked to the relevant interface/method.
 - [ ] The map respects the 7-box limit per view.
-- [ ] Every diagram is accompanied by a concise explanatory paragraph.
+- [ ] Module maps explain dependency direction; interface cards share a concise marker legend without per-card explanatory prose.
 - [ ] Format matches the destination: no ```` ```mermaid ```` block in a conversation reply.

@@ -31,7 +31,7 @@ When invoked, this skill generates a structured presentation containing:
 
 ### 2. Contracts and Public Interfaces (via `visualize-it`)
 - One interface card per component whose public interface was created, altered, or used by the change, separate from the map.
-- What each new or altered contract guarantees and its failure modes, in the card's contract layer when they changed.
+- What each new or altered contract guarantees and its failure modes, in separate text linked to the interface/method when they changed.
 
 ### 3. Behavior Validation Table (DoD)
 Present a direct table mapping each acceptance criterion. This is the **canonical legend** for DoD statuses across skills:

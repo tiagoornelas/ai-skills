@@ -1,96 +1,89 @@
-# Module Map: Examples
+# Module Map: Grouped Responsibilities
 
-> Reference examples for the module map rules in [`../SKILL.md`](../SKILL.md) (Section 2). Both examples draw the same change: a feature that sends reminders for overdue invoices, with one deliberate deviation (the business rule calls the email provider directly instead of the `Email` contract it owns).
-
----
+The map answers who depends on whom in code. It does not show execution order. Use friendly labels and stable IDs in the map, then an index of exact code names. Interfaces and methods remain in separate cards.
 
 ## 1. Terminal-Native
 
 ```
-▶ entry   ◆ business rule   ◇ contract   ■ infra   → depends on
-+ new   ~ modified   ! deviation
+▶ entry · ◆ business rule · ◇ contract · ■ infrastructure
+→ depends on in code · + new · ~ modified
 
-   ┌─────────────────┐   ┌─────────────────┐
-   │ ▶ Scheduler   + │   │ ▶ Invoice API ~ │
-   └────────┬────────┘   └────────┬────────┘
-            └──────────┬──────────┘
-                       ▼
-          ┌─────────────────────────┐        ┌─────────────────────────┐
-          │ ◆ Overdue reminders   + │───────→│ ◆ Reminder policy     + │
-          └───┬─────────────────┬───┘        └─────────────────────────┘
-              │                 │
-              ▼                 ▼ ! skips ◇ Email
-      ┌───────────────┐ ┌───────────────┐     ┌───────────────┐
-      │ ◇ Invoices  ~ │ │ ■ SendGrid  + │────→│ ◇ Email     + │
-      └───────▲───────┘ └───────────────┘     └───────────────┘
-              │
-      ┌───────┴───────┐
-      │ ■ Postgres  ~ │
-      └───────────────┘
+ENTRY POINT
+┌──────────────────────────────┐
+│ ▶ [1] Receive order          │
+└──────────────┬───────────────┘
+               ↓
+╔═ BUSINESS CORE ══════════════╗
+║ ◆ [2] Create order       ~   ║
+║              │               ║
+║              ↓               ║
+║ ◇ [3] Persist orders     ~   ║
+╚══════════════▲═══════════════╝
+               │
+┌──────────────┴───────────────┐
+│ ■ [4] Postgres adapter   ~   │
+└──────────────────────────────┘
+INFRASTRUCTURE
+MODULE INDEX
+[1] OrderController
+[2] CreateOrder
+[3] OrderRepository
+[4] PostgresOrderRepository
 ```
 
-Accompanying paragraph: *Overdue reminders is the new center of the flow. It calls SendGrid directly (!) instead of depending on the Email contract, so the business rule now knows about a vendor.*
+Read `A → B` as "A depends on B in code". The adapter points up toward the contract owned by the business core; the business rule does not depend on Postgres. Use a sequence diagram when the question concerns runtime calls.
 
-Layout tips:
-- Put the legend in the code block's first lines so it travels with the diagram.
-- Place change markers at the right edge of each box, so names stay left-aligned and scannable.
-- Draw infrastructure below the contracts it implements, arrow pointing up: correct dependency direction then reads as "everything points toward the business rules".
-
----
+Keep lines within 80 columns. Use single-column map change markers, and align borders using displayed character widths. Double borders identify the core boundary rather than another component. Adapt responsibility groups to the actual system; do not impose ports-and-adapters on unrelated architectures.
 
 ## 2. Mermaid
 
-The type is encoded three ways so it survives any rendering: symbol, node shape, and style.
-
-| Type | Shape | Mermaid syntax |
-| :--- | :--- | :--- |
-| `▶` Entry point | Stadium | `id(["▶ Name"])` |
-| `◆` Business rule | Rectangle, bold border | `id["◆ Name"]` |
-| `◇` Contract / port | Hexagon, dashed border | `id{{"◇ Name"}}` |
-| `■` Infrastructure | Subroutine | `id[["■ Name"]]` |
+Use subgraphs for responsibility boundaries and preserve the same IDs and index as the terminal view. Position is a layout aid; arrowheads determine dependency direction.
 
 ```mermaid
 graph TD
-  S(["▶ Scheduler 🆕"]):::entry
-  A(["▶ Invoice API 🔧"]):::entry
-  R["◆ Overdue reminders 🆕"]:::domain
-  P["◆ Reminder policy 🆕"]:::domain
-  I{{"◇ Invoices 🔧"}}:::port
-  E{{"◇ Email 🆕"}}:::port
-  PG[["■ Postgres 🔧"]]:::infra
-  SG[["■ SendGrid 🆕"]]:::infra
-  S --> R
+  subgraph ENTRY["ENTRY POINT"]
+    A(["▶ [1] Receive order"]):::entry
+  end
+  subgraph CORE["BUSINESS CORE"]
+    R["◆ [2] Create order 🔧"]:::domain
+    P{{"◇ [3] Persist orders 🔧"}}:::port
+    R --> P
+  end
+  subgraph INFRA["INFRASTRUCTURE"]
+    PG[["■ [4] Postgres adapter 🔧"]]:::infra
+  end
   A --> R
-  R --> P
-  R --> I
-  R -->|"⚠️ skips ◇ Email"| SG
-  PG --> I
-  SG --> E
-  linkStyle 4 stroke:#d1242f,stroke-width:2.5px,color:#d1242f
+  PG --> P
   classDef entry fill:#ddf4ff,stroke:#0969da,color:#0a3069
   classDef domain fill:#fff8c5,stroke:#9a6700,color:#4d2d00,stroke-width:2px
   classDef port fill:#fbefff,stroke:#8250df,color:#3e1f79,stroke-dasharray:5 3
   classDef infra fill:#f6f8fa,stroke:#6e7781,color:#24292f
 ```
 
-Follow the diagram with a one-line legend in Markdown:
+▶ entry · ◆ business rule · ◇ contract · ■ infrastructure · arrow = depends on in code · 🔧 modified
 
-```markdown
-▶ entry · ◆ business rule · ◇ contract · ■ infra · arrow = depends on · 🆕 new · 🔧 modified · ⚠️ deviation
-```
+**Module index**
 
-Notes:
-- `linkStyle` takes the zero-based index of the edge in declaration order; count edges after editing.
-- Keep `classDef` lines identical across diagrams so readers learn the colors once.
+- [1] `OrderController`
+- [2] `CreateOrder`
+- [3] `OrderRepository`
+- [4] `PostgresOrderRepository`
 
----
+The adapter and business rule both depend on the persistence contract. The group boundary separates business-owned responsibilities from technology choices.
 
-## 3. Anti-Patterns
+Keep node shapes and `classDef` styles consistent: stadium for entry points, bold rectangle for business rules, dashed hexagon for contracts, and subroutine for infrastructure. Translate friendly names, responsibility labels, index headings, and legend into the reader's language; preserve code identifiers.
 
-| Anti-pattern | Why it hurts | Instead |
-| :--- | :--- | :--- |
-| Method calls on arrows (`execute({ asOf })`) | Duplicates the interface and doubles the text to read | Unlabeled arrow; method on the card |
-| File paths or stereotypes inside boxes | Noise the reviewer does not need to judge architecture | Code name on the card; paths stay in the diff |
-| `implements` edges in a separate style | Two arrow semantics to decode | One semantics: the adapter depends on the contract |
-| Emojis inside terminal boxes | Two-column glyphs break the box borders | One-column markers `+ ~ − !` |
-| More than 7 boxes | Nothing stands out | Split into an overview and a zoom-in |
+## 3. Deviations and Limits
+
+- Keep at most seven primary component boxes per view; boundaries do not count as components. Split larger maps into an overview and focused views, keeping IDs stable.
+- Arrows have one meaning: depends on. Do not label them with method calls, payloads, or `implements`.
+- An actual architectural deviation may have a label of at most five words, using `!` in terminal maps or ⚠️ in Mermaid. Explain the consequence in the paragraph below the map. In Mermaid, style the deviation edge and check its zero-based `linkStyle` index after editing edges.
+- Do not place signatures, generic types, file paths, or stereotypes inside map nodes. Use the index for code names and cards for methods.
+
+## 4. Validation
+
+- [ ] Responsibility boundaries reflect the actual architecture.
+- [ ] All components have stable IDs and exact code names in the index.
+- [ ] Arrowheads, legend, and explanation consistently mean code dependency.
+- [ ] Infrastructure depends on its owned contract; any deviation is identified.
+- [ ] Terminal and Mermaid express the same components and edges.

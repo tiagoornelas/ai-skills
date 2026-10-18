@@ -104,7 +104,7 @@ graph LR
 <One-paragraph reading of the map: what is new, and confirmation that dependencies keep pointing inward toward business rules ([dependency-direction.md](../software-designing/references/dependency-direction.md)), or the ⚠️ deviation.>
 
 ### Interface Cards
-<!-- One card per component with a new, altered, or used public interface, in the visualize-it interface card format. Add the contract layer only to new or altered contracts whose guarantees or failure modes changed. -->
+<!-- One card per component with a new, altered, or used public interface, in the visualize-it interface card format. Explain changed guarantees or failure modes separately, keyed by interface/method; keep cards limited to the interface name and marked methods. -->
 
 #### ◆ Sign-in 🔧
 `SignInService` · 4 methods · 2 in scope

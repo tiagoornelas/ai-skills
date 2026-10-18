@@ -70,7 +70,7 @@ Apply relevant references (Section 4). At a minimum, evaluate each alternative a
 ### Step 5: Recommend and Communicate via the Human Layer
 - Select a recommendation and justify it using concepts from the reference lenses (e.g., "Alternative B eliminates format leakage between reader and writer").
 - Present to the human **only** what belongs to the Human Layer: modules and responsibilities, dependency direction, contracts and failure modes, behaviors, and trade-offs.
-- **Visualize** with [`visualize-it`](../visualize-it/SKILL.md): module map with explicit dependency direction, and an interface card for each new or altered contract with its contract layer filled (promise, hidden knowledge, failure modes).
+- **Visualize** with [`visualize-it`](../visualize-it/SKILL.md): module map with explicit dependency direction, and a minimal interface card for each new or altered contract; describe promise, hidden knowledge, and failure modes separately, keyed by interface/method.
 - List **pending decisions** explicitly, each with options, risk/cost of each option, and an agent recommendation.
 - **Cost is relative, never schedule-based**: compare options in terms of complexity, risk, and change footprint (e.g., "Option B modifies three modules; Option A modifies only one"). Do not estimate days or craft phased release timelines—project scheduling is outside the scope of software design.
 
@@ -136,7 +136,7 @@ Load only the references needed for the specific design decision.
 <diagram via visualize-it — explicit dependency direction>
 
 ## Contracts
-<interface card per new/modified module via visualize-it: methods, plus contract layer (promise, hidden knowledge, failure modes)>
+<interface card per new/modified module via visualize-it: interface name and marked methods only; separate text covers promise, hidden knowledge, and failure modes>
 
 ## Pending Decisions (Human Layer)
 | # | Decision | Options | Recommendation | Cost of Error |
