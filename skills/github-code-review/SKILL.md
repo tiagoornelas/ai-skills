@@ -211,11 +211,11 @@ Conclude with summary and **recommended verdict**:
 
 Highest-risk axis: **<axis>** (<key finding in one line>)
 
-**Suggested Verdict:** ✅ Approve | 💬 Approve with comments | 🔁 Request changes
+**Suggested Verdict:** ✅ Approve | 🔁 Request changes
 <single sentence rationale>
 ```
 
-Verdict rule: any 🔴 (unresolved previous blocker, new critical regression in incremental commits, or 🚨 in DoD table) → **Request changes**; strictly 🟡/🟢 and all previous blockers resolved → **Approve with comments**; all resolved and clean → **Approve**. This is a recommendation: **the verdict belongs to the user**.
+Verdict rule: any 🔴 (unresolved previous blocker, new critical regression in incremental commits, or 🚨 in DoD table) → **Request changes**; otherwise → **Approve**. 🟡/🟢 findings may still receive line comments without changing the verdict. This is a recommendation: **the verdict belongs to the user**. The report summary and rationale are for discussion with the user, not a general PR review comment.
 
 Engage in conversation and answer questions. The user may promote, demote, or discard findings.
 
@@ -225,7 +225,7 @@ When the PR was authored by the agent pipeline (the user's own work), tag each *
 
 ## 8. Format Accepted Points into Comments
 
-When the user is ready, **ask which findings they consider valid and what final verdict they choose.** Only accepted findings become review comments: never publish the unfiltered report.
+As the user discusses each finding, establish whether they accept it and draft its line comment then. Do not wait for the final verdict to prepare accepted point-by-point comments. Ask for the user's final verdict when the review is ready to submit. Only accepted findings become review comments: never publish the unfiltered report.
 
 ### 8.1. Line Comments
 
@@ -242,14 +242,11 @@ For each accepted finding, generate a ready-to-paste comment in the language of 
 
 </comment-template>
 
-### 8.2. General Review Summary Comment
+### 8.2. General Review Comment (Only on Explicit Request)
 
-A concise summary for the overall PR review body, aligned with the user's verdict:
-- **Approve**: acknowledges what was done well (leverage strengths from Axis 🏗️) in 2–3 sentences.
-- **Approve with comments**: notes that comments are non-blocking suggestions.
-- **Request changes**: summarizes in brief prose what needs remediation prior to merge (accepted 🔴 findings) and links to line comments.
+By default, leave the overall review body empty for both **Approve** and **Request changes**. Line comments and existing thread replies carry the accepted feedback; do not repeat them in a general review comment. Draft a general review body only if the user explicitly requests one, aligned with their chosen verdict.
 
-Run through `humanize-writing`.
+Run any requested general review body through `humanize-writing`.
 
 ### 8.3. Thread Replies in Re-review Mode
 
@@ -270,7 +267,7 @@ When conducting a re-review, findings often continue existing unresolved convers
 
 ### Publishing
 
-Never publish automatically. If the user explicitly requests publication, display the exact payload and invoke `gh pr review <pr>` with `--approve`, `--comment`, or `--request-changes`, strictly upon confirmation.
+Never publish automatically. If the user explicitly requests publication, display the exact payload, including the verdict, each accepted line comment or thread reply, and the general review body only when explicitly requested; publish strictly upon confirmation. Submit **Approve** or **Request changes** without a general body by default. Use a submission method that supports the accepted point-by-point comments and an empty review body. If the GitHub interface rejects an empty body for **Request changes**, explain that constraint and ask the user how to proceed; do not invent a summary or silently switch the verdict.
 
 ---
 
@@ -285,4 +282,5 @@ Never publish automatically. If the user explicitly requests publication, displa
 - [ ] Recommended verdict adheres to Section 7 rules, with final verdict determined by user.
 - [ ] On agent-authored PRs, accepted 🔧, ✅, and 🧹 findings carry an escape-cause tally.
 - [ ] Only user-accepted findings became comments, with exact line locations, humanized, and free of AI co-authorship footers.
+- [ ] Approve or Request changes has no general review body unless the user explicitly requested one; accepted feedback stays in line comments or thread replies.
 - [ ] Zero content published to GitHub without explicit request and confirmation.
