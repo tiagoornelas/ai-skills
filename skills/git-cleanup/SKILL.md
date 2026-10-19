@@ -26,7 +26,7 @@ Removes useless local branches and worktrees without losing work the user still 
 - Record the **calling session's location**: the worktree it runs in (`git rev-parse --show-toplevel`) and its branch (`git branch --show-current`). They can be cleaned like any other row; section 6 explains how.
 - Resolve the remote (`origin` unless the repository only has another one) and the **default branch** from `git symbolic-ref --short refs/remotes/<remote>/HEAD`, stripping the `<remote>/` prefix (fall back to `main`, then `master`).
 - Check whether the GitHub CLI is authenticated (`gh auth status`). Without it, pull request state cannot be detected: say so, and keep every branch that has commits not in the default branch (status **PR unknown**).
-- Check whether Herdr is active (`test "${HERDR_ENV:-}" = 1 && command -v herdr >/dev/null 2>&1`). When active, record `$HERDR_WORKSPACE_ID` as the **session's own workspace**. When absent or disabled, operate as standard Git/GH CLI.
+- Check whether Herdr is active (`test "${HERDR_ENV:-}" = 1 && command -v herdr >/dev/null 2>&1`). When active, record `$HERDR_PANE_ID` and `$HERDR_WORKSPACE_ID` as the session's own pane and workspace. When absent or disabled, operate as standard Git/GH CLI.
 
 ---
 
@@ -53,9 +53,9 @@ Gather everything up front, in as few calls as possible:
 | Uncommitted changes per worktree | `git -C <path> status --porcelain` |
 | Pull requests in every state | `gh pr list --state all --limit 500 --json number,title,state,headRefName,headRefOid` |
 | Commits not in the default branch | `git log --oneline <remote>/<default>..<branch>` |
-| Herdr worktrees & workspaces (when Herdr is active) | `herdr worktree list` and `herdr workspace list` |
+| Herdr panes, tabs, worktrees & workspaces (when Herdr is active) | `herdr pane list`, `herdr tab list`, `herdr worktree list`, `herdr workspace list` |
 
-When Herdr is active, correlate each Git worktree path with Herdr worktree entries (`.result.worktrees[].path`). If matched, look up its `open_workspace_id` in `herdr workspace list` to obtain the workspace `label` and `agent_status` (`working`, `idle`, `done`).
+When Herdr is active, correlate **every** Git worktree path with panes from `herdr pane list` (`.result.panes[]`). A pane uses a worktree when its `cwd` or `foreground_cwd` equals that path or lies beneath it; compare path components, not string prefixes. Record pane ID, tab, workspace, agent, and `agent_status`. This includes plain Git worktrees opened in Herdr. Separately match paths from `herdr worktree list` (`.result.worktrees[].path`) to identify Herdr-managed worktrees and their `open_workspace_id`. List every pane in such a workspace too: removing the Herdr worktree closes that workspace, even if some panes use another directory.
 
 ### 3.1. Which Pull Request Belongs to the Branch?
 
@@ -99,7 +99,7 @@ The pull request state is the main signal: an open PR keeps the work, a closed P
 | **Commits after merged PR** | The branch's PR is merged, but the tip has commits after it (3.1). Show their count and whether they are `pushed` or `local only`. |
 | **PR unknown** | `gh` is unavailable and the branch has commits not in the default branch. |
 | **Uncommitted changes** | The worktree has staged, unstaged, or untracked files. They cannot be recovered after removal. |
-| **Active agent in Herdr** | A Herdr workspace associated with this worktree has `agent_status: "working"`. Removing it would abort an in-flight agent task. |
+| **Active agent in Herdr** | Any pane using this worktree has `agent_status: "working"`, or a pane in its Herdr-managed workspace is working. Removing it would abort an in-flight agent task. |
 | **Default branch** | The default branch and the main worktree. Never removable, even on request. |
 
 **Clean** everything else, including recent work whose PR is closed, split by risk so the user sees what would be lost:
@@ -114,7 +114,8 @@ Flag rows that need special handling at execution (section 6), so the user knows
 
 - `→ switch to <default>`: the branch is checked out in the main worktree, which stays.
 - `current session`: the calling session runs in this worktree.
-- `this session's workspace`: the worktree belongs to `$HERDR_WORKSPACE_ID`; its removal is handed to the user as a command.
+- `open Herdr panes`: list every pane, tab, and workspace that will close, including other panes in a Herdr-managed worktree's workspace. Mark `working` agents and the calling pane or workspace.
+- `this session's pane/workspace`: closing it is handed to the user as a command after this session ends.
 
 ---
 
@@ -142,11 +143,12 @@ KEEP
 10  master                     (main)                            2026-10-14   default branch             —
 ```
 
-When a worktree is linked to an open Herdr workspace, annotate the **Worktree** column with its workspace ID and label: `../path [herdr:<id> "<label>"]`.
+When a worktree is linked to an open Herdr workspace, annotate the **Worktree** column with its workspace ID and label: `../path [herdr:<id> "<label>"]`. For any worktree used by Herdr panes, show the affected pane IDs and agent states, and disclose tabs or workspaces that will close. Do not infer that closing the last pane leaves its tab or workspace open.
 
 Then ask the user to approve or edit the list. Accept free-form edits ("clean 6 and 7", "keep 3", "remove only the worktree of 2"):
 
 - Moving a **Keep** row to **Clean** is allowed, except for the default branch and the main worktree. When the moved row has uncommitted changes, unmerged commits, or commits after a merged PR, state exactly what will be lost.
+- Approval to remove a worktree with open Herdr panes must explicitly include closing the listed panes. If any listed agent is `working`, obtain separate, explicit approval to interrupt that agent. A general approval of the Clean list does not authorize either action.
 - A row can be cleaned partially: worktree only, or branch only (a branch checked out in a linked worktree requires removing that worktree first; one checked out in the main worktree requires switching it to the default branch).
 - After any edit, show the updated **Clean** list and ask again. Proceed only on an explicit approval of the final list.
 
@@ -159,8 +161,9 @@ Process the approved rows in this order, one command per item, never stopping th
 1. **Record recovery data** for every branch before touching it: name and tip SHA.
 2. **Step out of what is in use**:
    - **Branch checked out in the main worktree**: `git -C <main> switch <default>`, only if the main worktree is clean (otherwise report the failure and skip that branch). If the default branch is checked out in another worktree, use `git -C <main> switch --detach <remote>/<default>`.
-   - **Session running inside a worktree to remove**: move the session's working directory to the main worktree (`cd <main>`) before removing it, and keep running every command from there.
-   - **Session's own Herdr workspace** (`$HERDR_WORKSPACE_ID`): do not remove it, since that would kill the session. Skip its worktree and branch here; section 7 hands the user the command.
+   - **Session's own Herdr pane or workspace would close**: skip that worktree and branch here, even if the pane's current directory is elsewhere; section 7 hands the user commands to run from another checkout after ending this session.
+   - **Session running inside another worktree to remove**: move its working directory to the main worktree (`cd <main>`) before removal and keep running commands from there.
+   - **Other open Herdr panes**: after the explicit approvals in section 5, close the listed panes with `herdr pane close <pane-id>`. If a Herdr-managed worktree will close its whole workspace, disclose and approve every pane there before removal; its panes are closed by `herdr worktree remove`. Recheck pane and agent state immediately before closing; if new panes or working agents appear, stop that row and obtain updated approval.
 3. **Worktrees**:
    - **Herdr worktree** (associated with an open Herdr workspace): `herdr worktree remove --workspace <id>`. Add `--force` only for a worktree the user approved knowing it had uncommitted changes. This atomically removes the worktree checkout and closes its Herdr workspace along with any child tabs.
    - **Plain Git worktree**: `git worktree remove <path>`. Use `--force` only for a worktree the user approved knowing it had uncommitted changes.
@@ -176,11 +179,7 @@ Never run `git reset`, `git clean`, `git push --delete`, or any command on the r
 - One line per removed item, plus every failure with its reason.
 - A **recovery block** for each deleted branch: `git branch <name> <sha>` (valid while the commits are reachable through the reflog, typically 30–90 days). Removed uncommitted changes are not recoverable; say so if any were removed.
 - Final state: remaining branches and worktrees, and the default branch position against the remote.
-- When the session's own Herdr workspace was approved for cleaning, end with a command for the user to run after closing this session, using the same `--force` and `-d`/`-D` choices section 6 would:
-  ```bash
-  herdr worktree remove --workspace <id> && git -C <main> branch -d <branch>
-  ```
-  Include its branch in the recovery block as well.
+- When the session's own Herdr pane or workspace must close, provide the approved pane-closure and worktree-removal commands for the user to run from another checkout after ending this session. Use `herdr worktree remove --workspace <id>` for Herdr-managed worktrees or `git worktree remove <path>` for plain Git worktrees, followed by the approved `git -C <main> branch -d|-D <branch>`. Include its branch in the recovery block.
 
 ---
 
@@ -194,8 +193,9 @@ Never run `git reset`, `git clean`, `git push --delete`, or any command on the r
 - [ ] Nothing was removed before the user explicitly approved the final list; every edit was reflected and re-confirmed.
 - [ ] The default branch and the main worktree were never removed.
 - [ ] A branch in use by the main worktree was switched away (only from a clean worktree) before deletion; the session left a worktree before removing it.
-- [ ] The session's own Herdr workspace was never removed by the agent; its removal was handed to the user as a command.
-- [ ] Active agents in Herdr (`agent_status: "working"`) were kept unless the user explicitly chose otherwise.
+- [ ] Every Git worktree was checked for Herdr panes by path, regardless of which tool created it; affected panes and workspaces were disclosed before approval.
+- [ ] Open panes were closed only with explicit approval; working agents required separate approval and their state was rechecked before closing.
+- [ ] The session's own Herdr pane or workspace was never closed by the agent; its removal was handed to the user as commands.
 - [ ] Herdr-managed worktrees were removed via `herdr worktree remove --workspace <id>`, avoiding orphaned workspaces or zombie tabs.
 - [ ] `--force` and `-D` were used only on rows approved in that state.
 - [ ] Nothing on the remote was modified.

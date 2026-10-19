@@ -1,183 +1,54 @@
 ---
 name: herdr-handoff
 description: >-
-  Hands off the active conversation to one or more new AI agent sessions inside
-  Herdr: writes one handoff document per stream, opens semantically named tabs
-  (in the current workspace by default, or in a named or new workspace), optionally
-  splits a tab into two side-by-side or stacked agents, isolates code-writing
-  streams in Herdr worktree workspaces, starts the requested harness in each pane,
-  and prompts it to resume from its handoff. Triggered strictly upon explicit user
-  request while running inside Herdr.
+  Hands off the active conversation to new agent sessions in Herdr. Creates
+  task tabs or requested workspaces and panes, gives each code-writing agent
+  its own Git worktree by default, and prompts each agent from a handoff file.
+  Triggered strictly upon explicit user request while running inside Herdr.
 disable-model-invocation: true
 argument-hint: "[streams, layout, workspace, and harness for each pane]"
 ---
 
 # Herdr Handoff
 
-Forks work out of the current session into new agent panes, each one driven by its own handoff document. The calling session stays where it is: it keeps its focus, its tab, and its context.
+Forks the current work into agent sessions while leaving the calling pane untouched. Herdr owns the layout; Git owns new worktrees. A stream is one agent, one mission, and one pane.
 
----
+## 1. Preconditions and Plan
 
-## 1. Preconditions
+- Require `HERDR_ENV=1`. Otherwise report that the session is outside Herdr and stop. Use only the local session; never pass `--machine`.
+- Treat the installed CLI as the syntax authority: load `herdr --skill` unless already in context, and inspect help for unfamiliar commands or flags. Parse IDs from JSON responses.
+- Default to a new tab per stream in `$HERDR_WORKSPACE_ID`. Use a named workspace when requested: match its label in `herdr workspace list`, create it once if absent, and ask only if several match. Put later streams in new tabs there unless another layout was requested. Split a tab into panes only when requested. A task may span tabs, and different panes may use different checkouts.
+- Use the calling harness from `herdr agent get "$HERDR_PANE_ID"` unless the user names another. Pass native flags only when explicitly requested. Preserve the calling tab and focus with `--no-focus` on every creation command.
+- Give each stream a specific mission. Record a lead skill and arguments when the mission calls for one. Choose short, semantic labels in the user's language for created workspaces and tabs; use a unique agent-name slug (`[a-z][a-z0-9_-]{0,31}`) for its pane.
+- Resolve operational details from the request and context without approval. Ask only for essential missing information, conflicting instructions, or a requested preview. If showing a plan, use a Unicode box-drawing diagram that marks the calling workspace and tab as unchanged and identifies every new resource.
 
-- Verify the agent runs inside a Herdr-managed pane: `test "${HERDR_ENV:-}" = 1`. If it fails, say so and stop. Never control a Herdr session from outside it.
-- **The installed binary is the authority for command syntax.** Load `herdr --skill` unless a Herdr skill is already in context, and check `herdr <group> --help` before using an unfamiliar option. The commands in this skill show intent, not a frozen contract.
-- Only the local session is in scope. Commands targeting saved SSH machines (`--machine`) are not supported: a handoff file written to the local temporary directory does not exist on the remote host.
+## 2. Prepare Checkouts
 
----
+For **each new agent that will write code**, create a separate Git worktree, even if it is the only writer. Read-only streams use their requested directory or the calling directory. If the user explicitly requests an existing worktree, use it; warn when another agent is already writing there.
 
-## 2. Plan the Streams
+- Find the main worktree with `git worktree list --porcelain`. Put new worktrees in sibling directories named for the repository and task; choose an unused path and branch rather than silently reusing one.
+- Follow the branch naming and base-selection rules in [`git-branch`](../git-branch/SKILL.md), **not** its checkout-changing execution workflow. For independent work, resolve the default branch, fetch its remote, and use the updated remote-tracking ref as the base; use a different base for an explicit dependency. If the repository has no remote, use its local default branch. Never switch the calling checkout.
+- Create with `git worktree add -b <branch> <path> <base-ref>`. If mandatory project instructions prescribe another creation procedure, follow them; do not use `herdr worktree create`.
+- If checkout preparation fails, report the affected stream and continue independent streams. If a later Herdr step fails, keep any created Git worktree and report its path and branch so the user can resume or clean it later.
 
-Turn the user's request into a plan. A **stream** is one agent with one mission, living in one pane.
+## 3. Write and Start Each Stream
 
-| Dimension | Default | User may request |
-| :--- | :--- | :--- |
-| **Workspace** | Current workspace (`$HERDR_WORKSPACE_ID`) | A workspace by name (see below) |
-| **Tab** | One new tab per stream | Two streams sharing a tab |
-| **Split** | — | `right` (side by side) or `down` (stacked) |
-| **Harness** | Same as the calling session | A different harness per pane |
-| **Native flags** | None | Explicit flags (permission mode, model, …) |
-| **Directory** | Calling session's working directory | Another directory |
+Read [`../handoff/SKILL.md`](../handoff/SKILL.md) and apply its **Document Content** and **Write and Deliver** sections. Write one temporary handoff file per agent, named `handoff-<agent-name>.md`, with that stream's mission as its Next Session Goal. For a worktree stream, set Source to its actual worktree path and branch.
 
-**Resolve a named workspace** by matching its label in `herdr workspace list`: one match → use it; no match → create it with that label; several matches → ask the user.
+Create the requested layout with `herdr tab create --workspace <id> --label <label> --cwd <dir> --no-focus` or `herdr workspace create --label <label> --cwd <dir> --no-focus`. For a requested split, use `herdr pane split <pane-id> --direction right|down --cwd <dir> --no-focus`. Rename any default `1` tab with `herdr tab rename` and each pane with `herdr pane rename`; obtain all IDs from the command responses. Start each agent with `herdr agent start <name> --kind <kind> --pane <pane-id> [-- <requested-native-flags>]`.
 
-**Layout limits**: at most **two agents per tab**. More streams become more tabs. All tabs created by one request are kept together in the same workspace, except for the worktree isolation in Section 2.1. Never rename, move, or close the calling tab.
+Prompt each agent to read its handoff file. If it has a lead skill, prefix the prompt with that skill's command when its harness supports it; otherwise use a plain prompt with the handoff path. Use `herdr agent prompt <name> <prompt> --wait --until working --until blocked --timeout 30000` and wait only until the work is picked up.
 
-**Detect the calling harness** from `herdr agent get "$HERDR_PANE_ID"` (field `.result.agent.agent`, e.g. `claude`, `codex`, `agy`). Valid kinds are listed by `herdr agent start --help`.
+Do not retry a failed or timed-out prompt automatically. On a blocked or uncertain state, inspect `herdr agent get` and recent `herdr agent read` output, leave the pane open, and report the needed action. Continue other streams.
 
-**Never infer native flags.** Permission modes in particular are never inherited silently: pass only what the user asked for.
+## 4. Report
 
-### 2.1. Isolate Code-Writing Streams
+Give one row per stream with agent, harness, workspace/tab, pane, handoff path, worktree/branch if any, and status. Note that handoff files in the temporary directory may disappear on reboot. Report failures and any checkout created before a failed Herdr step. Worktree cleanup is outside this skill.
 
-When **more than one agent will write code** in the same repository, and the calling session counts as one of them, each new code-writing stream gets its own worktree workspace through `herdr worktree create` (with `--branch`, `--base`, `--label`, `--no-focus`). Name the branch and pick its base following the [`git-branch`](../git-branch/SKILL.md) skill.
+## 5. Success Validation
 
-A worktree stream always lives in its own workspace, which Herdr groups with the primary one. Splits inside a shared tab are therefore reserved for streams that do not write code (review, research, investigation). If the user insists on two writers in the same tab, warn them that they will share one checkout, then follow their decision.
-
-The skill only **creates** worktrees: it never removes them. The final report lists each removal command, and the user cleans up.
-
-### 2.2. Missions
-
-Every stream needs a specific mission. If the user did not give one per pane, derive a coherent split from the requested outcome and available context. Ask only under the conditions in Section 2.4.
-
-When one skill drives a mission (e.g. `resolve-branch-conflict 146`), record it as the stream's **lead skill**, with its arguments. Section 4 starts the agent through it.
-
-### 2.3. Names
-
-Names must be semantic, short, and consistent across the request:
-
-- **Workspace and tab labels**: lowercase, 2–4 words, in the user's session language (e.g. `review pr 153`, `fix display name`).
-- **Agent names**: a slug of the mission matching `[a-z][a-z0-9_-]{0,31}`, unique among live agents (`herdr agent list`), e.g. `pr-review`.
-- **Pane labels**: the agent name.
-
-Every workspace, tab, and pane the skill creates gets its label. Herdr fills unlabeled ones with defaults (`1` for a new workspace's first tab, the harness name for a pane), which say nothing about the stream.
-
-### 2.4. Proceed Autonomously by Default
-
-Choose operational details from the user's request, available context, and the defaults above, then execute without asking for approval. This includes missions, lead skills, labels, stream distribution, layout, worktree isolation, branch names, harness, and workspace creation. An inferred choice alone is not a reason to pause. Honor explicit user choices and keep the plan within the requested scope; this autonomy does not authorize inferred native flags.
-
-Ask only when essential information cannot be obtained or reasonably inferred, instructions conflict, or the user explicitly requests a preview before opening the layout. State the unresolved point and recommend a concrete plan. Wait for the answer before executing dependent steps; continue independent preparation when possible. A preview request is a gate for opening the layout until the user approves it.
-
-**Show a Unicode box-drawing plan only when asking for confirmation or when the user explicitly requests a diagram.** A diagram request alone does not require approval unless the user asks to see it before execution. When shown, make the calling session unmistakable: draw the calling workspace and tab so the user can locate the new streams relative to where they are.
-
-- Mark the calling workspace header with `◉` and the meaning of “current workspace”; mark workspaces to be created with `✚` and the meaning of “new” (including worktree and branch details when applicable). Identify existing destination workspaces as existing.
-- The calling tab uses **double-line borders** (`╔ ═ ╗`), `◉`, and the meaning of “you are here / unchanged”; new tabs use single-line borders, `✚`, and the meaning of “new”.
-- A new tab inside the current workspace sits under the current workspace header.
-- End with a one-line legend explaining `◉` as the current session and `✚` as what will be created.
-
-Render all explanatory labels, mission descriptions, and the legend in the user's session language. Preserve actual resource names, skill names, and technical identifiers. The English wording below illustrates the required meanings; it is not mandatory literal text.
-
-```text
-━━ workspace: ai-skills ◉ CURRENT WORKSPACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-╔═ tab: plan handoff ◉ YOU ARE HERE (untouched) ════════════════════════════╗
-║ this session · claude                                                     ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-┌─ tab: review pr 153 ✚ new ────────┬───────────────────────────────┐
-│ pr-review · claude                │ pr-second-opinion · codex     │
-│ mission: review the diff          │ mission: challenge the review │
-│ lead skill: github-code-review 153│                               │
-└───────────────────────────────────┴───────────────────────────────┘
-
-━━ workspace: fix display name ✚ new · worktree · fix/user-display-name ━━━━
-┌─ tab: fix display name ✚ new ─────────────────────────────────────┐
-│ display-fix · claude · mission: implement the fix                 │
-└───────────────────────────────────────────────────────────────────┘
-
-◉ current session · ✚ will be created
-```
-
-When drawing the plan, resolve the calling workspace and tab labels from `herdr workspace get "$HERDR_WORKSPACE_ID"` and the tab of `$HERDR_PANE_ID` (check `herdr pane get --help` for the field), never from memory.
-
----
-
-## 3. Write One Handoff per Stream
-
-Read [`../handoff/SKILL.md`](../handoff/SKILL.md) and follow its **Document Content** and **Write and Deliver** sections for each stream:
-
-- One document per stream, calibrated to **that stream's mission** (the mission is the handoff's "Next Session Goal"). Shared context is restated briefly in each file.
-- Name each file after its agent name (e.g. `handoff-pr-review.md`) in the operating system temporary directory.
-- For worktree streams, set **Source** to the worktree path and branch, not the calling directory.
-
----
-
-## 4. Open the Layout and Start the Agents
-
-Keep the user's focus in the calling pane: pass `--no-focus` to every creation command. Parse every ID from the JSON responses; never derive it.
-
-1. **Create the container** for each stream:
-   - Tab: `herdr tab create --workspace <id> --label <label> --cwd <dir> --no-focus` → `.result.root_pane`.
-   - New workspace: `herdr workspace create --label <label> --cwd <dir> --no-focus` → `.result.root_pane`.
-   - Worktree workspace: `herdr worktree create … --label <label> --no-focus` → read its root pane from the response.
-
-   A new workspace (plain or worktree) opens with a first tab labeled `1`: rename it with `herdr tab rename <tab-id> <label>`, taking the tab ID from the root pane.
-2. **Split** when two streams share a tab: `herdr pane split <root-pane> --direction right|down --cwd <dir> --no-focus` → `.result.pane`.
-3. **Label** each stream's pane with its agent name: `herdr pane rename <pane-id> <agent-name>`. The label survives `agent start`.
-4. **Start** the harness in each pane: `herdr agent start <agent-name> --kind <kind> --pane <pane-id> [-- <native-flags>]`.
-5. **Prompt** each agent to read its file, not a pasted summary:
-   ```bash
-   herdr agent prompt <agent-name> "Read <absolute-handoff-path> and resume the work it describes." \
-     --wait --until working --until blocked --timeout 30000
-   ```
-   For a stream with a lead skill, open the prompt with the skill's command so the harness loads it, even when the skill is restricted to user invocation:
-   ```bash
-   herdr agent prompt <agent-name> "/<lead-skill> <args> Before starting, read <absolute-handoff-path> and resume the work it describes." \
-     --wait --until working --until blocked --timeout 30000
-   ```
-   Herdr types the prompt as user input, so `claude` and `agy` expand `/<skill>` like a command typed by the user. For other harnesses, check how they invoke skills; if unsure, use the plain prompt: the handoff's skill paths still let the agent load the skill.
-
-   Wait only until the agent picks the work up. Do not wait for it to finish.
-
-### 4.1. Failures
-
-Never retry automatically: a timeout or a stall does not prove the prompt was not delivered, and a repeated prompt can duplicate work.
-
-On `agent_not_ready`, `agent_blocked`, `agent_prompt_stalled`, `timeout`, or a `blocked` state (trust dialogs, login, approvals), leave the pane open. Read its state with `herdr agent get` and `herdr agent read <agent-name> --source recent-unwrapped --lines 60`, then report what the user must do. Continue with the remaining streams.
-
----
-
-## 5. Report
-
-End with a compact table, one row per stream:
-
-| Agent | Harness | Workspace / Tab | Pane | Handoff | Worktree / Branch | Status |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-
-Then add:
-
-- A notice that the handoff files live in a temporary directory and may disappear on reboot.
-- For each worktree created, the removal command for the user to run once the work is merged (`herdr worktree remove --workspace <id>`, without `--force`).
-- For each failed stream, the action the user must take.
-
----
-
-## 6. Success Validation
-
-- [ ] Running inside Herdr was verified before any control command; no `--machine` command was issued.
-- [ ] Every created workspace, tab, and pane used `--no-focus`; the calling tab was left untouched.
-- [ ] Operational choices were resolved autonomously within the request and defaults; questions were limited to missing essential information, conflicting instructions, or an explicit preview request. Dependent steps waited for the answer, while independent preparation continued where possible.
-- [ ] A plan diagram was shown only when asking for confirmation or explicitly requested. When shown, it identifies the calling workspace and tab (double-line border, `◉`), marks resources to be created with `✚`, and uses the user's session language for explanatory labels and the legend.
-- [ ] Each stream has its own handoff file, written per the `handoff` skill, with the stream's mission as its goal.
-- [ ] Code-writing streams running alongside another writer live in their own worktree workspace; branch names follow `git-branch`.
-- [ ] No tab holds more than two agents; every created workspace, tab, and pane carries a semantic label (no `1` tab, no pane named after its harness), consistent with the agent names.
-- [ ] Each handoff lists its recommended skills with absolute `SKILL.md` paths; each stream with a lead skill was prompted with that skill's command.
-- [ ] Each agent ran the requested harness, received no flags the user did not ask for, and reached `working` (or was reported as failed without retry).
-- [ ] The final report lists every stream, the temporary-file notice, and the worktree removal commands.
+- [ ] Herdr environment and local CLI syntax were verified; the calling tab and focus stayed untouched.
+- [ ] Every new code writer has its own Git worktree unless the user explicitly requested reuse; no Herdr worktree was created.
+- [ ] Branch naming and base follow `git-branch`, without switching the calling checkout; mandatory project instructions were respected.
+- [ ] Every stream has a mission-specific handoff file, semantic layout labels, the requested harness and flags, and a prompt that reached `working` or a reported failure.
+- [ ] The report covers every stream and retained checkout, with no automatic retry or cleanup.
