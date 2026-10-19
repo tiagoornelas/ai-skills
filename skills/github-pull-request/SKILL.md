@@ -22,17 +22,13 @@ Skill for structuring, documenting, and opening Pull Requests on GitHub.
 
 ## 2. Issue Linkage and Traceability
 
-Every PR should ideally be linked to a tracking issue to keep the team informed and preserve project history.
+Link a tracking issue when one already exists in context. An issue is not required to open the PR.
 
 ### Agent Workflow:
 1. **If an issue exists in context** (Jira, GitHub Issues, Linear, etc.):
    - Link the identifier and URL in the PR traceability section.
    - Link every issue the PR resolves, not only the main one.
-2. **If NO issue exists in context**:
-   - **The agent must proactively recommend**:
-     > *"This PR does not yet reference a tracking issue. I recommend creating an issue (in GitHub Issues, Jira, or your preferred tracker) to keep teammates informed about this work. Would you like to create an issue before we open the PR?"*
-   - If the user wishes to create one, the agent assists or waits.
-   - If the user opts out, the PR proceeds without an issue link.
+2. **If no issue exists in context**: proceed without an issue link. Do not ask the user to create one.
 
 ### Supporting References
 
@@ -45,8 +41,7 @@ Beyond the issue, the traceability section records where the work came from and 
 | **Related PRs** | Companion changes in other repositories or layers. |
 | **Other** | Design docs, decision records, mockups, recordings, dashboards, or queries. |
 
-- **Gather before asking**: look in the conversation, the branch, the commits, and the issue itself (description and comments, when a tracker tool is available); the origin and error links usually live there.
-- **Ask once, only on evidence**: if a reference is clearly implied but its link is missing (e.g., a bug reported by a user with no link to the report), bundle all missing links into a single question.
+- **Gather available links** from the conversation, branch, commits, and issue description or comments when accessible. Omit references whose links are unavailable; do not pause PR creation to request them.
 - **Label every link** with what it is (e.g., `[support report on checkout failure](<url>)`), never a bare URL.
 - **Include only lines that have a link**: omit empty categories instead of writing "N/A".
 - Every link must be reachable by the reader ([no-local-references](../ai-assisted-software-development/references/no-local-references.md)).
@@ -81,12 +76,12 @@ Use the structure below:
 ---
 
 ## Traceability & Issue
-- **Issue**: [Link and issue key, e.g.: `#42` or `PROJ-123`] (short summary of the issue) *(or "N/A - Authorized standalone work")*
+- **Issue**: [Link and issue key, e.g.: `#42` or `PROJ-123`] (short summary of the issue)
 - **Origin**: [Labeled link to the report or discussion that started the work]
 - **Error**: [Labeled link to the monitored error or alert]
 - **Related PRs**: [Labeled links, e.g.: `#1235 (frontend)`]
 - **Other**: [Labeled links to docs, decision records, mockups, recordings, dashboards]
-<!-- Keep only the lines that have a link; Issue is always present. -->
+<!-- Keep only the lines that have a link. Omit this section if there are no links. -->
 
 ---
 
@@ -130,20 +125,15 @@ Status table mapping implemented behaviors to verification status, adhering to t
 
 ---
 
-## Screenshot
-<!-- Optional. Only when the PR changes what users see on screen. Drag the image into this box on GitHub. -->
-
----
-
 ## Impact & Breaking Changes
 - [Describe API contract breaks, database migrations, or new environment variables. If none, write "None"].
 ````
 
 ### Screenshot (Optional)
 
-When the diff changes the user-facing presentation layer (screens, components, styles, layouts), suggest adding **one** screenshot of the change. Never require it and never ask for specific screens or more than one image; omit the section when the developer declines or the change is not visible on screen.
+When the diff changes the user-facing presentation layer (screens, components, styles, layouts), add a `Screenshot` section with one embedded image if an accessible image URL is already available. Otherwise omit the section and mention after creating the PR that the developer may add a screenshot in GitHub. Do not pause to request one.
 
-GitHub CLI and API cannot upload images into a PR body, so do not try to attach image files. If the developer provides an image URL readers can already open, embed it; otherwise keep the placeholder comment and remind the developer to paste the screenshot through GitHub's web interface. Never commit images to the repository or upload them to third-party hosts just to embed them.
+GitHub CLI and API cannot upload images into a PR body, so do not try to attach image files. Never commit images to the repository or upload them to third-party hosts just to embed them.
 
 ---
 
@@ -156,29 +146,26 @@ GitHub CLI and API cannot upload images into a PR body, so do not try to attach 
      ```bash
      git push -u origin <branch-name>
      ```
-3. **Review with Developer**:
-   - Present the full draft of title and description for developer approval before publishing. In that conversation preview, show a terminal-native rendering of each diagram (per `visualize-it`) so it is readable; the published body keeps the Mermaid block.
-   - If the diff changes the user-facing presentation layer, suggest one optional screenshot (see [Screenshot](#screenshot-optional)).
-4. **Create the PR**:
+3. **Create the PR**:
+   - Prepare and verify the title and body, then open the PR without a separate approval prompt or preview. The user's request to open the PR authorizes creation of the draft.
    - Run the command via GitHub CLI:
      ```bash
-     gh pr create --draft --title "<title>" --body "<body>"
+     gh pr create --draft --title "<title>" --body-file <body-file>
      ```
-   - By default, create as `--draft` to give the developer a final pass on GitHub's interface, unless they explicitly request opening as ready for review.
-5. **Output**:
+   - Create as `--draft` unless the user explicitly requests ready for review.
+4. **Output**:
    - Return the clickable GitHub PR link.
-   - If a screenshot was accepted but not embedded, remind the developer to paste it through GitHub's web interface.
+   - For a visible UI change without an embedded screenshot, mention that the developer may add one through GitHub's web interface.
 
 ---
 
 ## 6. Success Validation
 
 - [ ] Agent-authored branches passed `agent-self-review` in branch mode before the PR was opened.
-- [ ] Issue traceability was verified or agreed with the developer.
+- [ ] Existing issue links were verified; absence of an issue did not block PR creation.
 - [ ] Supporting references found in context are listed with descriptive labels, with no empty categories.
 - [ ] Title follows standardized format (`Type/Description`).
 - [ ] Body includes direct summary, module map and interface cards (via `visualize-it`), and DoD table with official legend.
 - [ ] Section headings, DoD table header, and legend are in the team/repository language, not the template's English.
-- [ ] If the diff changes the user-facing presentation layer, one optional screenshot was suggested (and a reminder given if not embedded).
-- [ ] Full draft was presented and approved by the user prior to publishing.
+- [ ] For a visible UI change, an available screenshot was embedded or the developer was reminded after creation that one can be added.
 - [ ] PR was opened (defaulting to `--draft`) and clickable link returned.
