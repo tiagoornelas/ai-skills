@@ -6,7 +6,8 @@ description: >-
   coverage, test sanity, and code quality below contracts over everything
   committed since the last clean checkpoint (increment mode) or over the whole
   branch before a pull request is opened (branch mode), in a self-correction
-  loop with an iteration budget and round limit, until approved.
+  loop that budgets discretionary improvements while keeping critical defects and
+  project standards outside the budget.
 ---
 
 # Agent Self-Review
@@ -21,7 +22,7 @@ The goal is to ensure zero mechanical defects, typing errors, linter regressions
 
 The goal is **not** flawless aesthetic perfection. The goal is code that is **correct, covered, and devoid of high-cost defects**. Marginal stylistic improvements never justify an additional loop iteration. The agent focuses on the 80/20 rule: apply the few highest-impact corrections and stop.
 
-The "zero-tolerance" posture from [`software-designing`](../software-designing/SKILL.md) applies to **architectural design decisions**. Below contracts, the budget rules in Section 5 apply.
+The "zero-tolerance" posture from [`software-designing`](../software-designing/SKILL.md) applies to **architectural design decisions**. Below contracts, the Section 5 budget applies only to discretionary improvements; critical defects and project standards remain mandatory.
 
 The operational cycle is **evaluate → fix → re-evaluate**, adhering to convergence rules in Section 5.
 
@@ -33,12 +34,12 @@ Every discovered finding falls into one of four distinct categories. The categor
 
 | Category | Definition | Action |
 | :--- | :--- | :--- |
-| **Blocking** | Objective and deterministic: tool or test failure, violation of a documented project rule stated as a checkable obligation (Phase 2), unsafe database migration (table-locking DDL per `database-and-migrations.md`), DoD behavior lacking test coverage and lacking explicit declaration. | Always fix. |
-| **Should fix** | Subjective judgment **with a concrete failure scenario**: able to articulate in a single sentence what probable bug, expensive future change, or reader confusion it causes. Includes violations of vague or preference-worded rules ("prefer", "avoid", "when possible"). | Fix within the budget (Section 5) or justify in one line why it remains. |
+| **Blocking** | Tool or test failure; violation of an applicable documented project rule, including a preference-worded standard (Phase 2); unsafe database migration; DoD behavior lacking test coverage and lacking explicit declaration; or a critical defect with a concrete failure scenario. Critical means a credible path to data loss or corruption, security exposure, irreversible side effects, or failure of a required behavior. Deterministic proof is not required for a credible critical risk. | Fix regardless of budget. If unresolved, report a blocked verdict. |
+| **Should fix** | Judgment **with a concrete failure scenario** that does not meet the Blocking criteria: a probable lower-impact bug, expensive future change, or reader confusion. | Fix within the budget (Section 5) or justify in one line why it remains. |
 | **Discard** | Judgment lacking a concrete scenario, personal style preference, "could be slightly cleaner". | Do not fix and do not record. |
-| **Escalate** | The remediation would alter a public contract, module boundary, or dependency direction; or a checkable rule has no automated check (Phase 2). | Do not apply. Record as a pending Human Layer decision. |
+| **Escalate** | The remediation would alter a public contract, module boundary, or dependency direction; or a checkable rule has no automated check (Phase 2). | Do not apply. Record as a pending Human Layer decision. If a Blocking finding needs that decision, the verdict stays blocked. |
 
-When uncertain between **Should fix** and **Discard**: if a concrete failure scenario does not come to mind immediately, discard it.
+Classify severity before applying any budget. When uncertain whether a credible scenario is critical, keep it Blocking until evidence rules out the critical impact. When uncertain between **Should fix** and **Discard**: if a concrete failure scenario does not come to mind immediately, discard it.
 
 ---
 
@@ -78,14 +79,14 @@ Inspect the full branch diff against its merge-base with the target branch. Run 
 - Run project linters, static type checkers (`tsc`, `mypy`, etc.), and automated test suites.
 - Resolve any syntax error, formatting defect, typing mismatch, or broken test. Never silence alerts with suppression directives without imperative justification.
 
-### Phase 2: Project Rules and Migration Safety (Objective → Blocking)
+### Phase 2: Project Rules and Migration Safety (Mandatory → Blocking)
 
 Build a **rule ledger** once per run, then check every file in scope against it.
 
 1. **Enumerate rule sources**: repository `AGENTS.md`/`CLAUDE.md` and every file they point to, every file under `docs/rules/`, and `CONTRIBUTING.md`/`CODING_STANDARDS.md` if present. List them by name.
 2. **Select by applicability**: keep a rule file when its subject matches any path in scope (language, layer, directory, file type). **Test files are in scope**: testing, documentation, and language rules apply to them as much as to production code.
 3. **Read each selected file in full.** Never sample a rule file with `head`, `tail`, or `grep`: a rule past the cut-off is a rule never applied.
-4. **Extract checkable rules**: short entries of the form *rule → where it applies → how to check it*. Rules worded as preferences ("prefer", "avoid", "when possible") are recorded as judgment rules: violating them is **Should fix**, never Blocking.
+4. **Extract rules**: short entries of the form *rule → where it applies → how to check it*. For preference-worded standards ("prefer", "avoid", "when possible"), record the conditions under which an alternative is allowed. Apply judgment to decide whether a violation exists; once identified, it is **Blocking** and budget-exempt. If the rule's meaning cannot be resolved from the source, escalate the ambiguity and keep the verdict blocked until the Human Layer decides.
 5. **Check** every file in scope against every applicable ledger entry.
 
 Reporting obligations:
@@ -129,7 +130,7 @@ When no public path exists to reach the behavior, the remedy is a module extract
 
 **4b. Judgment checks (Should fix)**: tests prone to breaking during refactoring without behavior change (asserting copy, markup structure, CSS class names, log text, or collection sizes that are not the contract), subject to the Section 5 budget.
 
-### Phase 5: Code Quality and Query Performance (Judgment → Should fix)
+### Phase 5: Code Quality and Query Performance (Judgment → Blocking or Should fix)
 - **Failure-path questions first.** Before judging style or structure, answer these over the code in scope; each "yes, and nothing handles it" is a candidate finding with a ready-made failure scenario:
   1. **Partial failure**: in an operation of several steps that mutate state (files, config, lock files, remote resources, database rows), what is left behind if step *k* fails?
   2. **Delimiters and boundaries**: in parsers, stream handlers, and text protocols, what happens when the delimiter appears inside the payload, or the input is truncated or empty?
@@ -140,7 +141,7 @@ When no public path exists to reach the behavior, the remedy is a module extract
   1. **Operational and bug risk**: hot-path N+1 queries, unindexed filter/join predicates on growing tables, long transactions wrapping external I/O per `database-and-migrations.md`, and severe code smells per [code-smells.md](../coding/references/code-smells.md).
   2. **Change cost**: architectural rigidity below contracts, duplicated logic or queries, missing pagination limits.
   3. **Readability**: function bloat, obscure naming, dead code.
-- Category mapping per Section 2: concrete scenario → **Should fix**; no concrete scenario → **Discard**; touches contract/boundary → **Escalate**.
+- Category mapping per Section 2: credible critical scenario → **Blocking**; other concrete scenario → **Should fix**; no concrete scenario → **Discard**; touches contract/boundary → **Escalate**, with a blocked verdict if the underlying finding is Blocking.
 - All remediations adhere to [refactoring-principles.md](../coding/references/refactoring-principles.md): preserved behavior, green tests.
 - Architectural smells at module or contract scale are always **Escalate**, never local refactorings.
 
@@ -149,25 +150,25 @@ When no public path exists to reach the behavior, the remedy is a module extract
 ## 5. Loop and Convergence
 
 ### Phase Ordering
-Execute objective checks (Phases 1, 2, 3, and 4a) first and resolve all **Blocking** issues. Only then execute judgment checks (4b, 5) on the stabilized code.
+Execute objective checks (Phases 1, 2, 3, and 4a) first. Then execute judgment checks (4b, 5), classify critical scenarios and project rule violations as **Blocking**, and resolve all Blocking issues before discretionary Should fix remediations. A later discovery of a Blocking issue interrupts discretionary work.
 
 ### Budget
-- Maximum of **5 Should fix remediations** per run, combining Phases 4b and 5, prioritized strictly by impact.
+- Maximum of **5 Should fix remediations** per run, combining Phases 4b and 5, prioritized strictly by impact. Blocking findings, including critical risks and project standards, never consume this budget and cannot be listed as over budget or justified away.
 - Judgment findings exceeding the budget are not deferred; they are named in a single line of the verdict (`Over budget: <title>, <title>`), so the human sees what was left.
 - A finding classified **Should fix** never disappears silently: it ends as fixed, justified in one line, or over budget.
 
 ### Re-evaluation
 - After applying fixes, re-run Phases **1 and 3** in their entirety (they are fast and deterministic).
 - Re-run Phase **2** against the existing rule ledger, over the lines changed by the fixes. Do not rebuild the ledger or re-read rule files. Fixes are code like any other: a fix that breaks a ledger rule is Blocking.
-- Re-run Phase **4a** over test lines changed by the fixes. Phases **4b and 5 do not run again**.
-- **Zero second-order judgment findings**: judgment smells introduced by a remediation never trigger an additional round of Phases 4b–5. Objective violations (Phases 1–3 and 4a) introduced by a remediation are still Blocking.
+- Re-run Phase **4a** over test lines changed by the fixes. Do not repeat the full Phases **4b and 5** review; inspect the fixes for critical defects as specified below.
+- **Zero second-order discretionary findings**: do not repeat the full Phases 4b–5 review for marginal improvements. Still inspect every remediation for newly introduced critical defects or project rule violations; those remain Blocking, as do objective violations from Phases 1–3 and 4a.
 
 ### Iteration Limit
-- Maximum of **3 rounds** of evaluate → fix → re-evaluate.
-- If **Blocking** issues persist after round 3, stop. Document the roadblock (what is failing, what was attempted) as a pending blocker for the human. Do not loop indefinitely.
+- Maximum of **3 rounds** of evaluate → fix → re-evaluate. This is a stopping limit on autonomous attempts, never an acceptance threshold for Blocking findings.
+- If **Blocking** issues persist after round 3, stop with a **blocked** verdict. Document each unresolved finding, its impact, and what was attempted; request the necessary Human Layer decision or help. Do not deliver the code as clean, open or mark a pull request ready, or create a clean checkpoint. A later run must review the unresolved scope again.
 
 ### Anti-Oscillation
-- If a proposed fix would revert a previous fix, or contradicts a decision already finalized in this review, **preserve the current implementation** and move forward.
+- If a proposed fix would revert a previous fix, or contradicts a decision already finalized in this review, **preserve the current implementation** and move forward only for discretionary findings. For Blocking findings, stop with a blocked verdict and document the conflict.
 
 ### Commit Traceability
 - Self-review fixes are separate commits, authored after the implementation commit, adhering to [`commit`](../commit/SKILL.md). Never fold them into the implementation commit, even when the work was not yet committed when the review began: commit the implementation first.
@@ -178,8 +179,8 @@ Execute objective checks (Phases 1, 2, 3, and 4a) first and resolve all **Blocki
 
 The deliverable is **clean** at the agent layer when:
 
-- zero **Blocking** issues exist (or persistent blockers are documented after round 3);
-- every reported **Should fix** was remediated or justified in a single sentence;
+- zero **Blocking** issues exist;
+- every reported **Should fix** was remediated, justified in a single sentence, or named as over budget;
 - every **Escalate** finding is logged as a pending Human Layer decision.
 
 Record a concise traceability log: the reviewed range and mode, the rule files in the ledger, the DoD table with named tests, the removed-test destinations, what was fixed, what was justified, what was over budget, and what was escalated. Findings classified **Discard** are not recorded.
@@ -188,7 +189,7 @@ Record a concise traceability log: the reviewed range and mode, the rule files i
 
 **Open escalations** are carried forward: branch mode lists every Escalate recorded on the branch that the human has not resolved, so it reaches the pull request instead of being lost in an earlier run.
 
-**Checkpoint**: when the verdict is clean (or blockers are documented after round 3) and all work is committed, mark `HEAD` so the next increment starts there:
+**Checkpoint**: only when the verdict is clean and all work is committed, mark `HEAD` so the next increment starts there. A blocked verdict never creates or updates a clean checkpoint:
 
 ```bash
 git notes --ref=self-review add -f -m "<increment|branch> clean <ISO-8601 date>" \
@@ -218,10 +219,10 @@ When a later review accepts a rules, tests, or code-quality finding on code this
 - [ ] Every removed test case has a destination (removed behavior, named replacement, or declaration).
 - [ ] Phase 4a objective checks ran on added test lines; project testing rules prevailed over `testing.md` where they conflict.
 - [ ] Failure-path questions answered before code-quality judgment.
-- [ ] Maximum 5 Should fix remediations applied across at most 3 iteration rounds; every Should fix ended fixed, justified, or named as over budget.
+- [ ] Maximum 5 Should fix remediations applied across at most 3 iteration rounds; every Should fix ended fixed, justified, or named as over budget; no critical defect or project rule violation used that budget.
 - [ ] The log carries evidence for every phase; delegated runs without that evidence were rejected.
-- [ ] Fixes were re-checked against Phases 1–3 and 4a; zero new judgment rounds opened for second-order findings.
+- [ ] Fixes were re-checked against Phases 1–3 and 4a and inspected for new critical defects and project rule violations; no new discretionary judgment rounds opened.
 - [ ] Zero contract, boundary, or dependency direction changes applied: all were escalated.
 - [ ] Schema migrations and queries audited against [database-and-migrations.md](../coding/references/database-and-migrations.md) if database code was modified.
-- [ ] Automated tests pass following the final remediation commit, fixes committed separately, and the checkpoint note recorded on `HEAD`.
+- [ ] Automated tests pass following the final remediation commit; fixes are committed separately; a clean checkpoint note is recorded on `HEAD` only when zero Blocking findings remain.
 - [ ] In branch mode, ran at most once per head commit, with Phases 4b–5 restricted to cross-commit concerns.
