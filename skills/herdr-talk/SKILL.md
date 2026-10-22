@@ -39,8 +39,7 @@ In **Brief**, name one peer as **lead** and give it the goal stated as a verifia
 Peers may run a harness without this skill, so every message must explain itself:
 
 ```text
-[from <sender-address>, <pattern>, msg <n>] <content>
-<reply rule>
+[from <sender-address>, <pattern>, msg <n>] <content> <reply rule>
 ```
 
 - `<reply rule>` is explicit: `Reply by running herdr agent prompt <sender-address> with "[from <your-address>, <pattern>, msg <n+1>] <answer>" as one shell-quoted argument, without --wait, then end your turn.` For Notify, write `No reply needed.`
