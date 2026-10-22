@@ -58,7 +58,7 @@ Peers may run a harness without this skill, so every message must explain itself
 
 ## 4. Send
 
-1. Check each target with `herdr agent get`. On `blocked`, do not answer its dialog: report it to the user and skip that peer. On `working`, wait with `herdr agent wait <target> --timeout 60000`; Antigravity and Grok may report `working` while idle, so confirm with `herdr agent read <target> --source visible` before deciding.
+1. Check each target with `herdr agent get`. On `blocked`, do not answer its dialog: report it to the user and skip that peer. On `working`, wait with `herdr agent wait <target> --timeout 60000`; Antigravity and Grok may report `working` while idle, so confirm with `herdr agent read <target> --source visible` before deciding. If it is still busy after the wait, do not send: tell the user and continue with the other peers.
 2. Send with `herdr agent prompt <target> <message>` as shown in Section 3, **without `--wait`**. With `--wait`, a sender blocks until the receiver settles while the receiver tries to prompt the busy sender back, which risks a deadlock.
 3. For Brief, prime the partner first ("read the protocol and wait for the lead"), confirm it settled, then prompt the lead.
 4. If a reply is expected, tell the user what you are waiting for and **end your turn**. Each reply arrives as a new prompt in your session.
