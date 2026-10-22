@@ -34,9 +34,14 @@ A craft-oriented stylistic review, **never a mechanical checklist of rigid prohi
 
 ## 3. Review Criteria
 
-- **Formulaic Contrasts**: avoid "it's not about X, it's about Y". If a contrast is necessary, make it specific, surprising, and rooted in substance.
+- **Formulaic Contrasts**: avoid "it's not about X, it's about Y" and its newer variants ("it's more than an X, it's a Y", "rather than simply X"). If a contrast is necessary, make it specific, surprising, and rooted in substance.
 - **Anaphora** (repeated sentence openings): use with restraint and intention, never as an unthinking rhythmic habit.
 - **Crutch Transitions** ("when that happens", "more than that"): replace with nuanced qualifications woven into the thought, or restructure the sentence directly.
+- **Teaser Noun Phrases** ("the X that Y"): avoid a generic noun plus a relative clause whose verb only signals importance ("the criterion that settles it", "the question that matters", "the detail that changes everything"; PT-BR: "o critério que resolve", "a peça que faltava"). The reader cannot tell which thing is meant or what it does, and the phrase withholds the content to build suspense. Name the thing and state its effect: "the due date settles ties" instead of "the criterion that settles it". **Test**: if the reader would naturally ask "which one?" or "settles what?", rewrite. Restrictive clauses carrying concrete content remain fine ("the test that has failed in CI since yesterday").
+- **Labels, Not Teasers, in Headings and Bullets**: headings and bullet leads are labels, not sentences. Use a direct noun phrase (noun + adjective, participle, or complement): "Adopted criterion", "Main risks", "Root cause"; PT-BR: "Critério adotado", "Riscos principais", "Causa da falha". Never use relative clauses, "Why/What/Where" teasers, or suspense formulas ("The fix that works", "What nobody tells you"). This applies to any text with headings or lists (documents, PRs, reports), not only communicative prose. Exception: question headings in FAQs, or when the user explicitly asks for an editorial headline. Write headings in sentence case (title case is wrong in Portuguese and reads as machine output in English too), and reserve bold for terms the reader must not miss rather than scattering it across sentences.
+- **Importance Announcements** ("this matters", "why X matters", "it's worth noting"; PT-BR: "vale destacar", "é importante notar"): do not declare relevance; show the consequence that makes it relevant. If the consequence is obvious, cut the announcement.
+- **False Suspense and Staged Reveals** ("Here's the thing", "The result? Devastating.", "Not X. Not Y. Just Z."; PT-BR: "O resultado? Devastador."): state the point directly. Do not pose a question nobody asked only to answer it in the next sentence.
+- **Announce-then-Answer Preambles** ("Two constraints shape the design." followed by the constraints): open with the content itself; the reader does not need a sentence that previews the next one.
 - **Excessive Bullet Points**: do not convert every thought into a list, numbered step, or pedagogical enumeration. Allow prose to breathe in well-structured paragraphs.
 - **Empty Compromises**: take a clear stance when context warrants; when uncertainty exists, define its exact boundaries.
 - **Formulaic Flourishes**: avoid closing with rhetorical questions, grand moral aphorisms, or soaring manifestos. End directly, concretely, or abruptly when that best serves the message.
@@ -70,4 +75,6 @@ A craft-oriented stylistic review, **never a mechanical checklist of rigid prohi
 - [ ] Facts, purpose, and professional tone are preserved; zero fabricated details.
 - [ ] Final pass against Section 3 completed; strictly automated tropes were rewritten.
 - [ ] Zero em-dashes or en-dashes appear within communicative prose.
+- [ ] Headings and bullet leads are direct noun labels in sentence case; no "the X that Y" teasers remain in prose.
+- [ ] No importance announcements, staged reveals, or announce-then-answer preambles remain.
 - [ ] Delivered ready-to-use without commentary, unless specifically requested.
