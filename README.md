@@ -116,7 +116,7 @@ Most skills need nothing beyond the harness. A few drive command-line tools, whi
 | :--- | :--- | :--- |
 | [Git](https://git-scm.com/) | `commit`, `git-branch`, `git-cleanup`, `github-code-review`, `report-work`, `resolve-branch-conflict` | Reading history and diffs, creating branches and commits. |
 | [GitHub CLI](https://cli.github.com/) (`gh`) | `git-cleanup`, `github-code-review`, `github-pull-request`, `github-review-react`, `report-work`, `resolve-branch-conflict` | Reading and writing pull requests, reviews, and comments. Run `gh auth login` first. |
-| [Herdr](https://herdr.dev/) (`herdr`) | `git-cleanup` (optional), `herdr-handoff` | Opening workspaces, tabs, panes, and worktrees, and safely cleaning up Herdr worktree workspaces. |
+| [Herdr](https://herdr.dev/) (`herdr`) | `git-cleanup` (optional), `herdr-handoff`, `herdr-talk` | Opening workspaces, tabs, panes, and worktrees, messaging agents in other panes, and safely cleaning up Herdr worktree workspaces. |
 
 Issue trackers (Jira, GitHub Issues, Linear) are mentioned only as places to reference or file work: the skills use whatever access the harness already has and never require a specific integration.
 
