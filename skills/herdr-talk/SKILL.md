@@ -43,15 +43,23 @@ Peers may run a harness without this skill, so every message must explain itself
 <reply rule>
 ```
 
-- `<reply rule>` is explicit: `Reply with: herdr agent prompt <sender-address> '[from <your-address>, <pattern>, msg <n+1>] <answer>' and then end your turn without waiting.` For Notify, write `No reply needed.`
+- `<reply rule>` is explicit: `Reply by running herdr agent prompt <sender-address> with "[from <your-address>, <pattern>, msg <n+1>] <answer>" as one shell-quoted argument, without --wait, then end your turn.` For Notify, write `No reply needed.`
 - The first Brief message to each peer also carries the goal, the lead/partner roles, the other peer's address, the stop rule, and whom the lead reports to.
-- Keep inline content to a short single paragraph. For longer or multi-line content, write it to a Markdown file in the system temporary directory, named `herdr-talk-<sender>-<n>.md`, and send only its path. Quote the message in single quotes so backticks and `$()` reach the peer untouched.
+- Keep inline content to a short single paragraph. For longer or multi-line content, write it to a Markdown file in the system temporary directory, named `herdr-talk-<sender>-<n>.md`, and send only its path.
+- Pass the message through a quoted heredoc so quotes, backticks, and `$()` reach the peer untouched; plain single quotes break on the quotes inside the reply rule:
+
+  ```bash
+  herdr agent prompt <target> "$(cat <<'MSG'
+  [from <sender-address>, <pattern>, msg <n>] <content> <reply rule>
+  MSG
+  )"
+  ```
 - Never put credentials or secrets in a message or message file.
 
 ## 4. Send
 
 1. Check each target with `herdr agent get`. On `blocked`, do not answer its dialog: report it to the user and skip that peer. On `working`, wait with `herdr agent wait <target> --timeout 60000`; Antigravity and Grok may report `working` while idle, so confirm with `herdr agent read <target> --source visible` before deciding.
-2. Send with `herdr agent prompt <target> '<message>'`, **without `--wait`**. With `--wait`, a sender blocks until the receiver settles while the receiver tries to prompt the busy sender back, which risks a deadlock.
+2. Send with `herdr agent prompt <target> <message>` as shown in Section 3, **without `--wait`**. With `--wait`, a sender blocks until the receiver settles while the receiver tries to prompt the busy sender back, which risks a deadlock.
 3. For Brief, prime the partner first ("read the protocol and wait for the lead"), confirm it settled, then prompt the lead.
 4. If a reply is expected, tell the user what you are waiting for and **end your turn**. Each reply arrives as a new prompt in your session.
 
