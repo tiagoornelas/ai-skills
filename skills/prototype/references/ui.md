@@ -1,6 +1,6 @@
 # UI Prototypes
 
-Generate **multiple radically different interface variations**, rendered side by side in a single disposable HTML file that faithfully replicates the project's visual design language. This is a mockup: never wired into the production application, with nothing committed to the repository.
+Generate **multiple radically different interface variations**, each rendered at the real size of the screen it targets, in a single disposable HTML file that faithfully replicates the project's visual design language. This is a mockup: never wired into the production application, with nothing committed to the repository.
 
 If the inquiry concerns business logic, data models, or state transitions rather than visual layout, that is the wrong branch: use [`logic.md`](logic.md).
 
@@ -15,9 +15,9 @@ If the inquiry concerns business logic, data models, or state transitions rather
 
 ---
 
-## 2. Why Standalone and Side-by-Side
+## 2. Why Standalone, All Variants on One Page
 
-Prototypes wired into live app routes (variant toggles, `?variant=` query parameters, temporary test views) leave debris in the project that must be found and removed later—a cleanup process that is notoriously error-prone. A standalone HTML file completely outside the repository eliminates this risk: nothing is created in the codebase, leaving zero mess to clean up. Furthermore, side-by-side layout beats cycling variants one at a time: comparing designs should take a single glance, not repeated clicking.
+Prototypes wired into live app routes (variant toggles, `?variant=` query parameters, temporary test views) leave debris in the project that must be found and removed later—a cleanup process that is notoriously error-prone. A standalone HTML file completely outside the repository eliminates this risk: nothing is created in the codebase, leaving zero mess to clean up. Furthermore, showing every variant on the same page beats cycling them one at a time: comparing designs should take a scroll, not repeated clicking. Yet comparison must never cost fidelity: a variant squeezed into a fraction of the window is judged as a small-screen layout, not as the screen that will actually ship.
 
 ---
 
@@ -28,17 +28,24 @@ Default: **3 variants**. Beyond 5, variations stop being radically different and
 
 State the brief in one line prior to drafting:
 
-> "Three variants of the user settings page, presented side-by-side in a standalone mockup."
+> "Three variants of the user settings page (desktop, 1440px), stacked vertically in a standalone mockup."
 
 ### 3.2. Replicate the Real Visual Identity
 Before drafting variants, extract the project's real design tokens (colors, typography scales, spacing units, border radii, shadows, and base styling for shared components: buttons, cards, form inputs, navigation bars) from wherever the project defines them: CSS variables, Tailwind configurations, or theme files. Copy these values directly into the `<style>` block of the mockup so each variant feels authentically like part of the application rather than a generic template.
 
 If the page includes structural framing (headers, sidebars, global navigation) that heavily influences how content is perceived, replicate that frame statically: non-functional, purely to provide authentic visual context. Zero real data, zero live routing.
 
-### 3.3. Assemble the HTML with N Variants Side by Side
+### 3.3. Assemble the HTML with N Variants at Real Screen Size
 - Single file, pure HTML/CSS/JS: no frameworks, no bundlers, no dev server, everything inline, opening on double-click.
-- N variants arranged in a responsive grid or side-by-side row, each inside a clearly labeled panel, effortlessly comparable at a glance.
-- Each panel features a concise title and a single sentence articulating its core structural differentiator.
+- Identify the target screen before drafting (from the project's layouts, breakpoints, or by asking) and render every variant panel at that real width. Never shrink a desktop screen to fit several on one row.
+- Arrange panels by target screen:
+
+  | Target screen | Arrangement |
+  | :--- | :--- |
+  | Desktop, tablet landscape, or any wide screen | **Stacked vertically**, one full-width variant per row, each at the real screen width. |
+  | Mobile, portrait, or any narrow vertical screen | **Side by side** in a row, each panel at the real device width (e.g., 375–430px), wrapping only when the window runs out of room. |
+
+- Each variant sits inside a clearly labeled panel with a concise title and a single sentence articulating its core structural differentiator.
 - Variants must be **structurally divergent**: distinct information hierarchies, different spatial layouts, alternative primary action placements—not mere palette swaps. If two variants look too similar, rebuild one with an explicit constraint ("no card grid").
 
 ### 3.4. Save Outside the Repository and Open
@@ -56,6 +63,7 @@ Implementation of the winning variant is real production code: built into the ac
 
 ## 4. Anti-Patterns
 
+- **Wide screens squeezed side by side.** Rendering desktop variants in narrow columns makes every variant look like a small-screen layout and misrepresents the real screen. Stack them instead.
 - **Variants differing merely by color or font weight.** That is styling tuning, not prototyping. Real variants disagree on structure.
 - **Generic placeholder styling ignoring real project design tokens.** Prevents stakeholders from judging how designs would look in production.
 - **Wiring mockups into live app routing or dev servers**, even temporarily "just to check".
