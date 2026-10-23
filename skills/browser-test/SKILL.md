@@ -63,7 +63,7 @@ PLAYWRIGHT_MCP_BROWSER=chromium PLAYWRIGHT_MCP_OUTPUT_DIR="<scratch-dir>" \
 
 ## 5. Close and Report
 
-- Close the session when done: `playwright-cli -s=<session> close`. Headed sessions never time out on their own. If a session is stuck, `playwright-cli list` shows it; use `kill-all` only with the user's approval, since it ends other agents' sessions too.
+- Close the session when done, including when a step failed or the test was aborted: `playwright-cli -s=<session> close`. Headed sessions never time out on their own. If a session is stuck, `playwright-cli list` shows it; use `kill-all` only with the user's approval, since it ends other agents' sessions too.
 - Report to the user, in their language: what was tested, the mode, each expectation with pass or fail, and the paths of screenshots or traces. Those paths are local: to share evidence in a PR or issue, upload it as an attachment and do not cite the path.
 
 ## 6. Success Validation
