@@ -85,6 +85,11 @@ Use the structure below:
 
 ---
 
+## Decisions & Trade-offs
+[When material, explain actual business rules/restrictions, consequential trade-offs, assumptions, and maintenance commitments introduced by the change. Derive this from the implementation and reuse existing human-review findings; do not run a separate review just to fill this section. Omit if there is nothing material.]
+
+---
+
 ## Architecture & Contracts
 
 <!-- Module map via visualize-it: friendly names, type symbols, unlabeled arrows, its classDef styles, and the legend line below -->
@@ -99,7 +104,7 @@ graph LR
 <One-paragraph reading of the map: what is new, and confirmation that dependencies keep pointing inward toward business rules ([dependency-direction.md](../software-designing/references/dependency-direction.md)), or the ⚠️ deviation.>
 
 ### Interface Cards
-<!-- One card per component with a new, altered, or used public interface, in the visualize-it interface card format. Explain changed guarantees or failure modes separately, keyed by interface/method; keep cards limited to the interface name and marked methods. -->
+<!-- Cards for new/altered contracts and unchanged guarantees material to understanding the change, in the visualize-it interface card format. Explain changed guarantees or failure modes separately, keyed by interface/method; keep cards limited to the interface name and marked methods. -->
 
 #### ◆ Sign-in 🔧
 `SignInService` · 4 methods · 2 in scope
@@ -113,7 +118,7 @@ graph LR
 
 ## Delivered Behaviors (Definition of Done)
 
-Status table mapping implemented behaviors to verification status, adhering to the legend from [`human-review`](../human-review/SKILL.md) (Section 2.3):
+Status table mapping implemented behaviors to verification status, adhering to the legend from [`human-review`](../human-review/SKILL.md) (Verification and decision section):
 
 | Status | Delivered Behavior | Verification | Action for Reviewer |
 | :---: | :--- | :--- | :--- |

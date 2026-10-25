@@ -64,7 +64,7 @@ Full terminal and Mermaid examples (shapes, styles, deviation edge): [`reference
 
 ## 3. Interface Card Rules
 
-One card per component whose public interface is **new or altered**, or **unchanged but used by the change**. Entry points and infrastructure adapters get a card only when they expose a new public interface.
+For the requested view, show cards for **new or altered** public contracts and **unchanged guarantees material to understanding the change**. Do not catalog every used interface merely because it was called. Entry points and infrastructure adapters get a card only when they expose a new public interface.
 
 - **Minimal content**: exact public interface name and relevant method signatures only. No friendly-name heading, counts, previous signatures, out-of-scope methods, notes, or contract prose inside cards.
 - **Methods in scope**, in fixed order: 🔧 altered, 🆕 new, 🗑️ removed, 🔹 used without modification. Mark every method, including methods of a new interface. Removed methods retain their last signature.
@@ -128,7 +128,7 @@ See the grouped map and module index in [`references/module-map.md`](references/
 - [ ] The module map uses friendly names, type symbols, and unlabeled arrows, with responsibility groups, stable IDs, a code-name index, and a legend covering every symbol and marker used.
 - [ ] No file paths, signatures, stereotypes, or method names appear on the map; they live on interface cards.
 - [ ] Map change notation matches the destination; interface methods use 🔧 🆕 🗑️ 🔹 in both destinations.
-- [ ] Every component with a new, altered, or used public interface has a minimal class-style card with only its code name and marked methods in scope, in canonical order.
+- [ ] Contracts relevant to the requested view have minimal class-style cards with their code names and marked methods in scope, in canonical order; unrelated used interfaces are omitted.
 - [ ] Required contract decisions are explained outside cards, linked to the relevant interface/method.
 - [ ] The map respects the 7-box limit per view.
 - [ ] A file tree appears only when structure changed, was asked about, or a location breaks a boundary; it is pruned, keeps real disk nesting, reuses module IDs, and stays outside the map.

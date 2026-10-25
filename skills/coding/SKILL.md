@@ -39,6 +39,8 @@ Refactor before modifying code that is difficult to change, and after every pass
 | [database-and-migrations.md](references/database-and-migrations.md) | Writing, reviewing, or refactoring database migrations, schema DDL, queries, or ORM access patterns. |
 | [`design-patterns`](../design-patterns/SKILL.md) | Evaluating structural refactoring, object creation, or behavioral decoupling patterns under strict parsimony. |
 
+For material architectural opportunities encountered during normal work, follow the [proportional observation rule](../ai-assisted-software-development/SKILL.md#5-derived-operational-workflows); use [improve-architecture](../improve-architecture/SKILL.md) when a dedicated investigation is requested.
+
 ## Quality Gate
 Upon completing code changes, the agent must execute the [`agent-self-review`](../agent-self-review/SKILL.md) skill and iterate until its code and tests achieve a clean verdict.
 
