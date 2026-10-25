@@ -48,14 +48,16 @@ In both modes, the received context must be preserved verbatim (*ipsis litteris*
 - Pinpoint where complexity resides (or would emerge) using the vocabulary of [nature-of-complexity.md](references/nature-of-complexity.md): change amplification, cognitive load, unknown unknowns; dependencies and obscurity.
 - In existing code, review the red flags table (Section 4).
 
-### Step 3: Design at Least Two Alternatives
-- Never lock in the first idea. Follow [`design-it-twice`](../design-it-twice/SKILL.md) to formulate **at least two radically different alternatives** and compare them. For high-impact decisions, it executes this skill once per alternative in isolated contexts.
+### Step 3: Compare Alternatives Proportionally
+- For a design being finalized, compare at least two materially different alternatives. Use [`design-it-twice`](../design-it-twice/SKILL.md) for high-consequence decisions or when explicitly requested. A focal diagnosis can recommend a plausible direction without producing multiple complete designs or launching isolated agents.
+- Reuse decisions already authorized in the session; ask about unresolved Human Layer choices rather than restarting an approval ceremony.
 - **Exception**: when this skill is invoked *by* `design-it-twice` for a specific design axis, do **not** generate alternatives; develop the best possible design within the assigned axis.
 - For each alternative, draft **interfaces first** (what each module promises, in a few concise sentences) before internal structure.
 
 ### Step 4: Evaluate Through the Design Lenses
-Apply relevant references (Section 4). At a minimum, evaluate each alternative against:
+Apply the relevant lenses below (Section 4). Keep a focused assessment proportional; a complete design evaluates the applicable lenses rather than loading every reference automatically:
 - **Two Fundamental Questions**: how will this software change tomorrow, and how will it break at runtime? → [changeability-and-fragility.md](references/changeability-and-fragility.md)
+- **Maintenance commitment**: what recurring obligations does the solution impose across the system, and which are avoidable? → [maintenance-commitment.md](references/maintenance-commitment.md)
 - **Depth**: is each module's interface substantially simpler than its implementation? → [deep-modules.md](references/deep-modules.md)
 - **Information Hiding**: does each design decision have a single owner? → [information-hiding.md](references/information-hiding.md)
 - **Generality**: do interfaces speak the module's own concepts rather than caller concepts (except infrastructure gateways, which speak the domain's vocabulary)? → [general-purpose-modules.md](references/general-purpose-modules.md)
@@ -75,8 +77,8 @@ Apply relevant references (Section 4). At a minimum, evaluate each alternative a
 - **Cost is relative, never schedule-based**: compare options in terms of complexity, risk, and change footprint (e.g., "Option B modifies three modules; Option A modifies only one"). Do not estimate days or craft phased release timelines—project scheduling is outside the scope of software design.
 
 ### Step 6: Finalize and Record
-- Consolidate human decisions into a concise **decision record**: context, considered alternatives, decision, consequences.
-- Handoff the design for implementation via [`coding`](../coding/SKILL.md).
+- Summarize decisions and consequences in the conversation; write a persistent decision record when requested or required by the project.
+- Continue authorized implementation via [`coding`](../coding/SKILL.md); a separate handoff, session, or command is optional.
 
 ---
 
@@ -88,6 +90,7 @@ Load only the references needed for the specific design decision.
 | :--- | :--- |
 | [nature-of-complexity.md](references/nature-of-complexity.md) | Diagnosing or justifying why one design is superior. **Foundation for all other references.** |
 | [changeability-and-fragility.md](references/changeability-and-fragility.md) | Grounding architectural design and code review in the two foundational questions: future evolution cost vs. runtime failure paths. |
+| [maintenance-commitment.md](references/maintenance-commitment.md) | Assessing ongoing obligations to sustain, operate, or evolve the system, including costs shifted to consumers. |
 | [strategic-programming.md](references/strategic-programming.md) | Under pressure for quick shortcuts, deciding how much to invest in design, or modifying existing systems. |
 | [deep-modules.md](references/deep-modules.md) | Defining or reviewing modules, classes, services, or APIs. |
 | [information-hiding.md](references/information-hiding.md) | Deciding what each module knows and reveals, or encountering temporal decomposition. |
@@ -113,7 +116,7 @@ Load only the references needed for the specific design decision.
 | Shotgun surgery across modules for a single business change | [changeability-and-fragility.md](references/changeability-and-fragility.md), [together-or-apart.md](references/together-or-apart.md) |
 | Happy-path myopia, unhandled runtime fragility, unexamined implicit assumptions | [changeability-and-fragility.md](references/changeability-and-fragility.md), [define-errors-out-of-existence.md](references/define-errors-out-of-existence.md) |
 | Exception overload, repetitive handling logic | [define-errors-out-of-existence.md](references/define-errors-out-of-existence.md) |
-| Tactical patch, special case to accommodate change | [strategic-programming.md](references/strategic-programming.md) |
+| Tactical patch, special case to accommodate change | [strategic-programming.md](references/strategic-programming.md), [maintenance-commitment.md](references/maintenance-commitment.md) |
 | Non-obvious code, vague name, generic container | [obvious-code.md](references/obvious-code.md) |
 | Business rule aware of database, framework, or vendor; core untestable without infra | [dependency-direction.md](references/dependency-direction.md) |
 | Premature abstraction, patternitis, overengineering | [`design-patterns`](../design-patterns/SKILL.md) |
@@ -121,6 +124,8 @@ Load only the references needed for the specific design decision.
 ---
 
 ## 5. Output Format: Design Brief
+
+Use this structure for a substantial design brief; omit irrelevant sections in a focused assessment. For explicit discovery/refactoring requests, use [improve-architecture](../improve-architecture/SKILL.md). For an independent scope/value discussion, use [scope-review](../scope-review/SKILL.md). These are entry points, not required stages of every design.
 
 ```markdown
 ## Problem
@@ -151,7 +156,7 @@ Load only the references needed for the specific design decision.
 
 A design is complete only when:
 
-- [ ] At least **two alternatives** were evaluated via [`design-it-twice`](../design-it-twice/SKILL.md), with a recommendation grounded in complexity analysis (unless this run evaluates a single axis requested by `design-it-twice`).
+- [ ] Alternatives match the decision depth: a finalized design compares materially different options; high-consequence decisions use `design-it-twice`; focal assessments need not produce complete designs.
 - [ ] Both **fundamental questions** were evaluated: plausible future change vectors are localized, and runtime failure paths and implicit assumptions are surfaced and contained ([changeability-and-fragility.md](references/changeability-and-fragility.md)).
 - [ ] Each module has an **interface described in a few sentences** and is **deep** (interface is substantially simpler than what it encapsulates).
 - [ ] Every relevant design decision has **a single owner module** (no leakage).

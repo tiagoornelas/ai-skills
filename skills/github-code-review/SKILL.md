@@ -2,8 +2,8 @@
 name: github-code-review
 description: >-
   Reviews a teammate's GitHub Pull Request (or a diff from a fixed reference point)
-  across up to five parallel evaluation axes (quality & rules, behaviors & tests, architecture,
-  code quality, and database & migrations). Supports re-review mode to track resolution of
+  with a focused Human Layer assessment by default and optional deeper review axes
+  (quality & rules, behaviors & tests, architecture, code quality, and database & migrations). Supports re-review mode to track resolution of
   prior feedback against incremental commits. The skill discusses findings with the user,
   recommends approval or change requests, and formats accepted points into humanized review
   comments ready to paste into GitHub.
@@ -13,11 +13,19 @@ argument-hint: "[PR number/URL, branch, SHA, or base ref] [--re-review]"
 
 # GitHub Code Review
 
-For reviewing **other people's work**: a teammate's PR, or any diff from a fixed base. The deliverable is not the raw review itself; it is **assisting the user in deciding** (approve or request changes) and **identifying the specific points they will comment on**.
+For reviewing a GitHub PR or any diff from a fixed base, including a teammate's work or the user's own delivery. The deliverable is not the raw review itself; it is **assisting the user in deciding** (approve or request changes) and **identifying the specific points they will comment on**.
 
 > This skill applies the same standards to a teammate's code that the development pipeline applies internally: the mechanical rigor of [`agent-self-review`](../agent-self-review/SKILL.md) and the architectural governance of [`human-review`](../human-review/SKILL.md). The difference is that here **nothing is modified unilaterally**: everything becomes a finding, and the user chooses what to comment on.
 
-Up to five review axes, executed via **parallel subagents** to prevent context contamination:
+## Review Depth
+
+For an unqualified review request, establish the baseline below and apply [human-review](../human-review/SKILL.md) once: actual business decisions, trade-offs, maintenance commitments, architectural diagnosis, and scope/value assessment. This works regardless of authorship. Reuse that investigation for any follow-up.
+
+Systematic Agent Layer review, full multi-axis review, or selected axes are available when requested. The detailed axis workflow below applies to that requested scope; it is not a prerequisite for a focused Human Layer review. Create an isolated checkout only when execution requires it; a read-only diff analysis needs none. Load relevant references selectively. Use subagents for requested depth where useful, not automatically for every review.
+
+For focused review, use human-review's selective presentation, coverage limits, and decision-oriented ordering rather than the full per-axis report. Missing business context is disclosed; ask only if it changes the recommendation. Never infer expected requirements solely from the implementation. Optional batch triage prioritizes deeper review and does not certify PRs.
+
+For requested multi-axis review, preserve the business/decision assessment from `human-review` as the opening synthesis and reuse its architecture evidence. Delegate only the remaining requested work; do not repeat that assessment in each axis. Up to five axes can execute via **parallel subagents**:
 
 | Axis | Origin | Core Question |
 | :--- | :--- | :--- |
@@ -69,7 +77,7 @@ When the user indicates a re-review (via `--re-review` flag or session prompt):
 4. **Scope for Evaluation Axes**:
    The parallel subagent axes evaluate the **incremental diff** (`<previous-head>..HEAD`), plus targeted inspection of lines altered to resolve previous comments. This prevents re-debating settled code while catching regressions, scope creep, or defects in newly added commits.
 
-To allow Axis 🔧 to run test and lint tooling, create an isolated worktree of the PR code **without altering the user's working tree**:
+When Axis 🔧 is requested and will run test and lint tooling, create an isolated worktree of the PR code **without altering the user's working tree**:
 
 ```bash
 git fetch origin pull/<pr>/head:review/<pr>
@@ -108,7 +116,7 @@ Every finding across all axes receives one of these badges for scannability:
 - 🟡 **Warning**: real concern, non-blocking, warrants discussion prior to merge. Equivalent to **Should fix** in `agent-self-review`.
 - 🟢 **Suggestion**: minor improvement **with a concrete scenario**. Style preferences lacking concrete failure scenarios are never reported on any axis.
 
-*Calibration*: in `agent-self-review`, rule violations are blocking because the agent fixes them immediately. Here, this is a peer's PR. **Documented rule violations** can be 🔴 or 🟡 based on impact. **Design red flags** (from `coding` or `software-designing`) are subjective evaluations and **never exceed 🟡**, unless they trigger a demonstrable failure.
+*Calibration*: in `agent-self-review`, rule violations are blocking because the agent fixes them immediately. Here, this is a peer's PR. **Documented rule violations** can be 🔴 or 🟡 based on impact. **Design preferences** without concrete consequences are discarded. Evidence-backed architectural concerns can require a Human Layer decision before merge even without a current bug; severity reflects impact, not merely whether a failure already occurred.
 
 ---
 
@@ -129,12 +137,12 @@ Send a single prompt launching subagents concurrently using the harness subagent
 > *"Apply phases 1 and 2 of `<skills>/agent-self-review/SKILL.md` to this PR, without fixing anything. (a) In the worktree, run linters, typecheckers, and tests; if unable to run, use `gh pr checks <pr>` and state that. Report strictly failures introduced or touched by the diff. (b) Report every diff location violating a documented project rule, citing file and rule. Do not report code smells or general design judgments: those belong to another axis. Cite `file:line` for all findings. Prefix each finding with its severity emoji (🔴/🟡/🟢). Max 400 words."*
 
 **✅ Behaviors and Tests**: pass diff command, commit list, Section 2 behavior list, and severity scale, instructing to first read `<skills>/coding/references/testing.md`. Brief:
-> *"Apply phases 3 and 4 of `<skills>/agent-self-review/SKILL.md` to this PR, without fixing anything. For each behavior, classify using the DoD legend from `<skills>/human-review/SKILL.md` (Section 2.3): ✅, 🔎, 👤 (state manual validation steps), or 🚨. Report findings: (a) implemented behavior that is testable but lacks adequate tests (🟡); (b) behavior in diff that was not requested (scope creep); (c) tests in diff violating `testing.md` (coupled to text, markup, or internals; exposed private symbols; mocked internal collaborators), with concrete failure scenarios. Cite requirement and `file:line`. Prefix each finding with severity emoji (🔴/🟡/🟢). Max 400 words."*
+> *"Apply phases 3 and 4 of `<skills>/agent-self-review/SKILL.md` to this PR, without fixing anything. For each behavior, classify using the DoD legend from `<skills>/human-review/SKILL.md` (Verification and decision section): ✅, 🔎, 👤 (state manual validation steps), or 🚨. Report findings: (a) implemented behavior that is testable but lacks adequate tests (🟡); (b) behavior in diff that was not requested (scope creep); (c) tests in diff violating `testing.md` (coupled to text, markup, or internals; exposed private symbols; mocked internal collaborators), with concrete failure scenarios. Cite requirement and `file:line`. Prefix each finding with severity emoji (🔴/🟡/🟢). Max 400 words."*
 
-**🏗️ Architecture and Contracts**: pass diff command, commit list, Section 3 intended architecture, and severity scale, instructing to first read `<skills>/human-review/SKILL.md` and all files in `<skills>/software-designing/references/`. Brief:
+**🏗️ Architecture and Contracts**: pass diff command, commit list, Section 3 intended architecture, and severity scale, instructing to first read `<skills>/human-review/SKILL.md` and relevant files in `<skills>/software-designing/references/`. Brief:
 > *"Review the architectural design of the diff, not syntax or business logic. Following `human-review`, report: (a) new, modified, or removed modules and dependency direction, with a module map in `visualize-it` notation, highlighting any arrows pointing away from business rules; (b) public interfaces and contracts created or altered: promises and failure modes; (c) architectural concerns prioritized by impact: describe the issue, concrete scenario (what breaks or becomes rigid), and suggested direction using reference concepts (shallow module, information leakage, pass-through method); (d) strengths to preserve. Balance trade-offs. Cite files, functions, lines. Prefix concerns with severity emoji (🔴/🟡/🟢); strengths carry no emoji. Max 500 words."*
 
-**🧹 Code Quality**: pass diff command, commit list, Section 5 project rules, and severity scale, instructing to first read files in `<skills>/coding/references/`. Brief:
+**🧹 Code Quality**: pass diff command, commit list, Section 5 project rules, and severity scale, instructing to read relevant files in `<skills>/coding/references/`. Brief:
 > *"Apply Phase 5 of `<skills>/agent-self-review/SKILL.md` to this PR, without fixing anything. Inspect strictly lines added or altered by the diff. Report **at most 5** findings (naming, functions, comments, error handling, or code smells), prioritized by impact per `code-smells.md` (bug risk → change cost → readability). For each: the issue, concrete failure scenario, suggested refactoring by name, and `file:line`. Discard items lacking concrete scenarios, style preferences, or anything covered by linters. Do not report module-scale architectural smells: those belong to the architecture axis. Maximum severity 🟡. Max 300 words."*
 
 **🗄️ Database and Migrations** (Conditional):
@@ -215,7 +223,7 @@ Highest-risk axis: **<axis>** (<key finding in one line>)
 <single sentence rationale>
 ```
 
-Verdict rule: any 🔴 (unresolved previous blocker, new critical regression in incremental commits, or 🚨 in DoD table) → **Request changes**; otherwise → **Approve**. 🟡/🟢 findings may still receive line comments without changing the verdict. This is a recommendation: **the verdict belongs to the user**. The report summary and rationale are for discussion with the user, not a general PR review comment.
+Verdict rule: a critical defect or a material unresolved architectural/business decision that makes the current change unsuitable → **Request changes**, with the reason explicit. Incomplete evidence → state the limitation and pending verification, not automatic approval. Recommend **Approve** only within the reviewed scope when no material impediment remains. A focused Human Layer review does not certify unreviewed Agent Layer quality. **The verdict belongs to the user**; accepted concessions are respected unless new evidence changes their premises. The report summary and rationale are for discussion with the user, not a general PR review comment.
 
 Engage in conversation and answer questions. The user may promote, demote, or discard findings.
 
@@ -273,10 +281,10 @@ Never publish automatically. If the user explicitly requests publication, displa
 
 ## 9. Success Validation
 
-- [ ] Diff captured once and validated prior to subagents; user's working tree untouched, review worktree removed.
-- [ ] Up to five axes executed (or omissions/skips declared), each with severity breakdown.
+- [ ] Diff captured once and validated before any delegation; user's working tree untouched, any review worktree removed.
+- [ ] Review depth matches the request: focused Human Layer by default, systematic Agent Layer/selected axes/full review when requested; coverage is explicit.
 - [ ] In re-review mode, Previous Review Resolution Matrix audited every prior feedback item and incremental diff was evaluated without re-debating settled points.
-- [ ] Database and migration risks audited against `database-and-migrations.md` when database code was modified.
+- [ ] When systematic database review was requested, migration/query risks were audited against `database-and-migrations.md`; focal review discloses any remaining coverage limits.
 - [ ] Every finding contains `file:line` and severity badge; zero cross-axis contamination.
 - [ ] Axis 🏗️ declares which intended architecture baseline was used.
 - [ ] Recommended verdict adheres to Section 7 rules, with final verdict determined by user.

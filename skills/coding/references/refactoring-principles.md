@@ -28,7 +28,7 @@
 - **Comprehension refactoring**: if deciphering a piece of code required significant effort, embed that understanding into the code (clearer naming, decomposing confusing conditionals).
 - **Post-green cleanup**: during the "refactor" step of TDD, clean up the implementation code just written.
 
-In all cases, **restrict refactoring to the code touched by the current task**. Refactoring adjacent, unrelated files expands diff size, elevates regression risk, and inflates review costs.
+For ordinary implementation, **restrict refactoring to the code touched by the current task**. An explicitly requested architectural improvement defines its own agreed scope, including the affected modules; see [improve-architecture](../../improve-architecture/SKILL.md). Refactoring adjacent, unrelated files expands diff size, elevates regression risk, and inflates review costs.
 
 ---
 
@@ -43,7 +43,7 @@ In all cases, **restrict refactoring to the code touched by the current task**. 
 
 ## 4. Refactoring and the Human Layer
 
-- Agent-driven refactoring takes place strictly **below contracts**. Any modification detectable by callers outside the module (public signatures, cross-module responsibilities, architectural boundaries, dependency direction) is not refactoring: it is a Human Layer concern, governed by the boundary test in [`ai-assisted-software-development`](../../ai-assisted-software-development/SKILL.md) (Section 4). Do not alter unilaterally; escalate via [`software-designing`](../../software-designing/SKILL.md).
+- Autonomous internal refactoring takes place strictly **below contracts**. Any modification detectable by callers outside the module (public signatures, cross-module responsibilities, architectural boundaries, dependency direction) can be architectural refactoring when product behavior is preserved, but it is a Human Layer concern, governed by the boundary test in [`ai-assisted-software-development`](../../ai-assisted-software-development/SKILL.md) (Section 4). Do not alter unilaterally; escalate via [`software-designing`](../../software-designing/SKILL.md).
 
 ---
 

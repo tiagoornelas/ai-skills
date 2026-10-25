@@ -29,7 +29,8 @@ The sphere of human governance and decision-making. **Only what belongs to this 
 - **Dependency Direction**: Ensuring dependencies point toward business rules (policy never depends on infrastructure details or frameworks). See [dependency-direction.md](../software-designing/references/dependency-direction.md).
 - **Contracts and Public Interfaces**: What each module promises to its consumers (signatures, guarantees, and failure modes).
 - **Behaviors (Definition of Done)**: Validation of acceptance criteria observable by the user or API consumer.
-- **Trade-offs and Manual Verifications**: Business judgment and execution of checks that cannot be automated.
+- **Business Decisions and Trade-offs**: Behavior, restrictions, assumptions, value versus scope, and continuing [maintenance commitment](../software-designing/references/maintenance-commitment.md). Agents investigate and recommend; humans decide.
+- **Manual Verifications**: Execution of checks that cannot be automated.
 
 ---
 
@@ -58,10 +59,13 @@ Whenever in doubt about which layer a decision belongs to, apply this test:
 
 ## 5. Derived Operational Workflows
 
-This theory guides two complementary execution workflows:
+This theory guides complementary workflows and independently callable entry points:
 
 1. **[`agent-self-review`](../agent-self-review/SKILL.md)**: Executed autonomously by the agent. The agent inspects its own implementation (linter/types, DoD coverage, and tests), recursively fixing issues until approved.
-2. **[`human-review`](../human-review/SKILL.md)**: Invoked by the human developer on demand. The agent synthesizes the delivery strictly at the human governance level (dependency map, modified interfaces, and DoD validation table).
+2. **[`human-review`](../human-review/SKILL.md)**: On-demand critical assessment of own or third-party changes: business decisions and consequences first, then architecture, contracts, and verification. Systematic Agent Layer review is a separate requested scope for third-party work.
+3. **[`scope-review`](../scope-review/SKILL.md)** and **[`improve-architecture`](../improve-architecture/SKILL.md)**: Independently callable entry points for scope/value decisions and architectural improvement. Reuse shared evidence; these are not mandatory stages.
+
+During ordinary work, briefly surface material architectural or scope opportunities already encountered, normally at delivery and earlier only if they compromise the current solution. Broad scans, deeper investigations, artifacts, and follow-up sessions stay on demand. An observation does not expand implementation scope or create a backlog.
 
 ---
 

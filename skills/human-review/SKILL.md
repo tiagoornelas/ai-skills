@@ -1,40 +1,44 @@
 ---
 name: human-review
 description: >-
-  Assists the human developer in reviewing deliverables strictly at the Human
-  Layer (architecture, dependency direction, interface contracts, and DoD
-  behaviors). Invoked on demand by the user.
+  Explains and critically evaluates the Human Layer of a PR, local diff, or
+  ongoing delivery: actual business changes, embedded decisions, trade-offs,
+  maintenance commitments, architecture, contracts, and behavior verification.
+  Use on demand for the user's own work or changes by others.
+argument-hint: "[PR, diff, delivery, or focused review question]"
 ---
 
 # Human Review
 
-Assistance for high-level human review and deliberation.
+The agent investigates, diagnoses, and recommends; the human decides business and architectural trade-offs. Apply [ai-assisted-software-development](../ai-assisted-software-development/SKILL.md) regardless of who authored the work. Do not presume implementation quality or a prior self-review.
 
----
+## Investigate once
 
-## 1. Core Principle
+Establish the comparison or delivery scope. Derive conclusions from actual changes and affected relationships; inspect consumers, similar modules, and contracts selectively beyond the diff when needed. Separate demonstrated consequences, inferences, and unknown context. Existing patterns inform the evaluation but are not immune to criticism.
 
-The agent **does not perform the human review; it prepares it**. Approval and judgment are the exclusive prerogative of the human.
+Reuse one investigation for business interpretation, architectural judgment, and scope/value assessment. No automatic whole-repository audit, parallel review axes, test execution, complete redesign, or skill chain is required. Broader investigation and systematic Agent Layer review are available on demand. Report material defects encountered even when they sit below contracts.
 
-The agent's role is to make the deliverable visible at the **Human Layer**, filtering out low-level implementation noise already validated by [`agent-self-review`](../agent-self-review/SKILL.md).
+## Explain decisions before structure
 
-> 🎨 **Mandatory Native Visualization**: This skill natively invokes [`visualize-it`](../visualize-it/SKILL.md). The human must be able to *see* boundaries, dependencies, and contracts through diagrams (format chosen by `visualize-it`'s destination rule: terminal-native in conversation), not merely read textual descriptions.
+Lead with what changes for whom and which decisions deserve attention. Investigate relevant behavior changes, business rules/restrictions, trade-offs, unverified premises, and [maintenance commitments](../software-designing/references/maintenance-commitment.md). Present selectively: omit empty categories and routine details. Do not infer conscious acceptance by the author merely because the implementation embodies a trade-off.
 
----
+Compare documentation/declarations with implementation in a separate divergence note only when they disagree. Expected acceptance criteria remain a source for verification, not proof of what the code does; do not invent requirements from the diff.
 
-## 2. Presentation Structure for the Human
+## Assess architecture and scope
 
-When invoked, this skill generates a structured presentation containing:
+Apply relevant [software-designing references](../software-designing/SKILL.md#4-references-loaded-on-demand) and known contracts/decisions. For a material concern, connect observed structure to a plausible change or failure scenario, recurring obligation/impact, and a direction of solution with trade-offs and uncertainty. Compare the obligation of the remedy with the current design; shared code can introduce harmful coupling too.
 
-### 1. Module and Dependency Map (via `visualize-it`)
-- Render the component map with [`visualize-it`](../visualize-it/SKILL.md) notation, highlighting what changed, dependency direction (confirming arrows point inward toward business rules), and any architectural deviations.
+Distinguish introduced problems, aggravated problems, and independent old problems. Keep unrelated improvements outside the delivery's required scope. Respect accepted concessions; reopen them with new evidence, increased cost, or invalid premises. Severity and confidence are distinct; stylistic preference without a concrete consequence is not a finding.
 
-### 2. Contracts and Public Interfaces (via `visualize-it`)
-- One interface card per component whose public interface was created, altered, or used by the change, separate from the map.
-- What each new or altered contract guarantees and its failure modes, in separate text linked to the interface/method when they changed.
+Apply [scope-review](../scope-review/SKILL.md)'s criteria to material benefit/cost questions within the same investigation. Consider healthier design before cutting scope. Question business assumptions when evidence warrants it; recommendations do not change the objective or authorize implementation.
 
-### 3. Behavior Validation Table (DoD)
-Present a direct table mapping each acceptance criterion. This is the **canonical legend** for DoD statuses across skills:
+Use [visualize-it](../visualize-it/SKILL.md) to make relevant boundaries, dependencies, and contracts visible. Keep views proportional to the question and change; show interface cards when a new/changed contract or an unchanged guarantee is material to the reasoning, not a catalog of every used method. Explain business context and unfamiliar terms before internals; a separate explain-it run or artifact is not required.
+
+## Verification and decision
+
+Summarize available evidence for relevant acceptance criteria. Disclose missing specifications, unverified behavior, and review coverage. A favorable Human Layer assessment does not certify tests, internal implementation, or readiness to merge. Focused follow-up can be recommended with its reason; do not automatically run a full low-level review.
+
+This is the canonical DoD status legend shared across skills:
 
 | Status | Meaning |
 | :---: | :--- |
@@ -43,24 +47,16 @@ Present a direct table mapping each acceptance criterion. This is the **canonica
 | 👤 | Requires manual human validation. |
 | 🚨 | Missing, or lacking both test coverage and declaration. |
 
-| Status | Delivered Behavior (DoD) | Verification Evidence | Action for Human |
-| :---: | :--- | :--- | :--- |
-| ✅ | Cart discount rules | `tests/discount.test.ts::applies bulk discount above ten items` | No action required |
-| 🔎 | Welcome email dispatched via real vendor | Not code-testable; verified in staging with dispatch logs | Optional to inspect |
-| 👤 | Responsive visual layout on mobile | Not code-testable | Manually verify in browser viewport (375px) |
-| 🚨 | Acceptance Criterion X unverified | No test and no declaration | **Critical blocker for human evaluation** |
+When a table helps, use: **Status · Delivered behavior · Verification evidence · Action for human**. Do not present prompt instructions or documentation as automated verification.
 
-### 4. Items Requiring Human Decision
-Highlight at the conclusion strictly what demands human judgment:
-- Behaviors flagged for manual verification (👤);
-- Architectural trade-offs or new public contracts to approve;
-- Unresolved business domain questions.
+End with the recommendation, relevant limitations, and genuine pending decisions. Highlight consequential findings first, retaining useful supporting findings below without searching exhaustively for more. No automatic approval, comments, persistent record, or code changes follow. An architectural decision can warrant resolution before merge even when no current bug is demonstrated.
 
----
+For an explicitly requested batch triage, prioritize which changes warrant deeper analysis, state the limited coverage, and reuse gathered evidence on follow-up. Triage is not continuous monitoring and does not certify unexamined PRs.
 
-## 3. Success Validation
+## Success Validation
 
-- [ ] Presentation contains strictly Human Layer concerns (architecture, contracts, behaviors).
-- [ ] Module map and dependency direction diagrammed via [`visualize-it`](../visualize-it/SKILL.md), with interface cards for created, altered, or used public interfaces.
-- [ ] Every DoD behavior mapped in the table using canonical status indicators (✅, 🔎, 👤, 🚨) with clear evidence.
-- [ ] Strictly items demanding genuine human deliberation were highlighted for decision.
+- [ ] Business consequences and embedded decisions derive from the actual change.
+- [ ] Architectural and scope recommendations have evidence, concrete consequences, and trade-offs.
+- [ ] Relevant structure/contracts are visible using visualize-it, without unrelated catalogs.
+- [ ] Coverage, uncertainty, and behavior verification are explicit; Human Layer conclusions do not imply Agent Layer validation.
+- [ ] Existing decisions and human authority are respected; depth and output match the request.

@@ -94,6 +94,18 @@ Where schools diverge, I state my position. For instance: between the tiny funct
 The current catalog is in [`skills/`](skills/). It evolves over time; the philosophy above is what remains.
 
 
+## Focused Review and Improvement
+
+These entry points can be used independently, without a mandatory sequence:
+
+| Request | Skill | Result |
+| :--- | :--- | :--- |
+| Understand and evaluate a PR or local change | [human-review](skills/human-review/SKILL.md), or [github-code-review](skills/github-code-review/SKILL.md) for GitHub review mechanics | Business decisions, trade-offs, architectural diagnosis, and relevant verification evidence. Deeper Agent Layer review is available on demand. |
+| Challenge scope before or during construction | [scope-review](skills/scope-review/SKILL.md) | Benefit versus obligations, alternatives, and a recommendation for human judgment. |
+| Find or pursue structural improvements | [improve-architecture](skills/improve-architecture/SKILL.md) | Evidence-backed opportunities or a focused refactoring/design investigation; implementation when authorized. |
+
+For example, invoke `/scope-review <idea or PR>` or `/improve-architecture <area or recurring difficulty>`, using the harness's skill invocation syntax. Both use the shared [maintenance commitment](skills/software-designing/references/maintenance-commitment.md) lens. During normal work, observations stay brief; broader investigation is requested explicitly. Visual presentation follows [visualize-it](skills/visualize-it/SKILL.md), without a prescribed HTML report or automatic backlog.
+
 ## 🙏 Credits
 
 Some skills are ported from external references, credited below.
@@ -103,6 +115,7 @@ Some skills are ported from external references, credited below.
 | `design-patterns` | [Refactoring Guru](https://refactoring.guru) | [Design Patterns catalog](https://refactoring.guru/design-patterns/catalog) | **Transposition & Adaptation.** Classic patterns catalog transcribed to native on-demand skill format, filtered strictly through the Law of Parsimony and modern language idioms. |
 | `grill-me` | [Matt Pocock's skills](https://github.com/mattpocock/skills) | [`grilling`](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md), [`grill-me`](https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md) | **Transposition.** His two skills merged into one, in this repository's format. |
 | `handoff` | [Matt Pocock's skills](https://github.com/mattpocock/skills) | [`handoff`](https://github.com/mattpocock/skills/blob/main/skills/productivity/handoff/SKILL.md) | **Transposition, plus additions:** when a handoff is justified, and verified facts kept apart from assumptions. |
+| `improve-architecture` | [Matt Pocock’s skills](https://github.com/mattpocock/skills) | [Improve codebase architecture](https://www.aihero.dev/skills-improve-codebase-architecture) | **Inspiration.** Opportunity discovery uses this repository’s design principles, destination-aware visualization, and optional continuation into authorized implementation. |
 | `prototype` | [Matt Pocock's skills](https://github.com/mattpocock/skills) | [`prototype`](https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md) | **Adaptation.** The UI branch builds a standalone mockup outside the repository, with the project's design system, instead of variants on an app route. |
 
 Compared against upstream at the time of the port; later changes there are not tracked.
