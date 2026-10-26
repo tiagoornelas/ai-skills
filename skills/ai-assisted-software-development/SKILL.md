@@ -30,9 +30,9 @@ The sphere of human governance and decision-making. **Only what belongs to this 
 - **Contracts and Public Interfaces**: What each module promises to its consumers (signatures, guarantees, and failure modes).
 - **Behaviors (Definition of Done)**: Validation of acceptance criteria observable by the user or API consumer.
 - **Business Decisions and Trade-offs**: Behavior, restrictions, assumptions, value versus scope, and continuing [maintenance commitment](../software-designing/references/maintenance-commitment.md). Agents investigate and recommend; humans decide.
+- **Manual Verifications**: Execution of checks that cannot be automated.
 
 Agents bring this layer to the human in the human's terms (the system's concepts, not agent handles such as PR numbers or coined labels), each decision as a self-contained card with a recommendation. See [human-facing-communication.md](references/human-facing-communication.md).
-- **Manual Verifications**: Execution of checks that cannot be automated.
 
 ---
 
@@ -77,4 +77,4 @@ During ordinary work, briefly surface material architectural or scope opportunit
 - [ ] Decisions regarding modules, contracts, dependency direction, or DoD behaviors were brought to the human.
 - [ ] Internal details below contracts were resolved autonomously by the agent with tests and self-review.
 - [ ] No local or unversioned paths were exposed in shared artifacts.
-- [ ] Messages to the human passed the cold-read test of [human-facing-communication.md](references/human-facing-communication.md), and each pending decision was a self-contained card.
+- [ ] Messages to the human passed the cold-read test of [human-facing-communication.md](references/human-facing-communication.md), and each pending decision was a self-contained card, with emojis used only as status and attention markers.

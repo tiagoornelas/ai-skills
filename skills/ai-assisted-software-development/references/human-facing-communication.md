@@ -37,7 +37,34 @@ The right column is not forbidden; it is **not self-explanatory**. Terms the hum
 
 ---
 
-## 3. Decisions
+## 3. Emojis as Signals
+
+Emojis help the human scan a message and spot what needs attention. They are markers, not decoration: each one carries a fixed meaning.
+
+### Vocabulary
+
+| Emoji | Meaning |
+| :---: | :--- |
+| ✅ | Done or verified. |
+| ⏳ | In progress or waiting on something. |
+| ❌ | Failed or not done. |
+| ⚠️ | Attention point: a risk, surprise, or side effect the human should notice. |
+| ❓ | Decision the human must make (opens a decision card). |
+| 🔴 🟡 🟢 | Severity of a finding: critical, warning, suggestion. |
+
+Skills that define their own legend (the DoD status legend in `human-review`, the change notation in `visualize-it`) keep it inside their own outputs. Do not invent other meanings within a session: the same emoji always means the same thing.
+
+### Rules
+
+1. **Mark, do not decorate.** An emoji goes at the start of a line, bullet, or table cell whose status matters. No emojis in headings for decoration, in the middle of prose, or next to every bullet.
+2. **Few enough to stand out.** One emoji per line at most. If most lines in a message carry one, they stop signaling: keep them for status and attention points.
+3. **Never the only carrier.** The text must still say what the emoji signals ("⚠️ the migration locks the table for about a minute"), so the message survives a reader who skims past the symbol.
+4. **Not inside box-drawn diagrams.** Emojis are two columns wide in terminals and break alignment; use the one-column markers from `visualize-it`.
+5. **Conversation, not commits.** This applies to messages to the human. Commit messages and titles of tickets or PRs carry no emojis; other shared artifacts follow their own skill.
+
+---
+
+## 4. Decisions
 
 ### Ask less
 
@@ -50,7 +77,7 @@ The right column is not forbidden; it is **not self-explanatory**. Terms the hum
 Several decisions may share a message. What matters is that each one is explained well enough to decide on the spot, with a recommendation. Present each as a self-contained card, in the human's language:
 
 ```markdown
-**Decision: <the question in one line, in system terms>**
+❓ **Decision: <the question in one line, in system terms>**
 
 - **Context:** what happens today and what changed that requires a choice (1–3 sentences, no bare handles).
 - **Options:** for each, what changes in the system or for users, and what it costs.
@@ -70,7 +97,7 @@ A table of options is fine inside the card when there are three or more options 
 
 ---
 
-## 4. Example
+## 5. Example
 
 Before:
 
@@ -78,7 +105,7 @@ Before:
 
 After:
 
-> **Decision: should downloading the calculation report keep calling the CJ directly, outside the gateway?**
+> ❓ **Decision: should downloading the calculation report keep calling the CJ directly, outside the gateway?**
 >
 > - **Context:** we decided that all access to the CJ goes through the gateway. The report download is the one place that still calls the CJ REST API directly, because the MCP token does not work on that route.
 > - **Options:** **A.** Record it as a documented exception to that rule: one line, nothing else changes. **B.** Move it into the gateway: the gateway then owns every CJ access, but this touches another developer's code and grows the first delivery. **C.** Leave it as is: the written rule stays false.
