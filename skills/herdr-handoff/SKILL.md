@@ -43,7 +43,7 @@ Do not retry a failed or timed-out prompt automatically. On a blocked or uncerta
 
 ## 4. Report
 
-Give one row per stream with agent, harness, workspace/tab, pane, handoff path, worktree/branch if any, and status. Note that handoff files in the temporary directory may disappear on reboot. Report failures and any checkout created before a failed Herdr step. Worktree cleanup is outside this skill.
+Open with one plain sentence per stream: what it will deliver for the user's goal and which decisions may come back, described in system terms ([human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md)). Then give one row per stream with agent, harness, workspace/tab, pane, handoff path, worktree/branch if any, and status. Note that handoff files in the temporary directory may disappear on reboot. Report failures and any checkout created before a failed Herdr step. Worktree cleanup is outside this skill.
 
 ## 5. Success Validation
 

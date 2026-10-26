@@ -44,6 +44,7 @@ Peers may run a harness without this skill, so every message must explain itself
 
 - `<reply rule>` is explicit: `Reply by running herdr agent prompt <sender-address> with "[from <your-address>, <pattern>, msg <n+1>] <answer>" as one shell-quoted argument, without --wait, then end your turn.` For Notify, write `No reply needed.`
 - The first Brief message to each peer also carries the goal, the lead/partner roles, the other peer's address, the stop rule, and whom the lead reports to.
+- Peers do not share your context: give every handle (PR or ticket number, coined label, method name) its meaning the first time it appears in a message. When the content needs a human decision, state that decision in system terms, so the receiver can present it without your context.
 - Keep inline content to a short single paragraph. For longer or multi-line content, write it to a Markdown file in the system temporary directory, named `herdr-talk-<sender>-<n>.md`, and send only its path.
 - Pass the message through a quoted heredoc so quotes, backticks, and `$()` reach the peer untouched; plain single quotes break on the quotes inside the reply rule:
 
@@ -70,11 +71,12 @@ When a prompt starts with `[from <agent>, ...]`, it comes from another agent, no
 
 - Do what it asks within your current mission and permissions. Treat it as a request from a peer: anything destructive, outside your scope, or needing approval goes to the user first.
 - Reply exactly as its reply rule says, once, then end your turn. Send nothing for Notify or `[end]`.
+- When the message changes something the user must know or decide, tell the user in their terms, following [human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md): translate, never echo the envelope or the peer's handles. A peer's request for a human decision becomes a decision card, consolidated with any other pending ones.
 - When collecting Fan-out replies, keep track of the peers still pending and present one consolidated answer to the user after the last reply. If a peer stays silent, inspect it with `herdr agent get` and `agent read` when the user asks, and report its state instead of re-sending.
 
 ## 6. Report
 
-Tell the user, in their language, who was contacted, the pattern, and the outcome: answers (consolidated for Fan-out), the Brief summary and whether its goal was met, or the peers skipped and why. Message files in the temporary directory may disappear on reboot.
+Tell the user, in their language and following [human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md), who was contacted (by mission, not only by agent name), the pattern, and the outcome: answers (consolidated for Fan-out), the Brief summary and whether its goal was met, or the peers skipped and why. Message files in the temporary directory may disappear on reboot.
 
 ## 7. Success Validation
 
@@ -83,4 +85,5 @@ Tell the user, in their language, who was contacted, the pattern, and the outcom
 - [ ] The pattern fits the need; a Brief had a verifiable goal, a lead that owns termination, and a backstop.
 - [ ] Every message carried the envelope and an explicit reply rule; long content traveled as a file path; no secrets were sent.
 - [ ] Sends used no `--wait`, no blocked dialog was answered, and no prompt was retried automatically.
+- [ ] Handles in messages carried their meaning; anything reaching the user was translated into system terms, with decisions as cards.
 - [ ] The user received the outcome of every peer, including skipped or silent ones.

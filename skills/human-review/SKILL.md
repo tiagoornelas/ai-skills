@@ -49,7 +49,7 @@ This is the canonical DoD status legend shared across skills:
 
 When a table helps, use: **Status · Delivered behavior · Verification evidence · Action for human**. Do not present prompt instructions or documentation as automated verification.
 
-End with the recommendation, relevant limitations, and genuine pending decisions. Highlight consequential findings first, retaining useful supporting findings below without searching exhaustively for more. No automatic approval, comments, persistent record, or code changes follow. An architectural decision can warrant resolution before merge even when no current bug is demonstrated.
+End with the recommendation, relevant limitations, and genuine pending decisions, each as a decision card in system terms ([human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md)). Highlight consequential findings first, retaining useful supporting findings below without searching exhaustively for more. No automatic approval, comments, persistent record, or code changes follow. An architectural decision can warrant resolution before merge even when no current bug is demonstrated.
 
 For an explicitly requested batch triage, prioritize which changes warrant deeper analysis, state the limited coverage, and reuse gathered evidence on follow-up. Triage is not continuous monitoring and does not certify unexamined PRs.
 

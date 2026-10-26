@@ -73,7 +73,7 @@ Apply the relevant lenses below (Section 4). Keep a focused assessment proportio
 - Select a recommendation and justify it using concepts from the reference lenses (e.g., "Alternative B eliminates format leakage between reader and writer").
 - Present to the human **only** what belongs to the Human Layer: modules and responsibilities, dependency direction, contracts and failure modes, behaviors, and trade-offs.
 - **Visualize** with [`visualize-it`](../visualize-it/SKILL.md): module map with explicit dependency direction, and a minimal interface card for each new or altered contract; describe promise, hidden knowledge, and failure modes separately, keyed by interface/method.
-- List **pending decisions** explicitly, each with options, risk/cost of each option, and an agent recommendation.
+- List **pending decisions** explicitly, each with options, risk/cost of each option, and an agent recommendation. To the human, present each one as a decision card in system terms, each fully explained with its recommendation ([human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md)).
 - **Cost is relative, never schedule-based**: compare options in terms of complexity, risk, and change footprint (e.g., "Option B modifies three modules; Option A modifies only one"). Do not estimate days or craft phased release timelines—project scheduling is outside the scope of software design.
 
 ### Step 6: Finalize and Record

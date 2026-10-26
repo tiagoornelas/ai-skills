@@ -74,6 +74,7 @@ Rules:
 
 - **Do not duplicate existing artifacts.** Specifications, blueprints, ADRs, tracking issues, commit SHAs, and diffs are cited via link or path, never copied verbatim. Keeps the document compact while maintaining single sources of truth.
 - **Strictly decouple facts from assumptions.** An incoming agent treats the handoff as a contract and will not re-audit claims. An unverified assertion (e.g., "X does not exist" or "Y is ready") becomes a dangerous false premise: downgrade it to ❓.
+- **Give every handle its meaning.** Each PR, issue, ADR number, or session label cited (`P3`, `wave 2`) carries a one-line description of what it is: "#171 (moves the calculation report download into the gateway)". The incoming agent must be able to talk to the user about it in system terms, not echo bare numbers.
 - **Preserve the why, not just the what**: design decisions and rejected alternatives are what standard summaries lose.
 - **Recommended skills**: cite each skill by its canonical name **and** the absolute path of its `SKILL.md`, taken from the skill's base directory in the current session. A name alone is not enough: skills marked `disable-model-invocation: true` are hidden from the incoming agent, which can only load them by reading the file.
 - **For a human peer**, local machine paths are invalid ([no-local-references](../ai-assisted-software-development/references/no-local-references.md)): cite issues, PRs, and commit URLs, or rephrase context.
@@ -98,5 +99,6 @@ When forking a stream, the current session remains active: do not terminate or c
 - [ ] Document written to OS temporary directory outside workspace, with absolute path and volatility notice returned.
 - [ ] Existing artifacts cited via link/path without copied text; zero local machine paths for peer handoffs.
 - [ ] Every unverified claim flagged with ❓.
+- [ ] Every cited handle (PR, issue, ADR, session label) carries its meaning.
 - [ ] Recommended skills section exists, aligns with declared next step, and gives each skill's absolute `SKILL.md` path (name only for a human peer).
 - [ ] Zero secrets, private keys, tokens, or PII contained in document.

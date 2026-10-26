@@ -67,7 +67,7 @@ Construct the comparison matrix (Section 5) using the criteria from [references/
 - **None are compelling** → use discovered weaknesses to formulate a fresh design axis and return to Step 3 (maximum one additional round; if still unresolved, escalate to the human as an ill-defined problem).
 
 ### Step 6: Present via the Human Layer
-Present a module map per alternative (side-by-side using [`visualize-it`](../visualize-it/SKILL.md)) alongside the comparison matrix. Selecting between alternatives that impact contracts, boundaries, or dependency direction is a **human decision**: state the agent recommendation and solicit a decision. In agent-to-agent delegation, mark it as pending.
+Present a module map per alternative (side-by-side using [`visualize-it`](../visualize-it/SKILL.md)) alongside the comparison matrix. Selecting between alternatives that impact contracts, boundaries, or dependency direction is a **human decision**: state the agent recommendation and solicit a decision as a decision card in system terms ([human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md)). In agent-to-agent delegation, mark it as pending.
 
 Once decided, the winning design proceeds through Step 6 of `software-designing` (decision record and handoff to [`coding`](../coding/SKILL.md)). Document rejected alternatives and rejection rationales in the decision record.
 
