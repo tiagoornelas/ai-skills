@@ -45,6 +45,7 @@ Peers may run a harness without this skill, so every message must explain itself
 - `<reply rule>` is explicit: `Reply by running herdr agent prompt <sender-address> with "[from <your-address>, <pattern>, msg <n+1>] <answer>" as one shell-quoted argument, without --wait, then end your turn.` For Notify, write `No reply needed.`
 - The first Brief message to each peer also carries the goal, the lead/partner roles, the other peer's address, the stop rule, and whom the lead reports to.
 - Peers do not share your context: give every handle (PR or ticket number, coined label, method name) its meaning the first time it appears in a message. When the content needs a human decision, state that decision in system terms, so the receiver can present it without your context.
+- When the content asks a peer to write code, create a branch, commit, or open a pull request, name the skill that governs each action: `coding`, `git-branch`, `commit`, or `github-pull-request`. The peer may not have received a handoff that states them.
 - Keep inline content to a short single paragraph. For longer or multi-line content, write it to a Markdown file in the system temporary directory, named `herdr-talk-<sender>-<n>.md`, and send only its path.
 - Pass the message through a quoted heredoc so quotes, backticks, and `$()` reach the peer untouched; plain single quotes break on the quotes inside the reply rule:
 
@@ -85,5 +86,6 @@ Tell the user, in their language and following [human-facing communication](../a
 - [ ] The pattern fits the need; a Brief had a verifiable goal, a lead that owns termination, and a backstop.
 - [ ] Every message carried the envelope and an explicit reply rule; long content traveled as a file path; no secrets were sent.
 - [ ] Sends used no `--wait`, no blocked dialog was answered, and no prompt was retried automatically.
+- [ ] Requests for code, branch, commit, or pull request work named their governing skill.
 - [ ] Handles in messages carried their meaning; anything reaching the user was translated into system terms, with decisions as cards.
 - [ ] The user received the outcome of every peer, including skipped or silent ones.

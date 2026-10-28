@@ -35,6 +35,8 @@ For **each new agent that will write code**, create a separate Git worktree, eve
 
 Read [`../handoff/SKILL.md`](../handoff/SKILL.md) and apply its **Document Content** and **Write and Deliver** sections. Write one temporary handoff file per agent, named `handoff-<agent-name>.md`, with that stream's mission as its Next Session Goal. For a worktree stream, set Source to its actual worktree path and branch.
 
+Every code-writing stream's Recommended Skills always lists the delivery workflow, whatever the mission: `coding` for code changes, `agent-self-review` before delivery, `commit` for every commit, `github-pull-request` for opening a pull request, and `git-branch` with the note that the stream's branch already exists and the skill applies only to any additional branch. This keeps branches, commits, and pull requests from new panes within the standard.
+
 Create the requested layout with `herdr tab create --workspace <id> --label <label> --cwd <dir> --no-focus` or `herdr workspace create --label <label> --cwd <dir> --no-focus`. For a requested split, use `herdr pane split <pane-id> --direction right|down --cwd <dir> --no-focus`. Rename any default `1` tab with `herdr tab rename` and each pane with `herdr pane rename`; obtain all IDs from the command responses. Start each agent with `herdr agent start <name> --kind <kind> --pane <pane-id> [-- <requested-native-flags>]`.
 
 Prompt each agent to read its handoff file. If it has a lead skill, prefix the prompt with that skill's command when its harness supports it; otherwise use a plain prompt with the handoff path. Use `herdr agent prompt <name> <prompt> --wait --until working --until blocked --timeout 30000` and wait only until the work is picked up.
@@ -50,5 +52,6 @@ Open with one plain sentence per stream: what it will deliver for the user's goa
 - [ ] Herdr environment and local CLI syntax were verified; the calling tab and focus stayed untouched.
 - [ ] Every new code writer has its own Git worktree unless the user explicitly requested reuse; no Herdr worktree was created.
 - [ ] Branch naming and base follow `git-branch`, without switching the calling checkout; mandatory project instructions were respected.
+- [ ] Every code-writing stream's handoff lists `coding`, `agent-self-review`, `commit`, `github-pull-request`, and `git-branch` with absolute `SKILL.md` paths.
 - [ ] Every stream has a mission-specific handoff file, semantic layout labels, the requested harness and flags, and a prompt that reached `working` or a reported failure.
 - [ ] The report covers every stream and retained checkout, with no automatic retry or cleanup.
