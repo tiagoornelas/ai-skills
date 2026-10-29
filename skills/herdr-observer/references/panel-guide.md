@@ -46,7 +46,7 @@ A single self-contained HTML file: copy [`../resources/panel.css`](../resources/
 │  🟢 Team A          │  Objective in one sentence + Context     │
 │     doing in 1 line │  Decisions for you                       │
 │  🟡 Team B          │  Agents (Leader first): role + status    │
-│ Other workspaces   │  Done | Now | Next                       │
+│ Other workspaces   │  Pending | Now | Done                    │
 │ ▸ Concluded        │  PR cards: what it changes, then checks  │
 │                    │  Since last refresh (one line)           │
 └────────────────────┴──────────────────────────────────────────┘
@@ -54,7 +54,7 @@ A single self-contained HTML file: copy [`../resources/panel.css`](../resources/
 
 - **Needs you now** (`.attention`; `.attention calm` when empty, saying so in one sentence): every pending decision, blocked agent, PR waiting for the user's review, and PR ready to merge, across all teams, each naming its team. This block is what the user reads first.
 - **Teams** (`.team-list`, `.team`): one entry per team with its health emoji, its name, one line on what it is doing now, and agent status chips. Workspaces without team activity go in a short "Other workspaces" list; concluded teams go in a closed `<details>`.
-- **Focused team** (`.detail`): one per team, only the selected one visible. Objective and why it matters (`.why`), optional `.context`, decisions (`.decision`), agents (`.agent`, Leader first with `.leader`), then the Done / Now / Next columns (`.cols`, `.col`, `.card`).
+- **Focused team** (`.detail`): one per team, only the selected one visible. Objective and why it matters (`.why`), optional `.context`, decisions (`.decision`), agents (`.agent`, Leader first with `.leader`), then the Pending / Now / Done columns, in that order (`.cols`, `.col`, `.card`): Pending holds planned next steps and work not started, Now holds what agents and open PRs are doing, Done holds merged PRs and finished tasks.
 - **PR cards** (`.card.pr`): first what the PR changes for whom (`.what`), with its number as a link; then one row of chips (`.checks`) for mergeability, CI, review by the agent (`agent-self-review` note), and review by the user (`human-review` note and its recommendation); then the task it belongs to.
 - **Since last refresh** (`.since`): one short line per team at most; omit on the first run.
 

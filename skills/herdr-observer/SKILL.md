@@ -6,7 +6,7 @@ description: >-
   at a glance: what needs the user now, what each team is doing, agents and
   their status, pull requests with mergeability, CI, agent-review and
   human-review state, associated tasks or issues in whatever tracker the user
-  uses, done, in progress, and next, and what changed since the last refresh.
+  uses, pending, in progress, and done work, and what changed since the last refresh.
   Observes passively, asks agents only when a fact cannot be observed, and
   never makes agents report to it. Supports named views filtered to the
   workspaces the user lists. Triggered when the user asks to observe,
