@@ -17,8 +17,8 @@ def main() -> int:
         return 2
     state_path, output_path = Path(sys.argv[1]), Path(sys.argv[2])
     data = json.loads(state_path.read_text(encoding="utf-8"))
-    # "</" would let a string close the <script> element that carries the data.
-    payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
+    # Any "<" could close or comment out the <script> element that carries the data.
+    payload = json.dumps(data, ensure_ascii=False).replace("<", "\\u003c")
     html = TEMPLATE.read_text(encoding="utf-8").replace(PLACEHOLDER, payload)
     output_path.write_text(html, encoding="utf-8")
     print(output_path)
