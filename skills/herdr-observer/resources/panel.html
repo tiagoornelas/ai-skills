@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -61,8 +61,8 @@ details summary{cursor:pointer;padding:8px 14px;color:var(--muted)}
 <script id="panel-data" type="application/json">/*PANEL_DATA*/</script>
 <script>
 const DATA = JSON.parse(document.getElementById("panel-data").textContent);
-const STATUS = {working:"trabalhando", idle:"ocioso", blocked:"bloqueado", done:"concluído", unknown:"desconhecido"};
-const SOURCE = {observed:"observado", declared:"declarado", inferred:"inferido"};
+const STATUS = {working:"working", idle:"idle", blocked:"blocked", done:"done", unknown:"unknown"};
+const SOURCE = {observed:"observed", declared:"declared", inferred:"inferred"};
 
 function h(tag, attrs, ...kids) {
   const el = document.createElement(tag);
@@ -73,23 +73,23 @@ function h(tag, attrs, ...kids) {
   return el;
 }
 const pill = (cls, text) => h("span", {class: "pill " + cls}, text);
-const src = s => s ? h("span", {class: "src", title: "origem do dado"}, SOURCE[s] || s) : null;
+const src = s => s ? h("span", {class: "src", title: "source of this fact"}, SOURCE[s] || s) : null;
 const sourced = f => f ? [f.text, src(f.source)] : [];
 const status = s => pill("s-" + (STATUS[s] ? s : "unknown"), STATUS[s] || s);
-const when = iso => iso ? new Date(iso).toLocaleString("pt-BR", {dateStyle: "short", timeStyle: "short"}) : "—";
+const when = iso => iso ? new Date(iso).toLocaleString(undefined, {dateStyle: "short", timeStyle: "short"}) : "—";
 const openPrs = w => (w.prs || []).filter(p => p.state === "open" || p.state === "draft");
 
 function prFlags(p) {
-  const merge = p.state === "merged" ? pill("ok", "mergeado")
-    : p.state === "closed" ? pill("na", "fechado")
-    : p.mergeable === "yes" ? pill("ok", "mergeável")
-    : p.mergeable === "conflict" ? pill("bad", "conflito") : pill("na", "merge ?");
-  const ci = {pass: pill("ok", "CI ✓"), fail: pill("bad", "CI ✗"), pending: pill("warn", "CI …")}[p.ci] || pill("na", "sem CI");
+  const merge = p.state === "merged" ? pill("ok", "merged")
+    : p.state === "closed" ? pill("na", "closed")
+    : p.mergeable === "yes" ? pill("ok", "mergeable")
+    : p.mergeable === "conflict" ? pill("bad", "conflict") : pill("na", "merge ?");
+  const ci = {pass: pill("ok", "CI ✓"), fail: pill("bad", "CI ✗"), pending: pill("warn", "CI …")}[p.ci] || pill("na", "no CI");
   const ar = pill(p.agent_review && p.agent_review.done ? "ok" : "na", "agent-review " + (p.agent_review && p.agent_review.done ? "✓" : "—"));
   const hr = p.human_review && p.human_review.done
     ? pill("ok", "human-review" + (p.human_review.recommendation ? ": " + p.human_review.recommendation : " ✓"))
     : pill("na", "human-review —");
-  return h("div", {class: "flags"}, merge, ci, ar, hr, p.state === "draft" ? pill("na", "rascunho") : null);
+  return h("div", {class: "flags"}, merge, ci, ar, hr, p.state === "draft" ? pill("na", "draft") : null);
 }
 
 function prCard(p, w) {
@@ -98,7 +98,7 @@ function prCard(p, w) {
     h("a", {href: p.url, target: "_blank", rel: "noopener"}, `${p.repo} #${p.number}`), " ", p.title,
     p.summary ? h("div", {class: "meta"}, p.summary) : null,
     prFlags(p),
-    (p.tasks && p.tasks.length) ? h("div", {class: "meta"}, "tarefa: " + p.tasks.join(", ")) : h("div", {class: "div"}, "sem tarefa associada"),
+    (p.tasks && p.tasks.length) ? h("div", {class: "meta"}, "task: " + p.tasks.join(", ")) : h("div", {class: "div"}, "no associated task"),
     div.map(d => h("div", {class: "div"}, "⚠ " + d.text)));
 }
 
@@ -107,45 +107,45 @@ function listItem(w, selected, onSelect) {
   const blocked = agents.some(a => a.status === "blocked");
   return h("div", {class: "item" + (selected ? " sel" : ""), onclick: onSelect},
     h("h3", null, w.label),
-    h("div", {class: "meta"}, `${agents.length} agentes · ${openPrs(w).length} PRs abertos`),
+    h("div", {class: "meta"}, `${agents.length} agents · ${openPrs(w).length} open PRs`),
     h("div", {class: "dots"}, agents.map(a => h("span", {class: "dot d-" + (STATUS[a.status] ? a.status : "unknown"), title: `${a.name}: ${STATUS[a.status] || a.status}`}))),
     h("div", {class: "flags"},
-      (w.decisions || []).length ? pill("warn", `${w.decisions.length} decisão sua`) : null,
-      blocked ? pill("bad", "bloqueio") : null,
-      (w.divergences || []).length ? pill("warn", "divergência") : null,
-      w.kind === "inferred" ? pill("na", "inferido") : null));
+      (w.decisions || []).length ? pill("warn", `${w.decisions.length} decision(s) for you`) : null,
+      blocked ? pill("bad", "blocked") : null,
+      (w.divergences || []).length ? pill("warn", "divergence") : null,
+      w.kind === "inferred" ? pill("na", "inferred") : null));
 }
 
 function detail(w) {
   const agents = w.agents || [];
   const prs = w.prs || [];
   const done = prs.filter(p => p.state === "merged");
-  const tasksDone = (w.tasks || []).filter(t => /done|conclu|closed|fechad|resolvid/i.test(t.status || ""));
+  const tasksDone = (w.tasks || []).filter(t => t.done);
   return h("div", {class: "detail"},
     h("h2", null, w.label),
     h("div", {class: "meta"}, ...sourced(w.objective)),
     h("div", {class: "flags"},
-      w.kind === "team" ? pill("ok", "leader.md " + when(w.leader_md_updated)) : pill("na", "sem leader.md · inferido"),
+      w.kind === "team" ? pill("ok", "leader.md " + when(w.leader_md_updated)) : pill("na", "no leader.md · inferred"),
       (w.tasks || []).map(t => h("span", {class: "tag"}, `${t.tool} ${t.key}${t.status ? " · " + t.status : ""}`))),
-    (w.decisions || []).length ? h("div", {style: "margin-top:12px"}, h("b", null, "Decisões suas"),
+    (w.decisions || []).length ? h("div", {style: "margin-top:12px"}, h("b", null, "Your decisions"),
       w.decisions.map(d => h("div", {class: "dec"}, ...sourced(d)))) : null,
-    (w.divergences || []).length ? h("div", {style: "margin-top:12px"}, h("b", null, "Divergências entre o plano e o real"),
-      w.divergences.map(d => h("div", {class: "div"}, `⚠ ${d.text} — plano: ${d.declared}; real: ${d.observed}`))) : null,
+    (w.divergences || []).length ? h("div", {style: "margin-top:12px"}, h("b", null, "Plan vs. reality"),
+      w.divergences.map(d => h("div", {class: "div"}, `⚠ ${d.text} — plan: ${d.declared}; observed: ${d.observed}`))) : null,
     h("div", {class: "org"}, agents.map(a => h("div", {class: "agent" + (a.role === "leader" ? " lead" : "")},
       h("b", null, (a.role === "leader" ? "★ " : "") + a.name), " ", h("span", {class: "tag"}, a.harness || "?"),
       h("div", {class: "meta"}, ...sourced(a.mission)),
       a.branch ? h("div", {class: "meta"}, `${a.repo || ""} · ${a.branch}`) : null,
       h("div", {style: "margin-top:4px"}, status(a.status))))),
     h("div", {class: "cols"},
-      h("div", {class: "col"}, h("h4", null, "Feito"),
+      h("div", {class: "col"}, h("h4", null, "Done"),
         done.map(p => prCard(p, w)), tasksDone.map(t => h("div", {class: "card"}, `✓ ${t.tool} ${t.key} ${t.title || ""}`)),
-        (done.length + tasksDone.length) ? null : h("div", {class: "empty"}, "nada concluído ainda")),
-      h("div", {class: "col"}, h("h4", null, "Agora"),
+        (done.length + tasksDone.length) ? null : h("div", {class: "empty"}, "nothing done yet")),
+      h("div", {class: "col"}, h("h4", null, "Now"),
         prs.filter(p => p.state !== "merged" && p.state !== "closed").map(p => prCard(p, w)),
         agents.filter(a => a.status === "working" && a.mission).map(a => h("div", {class: "card"}, `▶ ${a.name}: ${a.mission.text}`))),
-      h("div", {class: "col"}, h("h4", null, "A seguir"),
-        (w.next || []).length ? w.next.map(n => h("div", {class: "card"}, "○ ", ...sourced(n))) : h("div", {class: "empty"}, "nada planejado"))),
-    (w.changes || []).length ? h("div", {class: "changes"}, h("b", null, `Desde ${when(DATA.view.previous)}: `), w.changes.join(" · ")) : null);
+      h("div", {class: "col"}, h("h4", null, "Next"),
+        (w.next || []).length ? w.next.map(n => h("div", {class: "card"}, "○ ", ...sourced(n))) : h("div", {class: "empty"}, "nothing planned"))),
+    (w.changes || []).length ? h("div", {class: "changes"}, h("b", null, `Since ${when(DATA.view.previous)}: `), w.changes.join(" · ")) : null);
 }
 
 function storedSelection() { try { return localStorage.getItem("herdr-observer:" + DATA.view.name); } catch (e) { return null; } }
@@ -160,21 +160,21 @@ function render(selectedId) {
   const sel = selectable.find(w => w.workspace_id === selectedId) || active[0] || concluded[0];
   const select = id => () => { storeSelection(id); render(id); };
   const f = DATA.view.filter || {};
-  const filter = (f.include || []).length ? "só: " + f.include.join(", ")
-    : (f.exclude || []).length ? "todos exceto: " + f.exclude.join(", ") : "todos os workspaces";
+  const filter = (f.include || []).length ? "only: " + f.include.join(", ")
+    : (f.exclude || []).length ? "all except: " + f.exclude.join(", ") : "all workspaces";
   const app = document.getElementById("app");
   app.replaceChildren(
     h("div", {class: "top"}, h("h1", null, "Observer · " + DATA.view.name),
-      h("span", {class: "meta"}, `atualizado ${when(DATA.view.updated)} · anterior ${when(DATA.view.previous)} · ${filter}`)),
+      h("span", {class: "meta"}, `updated ${when(DATA.view.updated)} · previous ${when(DATA.view.previous)} · ${filter}`)),
     h("div", {class: "wrap"},
       h("div", {class: "list"},
-        h("h2", null, `Times (${active.length})`),
+        h("h2", null, `Teams (${active.length})`),
         active.map(w => listItem(w, sel && w.workspace_id === sel.workspace_id, select(w.workspace_id))),
-        others.length ? [h("h2", null, `Outros workspaces (${others.length})`),
+        others.length ? [h("h2", null, `Other workspaces (${others.length})`),
           others.map(w => h("div", {class: "compact"}, h("span", null, w.label), h("span", null, (w.agents || []).map(a => status(a.status)))))] : null,
-        concluded.length ? h("details", null, h("summary", null, `Concluídos (${concluded.length})`),
+        concluded.length ? h("details", null, h("summary", null, `Concluded (${concluded.length})`),
           concluded.map(w => listItem(w, sel && w.workspace_id === sel.workspace_id, select(w.workspace_id)))) : null),
-      sel ? detail(sel) : h("div", {class: "detail empty"}, "Nenhum time encontrado neste filtro.")));
+      sel ? detail(sel) : h("div", {class: "detail empty"}, "No team matches this view.")));
 }
 render(storedSelection());
 </script>

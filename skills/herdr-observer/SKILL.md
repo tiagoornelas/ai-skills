@@ -21,7 +21,7 @@ A passive, on-demand observer. Each run gathers the current state of Herdr work,
 
 - Require the `herdr` CLI to answer `herdr workspace list`. Use only the local session; never pass `--machine`. Treat the installed CLI as the syntax authority: load `herdr --skill` unless already in context.
 - A **view** is a name plus a workspace filter, stored at `~/.herdr-teams/observer/<view>/` (`state.json` and `index.html`):
-  - No filter and no name: view `todos`, every workspace.
+  - No filter and no name: view `all`, every workspace.
   - The user lists workspaces to include or exclude (by label or ID): apply exactly that filter. Never infer, classify, or extend it. If the user gave no name for a filtered view, ask for one short name once.
   - "Refresh" (or a view name alone): reuse the filter stored in that view's `state.json`. Without a view name and with several views on disk, ask which one.
 - Read the previous `state.json` of the view, if any: it feeds "what changed" and divergence deduplication.

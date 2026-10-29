@@ -17,7 +17,7 @@ Every fact that is not a raw Herdr field carries `source`:
 ```json
 {
   "view": {
-    "name": "todos",
+    "name": "all",
     "filter": { "include": [], "exclude": [] },
     "updated": "2026-10-29T14:32:00-03:00",
     "previous": "2026-10-29T11:05:00-03:00"
@@ -25,14 +25,14 @@ Every fact that is not a raw Herdr field carries `source`:
   "workspaces": [
     {
       "workspace_id": "wDB",
-      "label": "Migração AI Features",
+      "label": "AI features migration",
       "kind": "team",
       "state": "active",
       "objective": { "text": "...", "source": "declared" },
       "leader_md_updated": "2026-10-29T13:50:00-03:00",
       "agents": [
         {
-          "name": "lead-migracao", "pane_id": "wDB:p1", "harness": "claude",
+          "name": "lead-migration", "pane_id": "wDB:p1", "harness": "claude",
           "status": "idle", "role": "leader",
           "mission": { "text": "...", "source": "declared" },
           "repo": "ai-agents-gateway", "branch": "feat/x"
@@ -40,7 +40,7 @@ Every fact that is not a raw Herdr field carries `source`:
       ],
       "tasks": [
         { "tool": "Jira", "key": "CJ-1412", "url": "...", "title": "...",
-          "status": "Em andamento", "source": "observed" }
+          "status": "In progress", "done": false, "source": "observed" }
       ],
       "prs": [
         {
@@ -49,13 +49,13 @@ Every fact that is not a raw Herdr field carries `source`:
           "state": "open", "mergeable": "yes", "ci": "pass",
           "agent_review": { "done": true, "date": "2026-10-29" },
           "human_review": { "done": false, "date": null, "recommendation": null },
-          "tasks": ["CJ-1413"], "agent": "mig-resumo"
+          "tasks": ["CJ-1413"], "agent": "summary-port"
         }
       ],
       "next": [{ "text": "...", "source": "declared" }],
       "decisions": [{ "text": "...", "source": "declared" }],
       "divergences": [
-        { "key": "pr:owner/repo#142:state", "text": "...", "declared": "...",
+        { "key": "pr:owner/ai-agents-gateway#142:state", "text": "...", "declared": "...",
           "observed": "...", "notified_at": null }
       ],
       "changes": ["PR merged: ..."]
@@ -70,6 +70,7 @@ Every fact that is not a raw Herdr field carries `source`:
 - `state`: `active`, or `concluded` when `leader.md` says so (shown collapsed).
 - `status`: the Herdr `agent_status` value (`working`, `idle`, `blocked`, `done`, `unknown`).
 - `role`: `leader` for the agent named in `leader.md`; without it, the agent in the first tab gets `leader` only with an inferred mission and `kind: inferred`.
+- `tasks[].done`: true when the tracker reports the task as finished in its own workflow; shown under Done.
 - `state` of a PR: `open`, `draft`, `merged`, or `closed`. `mergeable`: `yes`, `conflict`, or `unknown`. `ci`: `pass`, `fail`, `pending`, or `none`.
 - `agent_review.done`: a `self-review` git note exists on the PR head or on an ancestor after the merge-base. `human_review`: a `human-review` git note on the PR head; `recommendation` is its text.
 - `divergences[].key` is stable across refreshes (it identifies what diverged, not the wording) so a divergence already notified keeps its `notified_at` and is not notified again.
