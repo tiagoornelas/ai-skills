@@ -115,7 +115,7 @@ The pull request state is the main signal: an open PR keeps the work, a closed P
 - ⚠️ **Detached HEAD**: a worktree with no branch whose HEAD is not in the default branch. Same details as above; use ✅ when it is.
 - 🧹 **Prunable**: a worktree entry whose directory no longer exists.
 
-**Herdr team folders** form their own rows: **Clean** when the workspace no longer exists or `leader.md` says `concluded`, **Keep** (reason **Active team**) otherwise.
+**Herdr team folders** form their own rows: **Clean** when `leader.md` says `concluded`, or when neither the folder's workspace ID nor the workspace label recorded in `leader.md` matches an open workspace; **Keep** (reason **Active team**) otherwise.
 
 Flag rows that need special handling at execution (section 6), so the user knows before approving:
 
