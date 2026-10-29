@@ -73,6 +73,6 @@ Every fact that is not a raw Herdr field carries `source`:
 - `tasks[].done`: true when the tracker reports the task as finished in its own workflow; shown under Done.
 - `state` of a PR: `open`, `draft`, `merged`, or `closed`. `mergeable`: `yes`, `conflict`, or `unknown`. `ci`: `pass`, `fail`, `pending`, or `none`.
 - `agent_review.done`: a `self-review` git note exists on the PR head or on an ancestor after the merge-base. `human_review`: a `human-review` git note on the PR head; `recommendation` is its text.
-- `divergences[].key` is stable across refreshes (it identifies what diverged, not the wording) so a divergence already notified keeps its `notified_at` and is not notified again.
+- `divergences[].key` is stable across refreshes (it identifies what diverged, not the wording) so a divergence already notified keeps its `notified_at` and is not notified again. A divergence about a PR starts with `pr:<repo>#<number>:`, using the PR's `repo` value, so the panel shows it on that PR's card.
 - `changes`: short phrases comparing with the previous `state.json`; empty on the first run.
 - Strings are plain text in the user's session language; the template escapes them.

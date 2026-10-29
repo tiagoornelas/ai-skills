@@ -93,7 +93,7 @@ function prFlags(p) {
 }
 
 function prCard(p, w) {
-  const div = (w.divergences || []).filter(d => d.key && d.key.indexOf("#" + p.number) !== -1);
+  const div = (w.divergences || []).filter(d => d.key && d.key.startsWith(`pr:${p.repo}#${p.number}:`));
   return h("div", {class: "card"},
     h("a", {href: p.url, target: "_blank", rel: "noopener"}, `${p.repo} #${p.number}`), " ", p.title,
     p.summary ? h("div", {class: "meta"}, p.summary) : null,
