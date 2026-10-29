@@ -74,5 +74,8 @@ One emoji per cell, always followed by words; the same emoji always means the sa
 - **Overview**: counts come from Sections 2–4 of the same report. **Needs you now** gathers, across all sections, every pending decision, review the user owes, blocked item, and scheduled action that needs the user, ordered by what each unblocks. When nothing needs the user, say so in one line.
 - **Tabs**: one row per tab in tab order, Leader marked ⭐; the state combines the Herdr agent status with what the agent is waiting for (an agent that finished its delivery is ✅, not ⚪).
 - **Tasks**: one row per task in the tracker scope (the epic's children, or the tasks referenced by `leader.md`), pending ones last. "Next step" states what actually moves it forward, which often differs from the tracker status; when it does, the next step wins and the gap is noted in the closing remarks.
+  - **Untracked work**: a tab or PR linked to no task gets a final row marked ⚪ "no task", naming the work it covers.
+  - **No task at all**: when no task reference was found anywhere, replace the table with one line, `📋 No task registered in any tracker`, and suggest registering the work with [`report-work`](../../report-work/SKILL.md); the Overview's Tasks cell reads "none registered".
+  - A task whose tracker could not be reached is not untracked: it keeps its row with its reference and ⚪ "status unavailable".
 - **PRs**: the merge order diagram appears when PRs depend on each other; omit it otherwise. One row per PR, prefixed by its repository role ("Backend #71"), `· draft` when applicable; columns use the vocabulary above.
 - **Closing remarks** (optional, at most three bullets): divergences between `leader.md` and reality, and stale tracker statuses worth fixing.

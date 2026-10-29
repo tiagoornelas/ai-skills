@@ -36,7 +36,7 @@ Observe first, cheapest sources first; in a large workspace, gather in parallel 
 | Reviewed by the agent | a `self-review` git note on the PR head, or on an ancestor after the merge-base |
 | The user's review and its recommendation | `git notes --ref=human-review show <PR head>` |
 
-**Tasks, tool-agnostic.** Start from the references in `leader.md`. Without them, take keys and links from PR bodies, branch names, and commit subjects. Read each task's current status, and its siblings under the same epic, from whatever tracker those references point to, through the tools the harness can reach (a CLI such as `gh`, or a connected integration). A task whose tracker cannot be reached is listed with its reference and no status, never a guessed one.
+**Tasks, tool-agnostic.** Start from the references in `leader.md`. Without them, take keys and links from PR bodies, branch names, and commit subjects. Read each task's current status, and its siblings under the same epic, from whatever tracker those references point to, through the tools the harness can reach (a CLI such as `gh`, or a connected integration). A task whose tracker cannot be reached is listed with its reference and no status, never a guessed one. Record which tabs and PRs have no task reference: the report shows untracked work explicitly.
 
 Do not parse session transcripts. Never copy secrets or credentials from terminal output into the report.
 
@@ -55,4 +55,5 @@ If the report shows `leader.md` diverging from reality and the Leader is running
 - [ ] The report has the four sections in order, in the user's language, using the status vocabulary of the format.
 - [ ] "Needs you now" lists every decision, review the user owes, block, and scheduled action that needs the user.
 - [ ] Every task shows its real tracker status or none, and its actual next step; every PR shows mergeability, CI, and both review signals.
+- [ ] Untracked work is visible: tabs and PRs without a task are listed as such, or the report states that no task is registered.
 - [ ] Only inferred facts are marked; a missing review note reads "no record".
