@@ -49,7 +49,17 @@ This is the canonical DoD status legend shared across skills:
 
 When a table helps, use: **Status · Delivered behavior · Verification evidence · Action for human**. Do not present prompt instructions or documentation as automated verification.
 
-End with the recommendation, relevant limitations, and genuine pending decisions, each as a decision card in system terms ([human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md)). Highlight consequential findings first, retaining useful supporting findings below without searching exhaustively for more. No automatic approval, comments, persistent record, or code changes follow. An architectural decision can warrant resolution before merge even when no current bug is demonstrated.
+End with the recommendation, relevant limitations, and genuine pending decisions, each as a decision card in system terms ([human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md)). Highlight consequential findings first, retaining useful supporting findings below without searching exhaustively for more. No automatic approval, comments, or code changes follow; the only persistent record is the local review note below. An architectural decision can warrant resolution before merge even when no current bug is demonstrated.
+
+## Local review note
+
+When the reviewed scope ends at a commit that exists locally (a local branch, or a PR whose head `git cat-file -e <sha>` finds), record that the review ran:
+
+```bash
+git notes --ref=human-review add -f -m "human-review <ISO-8601 date> recommendation: <one-line recommendation>" <reviewed commit>
+```
+
+The note records that a review ran and what it recommended, never an approval. It stays local (git does not push notes by default) and never alters history. Skip it for uncommitted diffs or commits not available locally.
 
 For an explicitly requested batch triage, prioritize which changes warrant deeper analysis, state the limited coverage, and reuse gathered evidence on follow-up. Triage is not continuous monitoring and does not certify unexamined PRs.
 
@@ -60,3 +70,4 @@ For an explicitly requested batch triage, prioritize which changes warrant deepe
 - [ ] Relevant structure/contracts are visible using visualize-it, without unrelated catalogs.
 - [ ] Coverage, uncertainty, and behavior verification are explicit; Human Layer conclusions do not imply Agent Layer validation.
 - [ ] Existing decisions and human authority are respected; depth and output match the request.
+- [ ] A local `human-review` note was recorded on the reviewed commit when it exists locally, and skipped otherwise.
