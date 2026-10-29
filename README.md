@@ -127,9 +127,9 @@ Most skills need nothing beyond the harness. A few drive command-line tools, whi
 
 | Tool | Used by | Required for |
 | :--- | :--- | :--- |
-| [Git](https://git-scm.com/) | `commit`, `git-branch`, `git-cleanup`, `github-code-review`, `report-work`, `resolve-branch-conflict` | Reading history and diffs, creating branches and commits. |
-| [GitHub CLI](https://cli.github.com/) (`gh`) | `git-cleanup`, `github-code-review`, `github-pull-request`, `github-review-react`, `report-work`, `resolve-branch-conflict` | Reading and writing pull requests, reviews, and comments. Run `gh auth login` first. |
-| [Herdr](https://herdr.dev/) (`herdr`) | `git-cleanup` (optional), `herdr-handoff`, `herdr-talk` | Opening workspaces, tabs, panes, and worktrees, messaging agents in other panes, and safely cleaning up Herdr worktree workspaces. |
+| [Git](https://git-scm.com/) | `commit`, `git-branch`, `git-cleanup`, `github-code-review`, `herdr-leader-report`, `report-work`, `resolve-branch-conflict` | Reading history and diffs, creating branches and commits. |
+| [GitHub CLI](https://cli.github.com/) (`gh`) | `git-cleanup`, `github-code-review`, `github-pull-request`, `github-review-react`, `herdr-leader-report`, `report-work`, `resolve-branch-conflict` | Reading and writing pull requests, reviews, and comments. Run `gh auth login` first. |
+| [Herdr](https://herdr.dev/) (`herdr`) | `git-cleanup` (optional), `herdr-handoff`, `herdr-leader-report`, `herdr-talk`, `herdr-team-lead` | Opening workspaces, tabs, panes, and worktrees, running a workspace as a team led by a Leader agent, messaging agents in other panes, reporting a team's state on request, and safely cleaning up Herdr worktree workspaces and team folders. |
 | [Playwright CLI](https://playwright.dev/docs/getting-started-cli) (`playwright-cli`) | `browser-test` | Driving a browser, headless by default, to test and verify web pages. Install with `npm install -g @playwright/cli@latest`, then `playwright-cli install-browser chromium`. |
 
 Issue trackers (Jira, GitHub Issues, Linear) are mentioned only as places to reference or file work: the skills use whatever access the harness already has and never require a specific integration.
