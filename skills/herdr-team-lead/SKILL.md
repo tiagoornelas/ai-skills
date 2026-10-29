@@ -4,7 +4,9 @@ description: >-
   Leads a Herdr workspace as a team: the Leader coordinates without writing
   code, challenges scope and architecture, proposes a visual split of the work
   into member agents and creates them only after the user approves it,
-  consolidates members' decisions for the user, and keeps an intent-only
+  consolidates members' decisions for the user, answers every incoming member
+  message with the workspace's whole state (the Panel of herdr-leader-report)
+  instead of that message alone, and keeps an intent-only
   leader.md in the team folder that it rereads after any context loss. Also
   adopts an existing workspace as a team. Triggered when a handoff names it as
   the lead skill or when the user asks an agent to lead or adopt a Herdr
@@ -29,6 +31,7 @@ In Herdr, a workspace is a team working on one cohesive piece of work; its first
 - **Do not write code.** Read code, diffs, and PRs to judge them; delegate changes to members.
 - **Challenge scope early.** Before splitting work, and whenever the objective or a member's direction shifts, apply [`scope-review`](../scope-review/SKILL.md) and bring the user its conclusion with a recommendation. Raise architecture concerns with [`software-designing`](../software-designing/SKILL.md) lenses before members build on them.
 - **Make the user's job easy.** Lead every report with what changed for the user's goal; group pending decisions as decision cards ordered by what they unblock; never relay a member's raw message.
+- **Always show the whole picture.** Every message to the user about the work ends with the **Panel** of [report-format.md](../herdr-leader-report/references/report-format.md#3-the-panel): what needs the user, what is blocked, what is in progress, and the next steps, in that fixed order. The user should never have to piece the state together from separate messages.
 - **Stay within approval.** Agent Layer choices inside an approved plan are the Leader's or the members'; anything touching the Human Layer goes to the user.
 - **Report on request.** When the user asks for the state of the work, follow [`herdr-leader-report`](../herdr-leader-report/SKILL.md).
 
@@ -53,7 +56,12 @@ A member's progress is never a trigger.
 
 ## 5. Coordinate Members
 
-- Members send decisions and blockers to the Leader through [`herdr-talk`](../herdr-talk/SKILL.md). Answer within the approved plan; escalate Human Layer questions to the user as consolidated decision cards, summarized in system terms, never as a forwarded message.
+- Members send decisions, blockers, and deliveries to the Leader through [`herdr-talk`](../herdr-talk/SKILL.md), at any time. Answer within the approved plan; escalate Human Layer questions to the user as consolidated decision cards, summarized in system terms, never as a forwarded message.
+- **Every incoming member message is a status moment for the user**, not a conversation about that message alone:
+  1. Handle the message: answer the member through `herdr-talk`, or turn its question into a decision card.
+  2. Refresh cheaply: `herdr agent list` and `leader.md`, plus a look at whatever the message says changed (a PR, a branch). A full gather is the report's job, not this step's.
+  3. Tell the user, in this order: one line on what just changed, in system terms; the Panel; then the full decision cards for any decision that is new.
+  When several messages arrive close together, handle them all and show one Panel.
 - To check on members, observe first (`herdr agent get`, `herdr agent read`, git, PR state) and message only for what observation cannot answer. Do not demand periodic status reports.
 - When a member's mission changes, tell that member through `herdr-talk` and update `leader.md`.
 - Requests for code, branches, commits, or PRs name their governing skills (`coding`, `git-branch`, `commit`, `github-pull-request`, `agent-self-review`), as `herdr-talk` requires.
@@ -79,5 +87,6 @@ When the objective is met or abandoned, report the outcome to the user, set `Sta
 - [ ] The split was presented as a visual plan and members were created through `herdr-handoff` only after the user approved it.
 - [ ] `leader.md` follows the team-folder format, records intent only, and was updated exactly on the listed triggers.
 - [ ] Member decisions reached the user as consolidated decision cards in system terms; members were observed before being messaged.
+- [ ] Every incoming member message, and every message to the user about the work, ended with the Panel in its fixed four-block order, not with that message's context alone.
 - [ ] Adoption renamed the tab to `Leader`, wrote `leader.md` with inferences marked, and notified members once.
 - [ ] Concluded work is marked `concluded` and its folder was not deleted by the Leader.

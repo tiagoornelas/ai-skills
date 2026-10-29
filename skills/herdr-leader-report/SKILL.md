@@ -2,8 +2,10 @@
 name: herdr-leader-report
 description: >-
   Reports, on demand, the state of the work in the current Herdr workspace in
-  a fixed, visual terminal format: an overview with what needs the user now,
-  then every tab, every task, and every pull request with its state. Gathered
+  a fixed, visual terminal format: a Panel with what needs the user's
+  decision, what is blocked, what is in progress, and the next steps, then
+  every tab, every task, and every pull request with its state. The Panel
+  format is also the one the Leader repeats in every message about the work. Gathered
   by observing Herdr, git, pull requests, review notes, and the task tracker
   the team uses, asking members only for what cannot be observed. Meant to be
   run by the workspace's Leader; works in any workspace, with or without a
@@ -14,7 +16,7 @@ argument-hint: "[focus, e.g. a task or PR, optional]"
 
 # Herdr Leader Report
 
-A command the user gives to a workspace's Leader: "tell me where this work stands". It produces one report about **this workspace only**, always in the same structure ([report-format.md](references/report-format.md)), so the user can scan any team the same way. The report is pulled by the user; nobody pushes status to anyone.
+A command the user gives to a workspace's Leader: "tell me where this work stands". It produces one report about **this workspace only**, always in the same structure ([report-format.md](references/report-format.md)), so the user can scan any team the same way. Its first section, the **Panel**, is the canonical state of the work that the Leader also repeats in every message about it. The report is pulled by the user; nobody pushes status to anyone.
 
 ## 1. Preconditions
 
@@ -44,7 +46,7 @@ Do not parse session transcripts. Never copy secrets or credentials from termina
 
 ## 3. Write the Report
 
-Write the report in the conversation following [report-format.md](references/report-format.md). Judge what matters per [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md) and give context per [`explain-it`](../explain-it/SKILL.md). When the user named a focus, keep all four sections and expand the focused item.
+Write the report in the conversation following [report-format.md](references/report-format.md). Judge what matters per [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md) and give context per [`explain-it`](../explain-it/SKILL.md). When the user named a focus, keep all four sections and the four Panel blocks, and expand the focused item.
 
 If the report shows `leader.md` diverging from reality and the Leader is running it, update `leader.md` per [`herdr-team-lead`](../herdr-team-lead/SKILL.md) after the report and say so in its closing remarks.
 
@@ -53,7 +55,8 @@ If the report shows `leader.md` diverging from reality and the Leader is running
 - [ ] Herdr environment verified; the report covers only the current workspace.
 - [ ] Facts came from observation first; members were asked only for unobservable facts, only when idle, once each.
 - [ ] The report has the four sections in order, in the user's language, using the status vocabulary of the format.
-- [ ] "Needs you now" lists every decision, review the user owes, block, and scheduled action that needs the user.
+- [ ] The Panel has its four blocks in order (needs you, blocked, in progress, next steps), none omitted; empty ones say so in one line.
+- [ ] "Needs you" lists, numbered, every decision, review the user owes, and scheduled action that needs the user, each with a recommendation; blocks not caused by the user appear only under "Blocked".
 - [ ] Every task shows its real tracker status or none, and its actual next step; every PR shows mergeability, CI, and both review signals.
 - [ ] Untracked work is visible: tabs and PRs without a task are listed as such, or the report states that no task is registered.
 - [ ] Only inferred facts are marked; a missing review note reads "no record".
