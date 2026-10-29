@@ -21,14 +21,14 @@ Forks the current work into agent sessions while leaving the calling pane's work
 - Require `HERDR_ENV=1`. Otherwise report that the session is outside Herdr and stop. Use only the local session; never pass `--machine`.
 - Treat the installed CLI as the syntax authority: load `herdr --skill` unless already in context, and inspect help for unfamiliar commands or flags. Parse IDs from JSON responses.
 - An explicit layout from the user (named workspace, tab, or split) wins over the defaults below. Split a tab into panes only when requested. Different panes may use different checkouts.
-- Resolve the team layout from where the handoff runs:
+- Resolve the team layout from where the handoff runs. Inside a workspace, the default is a member of that workspace's team: work stays in the team it came from, and a new team is an explicit choice.
 
   | Situation | Layout |
   | :--- | :--- |
-  | New work, or the caller sits outside the team that will do it | Create a workspace labeled with the task. Its first tab, labeled `Leader`, runs a new Leader with `herdr-team-lead` as lead skill, even for a single stream. When the split is already clear in the conversation, also create one tab per member; otherwise create only the Leader, which proposes the split. |
-  | The target workspace has a `leader.md` | The team exists: add each stream as a member tab. |
-  | The target workspace has no `leader.md` and the caller runs inside it | Adopt it: the caller is coordinating, so it becomes the Leader (Section 1.1), then add the member tabs. |
-  | The target workspace has no `leader.md`, and another tab seems to be coordinating it | Ask the user which tab leads, then adopt with that tab as Leader. |
+  | The work does not continue the calling workspace's work (it is unrelated to its team's objective, or the caller sits in a general-purpose workspace), or the user asks for a new team | Create a workspace labeled with the task. Its first tab, labeled `Leader`, runs a new Leader with `herdr-team-lead` as lead skill, even for a single stream. When the split is already clear in the conversation, also create one tab per member; otherwise create only the Leader, which proposes the split. |
+  | The streams join a workspace that has a `leader.md` | The team exists: add each stream as a member tab. |
+  | The streams join the caller's own workspace, which has no `leader.md` | Adopt it: the caller is coordinating, so it becomes the Leader (Section 1.1), then add the member tabs. |
+  | The streams join a workspace without `leader.md`, and another tab seems to be coordinating it | Ask the user which tab leads, then adopt with that tab as Leader. |
 
 - Use a named workspace when requested: match its label in `herdr workspace list`, create it once if absent, and ask only if several match.
 - Use the calling harness from `herdr agent get "$HERDR_PANE_ID"` unless the user names another. Pass native flags only when explicitly requested. Preserve the calling tab and focus with `--no-focus` on every creation command.
