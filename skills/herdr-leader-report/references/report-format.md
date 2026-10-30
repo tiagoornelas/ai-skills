@@ -1,6 +1,6 @@
 # Report Format
 
-> **Central thesis**: the user should never have to rebuild the state of the work in their head. Every Leader message about the work carries the same **Panel**, four blocks in a fixed order (what needs the user, what is blocked, what is in progress, what comes next), and the full report is that Panel followed by the details. Only the content changes, never the shape. It is written for the user, in their language and in system terms, never as a dump of fields.
+> **Central thesis**: the user should never have to rebuild the state of the work in their head. Whenever the state of the work changes, the Leader shows the same **Panel**, up to four blocks in a fixed order (what needs the user, what is blocked, what is in progress, what comes next), and the full report is that Panel followed by the details. Only the content changes, never the order. It is written for the user, in their language and in system terms, never as a dump of fields.
 
 ---
 
@@ -32,7 +32,7 @@ One emoji per cell or item, always followed by words; the same emoji always mean
 
 ## 3. The Panel
 
-The canonical state of the workspace. It is the first section of the full report, and the Leader repeats it in every message about the work (see [`herdr-team-lead`](../../herdr-team-lead/SKILL.md)).
+The canonical state of the workspace. It is the first section of the full report, and the Leader shows it whenever that state changes (see [When to Show It](#when-to-show-it) and [`herdr-team-lead`](../../herdr-team-lead/SKILL.md)).
 
 ````markdown
 ### 🧭 <workspace label> · <Panel> · <time>
@@ -53,14 +53,22 @@ The canonical state of the workspace. It is the first section of the full report
 
 **➡️ <Next steps>**
 1. ➡️ <step> · <who> · <after what>
+
+<Nothing blocked · Nothing in progress: one plain line, only when some block is empty>
 ````
 
-- **Always the four blocks, always in this order.** An empty block stays, with one line saying so ("nothing", "no blocks"): a fixed shape is what makes the Panel scannable.
+- **Fixed order, no empty blocks.** The blocks always appear in this order. An empty block is omitted, heading included, and the Panel ends with one plain line, without emoji, naming every empty block in the same order ("Nothing needs you · Nothing blocked · Nothing in progress · No next steps"). When nothing is empty, that line does not appear.
 - **Needs you** holds every pending decision (❓), review the user owes (👀), and scheduled action that needs the user (📅), numbered and ordered by what each unblocks, so the user can answer by number. One line each with the Leader's recommendation; the full decision card goes below the Panel when the decision is new or the user asks for it.
 - **Blocked** holds work that cannot advance because of something other than the user (a failing CI, another stream, an external dependency). Work blocked by the user lives in **Needs you** only, never in both.
 - **In progress** holds one row per active work stream, not per task: what it delivers, which tab runs it, and where it stands in one line. Finished work leaves the Panel; it shows up in the full report's tables.
 - **Next steps** comes from `leader.md` Next Steps reconciled with what was observed: the ordered steps that move the objective forward after the current work, each with who does it and what it waits for. At most five; the full list lives in `leader.md`.
 - **What just changed** names the event in system terms ("the billing tab finished the invoice API and opened its PR"), never the member's raw message.
+
+### When to Show It
+
+Show the Panel when the state of the work changed since the last Panel the user saw: a member message, a change the Leader observed (a PR, a CI run, a tab's state), or a decision, blocker, work stream, or next step that opened or closed. A change the user made in the same exchange (an answer, an item dropped) counts only when it alters other blocks; the user already knows what they just said.
+
+Omit the Panel when the user is talking with the Leader about something (a question, an explanation, a decision card the user asked to have explained) and nothing changed: repeating an identical Panel only buries the answer. The full report always includes it.
 
 ## 4. The Full Report
 

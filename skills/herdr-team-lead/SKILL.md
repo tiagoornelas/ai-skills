@@ -6,7 +6,8 @@ description: >-
   into member agents and creates them only after the user approves it,
   consolidates members' decisions for the user, answers every incoming member
   message with the workspace's whole state (the Panel of herdr-leader-report)
-  instead of that message alone, and keeps an intent-only
+  instead of that message alone, shows that Panel whenever the state changes
+  but not in conversation where nothing changed, and keeps an intent-only
   leader.md in the team folder that it rereads after any context loss. Also
   adopts an existing workspace as a team. Triggered when a handoff names it as
   the lead skill or when the user asks an agent to lead or adopt a Herdr
@@ -31,7 +32,7 @@ In Herdr, a workspace is a team working on one cohesive piece of work; its first
 - **Do not write code.** Read code, diffs, and PRs to judge them; delegate changes to members.
 - **Challenge scope early.** Before splitting work, and whenever the objective or a member's direction shifts, apply [`scope-review`](../scope-review/SKILL.md) and bring the user its conclusion with a recommendation. Raise architecture concerns with [`software-designing`](../software-designing/SKILL.md) lenses before members build on them.
 - **Make the user's job easy.** Lead every report with what changed for the user's goal; group pending decisions as decision cards ordered by what they unblock; never relay a member's raw message.
-- **Always show the whole picture.** Every message to the user about the work ends with the **Panel** of [report-format.md](../herdr-leader-report/references/report-format.md#3-the-panel): what needs the user, what is blocked, what is in progress, and the next steps, in that fixed order. The user should never have to piece the state together from separate messages.
+- **Show the whole picture when it changes.** A message to the user that follows a change in the state of the work ends with the **Panel** of [report-format.md](../herdr-leader-report/references/report-format.md#3-the-panel): what needs the user, what is blocked, what is in progress, and the next steps, in that fixed order, empty blocks folded into one closing line. The user should never have to piece the state together from separate messages. When the user is just talking with the Leader and nothing changed, answer without the Panel ([when to show it](../herdr-leader-report/references/report-format.md#when-to-show-it)).
 - **Stay within approval.** Agent Layer choices inside an approved plan are the Leader's or the members'; anything touching the Human Layer goes to the user.
 - **Report on request.** When the user asks for the state of the work, follow [`herdr-leader-report`](../herdr-leader-report/SKILL.md).
 
@@ -87,6 +88,6 @@ When the objective is met or abandoned, report the outcome to the user, set `Sta
 - [ ] The split was presented as a visual plan and members were created through `herdr-handoff` only after the user approved it.
 - [ ] `leader.md` follows the team-folder format, records intent only, and was updated exactly on the listed triggers.
 - [ ] Member decisions reached the user as consolidated decision cards in system terms; members were observed before being messaged.
-- [ ] Every incoming member message, and every message to the user about the work, ended with the Panel in its fixed four-block order, not with that message's context alone.
+- [ ] Every incoming member message, and every message to the user that followed a change in the work, ended with the Panel in its fixed block order, empty blocks folded into one plain closing line; replies in conversation where nothing changed carried no Panel.
 - [ ] Adoption renamed the tab to `Leader`, wrote `leader.md` with inferences marked, and notified members once.
 - [ ] Concluded work is marked `concluded` and its folder was not deleted by the Leader.

@@ -5,7 +5,7 @@ description: >-
   a fixed, visual terminal format: a Panel with what needs the user's
   decision, what is blocked, what is in progress, and the next steps, then
   every tab, every task, and every pull request with its state. The Panel
-  format is also the one the Leader repeats in every message about the work. Gathered
+  format is also the one the Leader shows whenever the work's state changes. Gathered
   by observing Herdr, git, pull requests, review notes, and the task tracker
   the team uses, asking members only for what cannot be observed. Meant to be
   run by the workspace's Leader; works in any workspace, with or without a
@@ -46,7 +46,7 @@ Do not parse session transcripts. Never copy secrets or credentials from termina
 
 ## 3. Write the Report
 
-Write the report in the conversation following [report-format.md](references/report-format.md). Judge what matters per [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md) and give context per [`explain-it`](../explain-it/SKILL.md). When the user named a focus, keep all four sections and the four Panel blocks, and expand the focused item.
+Write the report in the conversation following [report-format.md](references/report-format.md). Judge what matters per [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md) and give context per [`explain-it`](../explain-it/SKILL.md). When the user named a focus, keep all four sections and the Panel, and expand the focused item.
 
 If the report shows `leader.md` diverging from reality and the Leader is running it, update `leader.md` per [`herdr-team-lead`](../herdr-team-lead/SKILL.md) after the report and say so in its closing remarks.
 
@@ -55,7 +55,7 @@ If the report shows `leader.md` diverging from reality and the Leader is running
 - [ ] Herdr environment verified; the report covers only the current workspace.
 - [ ] Facts came from observation first; members were asked only for unobservable facts, only when idle, once each.
 - [ ] The report has the four sections in order, in the user's language, using the status vocabulary of the format.
-- [ ] The Panel has its four blocks in order (needs you, blocked, in progress, next steps), none omitted; empty ones say so in one line.
+- [ ] The Panel shows its non-empty blocks in order (needs you, blocked, in progress, next steps); empty blocks are omitted and named together in one plain closing line without emoji.
 - [ ] "Needs you" lists, numbered, every decision, review the user owes, and scheduled action that needs the user, each with a recommendation; blocks not caused by the user appear only under "Blocked".
 - [ ] Every task shows its real tracker status or none, and its actual next step; every PR shows mergeability, CI, and both review signals.
 - [ ] Untracked work is visible: tabs and PRs without a task are listed as such, or the report states that no task is registered.
