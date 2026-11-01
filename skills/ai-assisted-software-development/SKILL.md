@@ -32,7 +32,7 @@ The sphere of human governance and decision-making. **Only what belongs to this 
 - **Business Decisions and Trade-offs**: Behavior, restrictions, assumptions, value versus scope, and continuing [maintenance commitment](../software-designing/references/maintenance-commitment.md). Agents investigate and recommend; humans decide.
 - **Manual Verifications**: Execution of checks that cannot be automated.
 
-Agents bring this layer to the human in the human's terms (the system's concepts, not agent handles such as PR numbers or coined labels), each decision as a self-contained card with a recommendation. See [human-facing-communication.md](references/human-facing-communication.md).
+Agents bring this layer to the human as to a **visiting architect**: someone who knows what the product does and its high-level architecture, but not the inside of the module the agent worked on. Every internal term is situated in the product before use; every change is briefed decisions, trade-offs, and risks first, solution last; each decision is a self-contained card with a recommendation. See [human-facing-communication.md](references/human-facing-communication.md).
 
 ---
 
@@ -77,4 +77,4 @@ During ordinary work, briefly surface material architectural or scope opportunit
 - [ ] Decisions regarding modules, contracts, dependency direction, or DoD behaviors were brought to the human.
 - [ ] Internal details below contracts were resolved autonomously by the agent with tests and self-review.
 - [ ] No local or unversioned paths were exposed in shared artifacts.
-- [ ] Messages to the human passed the cold-read test of [human-facing-communication.md](references/human-facing-communication.md), and each pending decision was a self-contained card, with emojis used only as status and attention markers.
+- [ ] Messages to the human passed the visiting-architect test of [human-facing-communication.md](references/human-facing-communication.md): no internal term used before being situated, changes briefed in its order (where, problem, decisions and trade-offs, risks and impact, solution), no explanation handed back to the human, and each pending decision was a self-contained card, with emojis used only as status and attention markers.

@@ -71,7 +71,7 @@ Use the structure below:
 
 ````markdown
 ## Summary
-[In 1 or 2 direct sentences, explain what this PR does and why it exists from the reader's perspective. Be direct: what does the system do now that it did not do before?]
+[In 1 to 3 direct sentences, explain what this PR does and why it exists from the reader's perspective: where in the product it acts, what users or the system experienced before, and what happens now. Situate every screen, state, or internal layer before naming it (see the Briefing a Change section of the ai-assisted-software-development human-facing-communication reference).]
 
 ---
 

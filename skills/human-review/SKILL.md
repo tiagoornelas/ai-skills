@@ -20,7 +20,7 @@ Reuse one investigation for business interpretation, architectural judgment, and
 
 ## Explain decisions before structure
 
-Lead with what changes for whom and which decisions deserve attention. Investigate relevant behavior changes, business rules/restrictions, trade-offs, unverified premises, and [maintenance commitments](../software-designing/references/maintenance-commitment.md). Present selectively: omit empty categories and routine details. Do not infer conscious acceptance by the author merely because the implementation embodies a trade-off.
+Lead with what changes for whom and which decisions deserve attention, briefed per [Briefing a Change](../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change): situate the affected area first, then decisions, trade-offs, and risks, and the structure last. Investigate relevant behavior changes, business rules/restrictions, trade-offs, unverified premises, and [maintenance commitments](../software-designing/references/maintenance-commitment.md). Present selectively: omit empty categories and routine details. Do not infer conscious acceptance by the author merely because the implementation embodies a trade-off.
 
 Compare documentation/declarations with implementation in a separate divergence note only when they disagree. Expected acceptance criteria remain a source for verification, not proof of what the code does; do not invent requirements from the diff.
 
@@ -32,7 +32,7 @@ Distinguish introduced problems, aggravated problems, and independent old proble
 
 Apply [scope-review](../scope-review/SKILL.md)'s criteria to material benefit/cost questions within the same investigation. Consider healthier design before cutting scope. Question business assumptions when evidence warrants it; recommendations do not change the objective or authorize implementation.
 
-Use [visualize-it](../visualize-it/SKILL.md) to make relevant boundaries, dependencies, and contracts visible. Keep views proportional to the question and change; show interface cards when a new/changed contract or an unchanged guarantee is material to the reasoning, not a catalog of every used method. Explain business context and unfamiliar terms before internals; a separate explain-it run or artifact is not required.
+Use [visualize-it](../visualize-it/SKILL.md) to make relevant boundaries, dependencies, and contracts visible. Keep views proportional to the question and change; show interface cards when a new/changed contract or an unchanged guarantee is material to the reasoning, not a catalog of every used method. Situate business context and every internal term before internals; a separate explain-it run or artifact is not required.
 
 ## Verification and decision
 

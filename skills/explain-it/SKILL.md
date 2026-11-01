@@ -30,12 +30,7 @@ Every explanation is written for that reader. If a sentence only makes sense to 
 ## 2. Operational Principles
 
 - **Business before code**: open with the real-world problem: who uses this, what they are trying to achieve, and what goes wrong without it. Code comes after the reader knows why it exists.
-- **Outside in**: business → applications → module → file → function. Never start at a line of code.
-- **Define on first use**: every domain term, acronym, internal name (service, queue, table, feature flag), and project convention gets a plain-language definition the first time it appears. Never assume a name explains itself.
-- **Concrete example**: walk through one realistic case (a specific user doing a specific thing) instead of describing the flow only in abstract terms.
-- **Say why, not only what**: when the code looks odd, explain the reason (business rule, legacy constraint, past incident). If the reason is unknown, say so instead of inventing one.
-- **No condescension**: do not explain general programming concepts the reader already knows; spend the words on project and business context.
-- **Grounded**: base claims on the code, docs, and history actually read. Mark inferences as inferences.
+- **Shared context principles**: apply [Giving context](../ai-assisted-software-development/references/human-facing-communication.md#giving-context) (outside in, situate before naming, concrete before and after, say why or say it is unknown, no condescension, grounded). This reader also lacks the business, so domain terms are defined too, not only internal names.
 - **Visuals**: invoke the [`visualize-it`](../visualize-it/SKILL.md) skill whenever explaining structural relationships, call sequences, or state machines.
 - Respond in the same language the user is communicating in during the session.
 

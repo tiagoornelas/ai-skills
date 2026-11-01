@@ -46,7 +46,7 @@ Do not parse session transcripts. Never copy secrets or credentials from termina
 
 ## 3. Write the Report
 
-Write the report in the conversation following [report-format.md](references/report-format.md). Judge what matters per [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md) and give context per [`explain-it`](../explain-it/SKILL.md). When the user named a focus, keep all four sections and the Panel, and expand the focused item.
+Write the report in the conversation following [report-format.md](references/report-format.md). Judge what matters per [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md) and give context per [Briefing a Change](../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change). When the user named a focus, keep all four sections and the Panel, and expand the focused item.
 
 If the report shows `leader.md` diverging from reality and the Leader is running it, update `leader.md` per [`herdr-team-lead`](../herdr-team-lead/SKILL.md) after the report and say so in its closing remarks.
 

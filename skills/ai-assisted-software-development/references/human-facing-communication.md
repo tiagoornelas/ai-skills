@@ -1,31 +1,34 @@
 # Human-Facing Communication
 
-> **Central thesis**: the human knows the system (the business, the domain, the architecture, the modules, and how the software behaves) but does not know the agents' working vocabulary. Agents may talk to each other in handles; with the human, they talk in the system's terms.
+> **Central thesis**: the human is a **visiting architect**. They set direction for many systems at once, so they know what each product does, for whom, and its high-level architecture, but they do not know the inside of any one of them. The agent that worked in the code knows its streets by name; the human does not. Every message to the human first shows where things are on the map, then names them. Agents may talk to each other in handles and in the code's vocabulary; with the human, they talk in the terms of someone who knows the product, not the code.
 
 ---
 
 ## When to consult
 
-- Whenever a message is addressed to the human: status reports, delivery summaries, questions, pending decisions, recaps, and relays of what a peer agent said.
-- Messages between agents (herdr-talk envelopes, handoff files, subagent briefs) may use handles freely, provided each handle carries its meaning the first time it appears: the peer does not share your context either.
+- Whenever a message is addressed to the human: status reports, delivery summaries, PR descriptions, reviews, questions, pending decisions, recaps, and relays of what a peer agent said.
+- Messages between agents (herdr-talk envelopes, handoff files, subagent briefs) may use handles and code vocabulary freely, provided each handle carries its meaning the first time it appears: the peer does not share your context either.
 
 ---
 
-## 1. What the Human Knows and Does Not Know
+## 1. The Visiting Architect
 
-| The human knows | The human does not know (by default) |
+A highway expert called to fix a city's traffic knows traffic engineering and what the city is for, but not its streets. "The known problem where Getúlio Vargas meets Dutra" tells them nothing. "Our largest avenue, Getúlio Vargas, crosses a second, slightly smaller avenue, Dutra; that crossing is where most of the jams happen. Here is a map" lets them work. The human reads agent messages the same way.
+
+| The human knows (never explain) | The human does not know (always situate) |
 | :--- | :--- |
-| Business goals, users, and domain concepts | PR, issue, ticket, and ADR **numbers** (`#171`, `DEV-6009`, `ADR-039`) |
-| Products, services, and modules by their role ("the gateway", "the petition writer") | Commit hashes, branch names, and stack order (`master → #163 → #165`) |
-| How the main flows behave | Labels coined by agents (`finding 1`, `wave 2`, `P3`, `D20`, `front 4`, `option A3`) |
-| Decisions the human made and the reasons for them | Method, property, file, environment variable, and test names |
-| | Agent, tab, and pane names, message IDs, and which agent owns what |
+| General programming, design, and architecture concepts (error boundary, store, dependency inversion, lint rule) | What exists inside each module, and its internal layer names ("the core", "the session slice") |
+| What the product does and for whom, in broad strokes | Names of screens, UI states, and messages ("Pensando…", "the bubble", "the widget") |
+| The applications and the large layers of the architecture, by role | How the modules connect, and which one calls which |
+| Decisions the human made, and terms the human used, in this session | Current behaviors, past bugs, and when they happen |
+| | Vocabulary the agent learned in the code: names of functions, files, fields, events, and stores |
+| | Agent handles: PR, ticket, and ADR numbers, hashes, branch names, coined labels (`finding 1`, `P3`), agent and pane names |
 
-The right column is not forbidden; it is **not self-explanatory**. Terms the human has used in the session, or that are established concepts of the system, belong to the left column.
+The right column is not forbidden; it is **not self-explanatory**. Every item in it is situated in the product before it is used (Section 3). When unsure in which column a term falls, it goes in the right one: an extra sentence of context costs less than a briefing the human cannot use.
 
 ---
 
-## 2. Rules
+## 2. Naming Rules
 
 1. **Name things by what they are.** Describe a PR, ticket, ADR, method, or label by its content or role in the system. A handle may follow in parentheses as a lookup key or link: "the PR that moves the calculation report download into the gateway (#171)", never "#171".
 2. **No sentence depends on a handle.** "With A, #171 will be rebased again" fails the test; "With A, the report PR needs one more update on top of the previous one; nothing changes for you" passes.
@@ -33,11 +36,46 @@ The right column is not forbidden; it is **not self-explanatory**. Terms the hum
 4. **Code identifiers only when they matter.** Say what the code does ("the tool that downloads the calculation report"); add the identifier in parentheses only when the human will need it to look something up.
 5. **Status in terms of the goal.** Report what is done and what is missing for the human's objective. Hashes, stack order, test counts, and pane IDs go below, in a details block, or only on request.
 6. **Translate relays.** When passing on what a peer agent said, rewrite it for the human; never paste the peer's envelope or wording.
-7. **Cold-read test.** Before sending, ask: would the human understand this message if it were the first thing they read after two hours in another tab, without scrolling up or opening anything? If not, rewrite.
+7. **Visiting-architect test.** Before sending, read every noun and every claim and ask: would someone who knows only what the product does and its high-level architecture know what this refers to, when it happens, and why it matters? Would they understand it as the first thing they read after two hours in another tab, without scrolling up or opening anything? If not, situate it or rewrite.
 
 ---
 
-## 3. Emojis as Signals
+## 3. Briefing a Change
+
+How to explain work done or proposed (a delivery, a PR, a fix, an architectural change) so the human can direct it and decide whether to ship it.
+
+### Order
+
+The human's job is to judge the **decisions**, not to learn the code. What matters most goes first, but only after the minimum context that makes it intelligible:
+
+1. **Where on the map.** Which product and which part of it, what that part does, and how a user meets it. One to three sentences, plus a [`visualize-it`](../../visualize-it/SKILL.md) map when the change crosses modules.
+2. **The problem.** A concrete scenario: who was doing what, what happened, and why (the cause, in system terms). Say whether it was a bug users hit, a risk, or a structural cost.
+3. **Decisions and trade-offs.** What was chosen, what alternatives were considered and why they lost, and what the choice commits the system to (a new rule, a dependency, a maintenance commitment, a behavior users will now see). This is where most of the words go.
+4. **Risks and impact.** Where the change can break or surprise: which flows and users are affected, what was not verified (for example tested only in unit tests, not in the browser), and how the human can check it.
+5. **The solution.** How it works, at the level of modules, boundaries, responsibilities, and dependency direction, with general programming terms used freely. Internal mechanics go here only when they explain a decision or a risk.
+
+A change with nothing to decide still follows the order: it says plainly that the decisions were routine Agent Layer choices and moves on to impact.
+
+### Giving context
+
+- **Situate before naming.** The first time a term from the right column of Section 1 appears, say what it is and where it lives in the product: "the 'Pensando…' indicator, which the chat shows while the AI prepares its answer", not "'Pensando…'".
+- **Outside in.** Product → application → area → mechanism. Never start at a line of code or a function name.
+- **Before and after, concretely.** Every behavior change shows one realistic case: a user doing a specific thing, what they saw before, what they see now.
+- **Say why, and say when you do not know.** Explain the reason behind odd code (business rule, legacy constraint, past incident). If the reason or a fact is unknown, say so; never fill a gap with a plausible guess.
+- **No condescension.** Do not explain general programming concepts; spend the words on how this system is structured and behaves.
+- **Grounded.** Base claims on the code, docs, history, and checks actually done. Mark inferences as inferences.
+
+### Brevity cuts items, not context
+
+Concise means fewer items, never less context per item. If a message cannot brief every change properly, it briefs the most consequential ones in full and lists the rest in one line each as "explained next" or "on request". A short item the human cannot understand costs more than a long one they can.
+
+### Never hand the explanation back
+
+The briefing carries its own context. Never send the human a summary that requires running another command, opening a file, or reading a PR to be understood, and never list "ask me for the full explanation" as something the human owes.
+
+---
+
+## 4. Emojis as Signals
 
 Emojis help the human scan a message and spot what needs attention. They are markers, not decoration: each one carries a fixed meaning.
 
@@ -64,7 +102,7 @@ Skills that define their own legend (the DoD status legend in `human-review`, th
 
 ---
 
-## 4. Decisions
+## 5. Decisions
 
 ### Ask less
 
@@ -74,13 +112,13 @@ Skills that define their own legend (the DoD status legend in `human-review`, th
 
 ### Every decision fully explained
 
-Several decisions may share a message. What matters is that each one is explained well enough to decide on the spot, with a recommendation. Present each as a self-contained card, in the human's language:
+Several decisions may share a message. What matters is that each one is explained well enough to decide on the spot, with a recommendation. Present each as a self-contained card, in the human's language and situated per Section 3:
 
 ```markdown
 ❓ **Decision: <the question in one line, in system terms>**
 
-- **Context:** what happens today and what changed that requires a choice (1–3 sentences, no bare handles).
-- **Options:** for each, what changes in the system or for users, and what it costs.
+- **Context:** where this sits in the product, what happens today, and what changed that requires a choice (1–3 sentences, no bare handles).
+- **Options:** for each, what changes in the system or for users, what it costs, and what it commits the system to.
 - **Recommendation:** <option>, because <reason in the human's terms>.
 - **If you do not decide now:** what stays blocked, or what the agent will do by default; whether the choice is reversible later.
 - **Reply with:** <the short answer expected, e.g. "A" or "B">
@@ -97,7 +135,9 @@ A table of options is fine inside the card when there are three or more options 
 
 ---
 
-## 5. Example
+## 6. Examples
+
+### A decision
 
 Before:
 
@@ -112,3 +152,21 @@ After:
 > - **Recommendation:** A now, B as a follow-up task, because it keeps the rule honest without delaying the delivery.
 > - **If you do not decide now:** the first delivery's PRs stay in draft.
 > - **Reply with:** A, B, or C.
+
+### A change
+
+Before (vocabulary of whoever worked in the code):
+
+> For the user: an error in the middle of the answer now shows up. For the structure: a single point handles the end of each answer (endTurn).
+
+After (briefed for the visiting architect):
+
+> **Where:** in the Voga AI chat embedded in the CJ, the backend streams each answer in pieces while the AI writes it.
+>
+> **Problem:** when something fails mid-answer (a file too large, an unsupported file type, the token limit, an internal agent failure), the backend sends an error event with a message already written in Portuguese for the user. The frontend ignored that event: the user saw the answer simply stop, with no explanation.
+>
+> **Decision and trade-off:** show the backend's message as is, instead of a generic frontend message. It is safe because the backend already writes it for end users; the cost is that wording changes now depend on the backend team.
+>
+> **Risk and impact:** every chat session is affected, only when an answer fails. ⚠️ Verified by automated tests, not yet in the browser: the PR's review app lets you trigger it with an oversized file.
+>
+> **Solution:** the end of an answer, successful or not, now goes through a single place in the frontend's state, so no future failure path can skip it.
