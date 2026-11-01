@@ -1,6 +1,6 @@
 # Human-Facing Communication
 
-> **Central thesis**: the human is a **visiting architect**. They set direction for many systems at once, so they know what each product does, for whom, and its high-level architecture, but they do not know the inside of any one of them. The agent that worked in the code knows its streets by name; the human does not. Every message to the human first shows where things are on the map, then names them. Agents may talk to each other in handles and in the code's vocabulary; with the human, they talk in the terms of someone who knows the product, not the code.
+> **Central thesis**: the human is the **human directing architect** (in Portuguese, *arquiteto direcionador humano*): they hold the final word on the direction, architecture, contracts, and release of every product they oversee, and agents follow that direction with autonomy only below it. They set direction for many systems at once, so they know what each product does, for whom, and its high-level architecture, but not the inside of any one of them. Not knowing the inside never moves a decision to the agent: the agent's job is to bring enough context for the decision to be made at the top. No agent is ever the directing architect, however senior its role (Leader, lead architect). The agent that worked in the code knows its streets by name; the human does not. Every message to the human first shows where things are on the map, then names them. Agents may talk to each other in handles and in the code's vocabulary; with the human, they talk in the terms of someone who knows the product, not the code.
 
 ---
 
@@ -11,9 +11,9 @@
 
 ---
 
-## 1. The Visiting Architect
+## 1. The Human Directing Architect
 
-A highway expert called to fix a city's traffic knows traffic engineering and what the city is for, but not its streets. "The known problem where Getúlio Vargas meets Dutra" tells them nothing. "Our largest avenue, Getúlio Vargas, crosses a second, slightly smaller avenue, Dutra; that crossing is where most of the jams happen. Here is a map" lets them work. The human reads agent messages the same way.
+The state's director of highways is responsible for the roads of many cities and decides what gets built in each one. Arriving in one of them, they know traffic engineering and what the city is for, but not its streets. "The known problem where Getúlio Vargas meets Dutra" tells them nothing. "Our largest avenue, Getúlio Vargas, crosses a second, slightly smaller avenue, Dutra; that crossing is where most of the jams happen. Here is a map" lets them decide. The human reads agent messages the same way: the local team knows the streets, and the director still has the final word.
 
 | The human knows (never explain) | The human does not know (always situate) |
 | :--- | :--- |
@@ -36,7 +36,7 @@ The right column is not forbidden; it is **not self-explanatory**. Every item in
 4. **Code identifiers only when they matter.** Say what the code does ("the tool that downloads the calculation report"); add the identifier in parentheses only when the human will need it to look something up.
 5. **Status in terms of the goal.** Report what is done and what is missing for the human's objective. Hashes, stack order, test counts, and pane IDs go below, in a details block, or only on request.
 6. **Translate relays.** When passing on what a peer agent said, rewrite it for the human; never paste the peer's envelope or wording.
-7. **Visiting-architect test.** Before sending, read every noun and every claim and ask: would someone who knows only what the product does and its high-level architecture know what this refers to, when it happens, and why it matters? Would they understand it as the first thing they read after two hours in another tab, without scrolling up or opening anything? If not, situate it or rewrite.
+7. **Directing-architect test.** Before sending, read every noun and every claim and ask: would someone who knows only what the product does and its high-level architecture know what this refers to, when it happens, and why it matters? Would they understand it as the first thing they read after two hours in another tab, without scrolling up or opening anything? If not, situate it or rewrite.
 
 ---
 
@@ -159,7 +159,7 @@ Before (vocabulary of whoever worked in the code):
 
 > For the user: an error in the middle of the answer now shows up. For the structure: a single point handles the end of each answer (endTurn).
 
-After (briefed for the visiting architect):
+After (briefed for the directing architect):
 
 > **Where:** in the Voga AI chat embedded in the CJ, the backend streams each answer in pieces while the AI writes it.
 >

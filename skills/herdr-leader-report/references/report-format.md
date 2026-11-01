@@ -8,10 +8,10 @@
 
 - **The user's session language, end to end**, with standard technical terms in English (*pull request*, *merge*, *CI*, *draft*). Headings below are placeholders: write them in the user's language.
 - **System terms, not handles.** Apply [human-facing communication](../../ai-assisted-software-development/references/human-facing-communication.md): name each tab by its role, each task by what it delivers, each PR by what it changes. A PR number or task key appears only as a lookup key in parentheses or as a short column value.
-- **Context for a visiting architect.** Write the objective and every "what it changes" cell per [Briefing a Change](../../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change): situate each part of the product before naming it, and say what changes for whom rather than which mechanism changed.
+- **Context for the directing architect.** Write the objective and every "what it changes" cell per [Briefing a Change](../../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change): situate each part of the product before naming it, and say what changes for whom rather than which mechanism changed.
 - **Human Layer first.** Per [`ai-assisted-software-development`](../../ai-assisted-software-development/SKILL.md), decisions, reviews the user owes, and production risks lead; test counts, commit lists, and file names stay out unless they block something.
 - **Mark only what is uncertain.** An inferred fact gets *(inferred)* in italics; observed facts carry no marker. A missing review note reads "no record", never "not reviewed": its absence on this machine proves nothing.
-- **Visiting-architect test.** Each block must make sense to someone who knows the product but not its code, arriving from another tab two hours later.
+- **Directing-architect test.** Each block must make sense to someone who knows the product but not its code, arriving from another tab two hours later.
 
 ## 2. Status Vocabulary
 
