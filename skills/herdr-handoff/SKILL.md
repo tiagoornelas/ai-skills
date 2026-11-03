@@ -8,7 +8,8 @@ description: >-
   to the team folder, and starts each agent from its file. Built for the Herdr
   App (herdr-app + hc), not the Herdr terminal multiplexer (`herdr` CLI).
   Triggered strictly upon explicit user request while running inside the Herdr
-  App, including the user's approval of a split proposed by a Leader.
+  App, including the user's approval of a split proposed by a Leader, and by
+  any team tab (Leader or member) starting a task within its approved mission.
 disable-model-invocation: true
 argument-hint: "[streams, layout, space, and harness for each agent]"
 ---
@@ -40,10 +41,10 @@ Forks the current work into agent sessions while leaving the calling terminal's 
 
   | Kind | When | Shape |
   | :--- | :--- | :--- |
-  | **Member** | Long-running work the user follows and may talk to directly: writing code, owning a branch or pull request, work lasting more than one session | Own tab in the space, its own handoff file, outlives its parent |
-  | **Task** | Short, disposable work that ends in one report: a review, an investigation, a check | Sub-agent of the Leader with no tab (listed under its parent in the app's agents list), brief in its start prompt or a file, ended and removed once its report is in |
+  | **Member** | Long-running work the user follows and may talk to directly: writing code, owning a branch or pull request, work lasting more than one session | Own tab in the space, its own handoff file, no parent, lives until the user ends it |
+  | **Task** | Short, disposable work that ends in one report: a review, an investigation, a check | Sub-agent of the team tab that creates it, with no tab (listed under its creator in the app's Agents sidebar), brief in its start prompt or a file, ended and removed by its creator once its report is in |
 
-  A Leader is always a member-kind stream with its own tab.
+  A Leader is always a member-kind stream with its own tab. Only the Leader creates members, and only after the user approves the split; any team tab may create tasks under Section 3.1.
 - Give each stream a specific mission. Record a lead skill and arguments when the mission calls for one. Choose short, semantic names in the user's language for created spaces and tabs; use a unique terminal-name slug (`[a-z0-9_-]{1,32}`, unique among live terminals in `hc ls`) for each agent.
 - Resolve operational details from the request and context without approval. Ask only for essential missing information, conflicting instructions, or a requested preview. If showing a plan, use a Unicode box-drawing diagram that marks the calling space and tab as unchanged and identifies every new resource.
 
@@ -67,7 +68,7 @@ For **each new agent that will write code**, create a separate Git worktree, eve
 
 Read [`../handoff/SKILL.md`](../handoff/SKILL.md) and apply its **Document Content** and **Write and Deliver** sections, except that files go to the team folder `~/.herdr-teams/<space-id>/` instead of the temporary directory. Write one handoff file per member, named `handoff-<agent-name>.md`, with that stream's mission as its Next Session Goal; a new Leader's handoff is that team's `leader.md`, in the format of [team-folder.md](../herdr-team-lead/references/team-folder.md). For a worktree stream, set Source to its actual worktree path and branch.
 
-Every member's handoff names its Leader's address and states that decisions and blockers go to the Leader through `herdr-talk`; list `herdr-talk` in its Recommended Skills. A Leader's handoff lists `herdr-team-lead` as its lead skill.
+Every member's handoff names its Leader's address and states that decisions and blockers go to the Leader through `herdr-talk`; list `herdr-talk` in its Recommended Skills, and list `herdr-handoff` with the note that it applies only to starting tasks (Section 3.1), since only the Leader creates members. A Leader's handoff lists `herdr-team-lead` as its lead skill.
 
 Every code-writing stream's Recommended Skills always lists the delivery workflow, whatever the mission: `coding` for code changes, `agent-self-review` before delivery, `commit` for every commit, `github-pull-request` for opening a pull request, and `git-branch` with the note that the stream's branch already exists and the skill applies only to any additional branch. This keeps branches, commits, and pull requests from new agents within the standard.
 
@@ -76,28 +77,38 @@ Every code-writing stream's Recommended Skills always lists the delivery workflo
 **Start each member** with `hc run`, which makes its terminal visible as a new tab of the space through the `herdr.space` label:
 
 ```bash
-hc run --bg --json --name <agent-name> --cwd <dir> --outlive-parent \
-  [--parent <leader-address> | --no-parent] \
+hc run --bg --json --name <agent-name> --cwd <dir> --outlive-parent --no-parent \
   --label herdr.space=<space-id> <command> "<start prompt>"
 ```
 
 - `--outlive-parent` is mandatory: without it, the agent ends when the agent that started it ends.
-- A member's parent is its Leader (`--parent <leader-address>`, or the default when the Leader is the caller), so herdr-core notifies the Leader when that member blocks, errors, or exits. A new Leader runs with `--no-parent`.
+- `--no-parent` is mandatory for members and Leaders alike. The app's Agents sidebar nests every live child under its parent even when the child has its own tab, while also listing that tab, so a member with a parent appears twice. The cost: herdr-core no longer notifies the Leader when a member blocks, errors, or exits, so the Leader checks its members itself ([`herdr-team-lead`](../herdr-team-lead/SKILL.md), Coordinate Members).
 - Then find the new terminal's tab in `herdr-app ls` and name it with `herdr-app do tab.rename --id <tab> --name <label>`.
 
 **New team.** Create the space with `herdr-app do space.new --name <name> --folder <dir>`; it returns `space`, `tab`, and `terminal` and starts a plain shell in that first tab. Start the Leader with `hc run` as above, rename its tab to `Leader`, then close the initial shell tab with `herdr-app do tab.close --id <initial tab> --confirmed true` after checking in `herdr-app ls` that it holds only that shell. The Leader's tab is then first. Create the Leader before any member, and record the Leader's address (terminal name) in every member's handoff. If the Leader fails to start, stop creating that team: leave the new space and its shell tab in place, and report the space name so the user can retry or close it.
 
-**Start each task** as a sub-agent of the Leader, without the `herdr.space` label, so it gets no tab:
-
-```bash
-hc run --bg --json --name <agent-name> --cwd <dir> [--parent <leader-address>] \
-  <command> "<brief, or the path of its brief file, plus: report with hc send <leader-address> when done or stuck>"
-```
-
-- Without `--outlive-parent` it ends with its Leader, which suits disposable work. A task that writes code still gets its own worktree (Section 2).
-- The Leader collects the report, then ends and removes it with `hc kill <agent-name>` and `hc rm <agent-name>`. If the user wants to watch or talk to it, show it with `herdr-app do agent.focus --terminal <address>`, or give it a tab by restarting it as a member.
+**Start each task** per Section 3.1.
 
 **Requested split.** Only when the user asks for panes in one tab, add `--label herdr.tab=<tab-id>` to `hc run`; the terminal then opens as a split of that tab.
+
+### 3.1. Tasks
+
+Any tab of a team, the Leader or a member, may start a task. The creator runs this from its own terminal, so it becomes the task's parent by default; the task carries no `herdr.space` label and so gets no tab:
+
+```bash
+hc run --bg --json --name <agent-name> --cwd <dir> \
+  <command> "<brief, or the path of its brief file, plus: you start no agents; report with hc send <creator-address> when done or stuck>"
+```
+
+1. **Within the creator's approved mission only.** A task never widens scope or settles a Human Layer decision; those still go from a member to the Leader, and from the Leader to the user.
+2. **A task creates no agents**, neither tasks nor members; its brief says so.
+3. **The creator owns its task.** It receives the report (and herdr-core's note if the task blocks, errors, or exits), uses it, then ends and removes the task with `hc kill <agent-name>` and `hc rm <agent-name>`. No finished task is left behind.
+4. **A task that writes code uses its own worktree** (Section 2), never its creator's.
+5. **Tasks are not recorded in `leader.md`.** The Leader sees them nested under their creator in the app's Agents sidebar.
+
+- Without `--outlive-parent` a task ends with its creator, which suits disposable work.
+- If the user wants to watch or talk to a task, show it with `herdr-app do agent.focus --terminal <address>`, or give it a tab by asking the Leader to restart it as a member.
+- To end an agent, use `hc kill`. `hc send <agent> "/exit"` does not end it: `hc send` wraps the text as an `<hc from=…>` message, which the agent only reads. A graceful exit needs keystrokes: `hc keys <agent> / e x i t`, then `hc keys <agent> enter`.
 
 **Pick-up check.** Run `hc wait <agent-name> --timeout 60` and inspect `hc get <agent-name>`. `working`, `idle`, or `done` after its first turn means the work was picked up. On `blocked` (for example a folder-trust dialog) or `error`, read `hc read <agent-name> --lines 40`, leave the tab open, and report the needed action to the user; never answer the dialog yourself. Do not restart or re-prompt automatically. Continue other streams.
 
@@ -109,10 +120,11 @@ Open with one plain sentence per stream: what it will deliver for the user's goa
 
 - [ ] Herdr App environment (`HC_TERMINAL_ID`, `hc`, `herdr-app`) and CLI syntax were verified; the `herdr` terminal CLI was not used; the calling tab stayed untouched, except for a `Leader` rename and move during adoption.
 - [ ] New work got a space whose first tab is a `Leader` running `herdr-team-lead`, with the initial shell tab closed; a space without `leader.md` was adopted per Section 1.1, asking the user when the Leader was ambiguous or was writing code.
-- [ ] Handoff files and `leader.md` were written to the team folder keyed by space ID; every member's handoff names its Leader and lists `herdr-talk`.
+- [ ] Handoff files and `leader.md` were written to the team folder keyed by space ID; every member's handoff names its Leader and lists `herdr-talk` and `herdr-handoff` (for tasks).
 - [ ] Every new code writer has its own Git worktree unless the user explicitly requested reuse.
 - [ ] Branch naming and base follow `git-branch`, without switching the calling checkout; mandatory project instructions were respected.
 - [ ] Every code-writing stream's handoff lists `coding`, `agent-self-review`, `commit`, `github-pull-request`, and `git-branch` with absolute `SKILL.md` paths.
-- [ ] Each stream's kind fits its work: members and the Leader were started with `--outlive-parent`, the `herdr.space` label, and a semantically named tab; tasks were started as tab-less sub-agents of the Leader with a report instruction. Every agent has a unique name, its start prompt in the start command, and the Leader as parent unless it is the Leader.
+- [ ] Each stream's kind fits its work: members and the Leader were started with `--outlive-parent`, `--no-parent`, the `herdr.space` label, and a semantically named tab; only the Leader created members. Every agent has a unique name and its start prompt in the start command.
+- [ ] Each task was started by a team tab within its approved mission, as a tab-less sub-agent of that tab, with a brief that forbids starting agents and names where to report; a code-writing task has its own worktree; the creator ended and removed it after its report.
 - [ ] Every stream reached a picked-up state or a reported failure; no dialog was answered and nothing was retried automatically.
 - [ ] The report covers every stream and retained checkout, with no automatic cleanup.

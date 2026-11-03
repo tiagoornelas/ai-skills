@@ -43,9 +43,10 @@ In the Herdr App, a space is a team working on one cohesive piece of work; its f
 ## 3. Split the Work
 
 1. Investigate the objective (context, code, existing branches and PRs) and apply `scope-review`.
-2. Propose a split into cohesive streams, one agent per stream, as a **visual plan**: a Unicode box-drawing diagram showing each agent with its mission, kind, harness, repository and branch, and the dependencies between streams, followed by one plain sentence per agent on what it delivers. Recommend the kind and harness per agent; the user may change them. Per [`herdr-handoff`](../herdr-handoff/SKILL.md), a **member** gets its own tab for long-running work the user follows (code, a branch, a pull request); a **task** is a tab-less sub-agent of the Leader for short, disposable work that ends in one report (a review, an investigation).
-3. Wait for the user's approval or edits. **The user's approval of a proposed split is an explicit request to hand off**: then read [`herdr-handoff`](../herdr-handoff/SKILL.md) and follow it to create the approved members as new tabs in this space. Never create agents without that approval.
-4. Update `leader.md` (Section 4) with the members created. Tasks are not recorded there: they are transient. When a task's report arrives, use it, then end and remove the task (`hc kill`, `hc rm`).
+2. Propose a split into cohesive streams, one agent per stream, as a **visual plan**: a Unicode box-drawing diagram showing each agent with its mission, kind, harness, repository and branch, and the dependencies between streams, followed by one plain sentence per agent on what it delivers. Recommend the kind and harness per agent; the user may change them. Per [`herdr-handoff`](../herdr-handoff/SKILL.md), a **member** gets its own tab for long-running work the user follows (code, a branch, a pull request); a **task** is a tab-less sub-agent of the team tab that creates it, for short, disposable work that ends in one report (a review, an investigation). Members start with no parent, so each appears once in the app's Agents sidebar.
+3. Wait for the user's approval or edits. **The user's approval of a proposed split is an explicit request to hand off**: then read [`herdr-handoff`](../herdr-handoff/SKILL.md) and follow it to create the approved members as new tabs in this space. Never create members without that approval.
+4. Update `leader.md` (Section 4) with the members created. Tasks are not recorded there: they are transient, and the Leader sees them nested under their creator in the Agents sidebar.
+5. Outside a split, the Leader and every member may start tasks for work within their own approved mission, under the task rules of [`herdr-handoff`](../herdr-handoff/SKILL.md#31-tasks): the creator owns its task, uses its report, then ends and removes it (`hc kill`, `hc rm`). Members are created only by the Leader, after the user approves.
 
 ## 4. Keep `leader.md`
 
@@ -67,7 +68,7 @@ A member's progress is never a trigger.
   2. Refresh cheaply: `hc ls --label herdr.space=<space-id>` and `leader.md`, plus a look at whatever the message says changed (a PR, a branch). A full gather is the report's job, not this step's.
   3. Tell the user, in this order: one line on what just changed, in system terms; the Panel; then the full decision cards for any decision that is new.
   When several messages arrive close together, handle them all and show one Panel.
-- herdr-core also sends the Leader a bare `<hc>…</hc>` note when a member it parents blocks, errors, or exits. Treat it like a member message: inspect with `hc read <member> --lines 40`, then report.
+- **Members have no parent, so nothing notifies the Leader when a member blocks, errors, or exits.** Before every report to the user, and whenever a member goes silent, check every member's state (`hc ls --label herdr.space=<space-id>`, `hc get <member>`); on `blocked`, `error`, or an exited member, inspect with `hc read <member> --lines 40` and treat it like a member message. herdr-core's bare `<hc>…</hc>` note still arrives for the Leader's own tasks.
 - To check on members, observe first (`hc get`, `hc read`, git, PR state) and message only for what observation cannot answer. Do not demand periodic status reports.
 - When a member's mission changes, tell that member through `herdr-talk` and update `leader.md`.
 - Requests for code, branches, commits, or PRs name their governing skills (`coding`, `git-branch`, `commit`, `github-pull-request`, `agent-self-review`), as `herdr-talk` requires.
@@ -92,7 +93,8 @@ When the objective is met or abandoned, report the outcome to the user, set `Sta
 - [ ] `scope-review` ran before the split and whenever the objective shifted; its conclusion reached the user.
 - [ ] The split was presented as a visual plan and members were created through `herdr-handoff` only after the user approved it.
 - [ ] `leader.md` follows the team-folder format, records intent only, and was updated exactly on the listed triggers.
-- [ ] Member decisions reached the user as consolidated decision cards in system terms; members were observed before being messaged.
+- [ ] Member decisions reached the user as consolidated decision cards in system terms; members were observed before being messaged, and their state was checked before every report to the user and whenever one went silent.
+- [ ] Tasks were started only within an approved mission under the `herdr-handoff` task rules, and each was ended and removed by its creator after its report.
 - [ ] Every incoming member message, and every message to the user that followed a change in the work, ended with the Panel in its fixed block order, empty blocks folded into one plain closing line; replies in conversation where nothing changed carried no Panel.
 - [ ] Adoption renamed the tab to `Leader` and moved it first, wrote `leader.md` with inferences marked, and notified members once.
 - [ ] Concluded work is marked `concluded` and its folder was not deleted by the Leader.
