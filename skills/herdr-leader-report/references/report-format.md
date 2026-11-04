@@ -16,18 +16,23 @@
 
 ## 2. Status Vocabulary
 
-One emoji per line, at its start, always followed by words; the same emoji always means the same thing.
+One emoji per line, at its start, always followed by words; the same emoji always means the same thing. The report uses the shared vocabulary of [human-facing communication](../../ai-assisted-software-development/references/human-facing-communication.md#4-emojis-as-signals), including its **who acts** markers, with these meanings in a space:
 
-| Emoji | Meaning |
+| Emoji | Meaning in the report |
 | :---: | :--- |
 | ✅ | Done, merged, ready to merge, or reviewed |
 | ⏳ | In progress, including work waiting for another stream or task of the team to finish |
-| ❓ | A decision the user must make |
+| ❓ | A decision the user must make: a choice, with options and a recommendation |
 | 👀 | A review the user owes |
-| ✋ | An action only the user can take: log in, validate in a browser, answer an agent's dialog, run a command the agent may not run |
+| ✋ | An action only the user can take, with nothing to choose: log in, validate in a browser, answer an agent's dialog, run a command the agent may not run |
+| 🤖 | A next step an agent takes, without the user |
 | ⏸️ | Blocked: waiting for something that neither the user nor any agent can do now |
 | ❌ | Failing: a PR conflict or failing CI, an agent in error |
-| ➡️ | A next step for an agent |
+
+Report-only markers:
+
+| Emoji | Meaning |
+| :---: | :--- |
 | 📋 | Pending, not started |
 | ⚪ | Idle, or no information |
 | ⭐ | The Leader's tab |
@@ -40,7 +45,7 @@ Not blocked:
 
 - **Waiting for the user** (a decision, a review, a login, a validation): it is a user item (❓, 👀, ✋) in **What's next**.
 - **Waiting for another stream or task of the team to finish**: it is **in progress** (⏳); the dependency goes in its "where it stands" line.
-- **A failing CI, a conflict, or an error an agent can fix**: it is in progress for that agent, or a next step (➡️) when nobody has picked it up yet.
+- **A failing CI, a conflict, or an error an agent can fix**: it is in progress for that agent, or an agent's next step (🤖) when nobody has picked it up yet.
 - **An agent stopped at a dialog** (herdr-core state `blocked`): only the user can answer it, so it is a user action (✋).
 
 ### PR Line
@@ -73,7 +78,7 @@ The canonical state of the space. It is the first section of the full report, an
 **➡️ <What's next>**
 1. ❓ **<You> · <subject>:** <the decision> → <what it unblocks>. <Recommendation: option>.
 2. 👀 **<You> · <subject>:** <the review> → <what it unblocks>.
-3. ➡️ <step> · <who> · <after what>
+3. 🤖 <step> · <which tab> · <after what>
 
 **⏸️ <Blocked>**
 - ⏸️ **<work>:** <what it waits for> · <when, or who outside the conversation resolves it>
@@ -96,7 +101,7 @@ The canonical state of the space. It is the first section of the full report, an
 - **What changed** names the event in system terms ("the billing tab finished the invoice API and opened its PR"), never the member's raw message. When the Panel answers the user's first message after changes they did not see, it lists up to three lines of what changed since their previous message instead (see "Since the user's last message" in [`herdr-team-lead`](../../herdr-team-lead/SKILL.md#2-role)). Omit it when nothing changed.
 - **What's next** is one numbered queue, so the user can answer by number. It merges what depends on the user with the agents' next steps:
   - **The user's items first**, in bold and prefixed with the word for "you" in the user's language: decisions (❓), reviews the user owes (👀), and actions only the user can take (✋), ordered by what each unblocks, each with the Leader's recommendation. The full decision card goes below the Panel when the decision is new or the user asks for it.
-  - **Then the agents' steps** (➡️): the ordered steps that move the objective forward after the current work, from `leader.md` Next Steps reconciled with what was observed, each with who does it and what it waits for. At most five agent steps; the full list lives in `leader.md`.
+  - **Then the agents' steps** (🤖): the ordered steps that move the objective forward after the current work, from `leader.md` Next Steps reconciled with what was observed, each with who does it and what it waits for. At most five agent steps; the full list lives in `leader.md`.
   - An item appears once: a step that waits for a user item names that item's number ("after 1") instead of repeating it.
 - **Blocked** holds only work that nobody can move now, as defined in [What "blocked" means](#what-blocked-means). Work waiting for the user lives in **What's next**, and work waiting for the team lives in **In progress**, never here.
 - **In progress** holds one row per active work stream, not per task: what it delivers, which tab runs it, and where it stands in one line, including any stream or task of the team it waits for. Finished work leaves the Panel; it shows up in the full report.
@@ -126,7 +131,7 @@ The report is the Panel plus three detail blocks built from the same one-line it
 
 ### <Tasks>
 - ⏳ <key> · <what it delivers> · <tracker status>
-  ➡️ <what actually moves it forward>
+  🤖 <what actually moves it forward, marked with who acts: 🤖, or ❓ 👀 ✋ when it is the user>
 
 ### <PRs>
 ```text

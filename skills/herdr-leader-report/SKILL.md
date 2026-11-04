@@ -62,7 +62,7 @@ If the report shows `leader.md` diverging from reality and the Leader is running
 - [ ] Facts came from observation first; members were asked only for unobservable facts, only when idle, once each.
 - [ ] The report is the Panel followed by Tabs, Tasks, and PRs, in the user's language, one line per item with at most one detail line, and no counts table or wide tables.
 - [ ] The Panel opens with the line saying how many items depend on the user and which, or that none does; then shows its non-empty blocks in order (what's next, blocked, in progress, PRs); empty blocks are omitted and named together in one plain closing line without emoji.
-- [ ] "What's next" is one numbered queue: every decision, review the user owes, and action only the user can take comes first, in bold, each with a recommendation; the agents' steps follow, and no item appears twice.
+- [ ] "What's next" is one numbered queue: every decision, review the user owes, and action only the user can take comes first, in bold, each with a recommendation; the agents' steps follow, marked 🤖, and no item appears twice.
 - [ ] "Blocked" holds only work that neither the user nor any agent can move now (a time to pass, logs to settle, another team or a third party); work waiting for the user is in "What's next", and work waiting for the team is "In progress".
 - [ ] Every task shows its real tracker status or none, and its actual next step; every PR uses the same PR line in the Panel and the report (repository#number, short name, draft and conflict when true, CI, agent review, the user's review).
 - [ ] Untracked work is visible: tabs and PRs without a task are listed as such, or the report states that no task is registered.
