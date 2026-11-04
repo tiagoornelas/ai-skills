@@ -84,11 +84,17 @@ Emojis help the human scan a message and spot what needs attention. They are mar
 | Emoji | Meaning |
 | :---: | :--- |
 | ✅ | Done or verified. |
-| ⏳ | In progress or waiting on something. |
+| ⏳ | In progress, including work waiting for other in-flight work to finish. |
 | ❌ | Failed or not done. |
 | ⚠️ | Attention point: a risk, surprise, or side effect the human should notice. |
-| ❓ | Decision the human must make (opens a decision card). |
+| ❓ | Decision the human must make: a choice between options (opens a decision card). |
+| 👀 | Review the human owes. |
+| ✋ | Action only the human can take, with nothing to choose: log in, validate in a browser, grant access, answer an agent's dialog. Written as steps, not options. |
+| 🤖 | Step an agent takes, without the human. |
+| ⏸️ | Blocked: waiting for something neither the human nor any agent can do now (a time to pass, metrics to settle, another team or a third party). Always says what it waits for and when or by whom it ends. |
 | 🔴 🟡 🟢 | Severity of a finding: critical, warning, suggestion. |
+
+**Who acts.** ❓, 👀, and ✋ mean the human acts; 🤖 means an agent does; ⏳ means it is already moving; ⏸️ means nobody can move it now. In a list that mixes owners (next steps, pending items), mark every item with one of these so the human sees at a glance what is theirs. Work waiting for the human is never ⏸️: it is ❓, 👀, or ✋.
 
 Skills that define their own legend (the DoD status legend in `human-review`, the change notation in `visualize-it`) keep it inside their own outputs. Do not invent other meanings within a session: the same emoji always means the same thing.
 

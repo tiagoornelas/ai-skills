@@ -1,6 +1,6 @@
 # Report Format
 
-> **Central thesis**: the user should understand the state of the work at a glance. Whenever that state changes, the Leader shows the same **Panel**: up to five short blocks in a fixed order (what needs the user, what is blocked, what is in progress, the next steps, the PRs). The full report is that same Panel followed by the same kind of one-line items for tabs, tasks, and PRs, each with one more line of detail. Same shapes, same order, more depth; never a dump of fields.
+> **Central thesis**: the user should understand the state of the work at a glance, and know in its first line whether anything depends on them. Whenever that state changes, the Leader shows the same **Panel**: a first line saying what depends on the user, then up to four short blocks in a fixed order (what's next, with the user's items first; what is blocked; what is in progress; the PRs). The full report is that same Panel followed by the same kind of one-line items for tabs, tasks, and PRs, each with one more line of detail. Same shapes, same order, more depth; never a dump of fields.
 
 ---
 
@@ -16,20 +16,37 @@
 
 ## 2. Status Vocabulary
 
-One emoji per line, at its start, always followed by words; the same emoji always means the same thing.
+One emoji per line, at its start, always followed by words; the same emoji always means the same thing. The report uses the shared vocabulary of [human-facing communication](../../ai-assisted-software-development/references/human-facing-communication.md#4-emojis-as-signals), including its **who acts** markers, with these meanings in a space:
+
+| Emoji | Meaning in the report |
+| :---: | :--- |
+| ✅ | Done, merged, ready to merge, or reviewed |
+| ⏳ | In progress, including work waiting for another stream or task of the team to finish |
+| ❓ | A decision the user must make: a choice, with options and a recommendation |
+| 👀 | A review the user owes |
+| ✋ | An action only the user can take, with nothing to choose: log in, validate in a browser, answer an agent's dialog, run a command the agent may not run |
+| 🤖 | A next step an agent takes, without the user |
+| ⏸️ | Blocked: waiting for something that neither the user nor any agent can do now |
+| ❌ | Failing: a PR conflict or failing CI, an agent in error |
+
+Report-only markers:
 
 | Emoji | Meaning |
 | :---: | :--- |
-| ✅ | Done, merged, ready to merge, or reviewed |
-| ⏳ | In progress, or waiting on another piece of work |
-| ❓ | Waiting for a decision from the user |
-| 👀 | Waiting for the user's review |
-| ❌ | Blocked or failing |
-| ➡️ | Next step |
-| 📅 | Scheduled for a known date |
 | 📋 | Pending, not started |
 | ⚪ | Idle, or no information |
 | ⭐ | The Leader's tab |
+
+### What "blocked" means
+
+An item is **blocked** (⏸️) only when nobody in the conversation can move it now: neither the user nor any agent. Typical cases: a time that must pass (turn a service off one day after the migration), logs or metrics that must settle before reading them, another team that must fix something, a third party that must answer. Each blocked line says what it waits for and when or by whom it is expected to end.
+
+Not blocked:
+
+- **Waiting for the user** (a decision, a review, a login, a validation): it is a user item (❓, 👀, ✋) in **What's next**.
+- **Waiting for another stream or task of the team to finish**: it is **in progress** (⏳); the dependency goes in its "where it stands" line.
+- **A failing CI, a conflict, or an error an agent can fix**: it is in progress for that agent, or an agent's next step (🤖) when nobody has picked it up yet.
+- **An agent stopped at a dialog** (herdr-core state `blocked`): only the user can answer it, so it is a user action (✋).
 
 ### PR Line
 
@@ -54,22 +71,23 @@ The canonical state of the space. It is the first section of the full report, an
 ````markdown
 ### 🧭 <space name> · <Panel> · <time>
 
-<🔔 What just changed: one sentence, only when the Panel follows an event>
+**❓ <2 items depend on you: 1 and 2>**   or   **✅ <Nothing depends on you now>**
 
-**❓ <Needs you>**
-1. ❓ **<subject>:** <the decision or review needed> → <what it unblocks>. <Recommendation: option>.
+<🔔 What changed: one sentence after an event, or up to three lines since the user's last message>
 
-**❌ <Blocked>**
-- ❌ **<work>:** <what blocks it> · <who or what unblocks it>
+**➡️ <What's next>**
+1. ❓ **<You> · <subject>:** <the decision> → <what it unblocks>. <Recommendation: option>.
+2. 👀 **<You> · <subject>:** <the review> → <what it unblocks>.
+3. 🤖 <step> · <which tab> · <after what>
+
+**⏸️ <Blocked>**
+- ⏸️ **<work>:** <what it waits for> · <when, or who outside the conversation resolves it>
 
 **⏳ <In progress>**
 
 | <Work> | <Who> | <Where it stands> |
 | :--- | :--- | :--- |
-| <what it delivers> | <tab role> | ⏳ <one line> |
-
-**➡️ <Next steps>**
-1. ➡️ <step> · <who> · <after what>
+| <what it delivers> | <tab role> | ⏳ <one line, including what it waits for inside the team> |
 
 **PRs**
 - ❌ <repo>#<n> · <short name> · conflict · CI failing · agent ok · you —
@@ -79,13 +97,16 @@ The canonical state of the space. It is the first section of the full report, an
 <Nothing blocked · No PRs: one plain line, only when some block is empty>
 ````
 
-- **Fixed order, no empty blocks.** The blocks always appear in this order. An empty block is omitted, heading included, and the Panel ends with one plain line, without emoji, naming every empty block in the same order ("Nothing needs you · Nothing blocked · Nothing in progress · No next steps · No PRs"). When nothing is empty, that line does not appear.
-- **Needs you** holds every pending decision (❓), review the user owes (👀), and scheduled action that needs the user (📅), numbered and ordered by what each unblocks, so the user can answer by number. One line each with the Leader's recommendation; the full decision card goes below the Panel when the decision is new or the user asks for it.
-- **Blocked** holds work that cannot advance because of something other than the user (a failing CI, another stream, an external dependency). Work blocked by the user lives in **Needs you** only, never in both.
-- **In progress** holds one row per active work stream, not per task: what it delivers, which tab runs it, and where it stands in one line. Finished work leaves the Panel; it shows up in the full report.
-- **Next steps** comes from `leader.md` Next Steps reconciled with what was observed: the ordered steps that move the objective forward after the current work, each with who does it and what it waits for. At most five; the full list lives in `leader.md`.
+- **First line, always.** The Panel opens with one bold line that answers "do I need to act?": how many items of **What's next** depend on the user and their numbers (❓), or that nothing depends on the user now (✅). It counts every ❓, 👀, and ✋ item and nothing else.
+- **What changed** names the event in system terms ("the billing tab finished the invoice API and opened its PR"), never the member's raw message. When the Panel answers the user's first message after changes they did not see, it lists up to three lines of what changed since their previous message instead (see "Since the user's last message" in [`herdr-team-lead`](../../herdr-team-lead/SKILL.md#2-role)). Omit it when nothing changed.
+- **What's next** is one numbered queue, so the user can answer by number. It merges what depends on the user with the agents' next steps:
+  - **The user's items first**, in bold and prefixed with the word for "you" in the user's language: decisions (❓), reviews the user owes (👀), and actions only the user can take (✋), ordered by what each unblocks, each with the Leader's recommendation. The full decision card goes below the Panel when the decision is new or the user asks for it.
+  - **Then the agents' steps** (🤖): the ordered steps that move the objective forward after the current work, from `leader.md` Next Steps reconciled with what was observed, each with who does it and what it waits for. At most five agent steps; the full list lives in `leader.md`.
+  - An item appears once: a step that waits for a user item names that item's number ("after 1") instead of repeating it.
+- **Blocked** holds only work that nobody can move now, as defined in [What "blocked" means](#what-blocked-means). Work waiting for the user lives in **What's next**, and work waiting for the team lives in **In progress**, never here.
+- **In progress** holds one row per active work stream, not per task: what it delivers, which tab runs it, and where it stands in one line, including any stream or task of the team it waits for. Finished work leaves the Panel; it shows up in the full report.
 - **PRs** lists every PR of the space (opened from its agents' branches or referenced in `leader.md`), one [PR line](#pr-line) each, ordered ❌, 👀, ⏳, ✅, merged last. It repeats PRs already cited above on purpose: it is the one place to read every PR's state.
-- **What just changed** names the event in system terms ("the billing tab finished the invoice API and opened its PR"), never the member's raw message.
+- **Fixed order, no empty blocks.** The blocks always appear in this order. An empty block is omitted, heading included, and the Panel ends with one plain line, without emoji, naming every empty block in the same order ("Nothing next · Nothing blocked · Nothing in progress · No PRs"). When nothing is empty, that line does not appear. The first line is never omitted.
 
 ### When to Show It
 
@@ -110,7 +131,7 @@ The report is the Panel plus three detail blocks built from the same one-line it
 
 ### <Tasks>
 - ⏳ <key> · <what it delivers> · <tracker status>
-  ➡️ <what actually moves it forward>
+  🤖 <what actually moves it forward, marked with who acts: 🤖, or ❓ 👀 ✋ when it is the user>
 
 ### <PRs>
 ```text
@@ -125,8 +146,8 @@ The report is the Panel plus three detail blocks built from the same one-line it
 ## 5. Section Rules
 
 - **Header**: objective from `leader.md` when present, otherwise inferred and marked; the tracker part shows the epic or main task and its real status, and is dropped when there is none.
-- **Panel**: built per Section 3 from the facts of the detail blocks of the same report; omit "What just changed".
-- **Tabs**: one line per tab in tab order, Leader marked ⭐; the state combines the herdr-core agent status with what the agent is waiting for (an agent that finished its delivery is ✅, not ⚪). No detail line.
+- **Panel**: built per Section 3 from the facts of the detail blocks of the same report. Keep "What changed" only when the report is the user's first look at changes since their last message.
+- **Tabs**: one line per tab in tab order, Leader marked ⭐; the state combines the herdr-core agent status with what the agent is waiting for (an agent that finished its delivery is ✅, not ⚪; an agent stopped at a dialog is ✋). No detail line.
 - **Tasks**: one line per task in the tracker scope (the epic's children, or the tasks referenced by `leader.md`), done first, pending (📋) last. The detail line states what actually moves the task forward, which often differs from the tracker status; when it does, the next step wins and the gap is noted in the closing remarks. Done tasks get no detail line.
   - **Untracked work**: a tab or PR linked to no task gets a final line `⚪ no task · <the work it covers>`.
   - **No task at all**: when no task reference was found anywhere, the block is one line, `📋 No task registered in any tracker`, with a suggestion to register the work with [`report-work`](../../report-work/SKILL.md).
