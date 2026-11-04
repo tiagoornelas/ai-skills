@@ -2,10 +2,11 @@
 name: herdr-leader-report
 description: >-
   Reports, on demand, the state of the work in the current Herdr App space in
-  a fixed, glanceable terminal format: a Panel with what needs the user's
-  decision, what is blocked, what is in progress, the next steps, and a
-  one-line state per pull request, then the same one-line items for every
-  tab, task, and pull request with one line of detail each. The Panel format
+  a fixed, glanceable terminal format: a Panel whose first line says what
+  depends on the user, then one numbered queue of what's next with the user's
+  items first, what is blocked on something nobody can do now, what is in
+  progress, and a one-line state per pull request, then the same one-line
+  items for every tab, task, and pull request with one line of detail each. The Panel format
   is also the one the Leader shows whenever the work's state changes. Gathered
   by observing the Herdr App, git, pull requests, review notes, and the task tracker
   the team uses, asking members only for what cannot be observed. Meant to be
@@ -60,8 +61,9 @@ If the report shows `leader.md` diverging from reality and the Leader is running
 - [ ] Herdr App environment verified, without the `herdr` terminal CLI; the report covers only the current space.
 - [ ] Facts came from observation first; members were asked only for unobservable facts, only when idle, once each.
 - [ ] The report is the Panel followed by Tabs, Tasks, and PRs, in the user's language, one line per item with at most one detail line, and no counts table or wide tables.
-- [ ] The Panel shows its non-empty blocks in order (needs you, blocked, in progress, next steps, PRs); empty blocks are omitted and named together in one plain closing line without emoji.
-- [ ] "Needs you" lists, numbered, every decision, review the user owes, and scheduled action that needs the user, each with a recommendation; blocks not caused by the user appear only under "Blocked".
+- [ ] The Panel opens with the line saying how many items depend on the user and which, or that none does; then shows its non-empty blocks in order (what's next, blocked, in progress, PRs); empty blocks are omitted and named together in one plain closing line without emoji.
+- [ ] "What's next" is one numbered queue: every decision, review the user owes, and action only the user can take comes first, in bold, each with a recommendation; the agents' steps follow, and no item appears twice.
+- [ ] "Blocked" holds only work that neither the user nor any agent can move now (a time to pass, logs to settle, another team or a third party); work waiting for the user is in "What's next", and work waiting for the team is "In progress".
 - [ ] Every task shows its real tracker status or none, and its actual next step; every PR uses the same PR line in the Panel and the report (repository#number, short name, draft and conflict when true, CI, agent review, the user's review).
 - [ ] Untracked work is visible: tabs and PRs without a task are listed as such, or the report states that no task is registered.
 - [ ] Only inferred facts are marked; a missing review note reads "no record".

@@ -7,7 +7,8 @@ description: >-
   consolidates members' decisions for the user, answers every incoming member
   message with the space's whole state (the Panel of herdr-leader-report)
   instead of that message alone, shows that Panel whenever the state changes
-  but not in conversation where nothing changed, and keeps an intent-only
+  but not in conversation where nothing changed, opens its reply with what
+  changed since the user's last message when the user returns, and keeps an intent-only
   leader.md in the team folder that it rereads after any context loss. Also
   adopts an existing space as a team. Built for the Herdr App (herdr-app +
   hc), not the Herdr terminal multiplexer (`herdr` CLI). Triggered when a
@@ -36,7 +37,8 @@ In the Herdr App, a space is a team working on one cohesive piece of work; its f
 - **Do not write code.** Read code, diffs, and PRs to judge them; delegate changes to members.
 - **Challenge scope early.** Before splitting work, and whenever the objective or a member's direction shifts, apply [`scope-review`](../scope-review/SKILL.md) and bring the user its conclusion with a recommendation. Raise architecture concerns with [`software-designing`](../software-designing/SKILL.md) lenses before members build on them.
 - **Make the user's job easy.** Lead every report with what changed for the user's goal; group pending decisions as decision cards ordered by what they unblock; never relay a member's raw message. Brief each delivery per [Briefing a Change](../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change): members know their code's vocabulary and the user does not, so the Leader re-situates every term a member uses, in full, in the same message, and never asks the user to run another command to understand it.
-- **Show the whole picture when it changes.** A message to the user that follows a change in the state of the work ends with the **Panel** of [report-format.md](../herdr-leader-report/references/report-format.md#3-the-panel): what needs the user, what is blocked, what is in progress, the next steps, and one line per PR with its state, in that fixed order, empty blocks folded into one closing line. The user should never have to piece the state together from separate messages. When the user is just talking with the Leader and nothing changed, answer without the Panel ([when to show it](../herdr-leader-report/references/report-format.md#when-to-show-it)).
+- **Show the whole picture when it changes.** A message to the user that follows a change in the state of the work ends with the **Panel** of [report-format.md](../herdr-leader-report/references/report-format.md#3-the-panel): a first line saying what depends on the user, then one numbered queue of what's next with the user's items first, what is blocked on something nobody can do now, what is in progress, and one line per PR with its state, in that fixed order, empty blocks folded into one closing line. The user should never have to piece the state together from separate messages. When the user is just talking with the Leader and nothing changed, answer without the Panel ([when to show it](../herdr-leader-report/references/report-format.md#when-to-show-it)).
+- **Since the user's last message.** The user leads several spaces at once and returns to this one after a while. When the user writes and the state changed since their previous message in this conversation (member messages, deliveries, decisions opened or closed, new blockers), open the reply with up to three lines on what changed since then, in system terms, before answering; end with the Panel, whose "What changed" carries those lines. Count from the user's previous message, not from the last Panel: a Panel the user did not reply to may not have been read. When nothing changed, say nothing about it.
 - **Stay within approval.** Agent Layer choices inside an approved plan are the Leader's or the members'; anything touching the Human Layer goes to the user.
 - **Report on request.** When the user asks for the state of the work, follow [`herdr-leader-report`](../herdr-leader-report/SKILL.md).
 
@@ -53,7 +55,7 @@ In the Herdr App, a space is a team working on one cohesive piece of work; its f
 Write intent only, in the format of [team-folder.md](references/team-folder.md); never record progress or live status. Update it **only** on these triggers, and set `Updated` with the trigger:
 
 - a split is approved, or a member joins, leaves, or changes mission;
-- a decision for the user opens or closes;
+- a decision for the user, or an action only the user can take, opens or closes (both go under Pending Decisions, which [`herdr-inbox`](../herdr-inbox/SKILL.md) reads across spaces);
 - the objective, next steps, or tracked tasks change in a conversation with the user;
 - a status report shows that `leader.md` no longer matches reality (a member gone, a next step already done);
 - the work concludes (`State: concluded <date>`).
@@ -95,6 +97,8 @@ When the objective is met or abandoned, report the outcome to the user, set `Sta
 - [ ] `leader.md` follows the team-folder format, records intent only, and was updated exactly on the listed triggers.
 - [ ] Member decisions reached the user as consolidated decision cards in system terms; members were observed before being messaged, and their state was checked before every report to the user and whenever one went silent.
 - [ ] Tasks were started only within an approved mission under the `herdr-handoff` task rules, and each was ended and removed by its creator after its report.
-- [ ] Every incoming member message, and every message to the user that followed a change in the work, ended with the Panel in its fixed block order, empty blocks folded into one plain closing line; replies in conversation where nothing changed carried no Panel.
+- [ ] Every incoming member message, and every message to the user that followed a change in the work, ended with the Panel: its first line on what depends on the user, then its blocks in fixed order, empty blocks folded into one plain closing line; replies in conversation where nothing changed carried no Panel.
+- [ ] A user message arriving after changes they had not seen was answered first with up to three lines on what changed since their previous message.
+- [ ] `leader.md` Pending Decisions lists every open decision and user-only action, so the cross-space inbox shows them.
 - [ ] Adoption renamed the tab to `Leader` and moved it first, wrote `leader.md` with inferences marked, and notified members once.
 - [ ] Concluded work is marked `concluded` and its folder was not deleted by the Leader.
