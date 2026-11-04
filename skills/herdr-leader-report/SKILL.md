@@ -2,10 +2,11 @@
 name: herdr-leader-report
 description: >-
   Reports, on demand, the state of the work in the current Herdr App space in
-  a fixed, visual terminal format: a Panel with what needs the user's
-  decision, what is blocked, what is in progress, and the next steps, then
-  every tab, every task, and every pull request with its state. The Panel
-  format is also the one the Leader shows whenever the work's state changes. Gathered
+  a fixed, glanceable terminal format: a Panel with what needs the user's
+  decision, what is blocked, what is in progress, the next steps, and a
+  one-line state per pull request, then the same one-line items for every
+  tab, task, and pull request with one line of detail each. The Panel format
+  is also the one the Leader shows whenever the work's state changes. Gathered
   by observing the Herdr App, git, pull requests, review notes, and the task tracker
   the team uses, asking members only for what cannot be observed. Meant to be
   run by the space's Leader; works in any space, with or without a team
@@ -18,7 +19,7 @@ argument-hint: "[focus, e.g. a task or PR, optional]"
 
 # Herdr Leader Report
 
-A command the user gives to a space's Leader: "tell me where this work stands". It produces one report about **this space only**, always in the same structure ([report-format.md](references/report-format.md)), so the user can scan any team the same way. Its first section, the **Panel**, is the canonical state of the work that the Leader also repeats in every message about it. The report is pulled by the user; nobody pushes status to anyone.
+A command the user gives to a space's Leader: "tell me where this work stands". It produces one report about **this space only**, always in the same structure ([report-format.md](references/report-format.md)), so the user can scan any team the same way. Its first section, the **Panel**, is the canonical state of the work that the Leader also repeats in every message about it; the rest repeats the Panel's one-line shapes with one line of detail, so the report reads like a deeper Panel. The report is pulled by the user; nobody pushes status to anyone.
 
 > **Herdr App only.** This skill reads the Herdr App: `herdr-app` (window: spaces, tabs, panes) and `hc` (herdr-core: terminals and agents). It never uses the `herdr` CLI of the Herdr terminal multiplexer, which talks to a different session.
 
@@ -50,7 +51,7 @@ Do not parse session transcripts. Never copy secrets or credentials from termina
 
 ## 3. Write the Report
 
-Write the report in the conversation following [report-format.md](references/report-format.md). Judge what matters per [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md) and give context per [Briefing a Change](../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change). When the user named a focus, keep all four sections and the Panel, and expand the focused item.
+Write the report in the conversation following [report-format.md](references/report-format.md). Judge what matters per [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md) and give context per [Briefing a Change](../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change). When the user named a focus, keep the Panel and every block, and expand only the focused item beyond its detail line.
 
 If the report shows `leader.md` diverging from reality and the Leader is running it, update `leader.md` per [`herdr-team-lead`](../herdr-team-lead/SKILL.md) after the report and say so in its closing remarks.
 
@@ -58,9 +59,9 @@ If the report shows `leader.md` diverging from reality and the Leader is running
 
 - [ ] Herdr App environment verified, without the `herdr` terminal CLI; the report covers only the current space.
 - [ ] Facts came from observation first; members were asked only for unobservable facts, only when idle, once each.
-- [ ] The report has the four sections in order, in the user's language, using the status vocabulary of the format.
-- [ ] The Panel shows its non-empty blocks in order (needs you, blocked, in progress, next steps); empty blocks are omitted and named together in one plain closing line without emoji.
+- [ ] The report is the Panel followed by Tabs, Tasks, and PRs, in the user's language, one line per item with at most one detail line, and no counts table or wide tables.
+- [ ] The Panel shows its non-empty blocks in order (needs you, blocked, in progress, next steps, PRs); empty blocks are omitted and named together in one plain closing line without emoji.
 - [ ] "Needs you" lists, numbered, every decision, review the user owes, and scheduled action that needs the user, each with a recommendation; blocks not caused by the user appear only under "Blocked".
-- [ ] Every task shows its real tracker status or none, and its actual next step; every PR shows mergeability, CI, and both review signals.
+- [ ] Every task shows its real tracker status or none, and its actual next step; every PR uses the same PR line in the Panel and the report (repository#number, short name, draft and conflict when true, CI, agent review, the user's review).
 - [ ] Untracked work is visible: tabs and PRs without a task are listed as such, or the report states that no task is registered.
 - [ ] Only inferred facts are marked; a missing review note reads "no record".
