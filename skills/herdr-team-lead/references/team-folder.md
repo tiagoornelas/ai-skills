@@ -49,6 +49,7 @@ The Leader's handoff to itself: the format of the [`handoff`](../../handoff/SKIL
 
 ## Pending Decisions
 - ❓ <decision the user must make, in system terms>
+- ✋ <action only the user can take that the work waits for, in system terms>
 
 ## Decisions & Rationale
 - <decision taken> — <rationale and rejected alternatives>
@@ -66,6 +67,7 @@ The Leader's handoff to itself: the format of the [`handoff`](../../handoff/SKIL
 
 - Omit empty sections. Give every handle its meaning, as the `handoff` skill requires.
 - **Tasks and Issues** holds references only; their status always comes from the tracking tool.
+- **Pending Decisions** is the one place another space can see what this team waits on the user for: [`herdr-inbox`](../../herdr-inbox/SKILL.md) reads it across all teams. Reviews the user owes are not listed here; the inbox reads them from the PRs.
 - `State: concluded` marks the work as finished; the folder stays until the user approves its removal.
 
 ---
@@ -77,6 +79,7 @@ The Leader's handoff to itself: the format of the [`handoff`](../../handoff/SKIL
 | `herdr-team-lead` | `leader.md`, member handoffs | `leader.md` |
 | `herdr-handoff` | `leader.md` (to find the Leader) | `leader.md` (creation or adoption), `handoff-<agent>.md` |
 | `herdr-leader-report` | `leader.md`, member handoffs | Nothing |
+| `herdr-inbox` | `leader.md` of every team | Nothing |
 | `git-cleanup` | `leader.md` `State`, space list (`herdr-app ls`) | Removes a team folder only with explicit user approval |
 
 A missing folder or a partial `leader.md` is a valid state: readers fall back to what they can observe and never fail because of it.
