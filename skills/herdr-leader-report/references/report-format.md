@@ -21,7 +21,7 @@ One emoji per line, at its start, always followed by words; the same emoji alway
 | Emoji | Meaning in the report |
 | :---: | :--- |
 | ✅ | Done, merged, ready to merge, or reviewed |
-| ⏳ | In progress, including work waiting for another stream or task of the team to finish |
+| ⏳ | In progress, including work waiting for another stream or sub-agent of the team to finish |
 | ❓ | A decision the user must make: a choice, with options and a recommendation |
 | 👀 | A review the user owes |
 | ✋ | An action only the user can take, with nothing to choose: log in, validate in a browser, answer an agent's dialog, run a command the agent may not run. Listed only after an agent tried it, always with "only you because: <reason>" |
@@ -45,7 +45,7 @@ An item is **blocked** (⏸️) only when nobody in the conversation can move it
 Not blocked:
 
 - **Waiting for the user** (a decision, a review, a login, a validation): it is a user item (❓, 👀, ✋) in **What's next**.
-- **Waiting for another stream or task of the team to finish**: it is **in progress** (⏳); the dependency goes in its "where it stands" line.
+- **Waiting for another stream or sub-agent of the team to finish**: it is **in progress** (⏳); the dependency goes in its "where it stands" line.
 - **A failing CI, a conflict, or an error an agent can fix**: it is in progress for that agent, or an agent's next step (🤖) when nobody has picked it up yet.
 - **An agent stopped at a dialog** (herdr-core state `blocked`): only the user can answer it, so it is a user action (✋).
 
@@ -113,13 +113,13 @@ The canonical state of the space. It is the first section of the full report, an
 ````
 
 - **First line, always.** The Panel opens with one bold line that answers "do I need to act?": how many items of **What's next** depend on the user and their numbers (❓), or that nothing depends on the user now (✅). It counts every ❓, 👀, and ✋ item and nothing else; open ⚠️ notices are named after the count with their deadline, since they need no answer.
-- **What changed** names the event in system terms ("the billing tab finished the invoice API and opened its PR"), never the member's raw message. When the Panel answers the user's first message after changes they did not see, it lists up to three lines of what changed since their previous message instead (see "Since the user's last message" in [`herdr-team-lead`](../../herdr-team-lead/SKILL.md#2-role)). Omit it when nothing changed.
+- **What changed** names the event in system terms ("the billing tab finished the invoice API and opened its PR"), never the tab agent's raw message. When the Panel answers the user's first message after changes they did not see, it lists up to three lines of what changed since their previous message instead (see "Since the user's last message" in [`herdr-team-lead`](../../herdr-team-lead/SKILL.md#2-role)). Omit it when nothing changed.
 - **What's next** is one numbered queue, so the user can answer by number. It merges what depends on the user with the agents' next steps:
   - **The user's items first**, in bold and prefixed with the word for "you" in the user's language: decisions (❓), reviews the user owes (👀), actions only the user can take (✋, with why only the user can), and tier-2 notices (⚠️, with their deadline), ordered by what each unblocks, each with the Leader's recommendation. The full decision card or notice goes below the Panel when it is new or the user asks for it. After a gap, each item restates its subject in one sentence; never "decision 2" or "option B" alone.
   - **Then the agents' steps** (🤖): the ordered steps that move the objective forward after the current work, from `leader.md` Next Steps reconciled with what was observed, each with who does it and what it waits for. At most five agent steps; the full list lives in `leader.md`.
   - An item appears once: a step that waits for a user item names that item's number ("after 1") instead of repeating it.
 - **Blocked** holds only work that nobody can move now, as defined in [What "blocked" means](#what-blocked-means). Work waiting for the user lives in **What's next**, and work waiting for the team lives in **In progress**, never here.
-- **In progress** holds one row per active work stream, not per task: what it delivers, which tab runs it, and where it stands in one line, including any stream or task of the team it waits for. Finished work leaves the Panel; it shows up in the full report.
+- **In progress** holds one row per active work stream, not per task: what it delivers, which tab runs it, and where it stands in one line, including any stream or sub-agent of the team it waits for. Finished work leaves the Panel; it shows up in the full report.
 - **PRs** lists every PR of the space (opened from its agents' branches or referenced in `leader.md`), one [PR line](#pr-line) each, ordered ❌, 👀, ⏳, ✅, merged last, each open PR followed by its [what appears](#what-appears) line when it has one. It repeats PRs already cited above on purpose: it is the one place to read every PR's state.
 - **Fixed order, no empty blocks.** The blocks always appear in this order. An empty block is omitted, heading included, and the Panel ends with one plain line, without emoji, naming every empty block in the same order ("Nothing next · Nothing blocked · Nothing in progress · No PRs"). When nothing is empty, that line does not appear. The first line is never omitted.
 
@@ -131,17 +131,17 @@ This section is the one home of when the Leader writes to the user about the wor
 
 1. a decision for the user or a tier-2 notice opened;
 2. a delivery is ready, with its [evidence dossier](../../ai-assisted-software-development/references/evidence-dossier.md);
-3. a blocker appeared, including a member `blocked` or in `error`;
+3. a blocker appeared, including a tab agent `blocked` or in `error`;
 4. the scope changed;
 5. the user wrote after changes they had not seen.
 
-**Silence otherwise.** Progress and agent-to-agent exchanges with no consequence for the user (with members, tasks, or other spaces' Leaders, including a question the Leader answered itself) update the Leader silently; they reach the user in the next Panel's "What changed", never in a message of their own. A change the user made in the same exchange (an answer, an item dropped) counts only when it alters other blocks; the user already knows what they just said. When several events arrive close together, they make one message with one Panel.
+**Silence otherwise.** Progress and agent-to-agent exchanges with no consequence for the user (with tab agents, sub-agents, or other spaces' Leaders, including a question the Leader answered itself) update the Leader silently; they reach the user in the next Panel's "What changed", never in a message of their own. A change the user made in the same exchange (an answer, an item dropped) counts only when it alters other blocks; the user already knows what they just said. When several events arrive close together, they make one message with one Panel.
 
 **Layout.** One line on what just changed, in system terms; then the Panel; then, below it, the full decision card or notice for each item that is new.
 
 Omit the Panel when the user is talking with the Leader about something (a question, an explanation, a decision card the user asked to have explained) and nothing changed: repeating an identical Panel only buries the answer. The full report always includes it.
 
-Members never fill that gap with reports of their own: they write to their Leader, and to the user only in a tab where the user has written (the member contract of [`herdr-handoff`](../../herdr-handoff/SKILL.md#3-write-and-start-each-stream)).
+Tab agents never fill that gap with reports of their own: they write to their Leader, and to the user only in a tab where the user has written (the tab agent contract of [`herdr-handoff`](../../herdr-handoff/SKILL.md#3-write-and-start-each-stream)).
 
 ## 4. The Full Report
 
@@ -170,6 +170,6 @@ The report answers "what changed for me and where is each delivery?". It is the 
 
 - **Header**: objective from `leader.md` when present, otherwise inferred and marked; the tracker part shows the epic or main task and its real status, and is dropped when there is none.
 - **Panel**: built per Section 3 from the same gather. Its "What changed" line is left out: the report's own block carries it.
-- **What changed since your last message**: counted from the user's previous message in this conversation, not from the last Panel. At most eight lines, most consequential first: deliveries, decisions closed (including those the user made in a member's tab), notices that proceeded, blockers that appeared or ended, scope changes, and the [what appears](#what-appears) items of every PR opened or merged in that window. Progress with no consequence for the user stays out. When nothing changed, the block is one line saying so.
+- **What changed since your last message**: counted from the user's previous message in this conversation, not from the last Panel. At most eight lines, most consequential first: deliveries, decisions closed (including those the user made in a tab agent's tab), notices that proceeded, blockers that appeared or ended, scope changes, and the [what appears](#what-appears) items of every PR opened or merged in that window. Progress with no consequence for the user stays out. When nothing changed, the block is one line saying so.
 - **Deliveries**: one line per delivery (a PR, or a stream's result when it has no PR) in the tracker scope or referenced by `leader.md`, open first (in merge order when they depend on each other), merged last on one collapsed line. It carries the task reference and its real tracker status (or `⚪ status unavailable` when the tracker cannot be reached, or "no task" for untracked work), the PR, and how many of the five [evidence dossier](../../ai-assisted-software-development/references/evidence-dossier.md) lines are proven for its current head commit (an attestation of an older commit counts as outdated, not proven). The detail line says what the delivery changes for whom and what is left, naming any evidence line that is a no. When no task reference exists anywhere, close the block with `📋 No task registered in any tracker` and a suggestion to register the work with [`report-work`](../../report-work/SKILL.md).
 - **Closing remarks** (optional, at most three bullets): divergences between `leader.md` and reality, and stale tracker statuses worth fixing.

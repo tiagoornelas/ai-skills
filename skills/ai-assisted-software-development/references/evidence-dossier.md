@@ -45,6 +45,7 @@ Each line is a yes or no (✅ or ❌) followed by its proof, in the human's sess
 
 Lines (c)–(e) are attested by a reviewer that did not write the change and starts from a clean context. The same harness and model are fine: independence comes from what the reviewer does not receive (the author's history, reasoning, and conclusions), not from a different engine.
 
+- **It complements the author's self-review and never replaces it.** A delivery reaches the reviewer only with a clean branch-mode verdict from the author's [`agent-self-review`](../../agent-self-review/SKILL.md); without one, it goes back to the author. The reviewer attests lines (c)–(e) and neither redoes nor waives the quality review below contracts that `agent-self-review` owns.
 - **Brief it with the change and the questions, not the answers.** Give it the diff or PR, the issue, the project rules, and the questions of lines (c)–(e). Do not send the author's own lines or conversation history: a reviewer handed a conclusion tends to confirm it.
 - **It reports yes or no with proof for each line**, and runs what it needs to (tests, a real execution) rather than trusting the author's output.
 - **The attestation belongs to one version.** It names the commit it reviewed, and holds only for that commit.
@@ -57,7 +58,7 @@ Lines (c)–(e) are attested by a reviewer that did not write the change and sta
   The note survives the reviewer and any context loss; anyone presenting the delivery again reads it with `git notes --ref=evidence show <commit>`.
 - **When a new review is needed.** Presenting the same commit again reuses its note. Any new commit on the delivery (a fix, a rebase, a merge from the base) needs a new attestation of lines (c)–(e) before the dossier is shown again; until then, the dossier shows the old commit's lines marked as outdated, never as current.
 - **Disagreement goes to the dossier.** When the reviewer's answer differs from the author's, the reviewer's answer is the one shown, with the author's fix or rebuttal on the detail line.
-- In a Herdr App team, the reviewer is a task started by the Leader ([`herdr-handoff`](../../herdr-handoff/SKILL.md#31-tasks)); elsewhere, a subagent per [subagent-delegation.md](subagent-delegation.md).
+- In a Herdr App team, the reviewer is a sub-agent started by the Leader ([`herdr-handoff`](../../herdr-handoff/SKILL.md#31-sub-agents)); elsewhere, a subagent per [subagent-delegation.md](subagent-delegation.md).
 
 ---
 
@@ -65,6 +66,7 @@ Lines (c)–(e) are attested by a reviewer that did not write the change and sta
 
 - [ ] The delivery carried exactly five lines, each a yes or no with a checkable proof, in the human's language and system terms.
 - [ ] Every "no" had a detail line on what is missing and what happens next; nothing unproven was marked yes.
+- [ ] The delivery reached the reviewer only after a clean branch-mode `agent-self-review` verdict from its author; the reviewer complemented that review and did not replace or waive it.
 - [ ] Lines (c)–(e) were attested by a reviewer that did not write the change, started from a clean context, and was briefed with the change and the questions, not the author's answers.
 - [ ] The attestation names the reviewed commit, was stored as an `evidence` git note on it before the reviewer ended, and was redone after any new commit on the delivery.
 - [ ] Every new component in line (b) had been announced before it was built.

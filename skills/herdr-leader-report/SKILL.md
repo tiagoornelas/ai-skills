@@ -11,7 +11,7 @@ description: >-
   Panel format is also the one the Leader shows whenever something changes for
   the user. Gathered
   by observing the Herdr App, git, pull requests, review notes, and the task tracker
-  the team uses, asking members only for what cannot be observed. Meant to be
+  the team uses, asking tab agents only for what cannot be observed. Meant to be
   run by the space's Leader; works in any space, with or without a team
   folder. Built for the Herdr App (herdr-app + hc), not the Herdr terminal
   multiplexer (`herdr` CLI). Triggered strictly when the user asks for the
@@ -39,7 +39,7 @@ Observe first, cheapest sources first; in a large space, gather in parallel with
 | Fact | Source |
 | :--- | :--- |
 | Tabs, agents, harness, status, directory | `herdr-app ls` (that space: tabs in order, terminals, status) and `hc get <terminal>` (`foreground.argv`, `foreground.cwd`) |
-| Objective, members' missions, next steps, pending decisions, task references | `leader.md` and `handoff-*.md` |
+| Objective, tab agents' missions, next steps, pending decisions, task references | `leader.md` and `handoff-*.md` |
 | What an agent did or is waiting for | `hc read <terminal> --lines 40` |
 | Repository and branch per agent | `git -C <agent cwd>` (`rev-parse --show-toplevel`, `branch --show-current`, `remote get-url`) |
 | PRs per branch, and the PRs they depend on | `gh pr list --head <branch> --state all --json number,title,body,url,state,isDraft,mergeable,statusCheckRollup,headRefOid`; dependencies stated in PR bodies |
@@ -53,7 +53,7 @@ Observe first, cheapest sources first; in a large space, gather in parallel with
 
 Do not parse session transcripts. Never copy secrets or credentials from terminal output into the report.
 
-**Asking members.** Only when a fact the report needs cannot be observed, ask through [`herdr-talk`](../herdr-talk/SKILL.md): only `idle` members, one consolidated question each, with a reply rule for a single answer. Never interrupt a `working` or `blocked` member; report the gap instead.
+**Asking tab agents.** Only when a fact the report needs cannot be observed, ask through [`herdr-talk`](../herdr-talk/SKILL.md): only `idle` tab agents, one consolidated question each, with a reply rule for a single answer. Never interrupt a `working` or `blocked` tab agent; report the gap instead.
 
 ## 3. Write the Report
 
@@ -64,7 +64,7 @@ If the report shows `leader.md` diverging from reality and the Leader is running
 ## 4. Success Validation
 
 - [ ] Herdr App environment verified, without the `herdr` terminal CLI; the report covers only the current space.
-- [ ] Facts came from observation first; members were asked only for unobservable facts, only when idle, once each.
+- [ ] Facts came from observation first; tab agents were asked only for unobservable facts, only when idle, once each.
 - [ ] The report is the Panel followed by What changed since your last message and Deliveries, entirely in the user's language (fixed template words included), one line per item with at most one detail line, and no tab list, counts table, or wide tables.
 - [ ] What changed counts from the user's previous message, at most eight lines, and lists every component, permission or secret, business rule, or cost that appeared in that window; anything that appeared without a prior notice or approval is marked ⚠️.
 - [ ] Every delivery shows its task status or "no task", its PR, and how many of its five evidence lines are proven, with any "no" named on its detail line.
