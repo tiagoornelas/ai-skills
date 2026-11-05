@@ -1,6 +1,6 @@
 # Evidence Dossier
 
-> **Central thesis**: the human supervises by evidence, not by approving every step. Each delivery proves five things in five short lines: it should be done, its architecture is sound, no wall was knocked down to build it, it cannot cause a catastrophe, and it was tested and works. An author grading itself tends to approve itself, so the last three lines come from an independent reviewer.
+> **Central thesis**: the human supervises by evidence, not by approving every step. Each delivery proves five things in five short lines: it should be done, its architecture is sound, no wall was knocked down to build it, it cannot cause a catastrophe, and it was tested and works. An author grading itself tends to approve itself, so the last three lines come from an independent reviewer: a fresh context that never saw the author's reasoning.
 
 ---
 
@@ -43,9 +43,9 @@ Each line is a yes or no (✅ or ❌) followed by its proof, in the human's sess
 
 ## 2. The Independent Reviewer
 
-Lines (c)–(e) are attested by a reviewer that did not write the change, preferably running on another model or harness.
+Lines (c)–(e) are attested by a reviewer that did not write the change and starts from a clean context. The same harness and model are fine: independence comes from what the reviewer does not receive (the author's history, reasoning, and conclusions), not from a different engine.
 
-- **Brief it with the change and the questions, not the answers.** Give it the diff or PR, the issue, the project rules, and the questions of lines (c)–(e). Do not send the author's own lines: a reviewer handed a conclusion tends to confirm it.
+- **Brief it with the change and the questions, not the answers.** Give it the diff or PR, the issue, the project rules, and the questions of lines (c)–(e). Do not send the author's own lines or conversation history: a reviewer handed a conclusion tends to confirm it.
 - **It reports yes or no with proof for each line**, and runs what it needs to (tests, a real execution) rather than trusting the author's output.
 - **The attestation belongs to one version.** It names the commit it reviewed, and holds only for that commit.
 - **Record it before ending the reviewer.** Store the five lines, with the reviewer and the commit, as a git note on that commit, then end the reviewer:
@@ -65,6 +65,6 @@ Lines (c)–(e) are attested by a reviewer that did not write the change, prefer
 
 - [ ] The delivery carried exactly five lines, each a yes or no with a checkable proof, in the human's language and system terms.
 - [ ] Every "no" had a detail line on what is missing and what happens next; nothing unproven was marked yes.
-- [ ] Lines (c)–(e) were attested by a reviewer that did not write the change, briefed with the change and the questions, not the author's answers.
+- [ ] Lines (c)–(e) were attested by a reviewer that did not write the change, started from a clean context, and was briefed with the change and the questions, not the author's answers.
 - [ ] The attestation names the reviewed commit, was stored as an `evidence` git note on it before the reviewer ended, and was redone after any new commit on the delivery.
 - [ ] Every new component in line (b) had been announced before it was built.
