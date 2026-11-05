@@ -67,7 +67,7 @@ In **Brief**, name one peer as **lead** and give it the goal stated as a verifia
 1. Check each target with `hc get <target>` (`status.state`). On `blocked` or `error`, do not answer its dialog or force input: report it to the user and skip that peer. `idle`, `done`, and `working` agents can receive a message; a working agent reads it at its next pause.
 2. Send with `hc send <target> <message>` as shown in Section 3, **without `--wait`**, and never with `--force`.
 3. For Brief, prime the partner first ("read the protocol and wait for the lead"), confirm it settled with `hc wait <partner> --timeout 60`, then send to the lead.
-4. If a reply is expected, tell the user what you are waiting for and **end your turn**. Each reply arrives as a new `<hc from=…>` message in your session.
+4. If a reply is expected, **end your turn**; tell the user what you are waiting for only when the user asked for the exchange, since an agent's own coordination waits silently (Section 6). Each reply arrives as a new `<hc from=…>` message in your session.
 
 Do not retry a failed send automatically. A failed or timed-out command does not prove the message was not delivered: inspect `hc read <target> --lines 80` first and report what you find.
 

@@ -64,7 +64,7 @@ A change can pass the first question and still fail the second: a scheduled job 
 | **2. New component or reversible operational change** | Yes to question 2 only, and reversible **including its effects**: a new job, schedule, table, queue, route, secret, permission, or recurring cost; an operational change that can be undone, data included | The agent, after announcing it | A notice **before** it is built: what will appear, why, and "if you do not object by <time>, I proceed". The agent proceeds after that deadline unless the human objects, and records the outcome |
 | **3. Human decision** | Yes to question 1, a business rule, anything that deletes or rewrites production data, or anything irreversible or outward-facing | The human, as a decision card | The card; nothing is built before the answer |
 
-- **Nothing is tier 2 by default.** Every new item, including one found after planning, goes through both questions; tier 3 wins whenever any of its conditions holds. A business rule, or a component that deletes or rewrites production data (a purge job, a retention policy), is always tier 3: turning the component off stops new effects but does not undo the ones already made.
+- **Nothing is tier 2 by default.** Every new item, including one found after planning, goes through both questions; tier 3 wins whenever any of its conditions holds. A business rule, or a component that deletes or rewrites production data (a purge job, a retention policy), is always tier 3: turning the component off stops new effects but does not undo the ones already made. This concerns a component whose purpose is to delete or rewrite data (a purge, a retention policy, a data migration), not the ordinary writes a product feature makes.
 - **Tier 2 is announced, not asked.** The [notice](references/human-facing-communication.md#announcing-before-building) carries no options to choose from; silence is consent once the stated deadline passes. When in doubt between tiers 2 and 3, it is tier 3.
 - **Evidence does not replace the notice.** Proving a delivery afterwards ([evidence-dossier.md](references/evidence-dossier.md)) comes too late for a component the human would have redesigned: tier 2 is announced before building, and every delivery is still proven.
 
@@ -87,7 +87,7 @@ During ordinary work, briefly surface material architectural or scope opportunit
 
 - [ ] The boundary between the Human Layer and Agent Layer was respected, with both questions of the boundary test applied.
 - [ ] Decisions regarding modules, contracts, dependency direction, or DoD behaviors were brought to the human (tier 3).
-- [ ] Anything new that runs, costs, stores data, or holds permissions in production was announced to the human before being built, with a stated deadline, and its outcome recorded (tier 2).
+- [ ] Anything new that runs, costs, stores data, or holds permissions in production was classified by the boundary test before being built: tier-2 items were announced with a stated deadline and their outcome recorded; anything that deletes or rewrites production data or changes a business rule went to the human as a decision card (tier 3).
 - [ ] Every delivery carried the five-line [evidence dossier](references/evidence-dossier.md), with lines (c)–(e) attested by an independent reviewer.
 - [ ] Internal details below contracts were resolved autonomously by the agent with tests and self-review.
 - [ ] No local or unversioned paths were exposed in shared artifacts.
