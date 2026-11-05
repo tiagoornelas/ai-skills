@@ -63,7 +63,7 @@ When `gh` is missing or not authenticated, say the PR part was skipped; never gu
 
 **Attention vs. impact.** Compare each front's share of the user's recorded attention (decisions and updates per day) with its impact rank. Flag a front whose attention rank is two or more places above its impact rank, and a high-impact front with no recorded attention in the window. Attention measured from records misses conversation the Leader did not record: say so once.
 
-**What depends on the user.** One subject, one item, under the [one owner per subject](../herdr-team-lead/references/team-folder.md#2-leadermd) rule (earliest `opened`, then space name), naming the other spaces that raised it; `↪` reference lines are never items. Order the queue by the impact of the front it unblocks, not by age; a record more than a day older than its `Updated` keeps its item and adds *(recorded <n> days ago, may be out of date)*.
+**What depends on the user.** One subject, one item, under the [one owner per subject](../herdr-team-lead/references/team-folder.md#2-leadermd) rule (earliest `opened`, then space name), naming the other spaces that raised it; `↪` reference lines are never items. Order the queue by the impact of the front it unblocks, not by age; when a team's `leader.md` was last updated more than a day ago, its items stay and add *(recorded <n> days ago, may be out of date)*.
 
 ## 4. Write the Output
 

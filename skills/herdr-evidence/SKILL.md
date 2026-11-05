@@ -90,7 +90,7 @@ Entirely in the user's session language, following [human-facing communication](
 ````
 
 - **Verdict first, one line**, chosen from what the cards show:
-  - ✅ "proven on the current version; only your review is left" (every open PR has five ✅ for its current head, base unmoved or moved without touching it, author's review branch-clean);
+  - ✅ "proven on the current version; only your review is left" (every open PR has five ✅ for its current head, the base did not move after the proof, and the author's review is branch-clean);
   - ⚠️ "looks done but is not proven: <the gaps>" (any ❌, outdated note, draft, conflict, failing CI, or base moved after the proof);
   - ⏳ "not done: <what is still running>" (tabs working or PRs not yet opened for a stream);
   - ✅ "delivery proven; objective completion not verifiable" (cards proven but no `leader.md` objective or tracker to check them against).
