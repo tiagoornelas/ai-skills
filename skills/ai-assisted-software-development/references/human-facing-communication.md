@@ -138,13 +138,14 @@ A table of options is fine inside the card when there are three or more options 
 
 ### Announcing before building
 
-A tier-2 item (something that starts to run, cost, store data, or hold permissions in production, and can be undone) is not a decision card: it is a notice the human may object to, sent before anything is built.
+A tier-2 item (something that starts to run, cost, store data, or hold permissions in production, and can be undone together with its effects) is not a decision card: it is a notice the human may object to, sent before anything is built. Only an item the [boundary test](../SKILL.md#4-the-boundary-test) places in tier 2 becomes a notice: a business rule, or anything that deletes or rewrites production data, is always a decision card.
 
 ```markdown
 ⚠️ **Notice: <what will appear in the system, in one line>**
 
-- **What appears:** <component, permission or secret, business rule, or cost>, and what it does in production.
-- **Why:** <the problem it solves> · undo: <how it is removed or turned off>.
+- **What appears:** <component, permission or secret, or cost>, and what it does in production.
+- **Why:** <the problem it solves>.
+- **Undo:** <how it is turned off> · <how its effects are undone: data it writes or changes, and how they are restored or removed>.
 - **If you do not object by <time>, I proceed** with it and record it.
 ```
 

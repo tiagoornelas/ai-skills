@@ -73,9 +73,9 @@ An open PR that adds something to the system carries one indented line below its
   🏗️ <Creates>: <component> · <Permission>: <permission or secret> · <Rule>: <business rule change> · <Cost>: <recurring cost>
 ```
 
-- Example: `🏗️ Creates: daily 2am schedule + internal purge route · Rule: expired sessions are deleted in batches`.
+- Example: `🏗️ Creates: daily 2am schedule + internal purge route · Rule: expired sessions are deleted in batches` (the rule and the deletion were tier-3 decisions the user answered).
 - Only the four categories: a **component** (job, schedule, table, queue, route, service), a **permission or secret**, a **business rule**, a **cost**. Internal details never appear here.
-- Omit the line when the PR adds nothing in these categories, and omit empty categories. Each item was announced before it was built (tier 2) or approved with the split; one that was not is a ⚠️ attention point in "What changed".
+- Omit the line when the PR adds nothing in these categories, and omit empty categories. Each item was approved with the split, announced before it was built (tier 2), or decided by the user (tier 3: every business rule and anything that deletes or rewrites data); one that was not is a ⚠️ attention point in "What changed".
 
 ## 3. The Panel
 
