@@ -5,7 +5,7 @@ description: >-
   or of a space the user names, is really done and proven: a one-line verdict first, the objective,
   then one card per pull request with its state, author, whether the proven
   version is the PR's current version and whether the base branch moved after
-  the proof, and the five evidence dossier lines in full, each with the
+  the proof, and the six evidence dossier lines in full, each with the
   artifact that proves it (link, command and output excerpt, file of the real
   run), with what is missing and who acts under every failing line; then the
   team's facts (tabs working, uncommitted files) and any contradiction between
@@ -54,16 +54,18 @@ Do not parse session transcripts. Never copy secrets or credentials from termina
 
 ## 3. Judge Each Line
 
-For every PR, take the five lines from its evidence note and judge each per the dossier's [artifact rule](../ai-assisted-software-development/references/evidence-dossier.md#proof-is-an-artifact-not-prose):
+For every PR, take the six lines from its evidence note and judge each per the dossier's [artifact rule](../ai-assisted-software-development/references/evidence-dossier.md#proof-is-an-artifact-not-prose):
 
 - ✅ only when the line's artifact **proves that line's claim** and is reachable (a local file exists; a link is well-formed). An artifact that exists but does not prove the claim is ❌ "artifact does not prove it":
   - (a) links the issue, request, or decision that motivates the change, and the scope conclusion for what was left out;
-  - (b) a module map or diff stat that shows the modules named, and the notice of each new component;
+  - (b) a module map or diff stat that shows the modules named, the notice of each new component, and the list of new structures;
   - (c) the diff or check of the contract, rule, and test files it names;
-  - (d) names the affected flows and data traced in the diff, and a revert or rollback path that was checked (run, or dry-run, against this change), not a bare command;
-  - (e) the output of the checks and the file or log of a real run of the attested commit.
+  - (d) for each new structure, the existing sibling it follows (path), the search that found none (command and result), or the link to a human decision recorded before the change approving the deviation;
+  - (e) names the affected flows and data traced in the diff, and a revert or rollback path that was checked (run, or dry-run, against this change), not a bare command;
+  - (f) the output of the checks and the file or log of a real run of the attested commit.
 - ❌ when the line is an assertion without an artifact, says "no", cites a file that is missing, or is absent from the note ("no record in the note").
-- Line (e) is ❌ when its real run executed a commit other than the proven one; name the version it ran on. When the validation environment is observable and runs another commit, say so.
+- Line (f) is ❌ when its real run executed a commit other than the proven one; name the version it ran on. When the validation environment is observable and runs another commit, say so.
+- **A five-line note** predates line (d): read its (c), (d), (e) as (c), (e), (f), and show (d) as ❌ "no record (older note format)".
 - **No note on this machine** reads "no record on this machine", never "not reviewed": its absence here proves nothing.
 - **A note only on an older commit** reads "outdated: proves `<X>`, the PR is at `<Y>`"; its lines are shown greyed as history, and the card's lines count as ❌.
 - **Author's review**: an incremental self-review, or one on an ancestor of the head, does not satisfy the branch-clean gate; say which it is.
@@ -86,8 +88,9 @@ Entirely in the user's session language, following [human-facing communication](
    ✅ (a) <Why>: <problem> · <left out>: <what> — <artifact>
    ✅ (b) <Architecture>: <touches> · <new> — <artifact>
    ✅ (c) <Nothing knocked down>: <what was checked> — <artifact> · <reviewer>
-   ✅ (d) <No catastrophe>: <data, undo> — <artifact> · <reviewer>
-   ❌ (e) <Works>: <checks> · <real run on X, where> — <artifact>
+   ✅ (d) <Nothing built on the side>: <each new structure follows what> — <artifact> · <reviewer>
+   ✅ (e) <No catastrophe>: <data, undo> — <artifact> · <reviewer>
+   ❌ (f) <Works>: <checks> · <real run on X, where> — <artifact>
       → 🤖 <who>: <what closes it>   or   → ✋ <you>: <action> (<only you because: reason>)
 
 <Team>: <tabs working, or none> · <uncommitted files per worktree, or nothing uncommitted>
@@ -96,14 +99,14 @@ Entirely in the user's session language, following [human-facing communication](
 ````
 
 - **Verdict first, one line**, chosen from what the cards show:
-  - ✅ "proven on the current version; only your review is left" (every open PR has five ✅ for its current head, the base did not move after the proof, and the author's review is branch-clean);
+  - ✅ "proven on the current version; only your review is left" (every open PR has six ✅ for its current head, the base did not move after the proof, and the author's review is branch-clean);
   - ⚠️ "looks done but is not proven: <the gaps>" (any ❌, outdated note, draft, conflict, failing CI, or base moved after the proof);
   - ⏳ "not done: <what is still running>" (tabs working or PRs not yet opened for a stream);
   - ✅ "delivery proven; objective completion not verifiable" (cards proven but no `leader.md` objective or tracker to check them against).
 - **CI** is the worst state among the PR's checks: failing > running > cancelled > ok; `—` when it has none.
 - **Closing line**: the one next action when it is the user's; when nothing is, say so plainly and name the agents' next step.
 - **One card per PR**, open PRs first, merged PRs collapsed into one final line with their proven state. A stream without a PR gets a card with its branch and head instead of the PR line.
-- **The five lines always in full**, each with its artifact as it appears in the note (link, `command` → output excerpt, local path). Never a bare "5/5" or "4 of 5".
+- **The six lines always in full**, each with its artifact as it appears in the note (link, `command` → output excerpt, local path). Never a bare count such as "6/6" or "4 of 6".
 - **Base moved after the proof** names what moved it and who authored it, so the user knows whether to ask for a new proof.
 - **Team facts** come last: tabs still working, uncommitted files per worktree, and any contradiction with `leader.md` (a next step already done, a tab gone, a PR merged that it still says to follow).
 - Situate every term in the product, per [Briefing a Change](../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change); never relay an agent's raw words.
@@ -114,7 +117,7 @@ Entirely in the user's session language, following [human-facing communication](
 - [ ] Nothing was started, run, fixed, written, merged, or messaged.
 - [ ] The output opened with one verdict line, then the objective, then one card per PR (or stream without PR), then team facts and contradictions with `leader.md`.
 - [ ] Each card showed state, CI, conflict, author, the user's review, the proven version against the current PR head, and whether the base moved after the proof, with who moved it.
-- [ ] Each card showed all five lines in full with their artifacts; no count stood in for them; lines without an artifact, with an artifact that does not prove their claim, missing from the note, or with a real run of another commit were ❌, naming the version it ran on.
+- [ ] Each card showed all six lines in full (a five-line note mapped to the new letters, its (d) as no record) with their artifacts; no count stood in for them; lines without an artifact, with an artifact that does not prove their claim, missing from the note, or with a real run of another commit were ❌, naming the version it ran on.
 - [ ] Every ❌ carried what is missing and who acts; ✋ only with why only the user can.
 - [ ] A missing note read "no record on this machine"; a note on an older commit read "outdated: proves X, PR is at Y"; an incremental or ancestor self-review did not count as branch-clean.
 - [ ] CI showed the worst check state; an unreachable tracker read "status unavailable"; the closing line named the user's next action or said nothing depends on them.
