@@ -48,11 +48,15 @@ The Leader's handoff to itself: the format of the [`handoff`](../../handoff/SKIL
 1. <ordered intent, not progress reports>
 
 ## Pending Decisions
-- ❓ <decision the user must make, in system terms>
-- ✋ <action only the user can take that the work waits for, in system terms>
+- ❓ <decision the user must make, in system terms> · <why it is the user's> · <easy | hard>
+- ⚠️ <tier-2 notice: what will appear in the system> · proceeds <ISO date-time> unless the user objects
+- ✋ <action only the user can take that the work waits for, in system terms> · only the user because: <reason>
 
 ## Decisions & Rationale
 - <decision taken> — <rationale and rejected alternatives>
+
+## Glossary
+- **<term members use>** — <what it is and where it lives in the product, in one sentence>
 
 ## Verified vs. Assumed
 - ✅ <verified fact and method>
@@ -67,6 +71,8 @@ The Leader's handoff to itself: the format of the [`handoff`](../../handoff/SKIL
 
 - Omit empty sections. Give every handle its meaning, as the `handoff` skill requires.
 - **Tasks and Issues** holds references only; their status always comes from the tracking tool.
+- **Glossary** holds at most ten terms from the members' vocabulary that reached the user, each situated in the product. It is how the Leader re-situates a term the same way every time; drop a term once it stops appearing to make room for a new one.
+- A tier-2 notice stays under **Pending Decisions** until its deadline or the user's answer, then moves to **Decisions & Rationale** with its outcome (proceeded, or turned into a decision).
 - **Pending Decisions** is the one place another space can see what this team waits on the user for: [`herdr-inbox`](../../herdr-inbox/SKILL.md) reads it across all teams. Reviews the user owes are not listed here; the inbox reads them from the PRs.
 - `State: concluded` marks the work as finished; the folder stays until the user approves its removal.
 

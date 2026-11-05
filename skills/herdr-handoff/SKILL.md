@@ -68,7 +68,13 @@ For **each new agent that will write code**, create a separate Git worktree, eve
 
 Read [`../handoff/SKILL.md`](../handoff/SKILL.md) and apply its **Document Content** and **Write and Deliver** sections, except that files go to the team folder `~/.herdr-teams/<space-id>/` instead of the temporary directory. Write one handoff file per member, named `handoff-<agent-name>.md`, with that stream's mission as its Next Session Goal; a new Leader's handoff is that team's `leader.md`, in the format of [team-folder.md](../herdr-team-lead/references/team-folder.md). For a worktree stream, set Source to its actual worktree path and branch.
 
-Every member's handoff names its Leader's address and states that decisions and blockers go to the Leader through `herdr-talk`; list `herdr-talk` in its Recommended Skills, and list `herdr-handoff` with the note that it applies only to starting tasks (Section 3.1), since only the Leader creates members. A Leader's handoff lists `herdr-team-lead` as its lead skill.
+Every member's handoff names its Leader's address and states the **member contract**; list `herdr-talk` in its Recommended Skills, and list `herdr-handoff` with the note that it applies only to starting tasks (Section 3.1), since only the Leader creates members. A Leader's handoff lists `herdr-team-lead` as its lead skill. The member contract:
+
+- **The Leader owns the space's state.** Decisions, blockers, and deliveries go to the Leader through `herdr-talk`, never as a report to the user.
+- **Announce before building.** Anything that would start to run, cost, store data, or hold permissions in production (tier 2 of [the boundary test](../ai-assisted-software-development/SKILL.md#4-the-boundary-test)) and was not in the approved split goes to the Leader before it is built; tier-3 decisions go to the Leader for the user, as always.
+- **The user may talk to any tab.** When the user decides something or acts in the member's tab, the member notifies the Leader at once (`herdr-talk` Notify: "the user decided X in this tab"), so the Leader never asks for it again.
+- **Write for the user only where the user writes.** In its own tab, the member addresses the user only after the user has written there; otherwise its reports go to the Leader.
+- **Deliver with evidence.** A delivery to the Leader carries the author lines of the [evidence dossier](../ai-assisted-software-development/references/evidence-dossier.md) ((a) why, (b) architecture) and the `agent-self-review` verdict; the Leader obtains lines (c)–(e) from an independent reviewer.
 
 Every code-writing stream's Recommended Skills always lists the delivery workflow, whatever the mission: `coding` for code changes, `agent-self-review` before delivery, `commit` for every commit, `github-pull-request` for opening a pull request, and `git-branch` with the note that the stream's branch already exists and the skill applies only to any additional branch. This keeps branches, commits, and pull requests from new agents within the standard.
 
@@ -120,7 +126,7 @@ Open with one plain sentence per stream: what it will deliver for the user's goa
 
 - [ ] Herdr App environment (`HC_TERMINAL_ID`, `hc`, `herdr-app`) and CLI syntax were verified; the `herdr` terminal CLI was not used; the calling tab stayed untouched, except for a `Leader` rename and move during adoption.
 - [ ] New work got a space whose first tab is a `Leader` running `herdr-team-lead`, with the initial shell tab closed; a space without `leader.md` was adopted per Section 1.1, asking the user when the Leader was ambiguous or was writing code.
-- [ ] Handoff files and `leader.md` were written to the team folder keyed by space ID; every member's handoff names its Leader and lists `herdr-talk` and `herdr-handoff` (for tasks).
+- [ ] Handoff files and `leader.md` were written to the team folder keyed by space ID; every member's handoff names its Leader, states the member contract (Leader owns state, announce before building, notify the Leader of the user's decisions in the member's tab, write for the user only where the user writes, deliver with evidence), and lists `herdr-talk` and `herdr-handoff` (for tasks).
 - [ ] Every new code writer has its own Git worktree unless the user explicitly requested reuse.
 - [ ] Branch naming and base follow `git-branch`, without switching the calling checkout; mandatory project instructions were respected.
 - [ ] Every code-writing stream's handoff lists `coding`, `agent-self-review`, `commit`, `github-pull-request`, and `git-branch` with absolute `SKILL.md` paths.
