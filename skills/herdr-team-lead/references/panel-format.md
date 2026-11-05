@@ -57,7 +57,7 @@ Every PR is written the same way, in the Panel and in any message about the spac
 <emoji> <repo>#<number> · <short name> · [draft · ][conflict · ]CI <state> · agent <state> · you <state>
 ```
 
-- **`<repo>`** is the repository name without its owner (`calculojuridico-web#212`). **`<short name>`** is two to four words naming what the PR changes ("invoice API", "billing screen").
+- **`<repo>`** is the repository name without its owner (`web-app#212`). **`<short name>`** is two to four words naming what the PR changes ("invoice API", "billing screen").
 - **`draft`** and **`conflict`** appear only when true.
 - **CI**: `ok`, `failing`, `running`, or `—` (no checks).
 - **agent** (the agent's self-review note on the PR head): `ok`, or `—` for no record.

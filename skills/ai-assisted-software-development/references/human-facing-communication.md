@@ -170,10 +170,10 @@ Before:
 
 After:
 
-> ❓ **Decision: should downloading the calculation report keep calling the CJ directly, outside the gateway?**
+> ❓ **Decision: should downloading the calculation report keep calling the billing system directly, outside the gateway?**
 >
-> - **Context:** we decided that all access to the CJ goes through the gateway. The report download is the one place that still calls the CJ REST API directly, because the MCP token does not work on that route.
-> - **Options:** **A.** Record it as a documented exception to that rule: one line, nothing else changes. **B.** Move it into the gateway: the gateway then owns every CJ access, but this touches another developer's code and grows the first delivery. **C.** Leave it as is: the written rule stays false.
+> - **Context:** we decided that all access to the billing system goes through the gateway. The report download is the one place that still calls the billing system's REST API directly, because the MCP token does not work on that route.
+> - **Options:** **A.** Record it as a documented exception to that rule: one line, nothing else changes. **B.** Move it into the gateway: the gateway then owns every billing-system access, but this touches another developer's code and grows the first delivery. **C.** Leave it as is: the written rule stays false.
 > - **Recommendation:** A now, B as a follow-up task, because it keeps the rule honest without delaying the delivery.
 > - **If you do not decide now:** the first delivery's PRs stay in draft.
 > - **Reply with:** A, B, or C.
@@ -186,9 +186,9 @@ Before (vocabulary of whoever worked in the code):
 
 After (briefed for the directing architect):
 
-> **Where:** in the Voga AI chat embedded in the CJ, the backend streams each answer in pieces while the AI writes it.
+> **Where:** in the AI assistant chat embedded in the web app, the backend streams each answer in pieces while the AI writes it.
 >
-> **Problem:** when something fails mid-answer (a file too large, an unsupported file type, the token limit, an internal agent failure), the backend sends an error event with a message already written in Portuguese for the user. The frontend ignored that event: the user saw the answer simply stop, with no explanation.
+> **Problem:** when something fails mid-answer (a file too large, an unsupported file type, the token limit, an internal agent failure), the backend sends an error event with a message already written for the user in their language. The frontend ignored that event: the user saw the answer simply stop, with no explanation.
 >
 > **Decision and trade-off:** show the backend's message as is, instead of a generic frontend message. It is safe because the backend already writes it for end users; the cost is that wording changes now depend on the backend team.
 >
