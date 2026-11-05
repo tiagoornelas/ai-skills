@@ -125,7 +125,19 @@ The canonical state of the space. It is the first section of the full report, an
 
 ### When to Show It
 
-Show the Panel only when something changed **for the user** since the last Panel they saw: a decision or tier-2 notice opened, a delivery is ready, a blocker appeared, or the scope changed (see Coordinate Members in [`herdr-team-lead`](../../herdr-team-lead/SKILL.md#5-coordinate-members)), and when answering the user's first message after changes they had not seen. Agent-to-agent traffic and progress update the Leader silently; they reach the user in the next Panel's "What changed", not in a Panel of their own. A change the user made in the same exchange (an answer, an item dropped) counts only when it alters other blocks; the user already knows what they just said.
+This section is the one home of when the Leader writes to the user about the work, and how that message is laid out; other skills link here.
+
+**Triggers.** The Leader writes to the user, with the Panel, only when one of these happened since the last Panel the user saw:
+
+1. a decision for the user or a tier-2 notice opened;
+2. a delivery is ready, with its [evidence dossier](../../ai-assisted-software-development/references/evidence-dossier.md);
+3. a blocker appeared, including a member `blocked` or in `error`;
+4. the scope changed;
+5. the user wrote after changes they had not seen.
+
+**Silence otherwise.** Progress and agent-to-agent exchanges with no consequence for the user (with members, tasks, or other spaces' Leaders, including a question the Leader answered itself) update the Leader silently; they reach the user in the next Panel's "What changed", never in a message of their own. A change the user made in the same exchange (an answer, an item dropped) counts only when it alters other blocks; the user already knows what they just said. When several events arrive close together, they make one message with one Panel.
+
+**Layout.** One line on what just changed, in system terms; then the Panel; then, below it, the full decision card or notice for each item that is new.
 
 Omit the Panel when the user is talking with the Leader about something (a question, an explanation, a decision card the user asked to have explained) and nothing changed: repeating an identical Panel only buries the answer. The full report always includes it.
 

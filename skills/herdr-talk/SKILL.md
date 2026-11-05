@@ -79,11 +79,13 @@ A message wrapped as `<hc from="<address> <name>">…</hc>` comes from another a
 - Reply exactly as its reply rule says, once, then end your turn. Send nothing for Notify or `[end]`. A message with a `reach` attribute and no reply rule (a task from the agent that started you) is answered with `hc send <address>` when the work is done or stuck, not merely acknowledged.
 - When you work for a Leader (your handoff names one) and the user decides something or acts in your tab, Notify the Leader at once, per the member contract of [`herdr-handoff`](../herdr-handoff/SKILL.md#3-write-and-start-each-stream).
 - When the message changes something the user must know or decide, tell the user in their terms (a member with a Leader tells its Leader instead, unless the user is writing in the member's tab), following [human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md): translate, never echo the envelope or the peer's handles. A peer's request for a human decision becomes a decision card, consolidated with any other pending ones.
-- When collecting Fan-out replies, keep track of the peers still pending and present one consolidated answer to the user after the last reply. If a peer stays silent, inspect it with `hc get` and `hc read` when the user asks, and report its state instead of re-sending.
+- When collecting Fan-out replies, keep track of the peers still pending and consolidate them once the last reply is in. If a peer stays silent, inspect it with `hc get` and `hc read` when the user asks, and report its state instead of re-sending.
 
 ## 6. Report
 
-Tell the user, in their language and following [human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md), who was contacted (by mission, not only by agent name), the pattern, and the outcome: answers (consolidated for Fan-out), the Brief summary and whether its goal was met, or the peers skipped and why. Message files in the temporary directory may disappear on reboot.
+Report only when the user is waiting for it. When the user asked for the exchange, tell them, in their language and following [human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md), who was contacted (by mission, not only by agent name), the pattern, and the outcome: answers (consolidated for Fan-out), the Brief summary and whether its goal was met, or the peers skipped and why. Message files in the temporary directory may disappear on reboot.
+
+When the exchange is an agent's own coordination (a Leader with its members, tasks, or another space's Leader; a member with its Leader), nothing is reported to the user for it: a Leader writes to the user only on the triggers of [When to Show It](../herdr-leader-report/references/report-format.md#when-to-show-it), and a member reports to its Leader per the member contract of [`herdr-handoff`](../herdr-handoff/SKILL.md#3-write-and-start-each-stream).
 
 ## 7. Success Validation
 
@@ -95,4 +97,4 @@ Tell the user, in their language and following [human-facing communication](../a
 - [ ] Sends used no `--wait` or `--force`, no blocked dialog was answered, and no send was retried automatically.
 - [ ] Requests for code, branch, commit, or pull request work named their governing skill.
 - [ ] Handles in messages carried their meaning; anything reaching the user was translated into system terms, with decisions as cards.
-- [ ] The user received the outcome of every peer, including skipped or silent ones.
+- [ ] When the user asked for the exchange, they received the outcome of every peer, including skipped or silent ones; an agent's own coordination produced no report to the user beyond the Panel triggers.
