@@ -46,7 +46,7 @@ Observe first, cheapest sources first; in a large space, gather in parallel with
 | Reviewed by the agent | a `self-review` git note on the PR head, or on an ancestor after the merge-base |
 | The user's review and its recommendation | `git notes --ref=human-review show <PR head>` |
 | What a PR adds to the system (component, permission or secret, business rule, cost) | the PR body and diff (new jobs, schedules, migrations, routes, secrets, IAM, infrastructure files), checked against the notices and approvals in `leader.md` |
-| Evidence of each delivery | the [evidence dossier](../ai-assisted-software-development/references/evidence-dossier.md) the Leader presented in this conversation; without it, `—` (no record) |
+| Evidence of each delivery | `git notes --ref=evidence show <PR head>` ([evidence dossier](../ai-assisted-software-development/references/evidence-dossier.md#2-the-independent-reviewer)); a note only on an older commit of the branch counts as outdated, and no note reads `—` (no record) |
 | What changed since the user's last message | this conversation from the user's previous message on, `leader.md` Decisions & Rationale, and PRs opened or merged in that window |
 
 **Tasks, tool-agnostic.** Start from the references in `leader.md`. Without them, take keys and links from PR bodies, branch names, and commit subjects. Read each task's current status, and its siblings under the same epic, from whatever tracker those references point to, through the tools the harness can reach (a CLI such as `gh`, or a connected integration). A task whose tracker cannot be reached is listed with its reference and no status, never a guessed one. Record which tabs and PRs have no task reference: the report shows untracked work explicitly.
