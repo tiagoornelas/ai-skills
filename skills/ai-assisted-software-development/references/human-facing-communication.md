@@ -32,7 +32,7 @@ The right column is not forbidden; it is **not self-explanatory**. Every item in
 
 1. **Name things by what they are.** Describe a PR, ticket, ADR, method, or label by its content or role in the system. A handle may follow in parentheses as a lookup key or link: "the PR that moves the calculation report download into the gateway (#171)", never "#171".
 2. **No sentence depends on a handle.** "With A, #171 will be rebased again" fails the test; "With A, the report PR needs one more update on top of the previous one; nothing changes for you" passes.
-3. **Labels live for one message.** A label coined in a message (`P3`, `option B`) may be reused only inside that same message. In a later message, repeat its meaning: "P3 (fetch cases one by one through the show route)".
+3. **Labels live for one message.** A label coined in a message (`P3`, `option B`) may be reused only inside that same message. In a later message, repeat its meaning: "P3 (fetch cases one by one through the show route)". When the human returns after a gap, restate each pending item in one sentence of its own instead of citing "decision 2" or "option B".
 4. **Code identifiers only when they matter.** Say what the code does ("the tool that downloads the calculation report"); add the identifier in parentheses only when the human will need it to look something up.
 5. **Status in terms of the goal.** Report what is done and what is missing for the human's objective. Hashes, stack order, test counts, and pane IDs go below, in a details block, or only on request.
 6. **Translate relays.** When passing on what a peer agent said, rewrite it for the human; never paste the peer's envelope or wording.
@@ -53,6 +53,7 @@ The human's job is to judge the **decisions**, not to learn the code. What matte
 3. **Decisions and trade-offs.** What was chosen, what alternatives were considered and why they lost, and what the choice commits the system to (a new rule, a dependency, a maintenance commitment, a behavior users will now see). This is where most of the words go.
 4. **Risks and impact.** Where the change can break or surprise: which flows and users are affected, what was not verified (for example tested only in unit tests, not in the browser), and how the human can check it.
 5. **The solution.** How it works, at the level of modules, boundaries, responsibilities, and dependency direction, with general programming terms used freely. Internal mechanics go here only when they explain a decision or a risk.
+6. **The evidence.** A delivery closes with its five-line [evidence dossier](evidence-dossier.md): why do it, architecture, no wall knocked down, no catastrophe, tested and works, each a yes or no with proof.
 
 A change with nothing to decide still follows the order: it says plainly that the decisions were routine Agent Layer choices and moves on to impact.
 
@@ -89,7 +90,7 @@ Emojis help the human scan a message and spot what needs attention. They are mar
 | ⚠️ | Attention point: a risk, surprise, or side effect the human should notice. |
 | ❓ | Decision the human must make: a choice between options (opens a decision card). |
 | 👀 | Review the human owes. |
-| ✋ | Action only the human can take, with nothing to choose: log in, validate in a browser, grant access, answer an agent's dialog. Written as steps, not options. |
+| ✋ | Action only the human can take, with nothing to choose: log in, validate in a browser, grant access, answer an agent's dialog. Written as steps, not options. Raised only after the agent tried it itself, and always with one line saying why only the human can: "only you because: <personal credential · account permission · production decision · …>". |
 | 🤖 | Step an agent takes, without the human. |
 | ⏸️ | Blocked: waiting for something neither the human nor any agent can do now (a time to pass, metrics to settle, another team or a third party). Always says what it waits for and when or by whom it ends. |
 | 🔴 🟡 🟢 | Severity of a finding: critical, warning, suggestion. |
@@ -112,7 +113,9 @@ Skills that define their own legend (the DoD status legend in `human-review`, th
 
 ### Ask less
 
-- **Decide what is yours.** Agent Layer choices and reversible, in-scope operational steps (notifying a peer agent, running a check, updating a note) are not questions: do them and report them. Ask only for Human Layer decisions or for actions that are irreversible or outward-facing.
+- **Decide what is yours.** Agent Layer choices and reversible, in-scope operational steps (notifying a peer agent, running a check, updating a note) are not questions: do them and report them. Ask only for Human Layer decisions or for actions that are irreversible or outward-facing (tier 3 of [the boundary test](../SKILL.md#4-the-boundary-test)); a new component or reversible operational change in production is announced, not asked (tier 2, [notice](#announcing-before-building)).
+- **Check before asking.** Before asking a decision or an action, confirm it is still open: the PR may be merged, the human may have decided it in another tab or space, the agent may already have done it. Asking again for what is done costs the human more than one look costs the agent.
+- **Ask once.** A decision is asked again only when something changed since it was asked, and the new card opens by saying what changed.
 - **Never make the human the courier.** If another agent must act, contact it yourself (for example via herdr-talk) instead of asking the human to carry the message, and say that you did.
 - **Never park a question at the end of a status report.** A decision opens the message or gets its own message.
 
@@ -123,6 +126,7 @@ Several decisions may share a message. What matters is that each one is explaine
 ```markdown
 ❓ **Decision: <the question in one line, in system terms>**
 
+- **Why it is yours:** <one line: contract · business rule · irreversible · outward-facing> · <easy: reversible, low cost of a wrong answer | hard: costly or impossible to undo>
 - **Context:** where this sits in the product, what happens today, and what changed that requires a choice (1–3 sentences, no bare handles).
 - **Options:** for each, what changes in the system or for users, what it costs, and what it commits the system to.
 - **Recommendation:** <option>, because <reason in the human's terms>.
@@ -132,12 +136,26 @@ Several decisions may share a message. What matters is that each one is explaine
 
 A table of options is fine inside the card when there are three or more options or several criteria.
 
+### Announcing before building
+
+A tier-2 item (something that starts to run, cost, store data, or hold permissions in production, and can be undone) is not a decision card: it is a notice the human may object to, sent before anything is built.
+
+```markdown
+⚠️ **Notice: <what will appear in the system, in one line>**
+
+- **What appears:** <component, permission or secret, business rule, or cost>, and what it does in production.
+- **Why:** <the problem it solves> · undo: <how it is removed or turned off>.
+- **If you do not object by <time>, I proceed** with it and record it.
+```
+
+Give the human a real chance to see it: a deadline in their working hours, at least one hour away. At the deadline without an objection, proceed and record it where the team keeps its decisions; on an objection, it becomes a decision card.
+
 ### Several decisions
 
 - Open with a short list of the decisions in the message, one line each, so the human sees the whole set before the details. Order them by what each one unblocks.
 - When one decision depends on another, say so and condition it explicitly ("if you choose A above, then..."), with a recommendation for each branch that matters.
 - Never trade explanation for count: if a message cannot explain every decision properly, explain fewer and list the rest as coming next.
-- When several agents raise decisions for the same human, one coordinating agent consolidates them before they reach the human, removing duplicates and ordering them by what each one unblocks.
+- When several agents raise decisions for the same human, one coordinating agent consolidates them before they reach the human, removing duplicates and ordering them by what each one unblocks. One subject is one card with one owner, even across teams: whoever finds the same question already open elsewhere refers to that card instead of opening another.
 
 ---
 
