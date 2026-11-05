@@ -1,24 +1,24 @@
-# Report Format
+# Panel Format
 
-> **Central thesis**: the user should understand the state of the work at a glance, and know in its first line whether anything depends on them. Whenever that state changes for the user, the Leader shows the same **Panel**: a first line saying what depends on the user, then up to four short blocks in a fixed order (what's next, with the user's items first; what is blocked; what is in progress; the PRs). The full report does not repeat the Panel deeper: it is the Panel plus what changed and what appeared in the system since the user's last message, and the state of each delivery with its evidence. Never a dump of fields.
+> **Central thesis**: the user should understand the state of the work at a glance, and know in its first line whether anything depends on them. Whenever that state changes for the user, the Leader shows the same **Panel**: a first line saying what depends on the user, then up to four short blocks in a fixed order (what's next, with the user's items first; what is blocked; what is in progress; the PRs). Never a dump of fields. The proof of each delivery is not part of the Panel: the user pulls it with [`herdr-evidence`](../../herdr-evidence/SKILL.md).
 
 ---
 
 ## 1. Writing Rules
 
 - **The user's session language, end to end**, with standard technical terms in English (*pull request*, *merge*, *CI*, *draft*). Every fixed word in the templates below is a placeholder, not a literal: headings, block names, the first line, the closing line of empty blocks, and the words of the PR line (`agent`, `you`, `ok`, `pending`, `changes`, `conflict`, `merged`). The English words in the templates and examples mark where each word goes; the output always translates them, so a user speaking another language never sees `agent ok · you pending` or `Nothing blocked` in English.
-- **One line per item.** Every item, in the Panel and in the report, is one scannable line: a status emoji, a short identifier, and `·`-separated facts. Detail goes on at most one indented line below it, and only in the full report; the one exception is a PR's [what appears](#what-appears) line, which the Panel shows too.
+- **One line per item.** Every item in the Panel is one scannable line: a status emoji, a short identifier, and `·`-separated facts. The one indented line allowed is a PR's [what appears](#what-appears) line.
 - **System terms, not handles.** Apply [human-facing communication](../../ai-assisted-software-development/references/human-facing-communication.md): name each tab by its role, each task by what it delivers, each PR by what it changes. A PR number or task key appears only as a lookup key next to a short name.
-- **Context for the directing architect.** Write the objective and every detail line per [Briefing a Change](../../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change): situate each part of the product before naming it, and say what changes for whom rather than which mechanism changed.
+- **Context for the directing architect.** Write every item per [Briefing a Change](../../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change): situate each part of the product before naming it, and say what changes for whom rather than which mechanism changed.
 - **Human Layer first.** Per [`ai-assisted-software-development`](../../ai-assisted-software-development/SKILL.md), decisions, reviews the user owes, and production risks lead; test counts, commit lists, and file names stay out unless they block something.
 - **Mark only what is uncertain.** An inferred fact gets *(inferred)* in italics; observed facts carry no marker. A missing review note reads "no record" (`—` in a PR line), never "not reviewed": its absence on this machine proves nothing.
 - **Directing-architect test.** Each block must make sense to someone who knows the product but not its code, arriving from another tab two hours later.
 
 ## 2. Status Vocabulary
 
-One emoji per line, at its start, always followed by words; the same emoji always means the same thing. The report uses the shared vocabulary of [human-facing communication](../../ai-assisted-software-development/references/human-facing-communication.md#4-emojis-as-signals), including its **who acts** markers, with these meanings in a space:
+One emoji per line, at its start, always followed by words; the same emoji always means the same thing. The Panel uses the shared vocabulary of [human-facing communication](../../ai-assisted-software-development/references/human-facing-communication.md#4-emojis-as-signals), including its **who acts** markers, with these meanings in a space:
 
-| Emoji | Meaning in the report |
+| Emoji | Meaning in the Panel |
 | :---: | :--- |
 | ✅ | Done, merged, ready to merge, or reviewed |
 | ⏳ | In progress, including work waiting for another stream or sub-agent of the team to finish |
@@ -51,7 +51,7 @@ Not blocked:
 
 ### PR Line
 
-Every PR, in the Panel and in the report, is written the same way:
+Every PR is written the same way, in the Panel and in any message about the space:
 
 ```text
 <emoji> <repo>#<number> · <short name> · [draft · ][conflict · ]CI <state> · agent <state> · you <state>
@@ -79,7 +79,7 @@ An open PR that adds something to the system carries one indented line below its
 
 ## 3. The Panel
 
-The canonical state of the space. It is the first section of the full report, and the Leader shows it whenever something changes for the user (see [When to Show It](#when-to-show-it) and [`herdr-team-lead`](../../herdr-team-lead/SKILL.md)).
+The canonical state of the space. The Leader shows it whenever something changes for the user (see [When to Show It](#when-to-show-it) and [`herdr-team-lead`](../SKILL.md)).
 
 ````markdown
 ### 🧭 <space name> · <Panel> · <time>
@@ -113,13 +113,13 @@ The canonical state of the space. It is the first section of the full report, an
 ````
 
 - **First line, always.** The Panel opens with one bold line that answers "do I need to act?": how many items of **What's next** depend on the user and their numbers (❓), or that nothing depends on the user now (✅). It counts every ❓, 👀, and ✋ item and nothing else; open ⚠️ notices are named after the count with their deadline, since they need no answer.
-- **What changed** names the event in system terms ("the billing tab finished the invoice API and opened its PR"), never the tab agent's raw message. When the Panel answers the user's first message after changes they did not see, it lists up to three lines of what changed since their previous message instead (see "Since the user's last message" in [`herdr-team-lead`](../../herdr-team-lead/SKILL.md#2-role)). Omit it when nothing changed.
+- **What changed** names the event in system terms ("the billing tab finished the invoice API and opened its PR"), never the tab agent's raw message. When the Panel answers the user's first message after changes they did not see, it lists up to three lines of what changed since their previous message instead (see "Since the user's last message" in [`herdr-team-lead`](../SKILL.md#2-role)). Omit it when nothing changed.
 - **What's next** is one numbered queue, so the user can answer by number. It merges what depends on the user with the agents' next steps:
   - **The user's items first**, in bold and prefixed with the word for "you" in the user's language: decisions (❓), reviews the user owes (👀), actions only the user can take (✋, with why only the user can), and tier-2 notices (⚠️, with their deadline), ordered by what each unblocks, each with the Leader's recommendation. The full decision card or notice goes below the Panel when it is new or the user asks for it. After a gap, each item restates its subject in one sentence; never "decision 2" or "option B" alone.
   - **Then the agents' steps** (🤖): the ordered steps that move the objective forward after the current work, from `leader.md` Next Steps reconciled with what was observed, each with who does it and what it waits for. At most five agent steps; the full list lives in `leader.md`.
   - An item appears once: a step that waits for a user item names that item's number ("after 1") instead of repeating it.
 - **Blocked** holds only work that nobody can move now, as defined in [What "blocked" means](#what-blocked-means). Work waiting for the user lives in **What's next**, and work waiting for the team lives in **In progress**, never here.
-- **In progress** holds one row per active work stream, not per task: what it delivers, which tab runs it, and where it stands in one line, including any stream or sub-agent of the team it waits for. Finished work leaves the Panel; it shows up in the full report.
+- **In progress** holds one row per active work stream, not per task: what it delivers, which tab runs it, and where it stands in one line, including any stream or sub-agent of the team it waits for. Finished work leaves the Panel; its proof is pulled with `herdr-evidence`.
 - **PRs** lists every PR of the space (opened from its agents' branches or referenced in `leader.md`), one [PR line](#pr-line) each, ordered ❌, 👀, ⏳, ✅, merged last, each open PR followed by its [what appears](#what-appears) line when it has one. It repeats PRs already cited above on purpose: it is the one place to read every PR's state.
 - **Fixed order, no empty blocks.** The blocks always appear in this order. An empty block is omitted, heading included, and the Panel ends with one plain line, without emoji, naming every empty block in the same order ("Nothing next · Nothing blocked · Nothing in progress · No PRs"). When nothing is empty, that line does not appear. The first line is never omitted.
 
@@ -130,7 +130,7 @@ This section is the one home of when the Leader writes to the user about the wor
 **Triggers.** The Leader writes to the user, with the Panel, only when one of these happened since the last Panel the user saw:
 
 1. a decision for the user or a tier-2 notice opened;
-2. a delivery is ready, with its [evidence dossier](../../ai-assisted-software-development/references/evidence-dossier.md);
+2. a delivery is ready, with its [evidence dossier](../../ai-assisted-software-development/references/evidence-dossier.md), every line showing its artifact;
 3. a blocker appeared, including a tab agent `blocked` or in `error`;
 4. the scope changed;
 5. the user wrote after changes they had not seen.
@@ -139,37 +139,6 @@ This section is the one home of when the Leader writes to the user about the wor
 
 **Layout.** One line on what just changed, in system terms; then the Panel; then, below it, the full decision card or notice for each item that is new.
 
-Omit the Panel when the user is talking with the Leader about something (a question, an explanation, a decision card the user asked to have explained) and nothing changed: repeating an identical Panel only buries the answer. The full report always includes it.
+Omit the Panel when the user is talking with the Leader about something (a question, an explanation, a decision card the user asked to have explained) and nothing changed: repeating an identical Panel only buries the answer.
 
 Tab agents never fill that gap with reports of their own: they write to their Leader, and to the user only in a tab where the user has written (the tab agent contract of [`herdr-handoff`](../../herdr-handoff/SKILL.md#3-write-and-start-each-stream)).
-
-## 4. The Full Report
-
-The report answers "what changed for me and where is each delivery?". It is the Panel plus two blocks; it does not list tabs or repeat the Panel's items with more detail.
-
-````markdown
-## 🧭 <space name> · <report title> · <date and time>
-
-**<Objective>:** <one or two sentences on what the team delivers and why> · <tracker>: <epic or main task> (<key>) <status>
-
-<The Panel, Section 3, without its "What changed" line>
-
-### <What changed since your last message>
-- ✅ <event, in system terms: a delivery merged, a decision closed, a stream finished>
-- ⚠️ <what surprised or diverged: a component that appeared without a notice, a plan that changed>
-- 🏗️ <what appeared in the system: the what-appears items of PRs merged or opened since then>
-
-### <Deliveries>
-- ⏳ <what it delivers> · <task key, tracker status, or "no task"> · <repo>#<n> · <evidence> <n>/5
-  <what it changes for whom> · <what is left before the user can accept it, or which evidence line is a no and why>
-
-<Closing remarks: at most three bullets, optional>
-````
-
-## 5. Section Rules
-
-- **Header**: objective from `leader.md` when present, otherwise inferred and marked; the tracker part shows the epic or main task and its real status, and is dropped when there is none.
-- **Panel**: built per Section 3 from the same gather. Its "What changed" line is left out: the report's own block carries it.
-- **What changed since your last message**: counted from the user's previous message in this conversation, not from the last Panel. At most eight lines, most consequential first: deliveries, decisions closed (including those the user made in a tab agent's tab), notices that proceeded, blockers that appeared or ended, scope changes, and the [what appears](#what-appears) items of every PR opened or merged in that window. Progress with no consequence for the user stays out. When nothing changed, the block is one line saying so.
-- **Deliveries**: one line per delivery (a PR, or a stream's result when it has no PR) in the tracker scope or referenced by `leader.md`, open first (in merge order when they depend on each other), merged last on one collapsed line. It carries the task reference and its real tracker status (or `⚪ status unavailable` when the tracker cannot be reached, or "no task" for untracked work), the PR, and how many of the five [evidence dossier](../../ai-assisted-software-development/references/evidence-dossier.md) lines are proven for its current head commit (an attestation of an older commit counts as outdated, not proven). The detail line says what the delivery changes for whom and what is left, naming any evidence line that is a no. When no task reference exists anywhere, close the block with `📋 No task registered in any tracker` and a suggestion to register the work with [`report-work`](../../report-work/SKILL.md).
-- **Closing remarks** (optional, at most three bullets): divergences between `leader.md` and reality, and stale tracker statuses worth fixing.
