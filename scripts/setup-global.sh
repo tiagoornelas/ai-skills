@@ -5,11 +5,13 @@
 # - Claude Code   (~/.claude)
 # - Antigravity   (~/.gemini/config)
 # - Codex         (~/.codex)
+# - Cursor CLI    (~/.cursor)
 #
 # Usage:
-#   ./scripts/setup-global.sh                         # prompts before linking global instructions
+#   ./scripts/setup-global.sh                         # links for detected harnesses, prompts for instructions
 #   ./scripts/setup-global.sh --global-instructions   # links global instructions without prompting
 #   ./scripts/setup-global.sh --skills-only           # links skills only
+#   ./scripts/setup-global.sh --all                   # installs for all supported harnesses without filtering
 # ==============================================================================
 
 set -euo pipefail
@@ -20,10 +22,12 @@ SKILLS_DIR="$REPO_ROOT/skills"
 GLOBAL_AGENTS_FILE="$REPO_ROOT/global/AGENTS.md"
 
 GLOBAL_INSTRUCTIONS="ask"
+INSTALL_ALL="no"
 for arg in "$@"; do
   case "$arg" in
     --global-instructions) GLOBAL_INSTRUCTIONS="yes" ;;
     --skills-only)         GLOBAL_INSTRUCTIONS="no" ;;
+    --all)                 INSTALL_ALL="yes" ;;
     *) echo "Unknown option: $arg" >&2; exit 2 ;;
   esac
 done
@@ -36,8 +40,53 @@ echo "  ai-skills: Global Setup for Skills and Agents"
 echo "  Repository: $REPO_ROOT"
 echo "=========================================================="
 
-# 1. Ensure target directories exist
+# Filter active targets based on installed harnesses
+ACTIVE_SKILL_DIRS=()
+ACTIVE_INSTRUCTION_FILES=()
 for target in "${GLOBAL_SKILL_DIRS[@]}"; do
+  label="${target%%:*}"
+  if [ "$INSTALL_ALL" = "yes" ] || is_harness_installed "$label"; then
+    ACTIVE_SKILL_DIRS+=("$target")
+  fi
+done
+
+for target in "${GLOBAL_INSTRUCTION_FILES[@]}"; do
+  label="${target%%:*}"
+  if [ "$INSTALL_ALL" = "yes" ] || is_harness_installed "$label"; then
+    ACTIVE_INSTRUCTION_FILES+=("$target")
+  fi
+done
+
+# 1. Report detected harnesses and ensure target directories exist
+echo ""
+echo "🔍 Harness Detection:"
+detected_labels=()
+for target in "${ACTIVE_SKILL_DIRS[@]}"; do
+  label="${target%%:*}"
+  if [[ ! " ${detected_labels[*]:-} " =~ " ${label} " ]]; then
+    detected_labels+=("$label")
+    echo "  ✓ $label"
+  fi
+done
+
+skipped_labels=()
+for target in "${GLOBAL_SKILL_DIRS[@]}"; do
+  label="${target%%:*}"
+  if [[ ! " ${detected_labels[*]:-} " =~ " ${label} " ]] && [[ ! " ${skipped_labels[*]:-} " =~ " ${label} " ]]; then
+    skipped_labels+=("$label")
+    echo "  ○ $label (not detected - skipped; use --all to force)"
+  fi
+done
+
+if [ "${#ACTIVE_SKILL_DIRS[@]}" -eq 0 ]; then
+  echo ""
+  echo "⚠️  No supported AI agent harness detected on this machine."
+  echo "   (Checked: claude, gemini, codex, cursor)."
+  echo "   To install anyway, run with: ./scripts/setup-global.sh --all"
+  exit 0
+fi
+
+for target in "${ACTIVE_SKILL_DIRS[@]}"; do
   mkdir -p "${target#*:}"
 done
 
@@ -57,7 +106,7 @@ for skill_path in "$SKILLS_DIR"/*; do
 
   if [ -d "$skill_path" ]; then
     echo "  -> Linking skill: $skill_name"
-    for target in "${GLOBAL_SKILL_DIRS[@]}"; do
+    for target in "${ACTIVE_SKILL_DIRS[@]}"; do
       safe_link "$skill_path" "${target#*:}/$skill_name" "${target%%:*}"
     done
     count=$((count + 1))
@@ -65,7 +114,7 @@ for skill_path in "$SKILLS_DIR"/*; do
 done
 
 # Prune dangling links for skills removed from repository
-for target in "${GLOBAL_SKILL_DIRS[@]}"; do
+for target in "${ACTIVE_SKILL_DIRS[@]}"; do
   prune_dangling_links "${target#*:}" "$SKILLS_DIR"
 done
 
@@ -78,7 +127,7 @@ fi
 # 3. Global instructions (global/AGENTS.md)
 echo ""
 echo "⚙️ Global Instructions ($GLOBAL_AGENTS_FILE):"
-for target in "${GLOBAL_INSTRUCTION_FILES[@]}"; do
+for target in "${ACTIVE_INSTRUCTION_FILES[@]}"; do
   path="${target#*:}"
   echo "  - ${target%%:*}: ~${path#"$HOME"}"
 done
@@ -95,7 +144,7 @@ if [ "$GLOBAL_INSTRUCTIONS" = "ask" ]; then
 fi
 
 if [ "$GLOBAL_INSTRUCTIONS" = "yes" ]; then
-  for target in "${GLOBAL_INSTRUCTION_FILES[@]}"; do
+  for target in "${ACTIVE_INSTRUCTION_FILES[@]}"; do
     path="${target#*:}"
     mkdir -p "$(dirname "$path")"
     safe_link "$GLOBAL_AGENTS_FILE" "$path" "${target%%:*}"

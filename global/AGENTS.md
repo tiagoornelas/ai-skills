@@ -1,6 +1,6 @@
 # Global Instructions
 
-> Working rules that apply to **any project**, for any agent (Claude Code, Codex, Antigravity CLI). Installed as global instructions by `setup-global.sh` from the **ai-skills** repository.
+> Working rules that apply to **any project**, for any agent (Claude Code, Codex, Antigravity CLI, Cursor CLI). Installed as global instructions by `setup-global.sh` from the **ai-skills** repository.
 >
 > The skills cited below are referenced **by name**: they are installed in the harness skills directory. The `AGENTS.md` of the project you are working on complements these rules and, in case of conflict, takes precedence.
 

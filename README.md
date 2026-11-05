@@ -1,6 +1,6 @@
 # ai-skills ✨
 
-A curated, public distillation of my approach to AI-assisted software engineering. Packaged as universal **skills** installed from a single source across **Claude Code**, **Codex**, and **Antigravity CLI**.
+A curated, public distillation of my approach to AI-assisted software engineering. Packaged as universal **skills** installed from a single source across **Claude Code**, **Codex**, **Antigravity CLI**, and **Cursor CLI**.
 
 This project shares an opinionated baseline for AI pair programming: assigning what is expensive to get wrong to the human (architecture, contracts, boundaries) and what is expensive to read to the agent (mechanics, test suites, self-review).
 
@@ -142,6 +142,7 @@ Issue trackers (Jira, GitHub Issues, Linear) are mentioned only as places to ref
 | **Claude Code** | `CLAUDE.md` → `AGENTS.md` | `.claude/skills/` | `~/.claude/skills/` |
 | **Codex** | `AGENTS.md` | `.agents/skills/` | `~/.codex/skills/` |
 | **Antigravity CLI** | `AGENTS.md` or `GEMINI.md` | `.agents/skills/` | `~/.gemini/config/skills/` |
+| **Cursor CLI** | `AGENTS.md` or `~/.cursor/rules/` | `.cursor/skills/` or `.agents/skills/` | `~/.cursor/skills/` |
 
 ### Global (recommended)
 
@@ -149,8 +150,9 @@ Issue trackers (Jira, GitHub Issues, Linear) are mentioned only as places to ref
 ./scripts/setup-global.sh
 ```
 
-1. Symlinks each skill from `skills/` into the three global folders. Any real folder with the same name (legacy copy) is moved to `~/.ai-skills-backup/<timestamp>/` before the link is created, and dangling links to skills removed from the repo are pruned.
-2. Prompts whether to link [`global/AGENTS.md`](global/AGENTS.md) as the global instruction across the three harnesses (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`, and `~/.gemini/config/AGENTS.md`). Existing files are moved to the same backup. Use `--global-instructions` to link without prompting, or `--skills-only` to install only the skills.
+1. Detects which harnesses are installed on your machine (`claude`, `gemini`/`agy`, `codex`, `cursor`) and skips uninstalled ones automatically to avoid polluting your home directory with empty dotfiles (use `--all` to force installation for all harnesses).
+2. Symlinks each skill from `skills/` into the global skills folder of each detected harness. Any real folder with the same name (legacy copy) is moved to `~/.ai-skills-backup/<timestamp>/` before the link is created, and dangling links to skills removed from the repo are pruned.
+3. Prompts whether to link [`global/AGENTS.md`](global/AGENTS.md) as the global instruction across the detected harnesses (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`, `~/.gemini/config/AGENTS.md`, and `~/.cursor/rules/global.md`). Existing files are moved to the same backup. Use `--global-instructions` to link without prompting, or `--skills-only` to install only the skills.
 
 [`global/AGENTS.md`](global/AGENTS.md) is what makes the workflow mandatory across any project: it specifies, by trigger, when to load each skill (for example, `coding` before editing any code file). The root [`AGENTS.md`](AGENTS.md) serves strictly to maintain this repository.
 
@@ -162,7 +164,7 @@ Because everything is symlinked, a `git pull` instantly updates skills and instr
 ./scripts/uninstall-global.sh
 ```
 
-1. Removes what setup installed from this repository, in the three global skill folders and the four global instruction paths: links that point into the repo, and identical copies (Git Bash on Windows copies instead of linking when it lacks symlink permission). Your own skills, links to other sources, and anything that differs from the repo are left untouched and reported.
+1. Removes what setup installed from this repository, in the global skill folders and the global instruction paths: links that point into the repo, and identical copies (Git Bash on Windows copies instead of linking when it lacks symlink permission). Your own skills, links to other sources, and anything that differs from the repo are left untouched and reported.
 2. Leaves `~/.ai-skills-backup/` alone and tells you it is there. Use `--restore` to move what setup replaced back to where it was. The most recent backup of each path wins, and a path already in use is never overwritten.
 
 Use `--skills-only` to keep the global instructions, and `--dry-run` to see what would change without changing anything. Run it from the same clone that ran setup: links are recognized by where they point, and copies by matching its content.

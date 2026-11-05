@@ -16,13 +16,28 @@ GLOBAL_SKILL_DIRS=(
   "claude:$HOME/.claude/skills"
   "gemini:$HOME/.gemini/config/skills"
   "codex:$HOME/.codex/skills"
+  "cursor:$HOME/.cursor/skills"
 )
 GLOBAL_INSTRUCTION_FILES=(
   "claude:$HOME/.claude/CLAUDE.md"
   "gemini:$HOME/.gemini/config/AGENTS.md"
   "gemini:$HOME/.gemini/GEMINI.md"
   "codex:$HOME/.codex/AGENTS.md"
+  "cursor:$HOME/.cursor/rules/global.md"
 )
+
+# is_harness_installed <label>
+# Returns 0 (true) if the harness is installed or its base configuration directory exists.
+is_harness_installed() {
+  local harness="$1"
+  case "$harness" in
+    claude) command -v claude >/dev/null 2>&1 || [ -d "$HOME/.claude" ] ;;
+    gemini) command -v agy >/dev/null 2>&1 || [ -d "$HOME/.gemini" ] ;;
+    codex)  command -v codex >/dev/null 2>&1 || [ -d "$HOME/.codex" ] ;;
+    cursor) command -v cursor-agent >/dev/null 2>&1 || command -v cursor >/dev/null 2>&1 || command -v agent >/dev/null 2>&1 || [ -d "$HOME/.cursor" ] ;;
+    *) return 1 ;;
+  esac
+}
 
 # Directory where replaced real content is backed up, outside skill folders,
 # so no harness accidentally loads the backup copy as an active skill.
