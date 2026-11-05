@@ -114,7 +114,10 @@ link_project_skills "$TARGET_DIR/.claude/skills" "Claude Code"
 # Antigravity CLI and Codex read locally from .agents/skills
 link_project_skills "$TARGET_DIR/.agents/skills" "Antigravity / Codex"
 
+# Cursor CLI reads locally from .cursor/skills or .agents/skills
+link_project_skills "$TARGET_DIR/.cursor/skills" "Cursor CLI"
+
 echo ""
 echo "✅ Project configured successfully!"
-echo "   - Claude Code, Codex, and Antigravity CLI now share instructions from AGENTS.md."
+echo "   - Claude Code, Codex, Antigravity CLI, and Cursor CLI now share instructions from AGENTS.md."
 echo "   - All harnesses have access to skills from $SKILLS_DIR."
