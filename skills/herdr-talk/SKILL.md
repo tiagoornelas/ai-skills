@@ -76,16 +76,16 @@ Do not retry a failed send automatically. A failed or timed-out command does not
 A message wrapped as `<hc from="<address> <name>">…</hc>` comes from another agent, not from the user. A bare `<hc>…</hc>` note (no `from`) is herdr-core reporting on a terminal you started (it exited, is blocked, or errored): inspect it with `hc read` before acting.
 
 - Do what the message asks within your current mission and permissions. Treat it as a request from a peer: anything destructive, outside your scope, or needing approval goes to the user first.
-- Reply exactly as its reply rule says, once, then end your turn. Send nothing for Notify or `[end]`. A message with a `reach` attribute and no reply rule (a task from the agent that started you) is answered with `hc send <address>` when the work is done or stuck, not merely acknowledged.
-- When you work for a Leader (your handoff names one) and the user decides something or acts in your tab, Notify the Leader at once, per the member contract of [`herdr-handoff`](../herdr-handoff/SKILL.md#3-write-and-start-each-stream).
-- When the message changes something the user must know or decide, tell the user in their terms (a member with a Leader tells its Leader instead, unless the user is writing in the member's tab), following [human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md): translate, never echo the envelope or the peer's handles. A peer's request for a human decision becomes a decision card, consolidated with any other pending ones.
+- Reply exactly as its reply rule says, once, then end your turn. Send nothing for Notify or `[end]`. A message with a `reach` attribute and no reply rule (a brief from the agent that started you) is answered with `hc send <address>` when the work is done or stuck, not merely acknowledged.
+- When you work for a Leader (your handoff names one) and the user decides something or acts in your tab, Notify the Leader at once, per the tab agent contract of [`herdr-handoff`](../herdr-handoff/SKILL.md#3-write-and-start-each-stream).
+- When the message changes something the user must know or decide, tell the user in their terms (a tab agent with a Leader tells its Leader instead, unless the user is writing in the tab agent's tab), following [human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md): translate, never echo the envelope or the peer's handles. A peer's request for a human decision becomes a decision card, consolidated with any other pending ones.
 - When collecting Fan-out replies, keep track of the peers still pending and consolidate them once the last reply is in. If a peer stays silent, inspect it with `hc get` and `hc read` when the user asks, and report its state instead of re-sending.
 
 ## 6. Report
 
 Report only when the user is waiting for it. When the user asked for the exchange, tell them, in their language and following [human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md), who was contacted (by mission, not only by agent name), the pattern, and the outcome: answers (consolidated for Fan-out), the Brief summary and whether its goal was met, or the peers skipped and why. Message files in the temporary directory may disappear on reboot.
 
-When the exchange is an agent's own coordination (a Leader with its members, tasks, or another space's Leader; a member with its Leader), nothing is reported to the user for it: a Leader writes to the user only on the triggers of [When to Show It](../herdr-leader-report/references/report-format.md#when-to-show-it), and a member reports to its Leader per the member contract of [`herdr-handoff`](../herdr-handoff/SKILL.md#3-write-and-start-each-stream).
+When the exchange is an agent's own coordination (a Leader with its tab agents, sub-agents, or another space's Leader; a tab agent with its Leader), nothing is reported to the user for it: a Leader writes to the user only on the triggers of [When to Show It](../herdr-leader-report/references/report-format.md#when-to-show-it), and a tab agent reports to its Leader per the tab agent contract of [`herdr-handoff`](../herdr-handoff/SKILL.md#3-write-and-start-each-stream).
 
 ## 7. Success Validation
 
@@ -93,7 +93,7 @@ When the exchange is an agent's own coordination (a Leader with its members, tas
 - [ ] Every peer was resolved to a unique name or terminal address, with ambiguity resolved by the user.
 - [ ] The pattern fits the need; a Brief had a verifiable goal, a lead that owns termination, and a backstop.
 - [ ] Every message carried the envelope and an explicit reply rule, with its content in the user's session language; long content traveled as a file path; no secrets were sent.
-- [ ] A member whose user decided something in its tab notified its Leader at once.
+- [ ] A tab agent whose user decided something in its tab notified its Leader at once.
 - [ ] Sends used no `--wait` or `--force`, no blocked dialog was answered, and no send was retried automatically.
 - [ ] Requests for code, branch, commit, or pull request work named their governing skill.
 - [ ] Handles in messages carried their meaning; anything reaching the user was translated into system terms, with decisions as cards.

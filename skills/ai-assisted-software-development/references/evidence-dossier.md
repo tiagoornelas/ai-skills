@@ -57,7 +57,7 @@ Lines (c)–(e) are attested by a reviewer that did not write the change and sta
   The note survives the reviewer and any context loss; anyone presenting the delivery again reads it with `git notes --ref=evidence show <commit>`.
 - **When a new review is needed.** Presenting the same commit again reuses its note. Any new commit on the delivery (a fix, a rebase, a merge from the base) needs a new attestation of lines (c)–(e) before the dossier is shown again; until then, the dossier shows the old commit's lines marked as outdated, never as current.
 - **Disagreement goes to the dossier.** When the reviewer's answer differs from the author's, the reviewer's answer is the one shown, with the author's fix or rebuttal on the detail line.
-- In a Herdr App team, the reviewer is a task started by the Leader ([`herdr-handoff`](../../herdr-handoff/SKILL.md#31-tasks)); elsewhere, a subagent per [subagent-delegation.md](subagent-delegation.md).
+- In a Herdr App team, the reviewer is a sub-agent started by the Leader ([`herdr-handoff`](../../herdr-handoff/SKILL.md#31-sub-agents)); elsewhere, a subagent per [subagent-delegation.md](subagent-delegation.md).
 
 ---
 
