@@ -35,7 +35,7 @@ Observe in parallel where the harness allows it; nothing here needs to ask an ag
 | :--- | :--- |
 | Spaces, their tabs, and each terminal's status | `herdr-app ls` |
 | Agents stopped at a dialog or in error | `hc ls --json`: status `blocked` or `error`, with `where` (space / tab) |
-| Each team's pending decisions, tier-2 notices, and user-only actions, and when they were recorded | `~/.herdr-teams/<space-id>/leader.md` ([team-folder.md](../herdr-team-lead/references/team-folder.md)): the **Pending Decisions** section, and the `Updated` and `State` lines |
+| Each team's pending decisions, tier-2 notices, and user-only actions, and when they were recorded | `~/.herdr-teams/<space-id>/leader.md` ([team-folder.md](../herdr-team-lead/references/team-folder.md)): the **Pending Decisions** section (each item's `opened` time and `↪` reference lines), and the `Updated` and `State` lines |
 | PRs waiting for the user's review | `gh search prs --review-requested=@me --state=open --json repository,number,title,url` |
 | The user's own open PRs | `gh search prs --author=@me --state=open --json repository,number,title,url,isDraft` |
 | Which space each of the user's PRs belongs to | the branch of each terminal's `cwd` (`git -C <cwd> branch --show-current`) matched to the PR's head branch (`gh pr view <url> --json headRefName,statusCheckRollup`) |
@@ -72,7 +72,7 @@ Write in the user's session language, following [human-facing communication](../
 ````
 
 - **First line, always**: how many numbered items depend on the user and in how many spaces, or that nothing does. It counts ❓, 👀, and ✋ items only; ⚠️ notices are numbered in the queue but named after the count, since they proceed without an answer.
-- **One subject, one item.** When the same decision appears in several spaces' records (the same question in different words), list it once, under the space whose record is oldest, and add *(also raised in <spaces>)*; tell the user which Leader owns it. The inbox stays read-only: merging the records themselves is those Leaders' job.
+- **One subject, one item.** When the same subject is pending in several spaces' records (the same question in different words), list it once, under its owner by the [one owner per subject](../herdr-team-lead/references/team-folder.md#2-leadermd) rule (earliest `opened`, then space name), and add *(also raised in <spaces>; their Leaders turn their records into references at their next check)*. `↪` reference lines are never listed as items. A record without an `opened` time falls back to its team's `Updated`, and the item says *(order inferred)*. The inbox stays read-only: it reports duplicates, and each Leader reconciles its own file.
 - **One numbered queue across spaces**, so the user can refer to an item by number. Spaces are ordered by how long their oldest item has waited, oldest first; inside a space, keep the order of its `leader.md`.
 - **Where to go**: every space heading names the tab to open (the Leader's for recorded items, the stopped agent's for dialogs).
 - **Stale records**: when a team's `leader.md` was last updated more than a day ago and it lists pending items, keep the items and add *(recorded <n> days ago, may be out of date)*; the user can confirm with that Leader.
@@ -87,6 +87,6 @@ When the user named a space, show only that space and keep the first line about 
 - [ ] Every active team's `leader.md` Pending Decisions, every `blocked` or `error` agent, and the PRs waiting for the user's review were read; skipped sources are named.
 - [ ] The inbox opens with the line counting what depends on the user across spaces, then one numbered queue grouped by space, each heading naming the tab to open.
 - [ ] Items are in system terms, in the user's language, with their recording time; records older than a day are marked as possibly stale.
-- [ ] A subject raised in several spaces appears once, naming the other spaces; tier-2 notices show their deadline and are not counted as items that depend on the user; every ✋ carries why only the user can.
+- [ ] A subject raised in several spaces appears once, under its owner by earliest opening time and then space name, naming the other spaces; reference lines are not listed; nothing was written to any `leader.md`; tier-2 notices show their deadline and are not counted as items that depend on the user; every ✋ carries why only the user can.
 - [ ] The user's open PRs appear once, unnumbered, with their space; PRs waiting for the user's review are not repeated there.
 - [ ] Spaces with nothing pending are named in one closing line.

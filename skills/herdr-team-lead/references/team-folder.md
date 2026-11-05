@@ -48,9 +48,10 @@ The Leader's handoff to itself: the format of the [`handoff`](../../handoff/SKIL
 1. <ordered intent, not progress reports>
 
 ## Pending Decisions
-- ❓ <decision the user must make, in system terms> · <why it is the user's> · <easy | hard>
-- ⚠️ <tier-2 notice: what will appear in the system> · proceeds <ISO date-time> unless the user objects
-- ✋ <action only the user can take that the work waits for, in system terms> · only the user because: <reason>
+- ❓ <decision the user must make, in system terms> · opened <ISO date-time> · <why it is the user's> · <easy | hard>
+- ⚠️ <tier-2 notice: what will appear in the system> · opened <ISO date-time> · proceeds <ISO date-time> unless the user objects
+- ✋ <action only the user can take that the work waits for, in system terms> · opened <ISO date-time> · only the user because: <reason>
+- ↪ <subject owned by another team> · owned by <space name> · opened there <ISO date-time>
 
 ## Decisions & Rationale
 - <decision taken> — <rationale and rejected alternatives>
@@ -73,6 +74,7 @@ The Leader's handoff to itself: the format of the [`handoff`](../../handoff/SKIL
 - **Tasks and Issues** holds references only; their status always comes from the tracking tool.
 - **Glossary** holds at most ten terms from the members' vocabulary that reached the user, each situated in the product. It is how the Leader re-situates a term the same way every time; drop a term once it stops appearing to make room for a new one.
 - A tier-2 notice stays under **Pending Decisions** until its deadline or the user's answer, then moves to **Decisions & Rationale** with its outcome (proceeded, or turned into a decision).
+- **One owner per subject across teams.** Every pending item records when it was opened. When the same subject (the same question, in any wording) is pending in several active teams, its owner is the team whose record has the earliest `opened`; on a tie, the team whose space name comes first alphabetically. Only the owner keeps the item; every other team records it as a `↪` reference line, which nothing counts as pending. Each Leader reconciles **its own** `leader.md` only, whenever it checks other teams (before opening or asking anything, per [`herdr-team-lead`](../SKILL.md#2-role)): it turns its own duplicate into a reference, and removes the reference once the owner's item has closed. No skill writes another team's `leader.md`.
 - **Pending Decisions** is the one place another space can see what this team waits on the user for: [`herdr-inbox`](../../herdr-inbox/SKILL.md) reads it across all teams. Reviews the user owes are not listed here; the inbox reads them from the PRs.
 - `State: concluded` marks the work as finished; the folder stays until the user approves its removal.
 
