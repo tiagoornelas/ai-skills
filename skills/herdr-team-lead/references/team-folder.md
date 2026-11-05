@@ -90,7 +90,7 @@ The Leader's handoff to itself: the format of the [`handoff`](../../handoff/SKIL
 | `herdr-team-lead` | `leader.md`, tab agent handoffs | `leader.md` |
 | `herdr-handoff` | `leader.md` (to find the Leader) | `leader.md` (creation or adoption), `handoff-<agent>.md` |
 | Independent reviewer (sub-agent of the Leader) | The delivery's diff and rules | `evidence/<short-commit>/` files, per the [evidence dossier](../../ai-assisted-software-development/references/evidence-dossier.md#where-artifacts-live) |
-| `herdr-evidence` | `leader.md`, tab agent handoffs, `evidence/` files cited by notes | Nothing |
+| `provide-evidence` | `leader.md`, tab agent handoffs, `evidence/` files cited by notes | Nothing |
 | `herdr-scope` | `leader.md` of every team | Nothing |
 | `git-cleanup` | `leader.md` `State`, space list (`herdr-app ls`) | Removes a team folder only with explicit user approval |
 

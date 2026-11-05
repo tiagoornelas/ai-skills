@@ -1,6 +1,6 @@
 # Panel Format
 
-> **Central thesis**: the user should understand the state of the work at a glance, and know in its first line whether anything depends on them. Whenever that state changes for the user, the Leader shows the same **Panel**: a first line saying what depends on the user, then up to four short blocks in a fixed order (what's next, with the user's items first; what is blocked; what is in progress; the PRs). Never a dump of fields. The proof of each delivery is not part of the Panel: the user pulls it with [`herdr-evidence`](../../herdr-evidence/SKILL.md).
+> **Central thesis**: the user should understand the state of the work at a glance, and know in its first line whether anything depends on them. Whenever that state changes for the user, the Leader shows the same **Panel**: a first line saying what depends on the user, then up to four short blocks in a fixed order (what's next, with the user's items first; what is blocked; what is in progress; the PRs). Never a dump of fields. The proof of each delivery is not part of the Panel: the user pulls it with [`provide-evidence`](../../provide-evidence/SKILL.md).
 
 ---
 
@@ -119,7 +119,7 @@ The canonical state of the space. The Leader shows it whenever something changes
   - **Then the agents' steps** (🤖): the ordered steps that move the objective forward after the current work, from `leader.md` Next Steps reconciled with what was observed, each with who does it and what it waits for. At most five agent steps; the full list lives in `leader.md`.
   - An item appears once: a step that waits for a user item names that item's number ("after 1") instead of repeating it.
 - **Blocked** holds only work that nobody can move now, as defined in [What "blocked" means](#what-blocked-means). Work waiting for the user lives in **What's next**, and work waiting for the team lives in **In progress**, never here.
-- **In progress** holds one row per active work stream, not per task: what it delivers, which tab runs it, and where it stands in one line, including any stream or sub-agent of the team it waits for. Finished work leaves the Panel; its proof is pulled with `herdr-evidence`.
+- **In progress** holds one row per active work stream, not per task: what it delivers, which tab runs it, and where it stands in one line, including any stream or sub-agent of the team it waits for. Finished work leaves the Panel; its proof is pulled with `provide-evidence`.
 - **PRs** lists every PR of the space (opened from its agents' branches or referenced in `leader.md`), one [PR line](#pr-line) each, ordered ❌, 👀, ⏳, ✅, merged last, each open PR followed by its [what appears](#what-appears) line when it has one. It repeats PRs already cited above on purpose: it is the one place to read every PR's state.
 - **Fixed order, no empty blocks.** The blocks always appear in this order. An empty block is omitted, heading included, and the Panel ends with one plain line, without emoji, naming every empty block in the same order ("Nothing next · Nothing blocked · Nothing in progress · No PRs"). When nothing is empty, that line does not appear. The first line is never omitted.
 

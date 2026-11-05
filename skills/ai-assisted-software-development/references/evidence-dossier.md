@@ -8,6 +8,7 @@
 
 - Whenever a delivery reaches the human: a pull request ready for their review, a finished stream, a change reported as done. A delivery is always a specific version: the commit at the head of its branch or pull request.
 - In a Herdr App team, the Leader assembles it and presents it when the delivery is ready ([`herdr-team-lead`](../../herdr-team-lead/SKILL.md)).
+- On demand, [`provide-evidence`](../../provide-evidence/SKILL.md) shows a delivery's dossier as recorded, judges each line against its artifact, and, outside the Herdr App, offers to run the independent reviewer when lines (c)–(f) are missing.
 
 The dossier does not replace the notice that tier 2 requires before building ([the boundary test](../SKILL.md#4-the-boundary-test)) nor the briefing of the change ([Briefing a Change](human-facing-communication.md#3-briefing-a-change)): it is the proof that closes the briefing.
 

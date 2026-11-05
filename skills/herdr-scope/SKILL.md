@@ -35,7 +35,7 @@ The user leads several Herdr App spaces at once. Each Leader sees only its own s
 
 ## 2. Gather
 
-A **front** is one active team: a team folder `~/.herdr-teams/<space-id>/` ([team-folder.md](../herdr-team-lead/references/team-folder.md)) whose `leader.md` says `State: active` and whose space exists in `herdr-app ls`. Team folders whose space is gone are not fronts; count them once in the closing line. A space without `leader.md` is not a front but still shows its blocked or errored agents in the queue.
+A **front** is one active team: a team folder `~/.herdr-teams/<space-id>/` ([team-folder.md](../herdr-team-lead/references/team-folder.md)) whose `leader.md` says `State: active` and whose space exists in `herdr-app ls`, matched by the folder's space id or, when the space was renamed or recreated, by the `Space:` name in its `leader.md`. An active team whose space no longer exists is not a front, but its pending items still enter the queue, each marked *space closed — reopen or conclude*; it is never only a footer count. Concluded team folders without a live space are counted once in the closing line. A space without `leader.md` is not a front but still shows its blocked or errored agents in the queue.
 
 Observe in parallel where the harness allows it; nothing here needs to ask an agent.
 
@@ -44,7 +44,7 @@ Observe in parallel where the harness allows it; nothing here needs to ask an ag
 | Spaces, tabs, and each terminal's status | `herdr-app ls`; `hc ls --json` (status `blocked` or `error`, with `where`) |
 | Each front's objective, tasks, next steps | `leader.md`: Objective, Tasks and Issues, Next Steps |
 | Each front's pending items and when they opened | `leader.md` Pending Decisions (`opened` times, `↪` reference lines) |
-| The user's attention per front | `leader.md` Decisions & Rationale entries, by the ISO date that prefixes each ([team-folder.md](../herdr-team-lead/references/team-folder.md#2-leadermd)): count entries per day over the last seven days; entries without an ISO date prefix are counted apart as undated, never dated by guess |
+| The user's attention per front | `leader.md` Decisions & Rationale entries, by the date in each ([team-folder.md](../herdr-team-lead/references/team-folder.md#2-leadermd) requires an ISO prefix): count entries per day over the last seven days. Accept `YYYY-MM-DD`, `DD/MM/YYYY`, and `DD/MM` (year of the record's `Updated` line, else the current year); only entries with no date are counted apart as undated, never dated by guess |
 | Tracker priority | the priority of each task referenced in Tasks and Issues, through whatever the harness reaches (a CLI such as `gh`, or a connected integration); unreachable reads "priority unavailable" |
 | Stalled work | no tab `working` in the space, and no commit on its agents' branches and no `Updated` in the last three days |
 | PRs per front | each agent's branch (`git -C <cwd> branch --show-current`) matched with `gh pr list --head <branch> --json number,title,url,state,isDraft,statusCheckRollup` |
@@ -90,13 +90,14 @@ Entirely in the user's session language, following [human-facing communication](
 
 ### <What depends on you now>
 1. ❓ <decision, in system terms> · <space> · go to tab <Leader> · <why yours> · <easy | hard> · <recorded on date and time>
+   <or, for a team whose space is gone: · space closed — reopen or conclude>
 2. 👀 <repo>#<n> · <short name> · <space or "outside the spaces">
 3. ✋ <agent role> is stopped at a dialog: <what it asks> · go to tab <tab name>
 4. ⚠️ <notice: what will appear> · <space> · <proceeds at time unless you object>
 <+N more, in <spaces>: ask for the full queue>
 
 <Your open PRs: repo#n short name (space), one plain line>
-<Spaces with nothing for you · team folders without a live space · skipped sources: one plain line>
+<Spaces with nothing for you · concluded team folders without a live space · skipped sources: one plain line>
 ````
 
 - **First line, always**: how many numbered items depend on the user and in how many spaces, or that nothing does. It counts ❓, 👀, and ✋ items only; ⚠️ notices are named after the count, since they proceed without an answer.
@@ -109,9 +110,9 @@ Entirely in the user's session language, following [human-facing communication](
 ## 5. Success Validation
 
 - [ ] Herdr App environment verified, without the `herdr` terminal CLI or `--on`; nothing was written, sent, answered, or renamed; sub-agents started were ended and removed.
-- [ ] Fronts were exactly the active teams with a live space; every front got a shallow verdict (continue, reduce, stop, merge) with a justification, and at most three got a deep `scope-review`.
+- [ ] Fronts were exactly the active teams with a live space (matched by id, or by `leader.md` name after a rename); active teams whose space is gone had their pending items in the queue, marked space closed; every front got a shallow verdict (continue, reduce, stop, merge) with a justification, and at most three got a deep `scope-review`.
 - [ ] Impact came from the `leader.md` objective and tracker priority; inferences were marked.
 - [ ] What need not be done listed only fronts with a concrete signal.
-- [ ] Attention was measured from ISO-dated `leader.md` Decisions & Rationale entries per day, undated entries were reported as "undated: N" and never guessed, compared with impact rank, and its blind spot was stated.
+- [ ] Attention was measured from dated `leader.md` Decisions & Rationale entries per day (ISO, `DD/MM/YYYY`, or `DD/MM`), truly undated entries were reported as "undated: N" and never guessed, compared with impact rank, and its blind spot was stated.
 - [ ] The output opened with the line counting what depends on the user across spaces; the queue held one item per subject, ordered by impact, at most seven shown then "+N more", each with its recorded time (or *(time inferred)*), with space and tab for each; PRs awaiting review, blocked or errored agents, pending decisions, notices, and user-only actions were all read; skipped sources were named.
 - [ ] Everything was in the user's language, recommendations only; the user decides.

@@ -52,8 +52,8 @@ The Leader is the **user's architect** in this space: it applies the user's prin
 - **Show the whole picture when it changes for the user.** The triggers for writing to the user about the work, and that message's layout around the **Panel** of [panel-format.md](references/panel-format.md#3-the-panel), live in [When to Show It](references/panel-format.md#when-to-show-it). The user should never have to piece the state together from separate messages; when the user is just talking with the Leader and nothing changed, answer without the Panel, unless they ask how the work is going.
 - **Since the user's last message.** The user leads several spaces at once and returns to this one after a while. When the user writes and the state changed since their previous message in this conversation (tab agent messages, deliveries, decisions opened or closed, new blockers), open the reply with up to three lines on what changed since then, in system terms, before answering; the Panel follows in the layout of [When to Show It](references/panel-format.md#when-to-show-it), its "What changed" carrying those lines. Count from the user's previous message, not from the last Panel: a Panel the user did not reply to may not have been read. When nothing changed, say nothing about it.
 - **Stay within approval.** Tier-1 choices inside an approved plan are the Leader's or the tab agents'; tier-2 items are announced before building; anything else touching the Human Layer goes to the user.
-- **State on request.** When the user asks how the work is going, answer with the Panel, fresh from a cheap refresh (Section 5, step 2) and the tab agents' states, even when nothing changed; point to `herdr-evidence` for the proof of each delivery.
-- **Evidence on request.** When the user asks whether the work is done and proven, they run [`herdr-evidence`](../herdr-evidence/SKILL.md) in any tab; when it runs in the Leader's tab, the Leader then acts on each gap it shows under these rules (a delivery without its proof gets a reviewer; a stale `leader.md` is updated) and says so.
+- **State on request.** When the user asks how the work is going, answer with the Panel, fresh from a cheap refresh (Section 5, step 2) and the tab agents' states, even when nothing changed; point to `provide-evidence` for the proof of each delivery.
+- **Evidence on request.** When the user asks whether the work is done and proven, they run [`provide-evidence`](../provide-evidence/SKILL.md) in any tab; when it runs in the Leader's tab, the Leader then acts on each gap it shows under these rules (a delivery without its proof gets a reviewer; a stale `leader.md` is updated) and says so.
 
 ## 3. Split the Work
 
@@ -72,7 +72,7 @@ Write intent only, in the format of [team-folder.md](references/team-folder.md);
 - the user decides something in a tab agent's tab (the tab agent notifies the Leader);
 - a term joins the Glossary;
 - the objective, next steps, or tracked tasks change in a conversation with the user;
-- an evidence check (`herdr-evidence`) shows that `leader.md` no longer matches reality (a tab agent gone, a next step already done);
+- an evidence check (`provide-evidence`) shows that `leader.md` no longer matches reality (a tab agent gone, a next step already done);
 - the work concludes (`State: concluded <date>`).
 
 A tab agent's progress is never a trigger.
@@ -82,7 +82,7 @@ A tab agent's progress is never a trigger.
 - Tab agents send decisions, blockers, and deliveries to the Leader through [`herdr-talk`](../herdr-talk/SKILL.md), at any time. Answer within the approved plan; escalate Human Layer questions to the user as consolidated decision cards, summarized in system terms, never as a forwarded message.
 - **Tab agent traffic updates the Leader silently.** On every incoming tab agent message:
   1. Handle the message: answer the tab agent through `herdr-talk`, or turn its question into a decision card or a tier-2 notice.
-  2. Refresh cheaply: `hc ls --label herdr.space=<space-id>` and `leader.md`, plus a look at whatever the message says changed (a PR, a branch); keep the Panel's PR lines from the last Panel and refresh only the PRs that changed (`gh pr view`). A full gather is `herdr-evidence`'s job, not this step's.
+  2. Refresh cheaply: `hc ls --label herdr.space=<space-id>` and `leader.md`, plus a look at whatever the message says changed (a PR, a branch); keep the Panel's PR lines from the last Panel and refresh only the PRs that changed (`gh pr view`). A full gather is `provide-evidence`'s job, not this step's.
   3. **Interrupt the user only on a trigger** of [When to Show It](references/panel-format.md#when-to-show-it), with its layout; otherwise stay silent.
 - **The user may talk to any tab.** When a tab agent reports that the user decided something in its tab, record it in `leader.md`, close the matching pending item, and never ask the user for it again.
 - **Tab agents have no parent, so nothing notifies the Leader when a tab agent blocks, errors, or exits.** Before every report to the user, and whenever a tab agent goes silent, check every tab agent's state (`hc ls --label herdr.space=<space-id>`, `hc get <agent>`); on `blocked`, `error`, or an exited tab agent, inspect with `hc read <agent> --lines 40` and treat it like a message from that tab agent. herdr-core's bare `<hc>…</hc>` note still arrives for the Leader's own sub-agents.
@@ -114,7 +114,7 @@ When the objective is met or abandoned, report the outcome to the user, set `Sta
 - [ ] `scope-review` ran before the split and whenever the objective shifted; its conclusion reached the user.
 - [ ] The split was presented as a visual plan, with one line per agent on what it adds to the system, and tab agents were created through `herdr-handoff` only after the user approved it.
 - [ ] `leader.md` follows the team-folder format (every Decisions & Rationale entry prefixed with its ISO date), records intent only, and was updated exactly on the listed triggers.
-- [ ] A user asking how the work is going got the Panel, with a pointer to `herdr-evidence` for proof.
+- [ ] A user asking how the work is going got the Panel, with a pointer to `provide-evidence` for proof.
 - [ ] Tab agent decisions reached the user as consolidated decision cards in system terms; tab agents were observed before being messaged, and their state was checked before every report to the user and whenever one went silent.
 - [ ] Sub-agents wrote no code, were started only within an approved mission under the `herdr-handoff` sub-agent rules, and each was ended and removed by its creator after its report.
 - [ ] Tab agent traffic updated the Leader silently; the user was written to about the work only on a trigger of When to Show It, in its layout, with the Panel's first line on what depends on the user and its blocks in fixed order; replies in conversation where nothing changed carried no Panel.
