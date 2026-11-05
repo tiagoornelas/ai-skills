@@ -35,7 +35,7 @@ A line is proven only by something the human can open or re-run without trusting
 - a **diff**: of the contract or rule file checked, or of the test files, as a command (`git diff <base>...<commit> -- <path>`) with its excerpt;
 - a **module map**: a diagram or list of touched modules, derived from the diff.
 
-A line whose proof is only an assertion ("tests pass", "reviewed", "no risk") is ❌, whatever it claims. "Tested" without the command and its output, or a "real run" described in words without its file or log, is a no.
+A line whose proof is only an assertion ("tests pass", "reviewed", "no risk") is ❌, whatever it claims. **The artifact must prove that line's claim**, not merely exist: a bare list of modules does not prove (b) unless it comes from the diff; a bare revert command does not prove (d) unless the affected flows and data are named and the rollback path was checked against this change; a link to an unrelated issue does not prove (a). An artifact that does not prove its line's claim is ❌. "Tested" without the command and its output, or a "real run" described in words without its file or log, is a no.
 
 ### The Real Run Belongs to the Attested Commit
 

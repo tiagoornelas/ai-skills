@@ -139,6 +139,6 @@ This section is the one home of when the Leader writes to the user about the wor
 
 **Layout.** One line on what just changed, in system terms; then the Panel; then, below it, the full decision card or notice for each item that is new.
 
-Omit the Panel when the user is talking with the Leader about something (a question, an explanation, a decision card the user asked to have explained) and nothing changed: repeating an identical Panel only buries the answer.
+Omit the Panel when the user is talking with the Leader about something (a question, an explanation, a decision card the user asked to have explained) and nothing changed: repeating an identical Panel only buries the answer. The exception is the user asking how the work is going: that question is always answered with the Panel.
 
 Tab agents never fill that gap with reports of their own: they write to their Leader, and to the user only in a tab where the user has written (the tab agent contract of [`herdr-handoff`](../../herdr-handoff/SKILL.md#3-write-and-start-each-stream)).

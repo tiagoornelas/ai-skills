@@ -7,7 +7,7 @@ description: >-
   reduce, stop, or merge with another space) and its justification; what
   need not be done (stalled, duplicated across spaces, maintenance cost above
   benefit); where the user's attention went compared with where the impact
-  is, measured by the decisions and updates recorded in each leader.md; and
+  is, measured by the dated decisions recorded in each leader.md; and
   one queue, ordered by impact, of everything that depends on the user now
   (pending decisions, notices, user-only actions, agents blocked or in error,
   PRs awaiting their review, their own open PRs), one owner per subject.
@@ -44,7 +44,7 @@ Observe in parallel where the harness allows it; nothing here needs to ask an ag
 | Spaces, tabs, and each terminal's status | `herdr-app ls`; `hc ls --json` (status `blocked` or `error`, with `where`) |
 | Each front's objective, tasks, next steps | `leader.md`: Objective, Tasks and Issues, Next Steps |
 | Each front's pending items and when they opened | `leader.md` Pending Decisions (`opened` times, `↪` reference lines) |
-| The user's attention per front | `leader.md` Decisions & Rationale entries and `Updated` lines: count those dated per day, over the last seven days |
+| The user's attention per front | `leader.md` Decisions & Rationale entries, by the ISO date that prefixes each ([team-folder.md](../herdr-team-lead/references/team-folder.md#2-leadermd)): count entries per day over the last seven days; entries without an ISO date prefix are counted apart as undated, never dated by guess |
 | Tracker priority | the priority of each task referenced in Tasks and Issues, through whatever the harness reaches (a CLI such as `gh`, or a connected integration); unreachable reads "priority unavailable" |
 | Stalled work | no tab `working` in the space, and no commit on its agents' branches and no `Updated` in the last three days |
 | PRs per front | each agent's branch (`git -C <cwd> branch --show-current`) matched with `gh pr list --head <branch> --json number,title,url,state,isDraft,statusCheckRollup` |
@@ -61,9 +61,9 @@ When `gh` is missing or not authenticated, say the PR part was skipped; never gu
 
 **Deep pass on at most three fronts.** Pick the up-to-three most suspicious: stalled, duplicated across spaces (overlapping objective, branches, or PRs), or receiving much attention for little impact. For each, run [`scope-review`](../scope-review/SKILL.md) in full, in parallel sub-agents when the harness allows ([subagent delegation](../ai-assisted-software-development/references/subagent-delegation.md)); brief each with the front's `leader.md`, its PRs, this section verbatim, and that it is read-only (no writes, no messages), and ask for the verdict, its justification, the lost value if cut, and the uncertainty. In a Herdr App session, a sub-agent follows the sub-agent rules of [`herdr-handoff`](../herdr-handoff/SKILL.md#31-sub-agents): its creator ends and removes it after its report.
 
-**Attention vs. impact.** Compare each front's share of the user's recorded attention (decisions and updates per day) with its impact rank. Flag a front whose attention rank is two or more places above its impact rank, and a high-impact front with no recorded attention in the window. Attention measured from records misses conversation the Leader did not record: say so once.
+**Attention vs. impact.** Compare each front's share of the user's recorded attention (dated decisions per day) with its impact rank, and show each front's undated count ("undated: N") when non-zero. Flag a front whose attention rank is two or more places above its impact rank, and a high-impact front with no recorded attention in the window. Attention measured from records misses conversation the Leader did not record: say so once.
 
-**What depends on the user.** One subject, one item, under the [one owner per subject](../herdr-team-lead/references/team-folder.md#2-leadermd) rule (earliest `opened`, then space name), naming the other spaces that raised it; `↪` reference lines are never items. Order the queue by the impact of the front it unblocks, not by age; when a team's `leader.md` was last updated more than a day ago, its items stay and add *(recorded <n> days ago, may be out of date)*.
+**What depends on the user.** One subject, one item, under the [one owner per subject](../herdr-team-lead/references/team-folder.md#2-leadermd) rule (earliest `opened`, then space name), naming the other spaces that raised it; `↪` reference lines are never items. Order the queue by the impact of the front it unblocks, not by age. Each item keeps the time it was recorded (`opened`); a record without `opened` falls back to its team's `Updated` and says *(time inferred)*. When a team's `leader.md` was last updated more than a day ago, its items stay and add *(recorded <n> days ago, may be out of date)*.
 
 ## 4. Write the Output
 
@@ -71,6 +71,8 @@ Entirely in the user's session language, following [human-facing communication](
 
 ````markdown
 ## 🎯 <Scope across spaces> · <date and time>
+
+**❓ <5 items depend on you in 3 spaces>**   or   **✅ <Nothing depends on you in any space>**   (add "· <1 notice proceeds at 14:00 unless you object>" when there is one)
 
 **<one-line conclusion: where the impact is, and the single most important cut or shift>**
 
@@ -83,23 +85,25 @@ Entirely in the user's session language, following [human-facing communication](
 - 🟡 <space or part of it> · <stalled since date | duplicates Y | costs more to keep than it returns> → <recommendation>
 
 ### <Your attention vs. impact>
-- ⚠️ <space>: <n decisions and updates in 7 days> · impact rank <k> → <what that suggests>
+- ⚠️ <space>: <n decisions in 7 days> · impact rank <k> · <undated: N> → <what that suggests>
 - ⚠️ <space>: impact rank 1 · no recorded attention in 7 days
 
 ### <What depends on you now>
-1. ❓ <decision, in system terms> · <space> · go to tab <Leader> · <why yours> · <easy | hard>
+1. ❓ <decision, in system terms> · <space> · go to tab <Leader> · <why yours> · <easy | hard> · <recorded on date and time>
 2. 👀 <repo>#<n> · <short name> · <space or "outside the spaces">
 3. ✋ <agent role> is stopped at a dialog: <what it asks> · go to tab <tab name>
 4. ⚠️ <notice: what will appear> · <space> · <proceeds at time unless you object>
+<+N more, in <spaces>: ask for the full queue>
 
 <Your open PRs: repo#n short name (space), one plain line>
 <Spaces with nothing for you · team folders without a live space · skipped sources: one plain line>
 ````
 
-- **Conclusion first**, one bold line.
+- **First line, always**: how many numbered items depend on the user and in how many spaces, or that nothing does. It counts ❓, 👀, and ✋ items only; ⚠️ notices are named after the count, since they proceed without an answer.
+- **Conclusion next**, one bold line.
 - **Fronts**: every active front, highest impact first; at most two lines each; the deep-review ones say so.
 - **What need not be done** lists only fronts or parts with a concrete signal (stalled, duplicated, cost above benefit); omit the block when none.
-- **What depends on you now** is one numbered queue across spaces, ordered by impact; every item names the space and the tab to open; ✋ items say why only the user can; ⚠️ notices show their deadline. The user's own open PRs are context, not queue items, and a PR already listed as 👀 is not repeated.
+- **What depends on you now** is one numbered queue across spaces, ordered by impact, showing at most the top seven items followed by "+N more" with their spaces (the full queue on request); every item names the space and the tab to open; ✋ items say why only the user can; ⚠️ notices show their deadline. The user's own open PRs are context, not queue items, and a PR already listed as 👀 is not repeated.
 - When the user named a space, judge only that front in depth but keep the queue across all spaces.
 
 ## 5. Success Validation
@@ -108,6 +112,6 @@ Entirely in the user's session language, following [human-facing communication](
 - [ ] Fronts were exactly the active teams with a live space; every front got a shallow verdict (continue, reduce, stop, merge) with a justification, and at most three got a deep `scope-review`.
 - [ ] Impact came from the `leader.md` objective and tracker priority; inferences were marked.
 - [ ] What need not be done listed only fronts with a concrete signal.
-- [ ] Attention was measured from `leader.md` Decisions & Rationale entries and `Updated` lines per day, compared with impact rank, and its blind spot was stated.
-- [ ] The queue of what depends on the user held one item per subject, ordered by impact, with space and tab for each; PRs awaiting review, blocked or errored agents, pending decisions, notices, and user-only actions were all read; skipped sources were named.
+- [ ] Attention was measured from ISO-dated `leader.md` Decisions & Rationale entries per day, undated entries were reported as "undated: N" and never guessed, compared with impact rank, and its blind spot was stated.
+- [ ] The output opened with the line counting what depends on the user across spaces; the queue held one item per subject, ordered by impact, at most seven shown then "+N more", each with its recorded time (or *(time inferred)*), with space and tab for each; PRs awaiting review, blocked or errored agents, pending decisions, notices, and user-only actions were all read; skipped sources were named.
 - [ ] Everything was in the user's language, recommendations only; the user decides.
