@@ -20,7 +20,7 @@ Each line is a yes or no (✅ or ❌) followed by its proof, in the human's sess
 | Line | Question it answers | Artifact it cites | Built from | Attested by |
 | :--- | :--- | :--- | :--- | :--- |
 | **(a) Why do it** | Should this exist? The problem it solves and what was deliberately left out. | A link to the issue or request, and to the scope conclusion | [`scope-review`](../../scope-review/SKILL.md) | Author |
-| **(b) Architecture** | Which modules it touches, which components are new (tier 2 items, each already announced), and which new structures it introduces (folders, modules, clients, configuration variables, cross-cutting mechanisms). | The module map (diagram or list of touched modules from the diff), the notice of each new component, and the list of new structures | [`software-designing`](../../software-designing/SKILL.md) | Author |
+| **(b) Architecture** | Which modules it touches, which components are new (tier 2 items, each already announced), and which new structures it introduces (folders, modules, clients, configuration variables, cross-cutting mechanisms). | The module map (diagram or list of touched modules from the diff), each new component with how it was approved (in the approved split, the notice and its date, or the human's decision and its date), and the list of new structures | [`software-designing`](../../software-designing/SKILL.md) | Author |
 | **(c) No wall knocked down** | Boundaries, contracts, and dependency direction are intact; no project rule was bypassed; no test was disabled, skipped, or weakened. | The diff of each contract or rule file checked (or the command showing it unchanged), and the diff of the test files | `software-designing` lenses, [`agent-self-review`](../../agent-self-review/SKILL.md) on the author side | Independent reviewer |
 | **(d) Nothing built on the side** | Did the change reuse the project's established way of doing each kind of thing it introduces? | For each new structure: the existing sibling it follows (path), or the search showing none exists (command + result), or the recorded human decision approving the deviation (link) | `software-designing` lenses; the author lists new structures in (b) | Independent reviewer |
 | **(e) No catastrophe** | What can break, which production data it touches, and how to undo it. | The affected flows and data traced in the diff (files and lines), and the revert or rollback command | [`human-review`](../../human-review/SKILL.md) risk assessment | Independent reviewer |
@@ -45,7 +45,7 @@ Line (f) holds only when its real run executed the commit the dossier attests. A
 ```markdown
 **Evidence · <delivery, in system terms> · <short commit hash>**
 - ✅ (a) Why: <problem solved> · left out: <what and why> — <issue link> · <scope conclusion link>
-- ✅ (b) Architecture: touches <modules> · new: <components, or none> — <module map, or `git diff --stat <base>...<commit>` excerpt>
+- ✅ (b) Architecture: touches <modules> · new: <each component (in the approved split | notice <date> | decided by <human> <date>), or none> — <module map, or `git diff --stat <base>...<commit>` excerpt>
 - ✅ (c) No wall knocked down: <boundaries, contracts, rules, tests intact> — `git diff <base>...<commit> -- <contract or rule file>` → <excerpt, or "no change"> · attested by <reviewer>
 - ✅ (d) Nothing built on the side: <each new structure> follows <existing sibling>, or none exists, or approved deviation — <sibling path> · `<search command>` → <result> · <decision link> · attested by <reviewer>
 - ❌ (e) No catastrophe: <what can break> · production data: <none or which> · undo: <how> — <files and lines traced> · `<revert command>` · attested by <reviewer>
@@ -107,4 +107,4 @@ Brief the reviewer with these questions, verbatim, together with the change:
 - [ ] The delivery reached the reviewer only after a clean branch-mode `agent-self-review` verdict from its author; the reviewer complemented that review and did not replace or waive it.
 - [ ] Lines (c)–(f) were attested by a reviewer that did not write the change, started from a clean context, was briefed with the change and the reviewer questions, not the author's answers, and produced its artifacts by running things itself.
 - [ ] The attestation names the reviewed commit, was stored as an `evidence` git note on it before the reviewer ended, and was redone after any new commit on the delivery.
-- [ ] Every new component in line (b) had been announced before it was built, and every new structure it lists was checked in line (d) against the project's existing equivalent.
+- [ ] Every new component in line (b) named its approval and had been announced before it was built, and every new structure it lists was checked in line (d) against the project's existing equivalent.

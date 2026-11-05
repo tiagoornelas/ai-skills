@@ -46,6 +46,8 @@ Observe in parallel where the harness allows it. When the user named a PR, gathe
 | Artifacts the note cites | the links, commands, and local file paths inside the note; check each local file exists |
 | Base moved after the proof | `git fetch origin <base>`, then `git log --format='%h %an %cI %s' <proven commit>..origin/<base>`: commits dated after the note's attestation time moved the base after the proof; name the author and PR of each |
 | Task status | each task referenced in `leader.md` or the PR, from whatever tracker it points to through the tools the harness reaches; an unreachable tracker reads "status unavailable", never a guessed status |
+| What the PR adds to the system | the PR body and diff (new jobs, schedules, migrations, routes, secrets, IAM, infrastructure files), in the closed categories of the [what appears](../herdr-team-lead/references/panel-format.md#what-appears) line |
+| How each added item was approved | `leader.md`: the approved split (Tab agents and Decisions & Rationale), tier-2 notices and user decisions in Decisions & Rationale and Pending Decisions, with their dates |
 | Validation environment's deployed commit | only when `leader.md` or the project records how to read it (a deploy URL, a status endpoint, a CI environment); otherwise "not observable" |
 
 **Re-check before printing.** Read each PR's `headRefOid` again right before writing; if it moved during the gather, mark that card's evidence as outdated for the new head.
@@ -58,7 +60,7 @@ For every PR, take the six lines from its evidence note and judge each per the d
 
 - ✅ only when the line's artifact **proves that line's claim** and is reachable (a local file exists; a link is well-formed). An artifact that exists but does not prove the claim is ❌ "artifact does not prove it":
   - (a) links the issue, request, or decision that motivates the change, and the scope conclusion for what was left out;
-  - (b) a module map or diff stat that shows the modules named, the notice of each new component, and the list of new structures;
+  - (b) a module map or diff stat that shows the modules named, each new component with its approval (matching the card's what-appears tags), and the list of new structures;
   - (c) the diff or check of the contract, rule, and test files it names;
   - (d) for each new structure, the existing sibling it follows (path), the search that found none (command and result), or the link to a human decision recorded before the change approving the deviation;
   - (e) names the affected flows and data traced in the diff, and a revert or rollback path that was checked (run, or dry-run, against this change), not a bare command;
@@ -84,6 +86,7 @@ Entirely in the user's session language, following [human-facing communication](
 
 ── <repo>#<n> · <short name> ─────────────────────────────────────────
    <open | draft | merged> · CI <worst state> · <conflict | no conflict> · <by tab role> (<PR author>) · <your review: pending | ok | changes | —>
+   🏗️ <the what-appears line, each item tagged: (in the approved split) | (notice <date>) | (decided by you <date>) | ⚠️ (appeared without notice)>
    <proven version> <short> = <current PR version> · <base moved after the proof: no | yes: <what, by whom, when>>
    ✅ (a) <Why>: <problem> · <left out>: <what> — <artifact>
    ✅ (b) <Architecture>: <touches> · <new> — <artifact>
@@ -100,13 +103,14 @@ Entirely in the user's session language, following [human-facing communication](
 
 - **Verdict first, one line**, chosen from what the cards show:
   - ✅ "proven on the current version; only your review is left" (every open PR has six ✅ for its current head, the base did not move after the proof, and the author's review is branch-clean);
-  - ⚠️ "looks done but is not proven: <the gaps>" (any ❌, outdated note, draft, conflict, failing CI, or base moved after the proof);
+  - ⚠️ "looks done but is not proven: <the gaps>" (any ❌, outdated note, draft, conflict, failing CI, base moved after the proof, or an item that appeared without notice);
   - ⏳ "not done: <what is still running>" (tabs working or PRs not yet opened for a stream);
   - ✅ "delivery proven; objective completion not verifiable" (cards proven but no `leader.md` objective or tracker to check them against).
 - **CI** is the worst state among the PR's checks: failing > running > cancelled > ok; `—` when it has none.
 - **Closing line**: the one next action when it is the user's; when nothing is, say so plainly and name the agents' next step.
 - **One card per PR**, open PRs first, merged PRs collapsed into one final line with their proven state. A stream without a PR gets a card with its branch and head instead of the PR line.
 - **The six lines always in full**, each with its artifact as it appears in the note (link, `command` → output excerpt, local path). Never a bare count such as "6/6" or "4 of 6".
+- **What appears** sits right under the PR state line, in the closed categories and format of the [what appears](../herdr-team-lead/references/panel-format.md#what-appears) line. Each item is tagged with how it was approved: in the approved split, a tier-2 notice (its date), or decided by the user (its date); an item with no approval found is ⚠️ "appeared without notice" and makes the verdict ⚠️. Omit the line when the PR adds nothing in those categories.
 - **Base moved after the proof** names what moved it and who authored it, so the user knows whether to ask for a new proof.
 - **Team facts** come last: tabs still working, uncommitted files per worktree, and any contradiction with `leader.md` (a next step already done, a tab gone, a PR merged that it still says to follow).
 - Situate every term in the product, per [Briefing a Change](../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change); never relay an agent's raw words.
@@ -116,7 +120,7 @@ Entirely in the user's session language, following [human-facing communication](
 - [ ] Herdr App environment verified, without the `herdr` terminal CLI or `--on`; the output covers only the named space, or this terminal's space; without either, the user was asked which space.
 - [ ] Nothing was started, run, fixed, written, merged, or messaged.
 - [ ] The output opened with one verdict line, then the objective, then one card per PR (or stream without PR), then team facts and contradictions with `leader.md`.
-- [ ] Each card showed state, CI, conflict, author, the user's review, the proven version against the current PR head, and whether the base moved after the proof, with who moved it.
+- [ ] Each card showed state, CI, conflict, author, the what-appears line when the PR adds something (each item tagged with its approval, or ⚠️ appeared without notice), the user's review, the proven version against the current PR head, and whether the base moved after the proof, with who moved it.
 - [ ] Each card showed all six lines in full (a five-line note mapped to the new letters, its (d) as no record) with their artifacts; no count stood in for them; lines without an artifact, with an artifact that does not prove their claim, missing from the note, or with a real run of another commit were ❌, naming the version it ran on.
 - [ ] Every ❌ carried what is missing and who acts; ✋ only with why only the user can.
 - [ ] A missing note read "no record on this machine"; a note on an older commit read "outdated: proves X, PR is at Y"; an incremental or ancestor self-review did not count as branch-clean.
