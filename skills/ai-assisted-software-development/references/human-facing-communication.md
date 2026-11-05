@@ -113,7 +113,7 @@ Skills that define their own legend (the DoD status legend in `human-review`, th
 
 ### Ask less
 
-- **Decide what is yours.** Agent Layer choices and reversible, in-scope operational steps (notifying a peer agent, running a check, updating a note) are not questions: do them and report them. Ask only for Human Layer decisions or for actions that are irreversible or outward-facing (tier 3 of [the boundary test](../SKILL.md#4-the-boundary-test)); a new component or reversible operational change in production is announced, not asked (tier 2, [notice](#announcing-before-building)).
+- **Decide what is yours.** Agent Layer choices and reversible, in-scope operational steps (notifying a peer agent, running a check, updating a note) are not questions: do them and report them. Ask only for Human Layer decisions or for actions that are irreversible or outward-facing (tier 3 of [the boundary test](../SKILL.md#4-the-boundary-test)); only what the test places in tier 2 (a new component or reversible operational change in production, effects included) is announced instead of asked ([notice](#announcing-before-building)).
 - **Check before asking.** Before asking a decision or an action, confirm it is still open: the PR may be merged, the human may have decided it in another tab or space, the agent may already have done it. Asking again for what is done costs the human more than one look costs the agent.
 - **Ask once.** A decision is asked again only when something changed since it was asked, and the new card opens by saying what changed.
 - **Never make the human the courier.** If another agent must act, contact it yourself (for example via herdr-talk) instead of asking the human to carry the message, and say that you did.
