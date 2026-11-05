@@ -36,7 +36,7 @@ Forks the current work into agent sessions while leaving the calling terminal's 
   | The streams join a space without `leader.md`, and another tab seems to be coordinating it | Ask the user which tab leads, then adopt with that tab as Leader. |
 
 - Use a named space when requested: match its name in `herdr-app ls`, create it once if absent, and ask only if several match.
-- Use the calling harness's command from `hc get "$HC_TERMINAL_ID"` (`foreground.argv[0]`, for example `claude`) unless the user names another. Codex must run with `--no-daemon`. Pass other native flags only when explicitly requested.
+- Use the calling harness's command from `hc get "$HC_TERMINAL_ID"` (`foreground.argv[0]`, for example `claude`) unless the user names another. Wrap with `env TERM=xterm-256color` when launching via `hc run` so that terminal tools (such as `agy`) detect color support instead of falling back to monochrome under herdr-core's default `TERM=dumb`. Codex must run with `--no-daemon`. Pass other native flags only when explicitly requested.
 - Choose each stream's kind; the user may override it:
 
   | Kind | When | Shape |
@@ -84,7 +84,7 @@ Every code-writing stream's Recommended Skills always lists the delivery workflo
 
 ```bash
 hc run --bg --json --name <agent-name> --cwd <dir> --outlive-parent --no-parent \
-  --label herdr.space=<space-id> <command> "<start prompt>"
+  --label herdr.space=<space-id> env TERM=xterm-256color <command> "<start prompt>"
 ```
 
 - `--outlive-parent` is mandatory: without it, the agent ends when the agent that started it ends.
@@ -103,7 +103,7 @@ Any tab of a team, the Leader or a member, may start a task. The creator runs th
 
 ```bash
 hc run --bg --json --name <agent-name> --cwd <dir> \
-  <command> "<brief, or the path of its brief file, plus: you start no agents; report with hc send <creator-address> when done or stuck>"
+  env TERM=xterm-256color <command> "<brief, or the path of its brief file, plus: you start no agents; report with hc send <creator-address> when done or stuck>"
 ```
 
 1. **Within the creator's approved mission only.** A task never widens scope or settles a Human Layer decision; those still go from a member to the Leader, and from the Leader to the user.
