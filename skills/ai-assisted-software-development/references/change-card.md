@@ -22,7 +22,7 @@ The layout in Section 3 is an example; this content is not optional.
 | :--- | :--- |
 | **New and where it lives** | Every new thing that runs, costs, stores data, holds permissions, or creates a place in the code, one per line: **kind · name · where** (path or module), and for infrastructure the file that creates it (the migration, the deploy or infrastructure definition). Each item says how it was approved: *in the approved split*, *notice <date>*, *decided by you <date>*, or ⚠️ *no record*. |
 | **Business rule** | Each rule that changes, with a before and after in one line and the human's decision that approved it; or "none". |
-| **Data** | Production data the change deletes or rewrites, and how it is undone; or "none". |
+| **Data** | Production data the change deletes or rewrites, and how it is undone; data sent to a new third party or processor (what leaves, and to whom); or "none". |
 | **Pattern** | For each new thing: the existing sibling it follows (path), or ⚠️ *built on the side* with what it duplicates or departs from; see [nothing built on the side](../../software-designing/SKILL.md#nothing-built-on-the-side). |
 | **Walls** | Boundaries, contracts, dependency direction, project rules, and tests: "intact", or ⚠️ which one was crossed or weakened and why. |
 | **State** | The [PR line](#4-pr-line), whose proof state says whether the proof is for the current version; before a PR exists, the branch or the plan. |
@@ -44,7 +44,7 @@ New and where it lives
   none    database, service, cloud function, queue, secret or permission, cost, folder or module,
           client, configuration variable, cross-cutting mechanism
 Business rule  invoices expired for 90 days are deleted (was: kept forever) · decided by you 2026-11-04
-Data           deletes expired invoices · undo: restore from the daily backup
+Data           deletes expired invoices · undo: restore from the daily backup · sent to new third parties: none
 Pattern        job follows app/jobs/session_purge_job.rb · route follows the other internal routes
 Walls          intact
 State          👀 web-app#212 · invoice purge · CI ok · agent ok · proof ok · you pending
@@ -58,6 +58,7 @@ Every PR is written the same way, on the card and in any message about the work:
 
 ```text
 <emoji> <repo>#<number> · <short name> · [draft · ][conflict · ]CI <state> · agent <state> · proof <state> · you <state>
+<emoji> <repo>#<number> · <short name> · merged · proof <state>
 ```
 
 - **`<repo>`** is the repository name without its owner (`web-app#212`). **`<short name>`** is two to four words naming what the PR changes.
@@ -66,7 +67,9 @@ Every PR is written the same way, on the card and in any message about the work:
 - **agent**: the author's self-review on the PR head: `ok` (a clean branch-mode `agent-self-review`), or `—` for no record.
 - **proof**: the [evidence](../../provide-evidence/references/evidence-dossier.md) of the PR head: `ok` (all six lines ✅ for the current head), `failing` (a line is ❌), `outdated` (it proves an earlier commit), or `—` for no record.
 - **you**: the human's review: `ok` (approved), `changes` (changes requested), `pending` (ready for them: not a draft, CI ok, agent ok, proof ok), or `—` for no record. Without `proof ok` it is never `pending`: the work is not ready for the human yet.
-- **Leading emoji**, the worst that applies: ❌ conflict, CI failing, or proof failing · ⏳ draft, CI running, agent review missing, or proof outdated or missing · 👀 proven and the human owes the review · ✅ proven and approved, ready to merge. An unproven PR is never 👀 or ✅.
+- **Leading emoji**, the worst that applies: ❌ conflict, CI failing, or proof failing · ⏳ draft, CI running, agent review missing, or proof outdated or missing · 👀 proven and the human owes the review · ✅ proven and approved, ready to merge.
+- **Merged** PRs use the second form: the word `merged` with the proof state of the merged head beside it (`merged · proof —`). Its emoji is ✅ only with `proof ok`, ⚠️ otherwise.
+- **One rule**: a PR without `proof ok` is never 👀 or ✅, open or merged.
 - A missing note reads "no record" (`—`), never "not reviewed": its absence on this machine proves nothing.
 
 ## 5. Success Validation

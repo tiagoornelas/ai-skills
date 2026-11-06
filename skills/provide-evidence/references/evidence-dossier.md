@@ -7,7 +7,7 @@
 ## When to consult
 
 - Whenever a delivery reaches the human: a pull request ready for their review, a finished stream, a change reported as done. A delivery is always a specific version: the commit at the head of its branch or pull request.
-- Whoever presents the delivery (its author, or a lead agent such as a Herdr App Leader) has it verified first with [`provide-evidence`](../SKILL.md)'s verify action, and presents it with its [change card](../../ai-assisted-software-development/references/change-card.md).
+- A lead agent (such as a Herdr App Leader) about to present a delivery has it verified first with [`provide-evidence`](../SKILL.md)'s verify action, and so does anyone when the human asks; an author agent working alone never starts the reviewer on its own. Every delivery is presented with its [change card](../../ai-assisted-software-development/references/change-card.md).
 - On demand, `provide-evidence` shows any delivery's dossier as recorded and judges each line against its proof, for one's own PRs or anyone else's.
 
 The dossier does not replace the notice that tier 2 requires before building ([the boundary test](../../ai-assisted-software-development/SKILL.md#4-the-boundary-test)) nor the briefing of the change ([Briefing a Change](../../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change)): it is the proof that closes the briefing, next to the change card it proves.

@@ -20,7 +20,7 @@ One emoji per line, at its start, always followed by words; the same emoji alway
 
 | Emoji | Meaning in the Panel |
 | :---: | :--- |
-| ✅ | Done, merged, ready to merge, or reviewed |
+| ✅ | Done, merged with its proof ok, proven and ready to merge, or reviewed |
 | ⏳ | In progress, including work waiting for another stream or sub-agent of the team to finish |
 | ❓ | A decision the user must make: a choice, with options and a recommendation |
 | 👀 | A review the user owes |
@@ -79,7 +79,7 @@ The canonical state of the space. The Leader shows it whenever something changes
 - ❌ <repo>#<n> · <short name> · <conflict> · CI <failing> · <agent> <ok> · <proof> — · <you> —
 - 👀 <repo>#<n> · <short name> · CI <ok> · <agent> <ok> · <proof> <ok> · <you> <pending>
   🏗️ <new>: <job expired-invoice purge · table billing_invoices>
-- ✅ <merged>: <repo>#<n>
+- ⚠️ <repo>#<n> · <short name> · <merged> · <proof> —
 
 <Nothing blocked · No PRs: one plain line, only when some block is empty>
 ````

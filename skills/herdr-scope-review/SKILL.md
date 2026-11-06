@@ -31,8 +31,8 @@ The user leads several Herdr App spaces at once; each Leader sees only its own. 
 
 ## 2. Collect
 
-- **Fronts**: every space in `herdr-app ls` with agents, matched to its team folder `~/.herdr-teams/<space-id>/` ([team-folder.md](../herdr-team-lead/references/team-folder.md)) by id, or by the `Space:` name in a `leader.md` after a rename. A space without `leader.md`, or whose team folder is gone, is still a front, shown with its gaps ("no leader.md: objective unknown"), from its tabs, the branch of each terminal's working directory (`hc get <terminal>` `foreground.cwd`, then `git -C <cwd> branch --show-current`), and their PRs.
-- **Teams whose space is gone**: an active `leader.md` with no live space is not a front, but its pending items stay in the queue, marked *space closed — reopen or conclude*. Concluded folders are counted once in the closing line.
+- **Fronts**: every space in `herdr-app ls` with agents, matched to its team folder `~/.herdr-teams/<space-id>/` ([team-folder.md](../herdr-team-lead/references/team-folder.md)) by id, or by the `Space:` name in a `leader.md` after a rename. A space without `leader.md`, or whose team folder is gone, is still a front, shown with its gaps ("no leader.md: objective unknown"), from its tabs, the branch of each terminal's working directory (`hc get <terminal>` `foreground.cwd`, then `git -C <cwd> branch --show-current`), and their PRs; when a terminal's current branch has no PR (an agent back on the default branch after a merge), fall back to the recent PRs of the same author in that repository (`gh pr list --state all --author @me --limit 10`) and to branches in its reflog (`git -C <cwd> reflog --format=%gs | grep 'checkout: moving'`), and show each PR found this way as *found by fallback*.
+- **Teams whose space is gone**: an active `leader.md` with no live space is not a front, but its pending items stay in the queue, marked *space closed — reopen or conclude*; one with nothing pending is still listed once, with the same mark. Concluded folders are counted once in the closing line.
 - **Per front**: objective, tasks, and next steps from `leader.md`; pending items with their `opened` times; tab states (`hc ls --json`: `blocked` or `error`); each agent's branch and its PRs, merged ones included (`gh pr list --head <branch> --state all --json number,title,url,state,isDraft,statusCheckRollup,headRefOid`), with the proof state of each open PR's head (`git notes --ref=evidence show <head>`, judged as [`provide-evidence`](../provide-evidence/SKILL.md) does); the tracker priority of referenced tasks when reachable ("priority unavailable" otherwise).
 - **Across spaces**: PRs awaiting the user's review (`gh search prs --review-requested=@me --state=open`) and the user's own open PRs (`gh search prs --author=@me --state=open`). Without `gh`, say the PR part was skipped.
 
@@ -67,7 +67,7 @@ In the user's session language, per [human-facing communication](../ai-assisted-
 <Your open PRs · spaces with nothing for you · concluded folders · skipped sources: one plain line each>
 ````
 
-- **First line, always**: how many ❓, 👀, and ✋ items depend on the user and in how many spaces, or that nothing does; ⚠️ notices are named after the count with their deadline.
+- **First line, always**: how many ❓, 👀, and ✋ items depend on the user and in how many spaces, or that nothing does; ⚠️ notices are named after the count with their deadline. Count one per open item in each `leader.md` Pending Decisions, including those queued past a Leader's limit of open decisions, plus each 👀 PR and each ✋ agent dialog; a bullet that holds two asks counts as two.
 - The queue shows at most seven items, then "+N more"; every item names its space and the tab to open.
 
 ## 5. Success Validation
