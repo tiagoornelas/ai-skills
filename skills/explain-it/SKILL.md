@@ -41,7 +41,7 @@ Every explanation is written for that reader. If a sentence only makes sense to 
 1. **Target of Explanation**: if no argument is provided, explain the last component, file, or flow discussed in the conversation.
 2. **Business Context**: 2 to 4 sentences on the problem this part of the system solves, for whom, and where it sits in the product.
 3. **What It Is**: 1 to 2 sentences on the component's role among the applications, in plain words.
-4. **Structural View / Flow (Visual)**: diagram via `visualize-it`, in the format its destination rule dictates (terminal-native in conversation), showing how it interacts with surrounding applications and modules, followed by one concrete example traced through it.
+4. **Flow (Visual)**: a swimlane of the flow via `visualize-it`, in the format its destination rule dictates (terminal-native in conversation), showing how it interacts with surrounding applications and modules, followed by one concrete example traced through it.
 5. **Glossary**: short table of the domain terms and internal names used, each with a one-line definition.
 6. **Key Nuances & Pitfalls**: edge cases, critical business rules, failure modes, and the traps a newcomer is most likely to fall into.
 7. **Where to Go Next**: 2 to 4 files, docs, or flows worth reading next, each with why it matters.

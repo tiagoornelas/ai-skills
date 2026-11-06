@@ -1,6 +1,6 @@
 # Mermaid Rendering
 
-Only for a destination that renders Mermaid (a PR or issue body, repository docs, an artifact). The drawing keeps the shape and rules of the terminal one: the same columns, the same product-term labels, the same steps, and color only on detours.
+Only for a destination that renders Mermaid (a PR or issue body, repository docs, an artifact). The drawing keeps the shape and rules of the terminal one: the same columns, the same product-term labels in the user's session language, the same steps, and color only on detours.
 
 ## 1. Swimlanes as a Sequence Diagram
 
@@ -23,7 +23,7 @@ sequenceDiagram
   W->>A: asks for the PDF
   rect rgb(248, 215, 218)
     alt unpaid invoice
-      A-->>W: refuses
+      A-->>W: refused
     end
   end
   A->>D: saves the export (pending)
@@ -37,7 +37,11 @@ sequenceDiagram
   end
   J->>D: stores it (ready)
   Note over U: 3
-  W->>A: asks every 5 s
+  rect rgb(255, 243, 205)
+    loop every 5 s until ready
+      W->>A: asks for the status
+    end
+  end
   A-->>W: link to the PDF
   W-->>U: download
 ```
@@ -68,6 +72,6 @@ stateDiagram-v2
 
 ## Success Validation
 
-- [ ] The Mermaid drawing has the same columns, labels, and steps as the terminal one would.
+- [ ] The Mermaid drawing has the same columns, labels, and steps as the terminal one would, in the user's session language.
 - [ ] Only stops (red) and retries, waits, or flags (yellow) are colored.
 - [ ] No method, class, file, endpoint, or table name appears.

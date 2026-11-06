@@ -24,6 +24,7 @@ One drawing answers **how does this work?**: who does what, in which order, cros
 - **Numbered steps** on the left mark the moments the reader would name (clicks Export, the PDF is rendered, the download); arrows inside a step are not numbered.
 - **Notes beside a column** say what that place does or holds at that moment ("pending", `"preparing…"`).
 - **Marks only on detours**: `■` where the flow stops (an error the user sees, a refusal), `▲` where it retries, waits, or runs only under a flag. Where the destination colors text, `■` lines are red and `▲` lines yellow; nothing else is colored or marked.
+- **The user's language**: column names, arrow labels, and notes are in the user's session language; only the marks stay as they are.
 - **No technical names**: no method, class, file, endpoint path, or table name. When the user asks where an arrow lives, answer for that arrow, keyed by its step number, beside the drawing.
 
 A fictional flow, a user exporting an invoice as PDF:
@@ -34,7 +35,7 @@ A fictional flow, a user exporting an invoice as PDF:
 1  │              │ ▲ only if flag is on  │                     │                 │
    │── Export ───▶│                       │                     │                 │
    │              │── asks for the PDF ──▶│                     │                 │
-   │              │                       │ ■ unpaid: refuses   │                 │
+   │              │◀─ ■ unpaid: refused ──│                     │                 │
    │              │                       │── saves the export ▶│ pending         │
    │              │◀─ accepted ───────────│                     │                 │
    │              │ "preparing…"          │                     │                 │
@@ -44,20 +45,20 @@ A fictional flow, a user exporting an invoice as PDF:
    │              │                       │                     │◀─ stores it ────│
    │              │                       │                     │ ready           │
    │              │                       │                     │                 │
-3  │              │── asks every 5 s ────▶│                     │                 │
+3  │              │── ▲ asks every 5 s ──▶│                     │                 │
    │              │◀─ link to the PDF ────│                     │                 │
    │◀─ download ──│                       │                     │                 │
 ```
 
 ## 2. States (Only for User-Visible States)
 
-Add a states view when the part has states a user sees and rules of the kind "while it is like this, that happens": brackets name each state as the user sees it, arrows carry what moves it to the next one, `■` marks a state the flow ends in.
+Add a states view when the part has states a user sees and rules of the kind "while it is like this, that happens": brackets name each state as the user sees it, arrows carry what moves it to the next one, `■` marks a state the flow ends in and `▲` one it waits or retries from.
 
 ```text
              clicks Export             PDF stored
   [no PDF] ─────────────▶ [preparing] ────────────▶ [ready to download]
                                │
-                               ├─ fails 3 times ──▶ [failed] ─ "Try again" ─▶ [preparing]
+                               ├─ fails 3 times ──▶ [failed] ▲ ─ "Try again" ─▶ [preparing]
                                └─ unpaid invoice ─▶ [refused] ■
 ```
 
@@ -68,13 +69,13 @@ Add a states view when the part has states a user sees and rules of the kind "wh
 | Conversation (terminal, CLI, chat pane), or unknown | Box-drawing text in a fenced block without a language tag, so alignment survives. Terminals and chat panes render Markdown but never Mermaid. |
 | A destination that renders Mermaid (PR or issue body, repository docs, an artifact) | Mermaid in the same shape: `sequenceDiagram` for swimlanes, `stateDiagram-v2` for states, with color only on detours; see [mermaid.md](references/mermaid.md). |
 
-- Emojis are two columns wide in terminals and break the columns: inside a drawing, use only the one-column marks above.
+- Emojis are two columns wide in terminals and break the columns: inside a drawing, use only the marks above. `■` and `▲` are ambiguous-width characters: most terminals draw them one column wide, but some East Asian settings draw two, shifting the columns to their right by one.
 - Under the drawing, at most two sentences on what the reader should notice (where it stops, what depends on the flag).
 
 ## 4. Success Validation
 
 - [ ] The drawing answered how the part works, as swimlanes, plus a states view only when the part has states a user sees.
-- [ ] Columns were places of the system in product terms, time flowed down, each arrow named a call in product terms, and the reader's moments were numbered.
+- [ ] Columns were places of the system in product terms, time flowed down, each arrow named a call in product terms, the reader's moments were numbered, and every word was in the user's session language.
 - [ ] Only detours carried marks or color: `■` for stops, `▲` for retries, waits, or flags.
 - [ ] No method, class, file, endpoint, or table name appeared, except beside the drawing, keyed by step, when the user asked where an arrow lives.
 - [ ] Box-drawing text in conversation; Mermaid only for a destination that renders it, in the same shape.
