@@ -140,5 +140,4 @@ After tasks:
 - [ ] Each task represents a single verifiable outcome; zero tasks per file or per commit.
 - [ ] In-flight and outstanding discoveries captured as *To Do*.
 - [ ] Hierarchy and relationships exist strictly where natural groupings occur; temporary keys resolve consistently.
-- [ ] Zero tool-specific assumptions made prior to user instruction.
-- [ ] Zero items saved to external systems without explicit confirmation.
+- [ ] Zero tool-specific assumptions made prior to user instruction, and zero items saved to external systems without explicit confirmation.
