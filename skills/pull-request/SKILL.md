@@ -2,9 +2,9 @@
 name: pull-request
 description: >-
   Formats and opens pull requests (on GitHub, through the gh CLI) focused on
-  high-level review, with direct executive summary at the top, visual
-  architecture diagrams generated via visualize-it, and issue linkage
-  verification.
+  high-level review: a direct executive summary at the top, the change card's
+  plan of what is new and where it lives, a swimlane via visualize-it when a
+  flow across the system changes, and issue linkage verification.
 ---
 
 # Pull Request
@@ -17,8 +17,8 @@ Skill for structuring, documenting, and opening pull requests, on GitHub through
 
 - **Designed for the Reviewer**: The reviewer must understand the purpose of the PR within the first 5 seconds of reading.
 - **Focus on High-Level Review**: Grounded in the philosophy of [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md) and [`human-review`](../human-review/SKILL.md). Do not clutter the PR with internal implementation minutiae already validated by [`agent-self-review`](../agent-self-review/SKILL.md).
-- **The change card first**: right after the summary, the body carries the change's [change card](../ai-assisted-software-development/references/change-card.md), complete with its State block, so the reviewer sees what is new and where it lives before anything else. This skill cites the card; it never redefines it.
-- **Visuals via `visualize-it`**: a clean Mermaid module map shows boundaries and dependency direction; contract cards show, in system terms, what crosses each new or changed boundary and for whom, never method signatures.
+- **The change card first**: right after the summary, the body carries the change's [change card](../ai-assisted-software-development/references/change-card.md) plan, complete with its `state` line, so the reviewer sees what is new and where it lives before anything else. This skill cites the card; it never redefines it.
+- **A flow only when it changed**: when the PR changes how a flow crosses places of the system, a [`visualize-it`](../visualize-it/SKILL.md) swimlane, in Mermaid, shows it. No module map, interface, or method signature.
 
 ---
 
@@ -81,7 +81,7 @@ Use the structure below:
 ## Change Card
 
 ```text
-[The change card of this PR, per the change-card reference of ai-assisted-software-development: new and where it lives (with approvals, and the "none" line), business rule, data, pattern, walls, and State with the PR line. Inside a text block, so its columns stay aligned.]
+[The change card's plan of this PR, per the change-card reference of ai-assisted-software-development: the count line, one line per thing, and the closing lines with the state. Inside a text block: GitHub renders it monospace, so its columns stay aligned.]
 ```
 
 ---
@@ -97,30 +97,12 @@ Use the structure below:
 ---
 
 ## Decisions & Trade-offs
-[When material, explain actual business rules/restrictions, consequential trade-offs, assumptions, and maintenance commitments introduced by the change. Derive this from the implementation and reuse existing human-review findings; do not run a separate review just to fill this section. Omit if there is nothing material.]
+[When material, explain actual business rules/restrictions, contracts created or altered (who calls, what crosses, what it promises, how it fails, in system terms), consequential trade-offs, assumptions, and maintenance commitments introduced by the change. Derive this from the implementation and reuse existing human-review findings; do not run a separate review just to fill this section. Omit if there is nothing material.]
 
 ---
 
-## Architecture & Contracts
-
-<!-- Module map via visualize-it: friendly names, type symbols, unlabeled arrows, its classDef styles, and the legend line below -->
-```mermaid
-graph LR
-  L(["▶ Login 🆕"]):::entry --> S["◆ Sign-in 🔧"]:::domain
-  S --> U{{"◇ Users"}}:::port
-  P[["■ Postgres"]]:::infra --> U
-```
-▶ entry · ◆ business rule · ◇ contract · ■ infra · arrow = depends on · 🆕 new · 🔧 modified · ⚠️ deviation
-
-<One-paragraph reading of the map: what is new, and confirmation that dependencies keep pointing inward toward business rules ([dependency-direction.md](../software-designing/references/dependency-direction.md)), or the ⚠️ deviation.>
-
-### Contracts
-<!-- One card per new or altered contract, and per unchanged guarantee material to understanding the change. Say in system terms what crosses the boundary, for whom, what it promises, and how it fails; no method names or signatures. Omit when no contract changed. -->
-
-#### ◆ Sign-in 🔧
-- **Who calls it**: the login screen and the mobile app.
-- 🔧 **What crosses**: sign-in now also receives the device, so each session is tied to the device that opened it.
-- **Promise and failure**: an expired session is refused and the user is sent back to login; nothing else changes for callers.
+## How It Works
+<!-- Only when the PR changes a flow across places of the system: a swimlane via visualize-it, as a Mermaid sequenceDiagram, followed by at most two sentences on what to notice. Omit otherwise. -->
 
 ---
 
@@ -179,5 +161,5 @@ GitHub CLI and API cannot upload images into a PR body, so do not try to attach 
 - [ ] Existing issues and supporting references were linked with descriptive labels, with no empty categories; no issue did not block creation; the PRs of a multi-repository delivery link each other and the main one carries the card and merge order.
 - [ ] Objective, acceptance criteria, decisions, and change card were checked against each other before opening.
 - [ ] Title follows `Type/Description`; headings, DoD table header, and legend are in the team/repository language.
-- [ ] Body has the summary, the complete change card with its State block, the module map (via `visualize-it`) and contract cards in system terms, and the DoD table with its legend.
+- [ ] Body has the summary, the change card's plan with its `state` line in a text block, a swimlane (via `visualize-it`) only when a flow changed, and the DoD table with its legend.
 - [ ] The PR was opened (defaulting to `--draft`) and its clickable link returned; for a visible UI change, an available screenshot was embedded or the developer was reminded one can be added.

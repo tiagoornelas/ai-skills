@@ -37,7 +37,7 @@ graph TB
 | | 👤 Human Layer | 🤖 Agent Layer |
 | :--- | :--- | :--- |
 | **Decides** | Which modules exist, what each promises, where dependencies point, what defines "done". | How each module fulfills its promises. |
-| **Reviews** | Module maps, contracts, and the behavior table—never the entire diff. | Its own code, in an automated loop, before any human sees it. |
+| **Reviews** | The plan of what is new and where it lives, contracts, and the behavior table—never the entire diff. | Its own code, in an automated loop, before any human sees it. |
 | **Receives from the other side** | Only what belongs to its layer: pending decisions, new contracts, manual verifications. | Clear contracts and acceptance criteria. |
 
 **The boundary test**, whenever it is unclear who owns a decision:
@@ -53,7 +53,7 @@ graph LR
   D["Understand & decide<br/><i>interview, design,<br/>alternatives</i>"] --> I["Implement<br/><i>test-driven</i>"]
   I --> S["Self-review<br/><i>evaluate → fix →<br/>re-evaluate</i>"]
   S -- "blocking finding" --> I
-  S -- "clean" --> P["Pull Request<br/><i>synthesis & diagrams</i>"]
+  S -- "clean" --> P["Pull Request<br/><i>summary & change card</i>"]
   P --> R["Human review<br/><i>Human Layer only</i>"]
   R -- "design decision" --> D
 ```
@@ -101,7 +101,7 @@ A measured case: a lead agent coordinating tab agents that messaged each other s
 - **The agent proposes, the human decides.** Nothing goes out to the world (push, comment, issue, message) without explicit confirmation.
 - **Facts are the agent's job; decisions belong to the human.** The agent doesn't ask what it can discover on its own, and doesn't answer its own decision questions.
 - **Findings require concrete failure scenarios.** Judgment without a probable bug, an expensive change, or real reader confusion is preference, and preference does not become a finding.
-- **Show before describing.** Structure, dependencies, flows, and conflicts are visualized as diagrams using consistent notation.
+- **Show before describing.** What a change adds and where it lives reads as a plan, one line per thing; how a flow works reads as swimlanes.
 - **Nothing the reader cannot open.** Commits, PRs, and comments never reference local machine paths.
 - **Human writing.** Text meant for human teammates undergoes review against formulaic AI writing habits.
 - **Every skill specifies how to verify success.**
@@ -115,9 +115,9 @@ These entry points can be used independently, without a mandatory sequence:
 
 | Request | Skill | Result |
 | :--- | :--- | :--- |
-| Understand and evaluate a PR or local change | [human-review](skills/human-review/SKILL.md), or [pr-code-review](skills/pr-code-review/SKILL.md) for GitHub review mechanics | One sentence on what changes for whom, the change card (what is new and where it lives, rules, pattern, walls), the decisions that are yours, and the findings that matter. Explains a part in depth when you point at it. |
+| Understand and evaluate a PR or local change | [human-review](skills/human-review/SKILL.md), or [pr-code-review](skills/pr-code-review/SKILL.md) for GitHub review mechanics | One screen: one sentence on what changes for whom, the change card's plan (a count line, then one line per new, changed, or removed thing, decision of yours, or deviation), the critical findings, and one line on the proof. Explains a part in depth when you point at it. |
 | Challenge scope or priorities before or during construction | [scope-review](skills/scope-review/SKILL.md) | Is it worth doing, what comes first, what can be left out and what is lost: do, reduce, postpone, or stop, for human judgment. |
-| Know whether a delivery is done and proven, for any PR | [provide-evidence](skills/provide-evidence/SKILL.md) | A verdict and, per PR, its change card (what is new and where it lives, rules, pattern, walls) and the six evidence lines, each with its claim, why it convinces, and its argument or proof (screenshots grouped by context), and what is missing and who acts. Its verify action runs an independent reviewer that produces the missing proof. |
+| Know whether a delivery is done and proven, for any PR | [provide-evidence](skills/provide-evidence/SKILL.md) | A verdict and, per PR, the change card's plan and the six evidence lines, one line each with its claim and its proof (screenshots grouped by context), and what is missing and who acts. Its verify action runs an independent reviewer that produces the missing proof. |
 | Find or pursue structural improvements | [improve-architecture](skills/improve-architecture/SKILL.md) | Evidence-backed opportunities or a focused refactoring/design investigation; implementation when authorized. |
 
 For example, invoke `/scope-review <idea or PR>` or `/improve-architecture <area or recurring difficulty>`, using the harness's skill invocation syntax. Both use the shared [maintenance commitment](skills/software-designing/references/maintenance-commitment.md) lens. During normal work, observations stay brief; broader investigation is requested explicitly. Visual presentation follows [visualize-it](skills/visualize-it/SKILL.md), without a prescribed HTML report or automatic backlog.
