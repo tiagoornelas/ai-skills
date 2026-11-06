@@ -49,9 +49,15 @@ In both modes, the received context must be preserved verbatim (*ipsis litteris*
 - In existing code, review the red flags table (Section 4).
 
 ### Step 3: Compare Alternatives Proportionally
-- For a design being finalized, compare at least two materially different alternatives. Use [`design-it-twice`](../design-it-twice/SKILL.md) for high-consequence decisions or when explicitly requested. A focal diagnosis can recommend a plausible direction without producing multiple complete designs or launching isolated agents.
+- For a design being finalized, compare at least two materially different alternatives. A focal diagnosis can recommend a plausible direction without producing multiple complete designs.
+- **Design it twice** for a high-consequence decision (system decomposition, module interface, API contract, core mechanism: anything expensive to reverse) or when asked; the theory is in [design-it-twice.md](references/design-it-twice.md):
+  1. Resolve the questions only the human can answer first, so alternatives do not invent contradictory assumptions.
+  2. Pick 2–4 **radically different premises** (unit of abstraction, where knowledge lives, sync vs. events, mutable state vs. event log, one deep module vs. separate services); drop any that only renames the same decomposition.
+  3. Develop each as the strongest design its premise allows, with its known weaknesses. For a major decision, give each premise to its own subagent with the same verbatim framing, launched together ([subagent delegation](../ai-assisted-software-development/references/subagent-delegation.md)), because a context that drafted one alternative anchors on it.
+  4. Compare all of them on the same criteria, ease of use for callers first, then simplicity, generality, failure modes, and relative cost. Recommend one, a hybrid (the hybrid passes the Step 4 lenses again), or a redesign from the weaknesses found, at most once more before escalating the problem as ill-defined; the human decides per Step 5.
+  5. Record the rejected alternatives and why in the decision (Step 6).
+- **When a brief assigns one design premise**, develop the best design within it and generate no alternatives.
 - Reuse decisions already authorized in the session; ask about unresolved Human Layer choices rather than restarting an approval ceremony.
-- **Exception**: when this skill is invoked *by* `design-it-twice` for a specific design axis, do **not** generate alternatives; develop the best possible design within the assigned axis.
 - For each alternative, draft **interfaces first** (what each module promises, in a few concise sentences) before internal structure.
 
 ### Step 4: Evaluate Through the Design Lenses
@@ -69,6 +75,7 @@ Apply the relevant lenses below (Section 4). Keep a focused assessment proportio
 - **Dependency Direction**: does every boundary crossing between business logic and infrastructure point toward the business logic? → [dependency-direction.md](references/dependency-direction.md)
 - **Evolution** (for existing code): does the outcome look as though the new change had been planned from the start? → [strategic-programming.md](references/strategic-programming.md) (Section 5)
 - **Nothing built on the side**: does each new thing follow the project's established way of doing that kind of thing? → [below](#nothing-built-on-the-side)
+- **Patterns**: whenever the design involves object structure, object creation, or behavior between objects, load [`design-patterns`](../design-patterns/SKILL.md) and apply a pattern only when it passes its Parsimony Gate.
 
 ### Nothing Built on the Side
 
@@ -106,7 +113,8 @@ Load only the references needed for the specific design decision.
 | [define-errors-out-of-existence.md](references/define-errors-out-of-existence.md) | Defining failure modes, errors, or exceptions in a contract. |
 | [obvious-code.md](references/obvious-code.md) | Choosing names, contract types, event-driven flows, or reviewing design readability. |
 | [dependency-direction.md](references/dependency-direction.md) | Defining dependency direction, decoupling business rules from infrastructure (persistence, UI, frameworks, providers), or deciding when to defer detail choices. |
-| [`design-patterns`](../design-patterns/SKILL.md) | Considering creational, structural, or behavioral patterns (under strict parsimony). |
+| [design-it-twice.md](references/design-it-twice.md) | Deciding something expensive to reverse, or judging whether the alternatives compared are radically different. |
+| [`design-patterns`](../design-patterns/SKILL.md) | The design involves object structure, creation, or behavior (Step 4). |
 
 ### Red Flags → Reference Mapping
 
@@ -130,7 +138,7 @@ Load only the references needed for the specific design decision.
 
 ## 5. Output Format: Design Brief
 
-Use this structure for a substantial design brief; omit irrelevant sections in a focused assessment. For explicit discovery/refactoring requests, use [improve-architecture](../improve-architecture/SKILL.md). For an independent scope/value discussion, use [scope-review](../scope-review/SKILL.md). These are entry points, not required stages of every design.
+Use this structure for a substantial design brief; omit irrelevant sections in a focused assessment. For explicit discovery/refactoring requests, use [improve-architecture](../improve-architecture/SKILL.md). For an independent scope/value discussion, use [scope-review](../scope-review/SKILL.md). These are entry points, not required stages of every design. Its headings are written in the reader's language: the user's session language, or the language of the calling agent's brief.
 
 ```markdown
 ## Problem
@@ -164,7 +172,7 @@ Use this structure for a substantial design brief; omit irrelevant sections in a
 
 A design is complete only when:
 
-- [ ] Alternatives match the decision depth: a finalized design compares materially different options; high-consequence decisions use `design-it-twice`; focal assessments need not produce complete designs.
+- [ ] Alternatives match the decision depth: a finalized design compares materially different options; a high-consequence decision was designed twice from radically different premises, compared on the same criteria, with rejected options recorded; focal assessments need not produce complete designs.
 - [ ] Both **fundamental questions** were evaluated: plausible future change vectors are localized, and runtime failure paths and implicit assumptions are surfaced and contained ([changeability-and-fragility.md](references/changeability-and-fragility.md)).
 - [ ] Each module has an **interface described in a few sentences**, is **deep** (interface substantially simpler than what it encapsulates), and is the **single owner** of each design decision it holds (no leakage).
 - [ ] **Failure modes** for each contract passed through elimination techniques and the remaining ones are explicit; **dependency direction** points toward business rules, any exception a `!` line on the plan ([dependency-direction.md](references/dependency-direction.md)).

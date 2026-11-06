@@ -44,7 +44,7 @@ To stress-test rather than merely clarify, actively hunt for branches the user o
 
 ## 3. Round Format
 
-Every question follows this exact block structure, separated by `---`:
+Every question follows this exact block structure, separated by `---`, written in the user's session language:
 
 ```markdown
 ❓ **Q1** · **<Question Title>**
@@ -126,9 +126,8 @@ When invoked by another skill, conclude by returning confirmed decisions back to
 ## 8. Success Validation
 
 - [ ] Topic confirmed in a single sentence; scope fits within a single session (or partitioned).
-- [ ] Questions delivered in rounds, each covering the active frontier with zero intra-round dependencies.
+- [ ] Questions delivered in rounds, each covering the active frontier with zero intra-round dependencies, later rounds asking what earlier ones unlocked.
 - [ ] Every question adheres to the Section 3 format, featuring exactly one recommendation.
 - [ ] Zero environment-discoverable facts asked of the user; zero user decisions answered autonomously by the agent.
-- [ ] Subsequent rounds unlocked questions that earlier rounds could not ask.
 - [ ] Visual or behavioral questions paused the interview and leveraged `prototype` rather than prose debate.
 - [ ] Zero downstream actions executed before the user confirmed shared understanding.

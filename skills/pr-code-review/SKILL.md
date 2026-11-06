@@ -77,7 +77,7 @@ Documented rule violations in a peer's PR are 🔴 or 🟡 by impact. An evidenc
 
 ## 4. Present and Discuss
 
-Open with the guide's output and the proof, then the findings by severity, each with `file:line`.
+Open with the guide's output and the proof, then the findings by severity, each with `file:line`. The blocks below are examples; their fixed words are written in the user's session language.
 
 In **Re-review Mode**, open the report with the resolution audit table before presenting findings on the incremental commits:
 

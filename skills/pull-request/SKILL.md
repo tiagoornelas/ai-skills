@@ -62,7 +62,7 @@ Type/Concise Description
 - `Fix/Intermittent timeout on payment gateway call`
 - `Refactor/Isolate order repository persistence`
 
-> **Convention note**: PR titles use a PascalCase prefix followed by a description in the team/repository language for triage on GitHub, while individual commits strictly adhere to English Conventional Commits (`feat(auth): ...`).
+> **PR language**: the title's description and the whole body use the language of most of the repository's pull requests (check the latest ones, e.g. `gh pr list --state all --limit 20 --json title`); in a repository without pull requests, the user's session language. The `Type/` prefix stays as listed, and commits stay in English per [`commit`](../commit/SKILL.md).
 
 ---
 
@@ -70,7 +70,7 @@ Type/Concise Description
 
 Use the structure below:
 
-> **Body language**: all prose and section headings in the description, plus the DoD table header and legend, use the team/repository language (same rule as the title). The template headings below are placeholders: translate them. Keep technical terms (`Definition of Done`, `breaking changes`) and code identifiers as is. Do not copy the language of previous PRs if it conflicts with this rule.
+> **Body language**: all prose and section headings, plus the DoD table header and legend, use the PR language (Section 3). The template headings below are placeholders: translate them. Keep technical terms (`Definition of Done`, `breaking changes`) and code identifiers as is.
 
 ````markdown
 ## Summary
@@ -160,6 +160,6 @@ GitHub CLI and API cannot upload images into a PR body, so do not try to attach 
 - [ ] Agent-authored branches passed `agent-self-review` in branch mode before the PR was opened.
 - [ ] Existing issues and supporting references were linked with descriptive labels, with no empty categories; no issue did not block creation; the PRs of a multi-repository delivery link each other and the main one carries the card and merge order.
 - [ ] Objective, acceptance criteria, decisions, and change card were checked against each other before opening.
-- [ ] Title follows `Type/Description`; headings, DoD table header, and legend are in the team/repository language.
+- [ ] Title follows `Type/Description`; title description, headings, DoD table header, and legend are in the language of most of the repository's pull requests.
 - [ ] Body has the summary, the change card's plan with its `state` line in a text block, a swimlane (via `visualize-it`) only when a flow changed, and the DoD table with its legend.
 - [ ] The PR was opened (defaulting to `--draft`) and its clickable link returned; for a visible UI change, an available screenshot was embedded or the developer was reminded one can be added.

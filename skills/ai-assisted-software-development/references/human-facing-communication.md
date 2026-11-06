@@ -1,6 +1,6 @@
 # Human-Facing Communication
 
-> **Central thesis**: the human is the **human directing architect** (in Portuguese, *arquiteto direcionador humano*): they hold the final word on the direction, architecture, contracts, and release of every product they oversee, and agents follow that direction with autonomy only below it. They set direction for many systems at once, so they know what each product does, for whom, and its high-level architecture, but not the inside of any one of them. Not knowing the inside never moves a decision to the agent: the agent's job is to bring enough context for the decision to be made at the top. No agent is ever the directing architect, however senior its role (a lead architect, for instance). The agent that worked in the code knows its streets by name; the human does not. Every message to the human first shows where things are on the map, then names them. Text written for another agent (briefs, handoff files) may use handles and the code's vocabulary; with the human, they talk in the terms of someone who knows the product, not the code.
+> **Central thesis**: the human is the **human directing architect**: they hold the final word on the direction, architecture, contracts, and release of every product they oversee, and agents follow that direction with autonomy only below it. They set direction for many systems at once, so they know what each product does, for whom, and its high-level architecture, but not the inside of any one of them. Not knowing the inside never moves a decision to the agent: the agent's job is to bring enough context for the decision to be made at the top. No agent is ever the directing architect, however senior its role (a lead architect, for instance). The agent that worked in the code knows its streets by name; the human does not. Every message to the human first shows where things are on the map, then names them. Text written for another agent (briefs, handoff files) may use handles and the code's vocabulary; with the human, they talk in the terms of someone who knows the product, not the code.
 
 ---
 
@@ -18,7 +18,7 @@ The state's director of highways is responsible for the roads of many cities and
 | The human knows (never explain) | The human does not know (always situate) |
 | :--- | :--- |
 | General programming, design, and architecture concepts (error boundary, store, dependency inversion, lint rule) | What exists inside each module, and its internal layer names ("the core", "the session slice") |
-| What the product does and for whom, in broad strokes | Names of screens, UI states, and messages ("Pensando…", "the bubble", "the widget") |
+| What the product does and for whom, in broad strokes | Names of screens, UI states, and messages ("Thinking…", "the bubble", "the widget") |
 | The applications and the large layers of the architecture, by role | How the modules connect, and which one calls which |
 | Decisions the human made, and terms the human used, in this session | Current behaviors, past bugs, and when they happen |
 | | Vocabulary the agent learned in the code: names of functions, files, fields, events, and stores |
@@ -59,7 +59,7 @@ A change with nothing to decide still follows the order: it says plainly that th
 
 ### Giving context
 
-- **Situate before naming.** The first time a term from the right column of Section 1 appears, say what it is and where it lives in the product: "the 'Pensando…' indicator, which the chat shows while the AI prepares its answer", not "'Pensando…'".
+- **Situate before naming.** The first time a term from the right column of Section 1 appears, say what it is and where it lives in the product: "the 'Thinking…' indicator, which the chat shows while the AI prepares its answer", not "'Thinking…'".
 - **Outside in.** Product → application → area → mechanism. Never start at a line of code or a function name.
 - **Before and after, concretely.** Every behavior change shows one realistic case: a user doing a specific thing, what they saw before, what they see now.
 - **Say why, and say when you do not know.** Explain the reason behind odd code (business rule, legacy constraint, past incident). If the reason or a fact is unknown, say so; never fill a gap with a plausible guess.

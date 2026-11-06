@@ -80,7 +80,7 @@ Inspect whether the diff touches migration scripts (e.g. `migrations/`, `db/`, `
 
 ## 6. Axis Report
 
-Format the report for quick scanning. **Never combine or re-order findings across axes**: a PR might pass on tooling while failing on architecture; separation prevents masking.
+Format the report for quick scanning. **Never combine or re-order findings across axes**: a PR might pass on tooling while failing on architecture; separation prevents masking. The block below is an example; its fixed words are written in the user's session language.
 
 ```markdown
 ### 🔧 Quality and Rules — 🔴 1 · 🟡 2 · 🟢 0

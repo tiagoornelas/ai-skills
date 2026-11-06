@@ -43,6 +43,8 @@ If the user provided an argument, it describes **what the subsequent session wil
 
 ## 3. Document Content
 
+The layout is an example; its headings and labels are written in the user's session language.
+
 ```markdown
 # Handoff — <Topic in a few words>
 

@@ -62,5 +62,5 @@ Optional fields recognized by harnesses (use when applicable):
 - **Clean Directories**: do not create empty `references/` or `scripts/` directories without actual files.
 - **Success Validation**: every skill must end with a checklist section guiding the agent on how to verify that steps were executed successfully, with **at most six items**. The limit applies to `SKILL.md`; a reference's own checklist may be longer when it is a reviewer's or author's working list. A skill created or edited from now on meets that limit; older skills reach it the next time they are edited.
 - **Add-ons cite a concept, never redefine it**: a skill that builds on another (a Herdr or GitHub add-on over a base skill) links the base skill's rule or reference instead of restating it, so each concept keeps one owner.
-- **Output templates are examples; their content is mandatory**: a template shows one good layout, which the agent may adapt to the reader; the information it carries may not be dropped.
+- **Output templates are examples; their content is mandatory**: a template shows one good layout, which the agent may adapt to the reader; the information it carries may not be dropped. Its fixed words are written in the reader's language ([`docs/rules/language.md`](docs/rules/language.md), section 3).
 - **After adding or removing a skill**, run `./scripts/setup-global.sh`.

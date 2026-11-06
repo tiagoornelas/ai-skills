@@ -30,7 +30,7 @@ If multiple viable paths exist (e.g. web UI vs. CLI), present the options with a
 
 ## 2. Deliver Maximum Actionable Steps Upfront
 
-Deliver as many steps as can be reliably charted in a single, scannable response. The user executes at their own pace without needing to confirm each step individually.
+Deliver as many steps as can be reliably charted in a single, scannable response. The user executes at their own pace without needing to confirm each step individually. Every block below is an example; its fixed words (headings, labels) are written in the user's session language.
 
 ```markdown
 ### Steps to Complete

@@ -124,7 +124,7 @@ Flag rows that need special handling at execution (section 6), so the user knows
 
 ## 5. Present the List
 
-Show both groups with **continuous numbering**, so the user can refer to rows by number. Keep the table compact:
+Show both groups with **continuous numbering**, so the user can refer to rows by number. Keep the table compact, with its group names and headers in the user's session language:
 
 ```text
 Default branch master: updated 3 commits (fast-forward) ✓

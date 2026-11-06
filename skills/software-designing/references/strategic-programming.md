@@ -37,7 +37,7 @@
 
 ### Proactive Investments
 
-- Rather than seizing the first workable idea, exploring alternative designs and selecting the cleanest one ([`design-it-twice`](../../design-it-twice/SKILL.md)).
+- Rather than seizing the first workable idea, exploring alternative designs and selecting the cleanest one ([design-it-twice.md](design-it-twice.md)).
 - Anticipating how the system is likely to evolve and designing flexibility into those dimensions.
 - Thoroughly documenting contracts and design rationale (how to write comments: [comments.md](../../coding/references/comments.md)).
 
@@ -120,7 +120,7 @@ Contract modifications identified in this process are Human Layer decisions; int
 In every design task, the agent must:
 
 1. **Reject accidental complexity**: if the quickest path introduces avoidable dependencies or obscurity, formulate the clean alternative and its true cost.
-2. **Evaluate alternatives** before locking in a solution, following [`design-it-twice`](../../design-it-twice/SKILL.md).
+2. **Evaluate alternatives** before locking in a solution, following Step 3 of [`software-designing`](../SKILL.md#step-3-compare-alternatives-proportionally).
 3. **Plan for the next change**: what is the most probable subsequent enhancement in this domain? Does the design make it effortless?
 4. **Fix instead of work around** whenever encountering a design flaw along the path, provided it falls within the code touched by the task and within a sensible investment budget (~10–20%). If the remediation exceeds scope, **escalate to the human** as an explicit trade-off with clear trade-off analysis.
 5. **Make debt explicit**: when a tactical compromise is deliberately chosen by the human, document the decision and the outstanding cleanup.
