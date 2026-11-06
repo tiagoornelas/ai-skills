@@ -82,12 +82,3 @@ At every level, designing twice is vastly cheaper than it appears. For a small m
 - The evaluation lists only pros for the favorite and only cons for the others.
 - The choice was made based on ease of implementation rather than caller ergonomics.
 
----
-
-## How to Apply
-
-1. Identify **high-impact decisions** (those that are expensive to reverse later).
-2. For each, generate **at least two radically different alternatives**, sketched at the interface level.
-3. Compare them, prioritizing caller ergonomics, followed by interface simplicity, generality, and efficiency.
-4. Select, combine into a hybrid, or iterate to a new design based on discovered flaws.
-5. Record rejected alternatives and the explicit rationale for their rejection.

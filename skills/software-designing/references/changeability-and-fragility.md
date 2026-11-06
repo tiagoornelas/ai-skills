@@ -6,7 +6,7 @@
 
 ## When to consult
 
-- During architectural design: when synthesizing and contrasting alternatives in [`software-designing`](../SKILL.md) and [`design-it-twice`](../../design-it-twice/SKILL.md).
+- During architectural design: when synthesizing and contrasting alternatives in [`software-designing`](../SKILL.md).
 - During code review: as the primary mental rubric in PR reviews (`pr-code-review`), human delivery reviews (`human-review`), and automated self-review (`agent-self-review`).
 - Before modifying or refactoring existing modules: to evaluate change blast radius and hidden runtime hazards.
 

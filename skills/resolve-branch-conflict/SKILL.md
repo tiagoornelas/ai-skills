@@ -114,7 +114,7 @@ In order:
 
 1. **🟢 Mechanical in batch**, following reference recipes. Generated files and lockfiles are **regenerated** via native tooling, never merged by hand.
 2. **🟡 Composition and ⚠️ Semantic**, one at a time: author the resolution using [`coding`](../coding/SKILL.md), show result alongside base, ours, and theirs, proceeding upon confirmation.
-3. **🔴 Clashing Intent**: present the user with 2–3 explicit options detailing what each preserves and loses, with a recommendation. When selecting between architectural abstractions, apply [`software-designing`](../software-designing/SKILL.md); if high-consequence, pass through [`design-it-twice`](../design-it-twice/SKILL.md).
+3. **🔴 Clashing Intent**: present the user with 2–3 explicit options detailing what each preserves and loses, with a recommendation. When selecting between architectural abstractions, apply [`software-designing`](../software-designing/SKILL.md), which designs a high-consequence choice twice.
 
 Rules of resolution:
 
