@@ -75,6 +75,8 @@ Class ⚠️ is what Git's merge engine cannot see. To locate semantic conflicts
 
 ## 4. Present Conflict Map
 
+This map and the closing summary (Section 8) are examples; their fixed words are written in the user's session language.
+
 ```markdown
 ## Ours × Theirs
 - **Ours** (<branch>, <authors>): <intent in one sentence>

@@ -44,7 +44,7 @@ To stress-test rather than merely clarify, actively hunt for branches the user o
 
 ## 3. Round Format
 
-Every question follows this exact block structure, separated by `---`:
+Every question follows this exact block structure, separated by `---`, written in the user's session language:
 
 ```markdown
 ❓ **Q1** · **<Question Title>**

@@ -138,7 +138,7 @@ Load only the references needed for the specific design decision.
 
 ## 5. Output Format: Design Brief
 
-Use this structure for a substantial design brief; omit irrelevant sections in a focused assessment. For explicit discovery/refactoring requests, use [improve-architecture](../improve-architecture/SKILL.md). For an independent scope/value discussion, use [scope-review](../scope-review/SKILL.md). These are entry points, not required stages of every design.
+Use this structure for a substantial design brief; omit irrelevant sections in a focused assessment. For explicit discovery/refactoring requests, use [improve-architecture](../improve-architecture/SKILL.md). For an independent scope/value discussion, use [scope-review](../scope-review/SKILL.md). These are entry points, not required stages of every design. Headings are written in the language of whoever reads the brief: the user's session language, or the calling agent's brief.
 
 ```markdown
 ## Problem
