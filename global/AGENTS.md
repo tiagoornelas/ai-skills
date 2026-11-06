@@ -37,6 +37,7 @@ Division of labor follows the `ai-assisted-software-development` skill: the huma
 | Before locking in a high-consequence design decision | Run through `design-it-twice`. |
 | Before creating a Git branch | Use `git-branch`. |
 | **Before creating, editing, testing, or refactoring any code file** | **Load `coding`**, even for a small change. |
+| **Before creating or changing any prompt** (system prompts, agent instructions, skills and their references, AGENTS.md, CLAUDE.md, rule and memory files, tool and skill descriptions, brief templates) | **Load `prompt-engineering`**, even for a one-word change. |
 | Before delivering code to the human | Run `agent-self-review` and fix findings until a clean verdict is reached. |
 | When the human requests delivery review | Use `human-review`, strictly on the Human Layer. |
 | Before any commit | Use `commit`. |
