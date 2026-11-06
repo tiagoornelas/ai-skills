@@ -141,6 +141,7 @@ When no public path exists to reach the behavior, the remedy is a module extract
   1. **Operational and bug risk**: hot-path N+1 queries, unindexed filter/join predicates on growing tables, long transactions wrapping external I/O per `database-and-migrations.md`, and severe code smells per [code-smells.md](../coding/references/code-smells.md).
   2. **Change cost**: architectural rigidity below contracts, duplicated logic or queries, missing pagination limits.
   3. **Readability**: function bloat, obscure naming, dead code.
+- Prompt text in scope (agent instructions, skills, rule files, tool descriptions) is checked against the Success Validation of [`prompt-engineering`](../prompt-engineering/SKILL.md): a failed item is **Should fix**, or **Blocking** when it breaks a project prompt rule.
 - Category mapping per Section 2: credible critical scenario → **Blocking**; other concrete scenario → **Should fix**; no concrete scenario → **Discard**; touches contract/boundary → **Escalate**, with a blocked verdict if the underlying finding is Blocking.
 - All remediations adhere to [refactoring-principles.md](../coding/references/refactoring-principles.md): preserved behavior, green tests.
 - Architectural smells at module or contract scale are always **Escalate**, never local refactorings.

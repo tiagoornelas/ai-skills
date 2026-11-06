@@ -56,6 +56,7 @@ Optional fields recognized by harnesses (use when applicable):
 
 ### 3.3. Best Practices for Skills
 - **Authored in English by Default**: Skills, YAML frontmatter descriptions, instructions, references, and validation checklists are authored in English by default. Technical terms follow standard industry terminology.
+- **Skills Are Prompts**: create and edit every skill, reference, and instruction file with the [`prompt-engineering`](skills/prompt-engineering/SKILL.md) skill.
 - **Progressive Disclosure**: keep `SKILL.md` concise, focusing on essential decisions and workflow steps. Delegate extensive reference material to files in `references/`.
 - **Standardized Naming**: use `kebab-case` for folder and skill names (e.g., `code-review`, `deploy-helper`).
 - **Clean Directories**: do not create empty `references/` or `scripts/` directories without actual files.

@@ -27,6 +27,8 @@ In other harnesses, use the equivalent tool. If none exists, execute tasks seque
 
 Pass context and requirements to the subagent **completely, without loss of fidelity** (*verbatim*): specifications, decisions already made, constraints, severity scales, and output formats defined by the skill. Summarizing context during delegation is the most common reason subagents answer the wrong question.
 
+A brief is a prompt: write it following the [writing rules](../../prompt-engineering/references/writing-rules.md) of `prompt-engineering`. A brief template saved for reuse is created and edited with the full skill.
+
 ---
 
 ## 3. Skill Paths in Briefs

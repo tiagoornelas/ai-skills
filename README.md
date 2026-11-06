@@ -194,6 +194,7 @@ skills/<kebab-case-name>/
 
 - The `description` states in 3rd person what the skill does and **when** it should be triggered.
 - Keep `SKILL.md` lean; deep-dive material belongs in `references/`.
+- Write and edit skill text with [`prompt-engineering`](skills/prompt-engineering/SKILL.md): a skill is a prompt.
 - Skills and documentation are authored in English by default.
 - Every skill ends with a **Success Validation** section.
 - After creating, run `./scripts/setup-global.sh`.

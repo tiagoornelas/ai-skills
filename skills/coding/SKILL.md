@@ -37,6 +37,7 @@ Refactor before modifying code that is difficult to change, and after every pass
 | [error-handling.md](references/error-handling.md) | Code may fail (I/O, network, external input, third-party services), or dealing with `try/catch`, error returns, or nullable types. |
 | [code-smells.md](references/code-smells.md) | Evaluating or cleaning up code below contracts (conditionals, state, internal data, code placement). |
 | [database-and-migrations.md](references/database-and-migrations.md) | Writing, reviewing, or refactoring database migrations, schema DDL, queries, or ORM access patterns. |
+| [`prompt-engineering`](../prompt-engineering/SKILL.md) | The change creates or edits text a model reads as instruction: prompts, agent instructions, skills, rule files, tool descriptions. Mandatory, even for a one-word change. |
 | [`design-patterns`](../design-patterns/SKILL.md) | Evaluating structural refactoring, object creation, or behavioral decoupling patterns under strict parsimony. |
 
 For material architectural opportunities encountered during normal work, follow the [proportional observation rule](../ai-assisted-software-development/SKILL.md#5-derived-operational-workflows); use [improve-architecture](../improve-architecture/SKILL.md) when a dedicated investigation is requested.
