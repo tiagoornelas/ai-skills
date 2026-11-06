@@ -7,7 +7,8 @@ description: >-
   collaborates with the user to determine whether to accept, adjust, defer, or
   reject, applies accepted modifications via the coding skill in traceable
   commits, and crafts courteous, concise replies referencing the fix commit or
-  rejection rationale.
+  rejection rationale. Used on demand when the user asks to answer or act on
+  review comments on their pull request.
 disable-model-invocation: true
 argument-hint: "[PR number/URL — by default, current branch's PR]"
 ---
@@ -104,7 +105,7 @@ One structured card per comment, ordered by thread appearance in diff:
 **Recommendation:** ✅ Accept — <what to change, in one line>
 ```
 
-When an item is structural (dependency, boundary, flow), illustrate before/after using [`visualize-it`](../visualize-it/SKILL.md).
+When an item is structural (dependency, boundary, flow), show what it adds or moves as [change card](../ai-assisted-software-development/references/change-card.md) plan lines and, when it changes a flow, a [`visualize-it`](../visualize-it/SKILL.md) swimlane.
 
 Conclude with summary table:
 
@@ -200,7 +201,6 @@ gh api repos/<owner>/<repo>/pulls/<pr>/comments/<comment_id>/replies -f body='<r
 gh pr comment <pr> --body-file <file with quote reply>
 ```
 
-- **Reply where the comment lives**: line threads get replies in-thread; conversation comments get quote replies.
 - **Post-publish verification**: verify the reply attached correctly to the thread or conversation.
 - **Do not resolve threads unilaterally**: in many teams, the reviewer resolves threads. Ask the user.
 - Offer to re-request review (`gh pr edit <pr> --add-reviewer <login>`) when accepted changes are pushed.

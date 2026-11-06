@@ -4,10 +4,8 @@ description: >-
   Guides the user through a PR, local diff, or ongoing delivery, their own or
   someone else's, answering "what changed, where does it live, and what do I
   need to understand or decide?" in one screen: one sentence on what changes
-  for whom, the change card's plan built from the actual change (a count line,
-  then one line per new, changed, or removed thing, decision of the user's, or
-  deviation), the critical findings with their consequence, and one line on
-  the proof. Explains a part in depth only when the user points at it. Stays
+  for whom, the change card's plan built from the actual change, the critical
+  findings with their consequence, and one line on the proof. Explains a part in depth only when the user points at it. Stays
   critical: it judges the change, it does not approve it. Use on demand.
 argument-hint: "[PR, diff, delivery, or focused review question]"
 ---
@@ -40,7 +38,7 @@ In the user's language, per [human-facing communication](../ai-assisted-software
 2. **Critical findings only**: 🔴, and 🟡 that change a behavior, each one or two lines with a plausible scenario, its impact, and a direction of solution with its trade-off, most consequential first; mark a problem the change did not introduce as older. A preference without a consequence is not a finding. Other findings are counted and given on request.
 3. **One proof line**, read from the delivery's evidence note by [`provide-evidence`](../provide-evidence/SKILL.md)'s show rules: how many of the six lines hold on which commit and which are missing, "outdated: proves X, the PR is at Y", or "no record on this machine".
 
-Under the plan, each `?` line that blocks merge opens as its decision card; the others wait until the user turns to them. Omit the findings when there are none; the plan and the proof line always appear. Nothing below contracts appears unless it changes a behavior, contract, boundary, or risk; then the screen shows that consequence.
+Omit the findings when there are none; the plan and the proof line always appear. Nothing below contracts appears unless it changes a behavior, contract, boundary, or risk; then the screen shows that consequence.
 
 ## 3. Stay Critical
 

@@ -4,17 +4,13 @@ description: >-
   Owns the evidence of a delivery, for any pull request or branch (one's own
   or someone else's), in any project and harness. Two actions: "show the
   proof" (default, read-only) gives a one-line verdict, the objective, and per
-  PR the change card's plan (a count line, then one line per new, changed, or
-  removed thing, decision of the user's, or deviation) and the six evidence
-  dossier lines (a)-(f) under a "Proof: N ✓ N ✗ commit" count, one line each
-  with its claim and its proof (screenshots grouped by context for
-  user-visible changes) and, under every failing line, what is missing and who
-  acts; "verify and produce what is missing" runs the dossier's
+  PR the change card's plan and the six evidence dossier lines (a)–(f), each
+  with its claim and its proof and, under every failing line, what is missing
+  and who acts; "verify and produce what is missing" runs the dossier's
   independent reviewer, which rebuilds the inventory of new things from the
-  diff, schema, and infrastructure files, compares it with the change card,
-  and attests lines (c)–(f) for the current commit. Verify runs only when the
-  user asks for it or when the writer of a delivery is about to present it to
-  the user. Triggered when the user asks for the evidence, the proof, or
+  diff, compares it with the change card, and attests lines (c)–(f) for the
+  current commit. Verify runs only when the user asks for it or when the
+  writer of a delivery is about to present it to the user. Triggered when the user asks for the evidence, the proof, or
   whether a delivery is done, or when a writer is about to present a delivery
   as ready.
 argument-hint: "[PR number, URL, or branch] [verify]"
