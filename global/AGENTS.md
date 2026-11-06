@@ -44,7 +44,7 @@ Division of labor follows the `ai-assisted-software-development` skill: the huma
 
 ### What I watch
 
-Whatever the task, the user watches these; an agent that would break one stops and brings it to the user first. Every delivery shows them in its change card (`change-card` reference of the `ai-assisted-software-development` skill), and the independent reviewer of `provide-evidence` checks them in line (c) of its evidence dossier:
+Whatever the task, the user watches these; an agent that would break one stops and brings it to the user first. Every delivery's change card (`change-card` reference of the `ai-assisted-software-development` skill) shows the first five, its State line shows whether the user has authorized the release, and the independent reviewer of `provide-evidence` checks them in line (c) of its evidence dossier:
 
 - **Everything new is visible, with where it lives**: tables, jobs, routes, services, secrets, costs, folders, clients.
 - **Nothing built on the side**: each new thing follows the project's existing way of doing it.
