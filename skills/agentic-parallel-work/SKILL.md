@@ -44,13 +44,13 @@ user ── writer A ── worktrees ── PR(s)        writer B ── worktr
 | Steps that depend on each other, or parts sharing a contract or decisions | Sequentially, in the same session |
 | Reading, searching, exploring, or a second opinion that would bloat the writer's context | A subagent |
 | Another delivery that can merge without waiting for one in flight | Another session or tab, with its own worktrees |
-| Several independent opinions on one question | Independent runs, each writing its own answer; the caller compares them; no debate between them |
+| Several independent opinions on one question | [`brainstorm`](../brainstorm/SKILL.md): independent runs, each writing its own answer; the caller compares them; no debate between them |
 
 A large, isolated part of a delivery (a whole frontend built against a mock) may become a second delivery only after the user approves the contract between them; it integrates only after the first one merges, and any change to the contract goes back to the user.
 
 ## 4. Limits
 
-- **In flight**: 2 to 4 deliveries in the foreground; start with 2. The bottleneck is the user's review capacity, not the machine. When more than one delivery is waiting for the user's review, open no new one until the queue drains.
+- **In flight**: 2 to 4 deliveries in the foreground; start with 2. The bottleneck is the user's review capacity, not the machine. When more than one delivery is waiting for the user's review, open no new one until the queue drains. [`coordinator`](../coordinator/SKILL.md) counts them, with each task's state, when the user asks.
 - **Two deliveries never touch the same contract or file at once**: the second waits, or both become one sequential delivery.
 - **Independent review**: at most 2 rounds per delivery. Only 🔴 findings and 🟡 findings that change behavior block; other 🟡 and every 🟢 go to a follow-up list in the PR body, never into a new round. After round 2, open blocking findings go to the user as pending, never as approval.
 

@@ -32,7 +32,7 @@ Inverts the traditional task creation sequence: **first you do the work to under
 
 ### Step 1: Delimit the Slice
 Determine **which work** to report:
-1. **Explicit target in prompt** (e.g., "only authentication", "what I committed on this branch", "PR #42") → use it.
+1. **Explicit target in prompt** (e.g., "only authentication", "what I committed on this branch", "PR #42", the tasks [`coordinator`](../coordinator/SKILL.md) offered to report) → use it.
 2. **No explicit target** → use work discussed and performed **in the current conversation**.
 3. **Ambiguous** (session spans unrelated tasks, or zero work occurred in chat) → ask which slice to report, presenting identified options.
 
