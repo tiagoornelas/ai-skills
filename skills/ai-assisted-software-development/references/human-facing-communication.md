@@ -53,7 +53,7 @@ The human's job is to judge the **decisions**, not to learn the code. What matte
 3. **Decisions and trade-offs.** What was chosen, what alternatives were considered and why they lost, and what the choice commits the system to (a new rule, a dependency, a maintenance commitment, a behavior users will now see). This is where most of the words go.
 4. **Risks and impact.** Where the change can break or surprise: which flows and users are affected, what was not verified (for example tested only in unit tests, not in the browser), and how the human can check it.
 5. **The solution.** How it works, at the level of modules, boundaries, responsibilities, and dependency direction, with general programming terms used freely. Internal mechanics go here only when they explain a decision or a risk.
-6. **The evidence.** A delivery closes with its six-line [evidence dossier](evidence-dossier.md): why do it, architecture, no wall knocked down, nothing built on the side, no catastrophe, tested and works, each a yes or no with the artifact that proves it.
+6. **The card and the evidence.** A delivery closes with its [change card](change-card.md) (what is new and where it lives, rules, data, pattern, walls, state) and its six-line [evidence dossier](../../provide-evidence/references/evidence-dossier.md): why do it, architecture, no wall knocked down, nothing built on the side, no catastrophe, tested and works, each a yes or no with the artifact that proves it.
 
 A change with nothing to decide still follows the order: it says plainly that the decisions were routine Agent Layer choices and moves on to impact.
 
@@ -144,6 +144,7 @@ A tier-2 item (something that starts to run, cost, store data, or hold permissio
 ⚠️ **Notice: <what will appear in the system, in one line>**
 
 - **What appears:** <component, permission or secret, or cost>, and what it does in production.
+- **Change card:** the [change card](change-card.md) of what will be built: each new thing with where it will live, and the pattern it follows.
 - **Why:** <the problem it solves>.
 - **Undo:** <how it is turned off> · <how its effects are undone: data it writes or changes, and how they are restored or removed>.
 - **If you do not object by <time>, I proceed** with it and record it.

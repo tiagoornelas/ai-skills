@@ -66,7 +66,8 @@ A change can pass the first question and still fail the second: a scheduled job 
 
 - **Nothing is tier 2 by default.** Every new item, including one found after planning, goes through both questions; tier 3 wins whenever any of its conditions holds. A business rule, or a component that deletes or rewrites production data (a purge job, a retention policy), is always tier 3: turning the component off stops new effects but does not undo the ones already made. This concerns a component whose purpose is to delete or rewrite data (a purge, a retention policy, a data migration), not the ordinary writes a product feature makes.
 - **Tier 2 is announced, not asked.** The [notice](references/human-facing-communication.md#announcing-before-building) carries no options to choose from; silence is consent once the stated deadline passes. When in doubt between tiers 2 and 3, it is tier 3.
-- **Evidence does not replace the notice.** Proving a delivery afterwards ([evidence-dossier.md](references/evidence-dossier.md)) comes too late for a component the human would have redesigned: tier 2 is announced before building, and every delivery is still proven.
+- **Evidence does not replace the notice.** Proving a delivery afterwards ([evidence dossier](../provide-evidence/references/evidence-dossier.md)) comes too late for a component the human would have redesigned: tier 2 is announced before building, and every delivery is still proven.
+- **The [change card](references/change-card.md) is how the tiers are seen.** Tier 1 never appears on it; tier 2 appears as new things and where they live; tier 3 as rule changes, data deleted or rewritten, things built on the side, and walls knocked down.
 
 ---
 
@@ -77,7 +78,8 @@ This theory guides complementary workflows and independently callable entry poin
 1. **[`agent-self-review`](../agent-self-review/SKILL.md)**: Executed autonomously by the agent. The agent inspects its own implementation (linter/types, DoD coverage, and tests), recursively fixing issues until approved.
 2. **[`human-review`](../human-review/SKILL.md)**: On-demand critical assessment of own or third-party changes: business decisions and consequences first, then architecture, contracts, and verification. Systematic Agent Layer review is a separate requested scope for third-party work.
 3. **[`scope-review`](../scope-review/SKILL.md)** and **[`improve-architecture`](../improve-architecture/SKILL.md)**: Independently callable entry points for scope/value decisions and architectural improvement. Reuse shared evidence; these are not mandatory stages.
-4. **[Evidence dossier](references/evidence-dossier.md)**: Every delivery to the human carries six yes/no lines, each citing a proof artifact the human can open or re-run (why, architecture, no wall knocked down, nothing built on the side, no catastrophe, tested and works), assembled from the workflows above; the last four are attested by an independent reviewer, not by the author.
+4. **[Change card](references/change-card.md)**: the glanceable form of the tiers, printed before building, at delivery, and on demand: what is new and where it lives, rule changes, data deleted or rewritten, pattern followed or built on the side, walls, and state.
+5. **[`provide-evidence`](../provide-evidence/SKILL.md)** owns the evidence: every delivery carries the six-line [evidence dossier](../provide-evidence/references/evidence-dossier.md), each line citing a proof artifact, the last four attested by an independent reviewer.
 
 During ordinary work, briefly surface material architectural or scope opportunities already encountered, normally at delivery and earlier only if they compromise the current solution. Broad scans, deeper investigations, artifacts, and follow-up sessions stay on demand. An observation does not expand implementation scope or create a backlog.
 
@@ -88,7 +90,7 @@ During ordinary work, briefly surface material architectural or scope opportunit
 - [ ] The boundary between the Human Layer and Agent Layer was respected, with both questions of the boundary test applied.
 - [ ] Decisions regarding modules, contracts, dependency direction, or DoD behaviors were brought to the human (tier 3).
 - [ ] Anything new that runs, costs, stores data, or holds permissions in production was classified by the boundary test before being built: tier-2 items were announced with a stated deadline and their outcome recorded; anything that deletes or rewrites production data or changes a business rule went to the human as a decision card (tier 3).
-- [ ] Every delivery carried the six-line [evidence dossier](references/evidence-dossier.md), with lines (c)–(f) attested by an independent reviewer.
+- [ ] Every notice, split plan, and delivery carried its [change card](references/change-card.md), and every delivery its six-line [evidence dossier](../provide-evidence/references/evidence-dossier.md), with lines (c)–(f) attested by an independent reviewer.
 - [ ] Internal details below contracts were resolved autonomously by the agent with tests and self-review.
 - [ ] No local or unversioned paths were exposed in shared artifacts.
 - [ ] Messages to the human passed the directing-architect test of [human-facing-communication.md](references/human-facing-communication.md): no internal term used before being situated, changes briefed in its order (where, problem, decisions and trade-offs, risks and impact, solution, evidence), no explanation handed back to the human, each pending decision was a self-contained card saying why it is the human's and whether it is easy or hard, checked as still open before being asked, every ✋ came with why only the human can do it, and emojis were used only as status and attention markers.

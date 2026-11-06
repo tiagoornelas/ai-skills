@@ -7,7 +7,7 @@
 ## 1. Writing Rules
 
 - **The user's session language, end to end**, with standard technical terms in English (*pull request*, *merge*, *CI*, *draft*). Every fixed word in the templates below is a placeholder, not a literal: headings, block names, the first line, the closing line of empty blocks, and the words of the PR line (`agent`, `you`, `ok`, `pending`, `changes`, `conflict`, `merged`). The English words in the templates and examples mark where each word goes; the output always translates them, so a user speaking another language never sees `agent ok · you pending` or `Nothing blocked` in English.
-- **One line per item.** Every item in the Panel is one scannable line: a status emoji, a short identifier, and `·`-separated facts. The one indented line allowed is a PR's [what appears](#what-appears) line.
+- **One line per item.** Every item in the Panel is one scannable line: a status emoji, a short identifier, and `·`-separated facts. The one indented line allowed is a PR's 🏗️ line of new things.
 - **System terms, not handles.** Apply [human-facing communication](../../ai-assisted-software-development/references/human-facing-communication.md): name each tab by its role, each task by what it delivers, each PR by what it changes. A PR number or task key appears only as a lookup key next to a short name.
 - **Context for the directing architect.** Write every item per [Briefing a Change](../../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change): situate each part of the product before naming it, and say what changes for whom rather than which mechanism changed.
 - **Human Layer first.** Per [`ai-assisted-software-development`](../../ai-assisted-software-development/SKILL.md), decisions, reviews the user owes, and production risks lead; test counts, commit lists, and file names stay out unless they block something.
@@ -36,7 +36,7 @@ Markers specific to this format:
 | :---: | :--- |
 | 📋 | Pending, not started |
 | ⚪ | Idle, or no information |
-| 🏗️ | What a PR or a planned stream adds to the system (see [What appears](#what-appears)) |
+| 🏗️ | What a PR adds to the system: the new things of its [change card](../../ai-assisted-software-development/references/change-card.md), kinds and names only, on one line |
 
 ### What "blocked" means
 
@@ -48,34 +48,6 @@ Not blocked:
 - **Waiting for another stream or sub-agent of the team to finish**: it is **in progress** (⏳); the dependency goes in its "where it stands" line.
 - **A failing CI, a conflict, or an error an agent can fix**: it is in progress for that agent, or an agent's next step (🤖) when nobody has picked it up yet.
 - **An agent stopped at a dialog** (herdr-core state `blocked`): only the user can answer it, so it is a user action (✋).
-
-### PR Line
-
-Every PR is written the same way, in the Panel and in any message about the space:
-
-```text
-<emoji> <repo>#<number> · <short name> · [draft · ][conflict · ]CI <state> · agent <state> · you <state>
-```
-
-- **`<repo>`** is the repository name without its owner (`web-app#212`). **`<short name>`** is two to four words naming what the PR changes ("invoice API", "billing screen").
-- **`draft`** and **`conflict`** appear only when true.
-- **CI**: `ok`, `failing`, `running`, or `—` (no checks).
-- **agent** (the agent's self-review note on the PR head): `ok`, or `—` for no record.
-- **you** (the user's review note): `ok` (approved), `changes` (changes requested), `pending` (no note yet and the PR is ready for the user: not a draft, CI ok, agent ok), or `—` for no record.
-- **Leading emoji**, the worst that applies: ❌ conflict or CI failing · 👀 the user owes the review · ⏳ draft, CI running, or agent review missing · ✅ ready to merge.
-- Merged PRs collapse into one final line: `✅ merged: <repo>#<n>, <repo>#<n>`. Closed, unmerged PRs are left out.
-
-### What Appears
-
-An open PR that adds something to the system carries one indented line below its PR line, in closed categories only, so the user sees new components and rule changes without reading code:
-
-```text
-  🏗️ <Creates>: <component> · <Permission>: <permission or secret> · <Rule>: <business rule change> · <Cost>: <recurring cost>
-```
-
-- Example: `🏗️ Creates: daily 2am schedule + internal purge route · Rule: expired sessions are deleted in batches` (the rule and the deletion were tier-3 decisions the user answered).
-- Only the four categories: a **component** (job, schedule, table, queue, route, service), a **permission or secret**, a **business rule**, a **cost**. Internal details never appear here.
-- Omit the line when the PR adds nothing in these categories, and omit empty categories. Each item was approved with the split, announced before it was built (tier 2), or decided by the user (tier 3: every business rule and anything that deletes or rewrites data); one that was not is a ⚠️ attention point in "What changed".
 
 ## 3. The Panel
 
@@ -106,7 +78,7 @@ The canonical state of the space. The Leader shows it whenever something changes
 **PRs**
 - ❌ <repo>#<n> · <short name> · <conflict> · CI <failing> · <agent> <ok> · <you> —
 - 👀 <repo>#<n> · <short name> · CI <ok> · <agent> <ok> · <you> <pending>
-  🏗️ <Creates>: <component> · <Rule>: <business rule change>
+  🏗️ <new>: <job expired-invoice purge · table billing_invoices>
 - ✅ <merged>: <repo>#<n>
 
 <Nothing blocked · No PRs: one plain line, only when some block is empty>
@@ -120,7 +92,7 @@ The canonical state of the space. The Leader shows it whenever something changes
   - An item appears once: a step that waits for a user item names that item's number ("after 1") instead of repeating it.
 - **Blocked** holds only work that nobody can move now, as defined in [What "blocked" means](#what-blocked-means). Work waiting for the user lives in **What's next**, and work waiting for the team lives in **In progress**, never here.
 - **In progress** holds one row per active work stream, not per task: what it delivers, which tab runs it, and where it stands in one line, including any stream or sub-agent of the team it waits for. Finished work leaves the Panel; its proof is pulled with `provide-evidence`.
-- **PRs** lists every PR of the space (opened from its agents' branches or referenced in `leader.md`), one [PR line](#pr-line) each, ordered ❌, 👀, ⏳, ✅, merged last, each open PR followed by its [what appears](#what-appears) line when it has one. It repeats PRs already cited above on purpose: it is the one place to read every PR's state.
+- **PRs** lists every PR of the space (opened from its agents' branches or referenced in `leader.md`), one [PR line](../../ai-assisted-software-development/references/change-card.md#4-pr-line) each, ordered ❌, 👀, ⏳, ✅, merged last, each open PR followed by its 🏗️ line when it adds something new; the full change card is printed only at a notice, at delivery, or on demand. It repeats PRs already cited above on purpose: it is the one place to read every PR's state.
 - **Fixed order, no empty blocks.** The blocks always appear in this order. An empty block is omitted, heading included, and the Panel ends with one plain line, without emoji, naming every empty block in the same order ("Nothing next · Nothing blocked · Nothing in progress · No PRs"). When nothing is empty, that line does not appear. The first line is never omitted.
 
 ### When to Show It
@@ -130,7 +102,7 @@ This section is the one home of when the Leader writes to the user about the wor
 **Triggers.** The Leader writes to the user, with the Panel, only when one of these happened since the last Panel the user saw:
 
 1. a decision for the user or a tier-2 notice opened;
-2. a delivery is ready, with its [evidence dossier](../../ai-assisted-software-development/references/evidence-dossier.md), every line showing its artifact;
+2. a delivery is ready, with its [change card](../../ai-assisted-software-development/references/change-card.md) and its [evidence dossier](../../provide-evidence/references/evidence-dossier.md), every line showing its artifact;
 3. a blocker appeared, including a tab agent `blocked` or in `error`;
 4. the scope changed;
 5. the user wrote after changes they had not seen.

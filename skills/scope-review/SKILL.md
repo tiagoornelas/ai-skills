@@ -2,8 +2,11 @@
 name: scope-review
 description: >-
   Evaluates scope, marginal business value, and architectural or maintenance
-  trade-offs in an idea, plan, ongoing task, or PR. Use when defining what to
-  build, challenging a costly capability, or assessing whether a smaller or
+  trade-offs in an idea, plan, ongoing task, or PR, answering three standing
+  questions: is it worth doing, what comes first and why, and what can be
+  chosen not to be done and what is lost (do, reduce, postpone with a resume
+  condition, or stop). Use when defining what to build, prioritizing open
+  work, challenging a costly capability, or assessing whether a smaller or
   different solution better serves the objective.
 argument-hint: "[idea, plan, task, PR, or scope question]"
 ---
@@ -11,6 +14,16 @@ argument-hint: "[idea, plan, task, PR, or scope question]"
 # Scope Review
 
 Help the human choose a useful scope, before or after code exists. This skill can be called independently or contribute its criteria to an existing design/review without a second investigation.
+
+## Three Standing Questions
+
+Every scope review answers, in the human's terms:
+
+1. **Is it worth doing?** The benefit for whom, against its remaining cost and continuing [maintenance commitment](../software-designing/references/maintenance-commitment.md).
+2. **What comes first, and why?** Among the work open alongside it, what unblocks or returns the most soonest.
+3. **What can I choose not to do, and what is lost?** What leaves, what is lost with it, and what still stands.
+
+Each answer ends in one verdict: **do**, **reduce** (to what smaller thing), **postpone** (with the condition that resumes it), or **stop**. Not doing is a legitimate outcome, before code exists and again while the work is under way. Work already spent never justifies continuing; that an AI can build something quickly is not evidence that it is worth having. No scores or rankings that pretend to precision.
 
 ## Approach
 
@@ -34,7 +47,8 @@ During ordinary work, a concrete signal already encountered may justify a brief 
 
 ## Success Validation
 
-- [ ] Recommendation relates marginal benefit to concrete costs and continuing obligations.
+- [ ] The three questions were answered (worth doing, what first, what not to do and what is lost), each ending in do, reduce, postpone with its resume condition, or stop, without scores.
+- [ ] Recommendation relates marginal benefit to concrete costs and continuing obligations; sunk cost and ease of AI construction were not counted as value.
 - [ ] A plausible design improvement was considered before recommending a cut.
 - [ ] Lost benefits, assumptions, and uncertainty are visible; complexity alone did not determine the conclusion.
 - [ ] Depth matches the request and Human Layer authority is preserved.

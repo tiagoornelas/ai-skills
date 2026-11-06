@@ -22,6 +22,8 @@ Reuse one investigation for business interpretation, architectural judgment, and
 
 Lead with what changes for whom and which decisions deserve attention, briefed per [Briefing a Change](../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change): situate the affected area first, then decisions, trade-offs, and risks, and the structure last. Investigate relevant behavior changes, business rules/restrictions, trade-offs, unverified premises, and [maintenance commitments](../software-designing/references/maintenance-commitment.md). Present selectively: omit empty categories and routine details. Do not infer conscious acceptance by the author merely because the implementation embodies a trade-off.
 
+Show the change's [change card](../ai-assisted-software-development/references/change-card.md) (what is new and where it lives, rules, data, pattern, walls, state), built from the actual change, before the discussion.
+
 Compare documentation/declarations with implementation in a separate divergence note only when they disagree. Expected acceptance criteria remain a source for verification, not proof of what the code does; do not invent requirements from the diff.
 
 ## Assess architecture and scope
