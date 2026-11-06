@@ -59,10 +59,12 @@ fi
 
 echo "Test 4: Running setup-global.sh conditionally with only cursor present..."
 # Only .cursor exists in fakehome; use clean PATH to prevent system binaries from falsifying test.
-# Seed a link an earlier setup left at a path Cursor never reads, and a link to a skill removed from the repo.
+# Seed a link an earlier setup left at a path Cursor never reads, a link to a skill removed from the repo,
+# and a link under a skill's old name (github-pull-request, renamed to pull-request).
 mkdir -p "$HOME/.cursor/rules" "$HOME/.cursor/skills"
 ln -s "$REPO_ROOT/global/AGENTS.md" "$HOME/.cursor/rules/global.md"
 ln -s "$REPO_ROOT/skills/removed-skill" "$HOME/.cursor/skills/removed-skill"
+ln -s "$REPO_ROOT/skills/github-pull-request" "$HOME/.cursor/skills/github-pull-request"
 PATH=/usr/bin:/bin "$SCRIPT_DIR/setup-global.sh" --global-instructions > "$TEST_TMP/setup.log" 2>&1
 
 HOOK_COMMAND="\"$SCRIPT_DIR/cursor-global-instructions.sh\""
@@ -93,6 +95,12 @@ if [ ! -L "$HOME/.cursor/skills/removed-skill" ] && [ -L "$HOME/.cursor/skills/c
   echo "  ✓ Skills linked and the link to a removed skill pruned"
 else
   echo "  ✗ Skill links not updated" >&2; exit 1
+fi
+
+if [ ! -L "$HOME/.cursor/skills/github-pull-request" ] && [ -L "$HOME/.cursor/skills/pull-request" ]; then
+  echo "  ✓ The link under a renamed skill's old name pruned and its new name linked"
+else
+  echo "  ✗ Renamed skill links not updated" >&2; exit 1
 fi
 
 # Ensure uninstalled harnesses were skipped and not created
