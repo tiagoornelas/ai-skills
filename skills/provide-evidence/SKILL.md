@@ -44,9 +44,9 @@ Observe in parallel where the harness allows it.
 | Evidence | `git notes --ref=evidence show <head>`; when absent, the newest `evidence` note on an earlier commit of the branch (`git log --format=%H <base>..<head>`) |
 | Artifacts the note cites | the links, commands, and local file paths inside the note; check each local file exists |
 | Base moved after the proof | `git fetch origin <base>`, then `git log --format='%h %an %cI %s' <proven commit>..origin/<base>`: commits dated after the attestation moved the base; name each one's author and PR |
-| The change card | always the inventory of new things **rebuilt** from the diff, schema, and infrastructure files, in the kinds of the [change card](../ai-assisted-software-development/references/change-card.md); and the card presented with the delivery (PR body, issue, or the note), when there is one. Each item's approval comes from the issue or PR, otherwise "no record" |
+| The change card | always, for every PR, the inventory of new things **rebuilt** from the diff, schema, and infrastructure files, in the kinds of the [change card](../ai-assisted-software-development/references/change-card.md) (for a large PR, from `git diff --name-status` plus the full diff of only the schema, migration, job, route, secret, configuration, and client files, saying so); and the card presented with the delivery (PR body, issue, or the note), when there is one. Each item's approval comes from the issue or PR, otherwise "no record" |
 | Uncommitted files | `git status --porcelain` in the current checkout |
-| Validation environment's deployed commit | read it where the project, or in a Herdr App space its `leader.md`, records how (a deploy URL, a status endpoint, a CI environment, or the commit itself); "not observable" only when neither records it |
+| Validation environment's deployed commit | read it where the project, or in a Herdr App space its `leader.md`, records how (a deploy URL, a status endpoint, a CI environment, or the commit itself); "not observable" only when neither records it. When `leader.md` contradicts itself, prefer its *Verified* record and list the contradiction among the facts |
 
 **Re-check before printing.** Read each PR's `headRefOid` again right before writing; if it moved, mark that card's evidence as outdated for the new head. Never copy secrets or credentials from output, notes, or logs.
 
@@ -106,16 +106,8 @@ Only on the user's request or a lead agent's delivery (Section 1), run the dossi
 
 ## 5. Inside the Herdr App (optional)
 
-When `HC_TERMINAL_ID` is set and `hc` and `herdr-app` are on `PATH`, a space may be given instead of a PR: match it in `herdr-app ls` by name or `sp…` id, or by the `Space:` name in a team folder's `leader.md` ([team-folder.md](../herdr-team-lead/references/team-folder.md)); without one, use this terminal's `herdr.space` label, or ask which space when there is none. The scope becomes every delivery of the space (its PRs, found as described [below](#finding-a-spaces-prs)), the objective, approvals, and the validation environment's deployed commit (or how to read it) come from its `leader.md` first, and tabs still working and contradictions with `leader.md` are listed among the facts. Use only the Herdr App (`herdr-app`, `hc`) of this machine, never the `herdr` terminal CLI or `--on`. In a space, the verify reviewer is a sub-agent under [`herdr-handoff`](../herdr-handoff/SKILL.md#31-sub-agents)'s rules, with its files in the team folder's evidence folder.
+When `HC_TERMINAL_ID` is set and `hc` and `herdr-app` are on `PATH`, a space may be given instead of a PR: match it in `herdr-app ls` by name or `sp…` id, or by the `Space:` name in a team folder's `leader.md` ([team-folder.md](../herdr-team-lead/references/team-folder.md)); without one, use this terminal's `herdr.space` label, or ask which space when there is none. The scope becomes every delivery of the space (its PRs, found as in [finding a space's PRs](../herdr-team-lead/references/team-folder.md#4-finding-a-spaces-prs)), the objective, approvals, and the validation environment's deployed commit (or how to read it) come from its `leader.md` first, and tabs still working and contradictions with `leader.md` are listed among the facts. Use only the Herdr App (`herdr-app`, `hc`) of this machine, never the `herdr` terminal CLI or `--on`. In a space, the verify reviewer is a sub-agent under [`herdr-handoff`](../herdr-handoff/SKILL.md#31-sub-agents)'s rules, with its files in the team folder's evidence folder.
 
-### Finding a Space's PRs
-
-The PRs of a space, here and in [`herdr-scope-review`](../herdr-scope-review/SKILL.md):
-
-1. **Recorded**: each PR its `leader.md` references.
-2. **By branch**: for each terminal, the branch of its working directory (`hc get <terminal>` `foreground.cwd`, then `git -C <cwd> branch --show-current`), and the space's own `folder` from `herdr-app ls`; each branch's PRs with `gh pr list --head <branch> --state all`. When the working directory is outside git, try the space folder, then the `leader.md` references.
-3. **Folder gone**: when a recorded folder or worktree no longer exists, treat it as a likely merge: look up PRs by the branch name recorded in `leader.md` or by the worktree's name, and say *folder gone*.
-4. **Fallback, unconfirmed**: only when the steps above find no PR for a terminal (an agent back on the default branch after a merge), list the recent PRs of the same author in that repository (`gh pr list --state all --author @me --limit 10`) and the branches in its reflog (`git -C <cwd> reflog --format=%gs | grep 'checkout: moving'`). Drop every PR already attributed to another space (its `leader.md` references or its terminals' branches) and keep only those whose head branch matches this space's branches, reflog, or folder name; label what remains *found by fallback, unconfirmed*.
 
 ## 6. Success Validation
 
