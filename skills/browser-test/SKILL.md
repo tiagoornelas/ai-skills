@@ -52,6 +52,7 @@ PLAYWRIGHT_MCP_BROWSER=chromium PLAYWRIGHT_MCP_OUTPUT_DIR="<scratch-dir>" \
 ## 4. Test
 
 - Prefer `snapshot` and `find` to read state; take a `screenshot` when the result is visual or when the user needs evidence.
+- **Screenshots as delivery evidence** go where the evidence dossier says, one subfolder per context with its `index.md`, per its [visual proof](../provide-evidence/references/evidence-dossier.md#visual-proof) rule.
 - Check `console` for errors and `requests` for failed calls whenever a behavior does not match expectations.
 - State each expectation before acting, then record pass or fail with the evidence that proves it.
 - **Project suites:** if the project already depends on `@playwright/test` and the request is to run its tests, run them instead of driving the CLI: `PLAYWRIGHT_HTML_OPEN=never npx playwright test`, adding `--headed` only under the rule in Section 2. Never add `@playwright/test` to a project without the user's approval: it is a new dependency.
@@ -71,6 +72,6 @@ PLAYWRIGHT_MCP_BROWSER=chromium PLAYWRIGHT_MCP_OUTPUT_DIR="<scratch-dir>" \
 - [ ] `playwright-cli` was present, or its absence was reported and installed only with approval.
 - [ ] The mode was headless unless the user explicitly asked to watch the browser.
 - [ ] Every command used the same unique session name; no file was written inside the repository.
-- [ ] Each expectation was stated and has a pass or fail backed by evidence.
+- [ ] Each expectation was stated and has a pass or fail backed by evidence; delivery screenshots sit in one folder per context per the dossier.
 - [ ] No secret was typed, and no irreversible action ran without confirmation.
 - [ ] The session was closed and the user received the report.
