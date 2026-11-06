@@ -16,6 +16,7 @@ Skill for structuring, documenting, and opening Pull Requests on GitHub.
 
 - **Designed for the Reviewer**: The reviewer must understand the purpose of the PR within the first 5 seconds of reading.
 - **Focus on High-Level Review**: Grounded in the philosophy of [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md) and [`human-review`](../human-review/SKILL.md). Do not clutter the PR with internal implementation minutiae already validated by [`agent-self-review`](../agent-self-review/SKILL.md).
+- **The change card first**: right after the summary, the body carries the change's [change card](../ai-assisted-software-development/references/change-card.md), complete with its State block, so the reviewer sees what is new and where it lives before anything else. This skill cites the card; it never redefines it.
 - **Visuals via `visualize-it`**: a clean Mermaid module map shows boundaries and dependency direction; separate interface cards show what each component exposes and what changed.
 
 ---
@@ -72,6 +73,14 @@ Use the structure below:
 ````markdown
 ## Summary
 [In 1 to 3 direct sentences, explain what this PR does and why it exists from the reader's perspective: where in the product it acts, what users or the system experienced before, and what happens now. Situate every screen, state, or internal layer before naming it (see the Briefing a Change section of the ai-assisted-software-development human-facing-communication reference).]
+
+---
+
+## Change Card
+
+```text
+[The change card of this PR, per the change-card reference of ai-assisted-software-development: new and where it lives (with approvals, and the "none" line), business rule, data, pattern, walls, and State with the PR line. Inside a text block, so its columns stay aligned.]
+```
 
 ---
 
@@ -167,10 +176,8 @@ GitHub CLI and API cannot upload images into a PR body, so do not try to attach 
 ## 6. Success Validation
 
 - [ ] Agent-authored branches passed `agent-self-review` in branch mode before the PR was opened.
-- [ ] Existing issue links were verified; absence of an issue did not block PR creation.
-- [ ] Supporting references found in context are listed with descriptive labels, with no empty categories.
-- [ ] Title follows standardized format (`Type/Description`).
-- [ ] Body includes direct summary, module map and interface cards (via `visualize-it`), and DoD table with official legend.
-- [ ] Section headings, DoD table header, and legend are in the team/repository language, not the template's English.
-- [ ] For a visible UI change, an available screenshot was embedded or the developer was reminded after creation that one can be added.
-- [ ] PR was opened (defaulting to `--draft`) and clickable link returned.
+- [ ] Existing issues and supporting references were linked with descriptive labels, with no empty categories; no issue did not block creation.
+- [ ] Title follows `Type/Description`; headings, DoD table header, and legend are in the team/repository language.
+- [ ] Body has the summary, the complete change card with its State block, the module map and interface cards (via `visualize-it`), and the DoD table with its legend.
+- [ ] For a visible UI change, an available screenshot was embedded or the developer was reminded one can be added.
+- [ ] The PR was opened (defaulting to `--draft`) and its clickable link returned.
