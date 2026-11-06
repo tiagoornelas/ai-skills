@@ -6,7 +6,6 @@ description: >-
   any harness (Claude Code, Codex, Cursor, Antigravity) in a given folder,
   names tabs and spaces, reads the live state of terminals and agents, moves a
   running session to another space, and keeps, parks, or ends terminals.
-  Whether to open another session at all follows agentic-parallel-work.
   Triggered while running inside the Herdr App when the user or another skill
   (handoff, git-cleanup) needs to open, find, read, rename, move, or close
   Herdr tabs, spaces, or agent terminals.
@@ -15,7 +14,7 @@ argument-hint: "[what to open, read, or move]"
 
 # Herdr
 
-The Herdr App shows terminals organized in spaces and tabs; herdr-core (`hc`) runs them and keeps them alive when the window closes. This skill drives both. When to open another session, and what it may do, follows [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md): one tab is one delivery with one writer, and the start prompt carries everything that session needs, because no agent messages another as a work flow.
+The Herdr App shows terminals organized in spaces and tabs; herdr-core (`hc`) runs them and keeps them alive when the window closes. This skill drives both. When to open another session, and what it may do, follows [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md): an independent session is one delivery with one writer, and its start prompt carries everything that session needs, because no agent messages another as a work flow.
 
 ## 1. Preconditions
 
