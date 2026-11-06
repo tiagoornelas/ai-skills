@@ -53,7 +53,7 @@ The human's job is to judge the **decisions**, not to learn the code. What matte
 3. **Decisions and trade-offs.** What was chosen, what alternatives were considered and why they lost, and what the choice commits the system to (a new rule, a dependency, a maintenance commitment, a behavior users will now see). This is where most of the words go.
 4. **Risks and impact.** Where the change can break or surprise: which flows and users are affected, what was not verified (for example tested only in unit tests, not in the browser), and how the human can check it.
 5. **The solution.** How it works, at the level of modules, boundaries, responsibilities, and dependency direction, with general programming terms used freely. Internal mechanics go here only when they explain a decision or a risk.
-6. **The evidence.** A delivery closes with its five-line [evidence dossier](evidence-dossier.md): why do it, architecture, no wall knocked down, no catastrophe, tested and works, each a yes or no with proof.
+6. **The card and the evidence.** A delivery closes with its [change card](change-card.md) (what is new and where it lives, rules, data, pattern, walls, state) and its six-line [evidence dossier](../../provide-evidence/references/evidence-dossier.md): why do it, architecture, no wall knocked down, nothing built on the side, no catastrophe, tested and works, each a yes or no with its claim, why it convinces, and its argument or proof, presented in full.
 
 A change with nothing to decide still follows the order: it says plainly that the decisions were routine Agent Layer choices and moves on to impact.
 
@@ -143,7 +143,7 @@ A tier-2 item (something that starts to run, cost, store data, or hold permissio
 ```markdown
 ⚠️ **Notice: <what will appear in the system, in one line>**
 
-- **What appears:** <component, permission or secret, or cost>, and what it does in production.
+- **What appears:** the [change card](change-card.md) of what will be built (each new thing with where it will live, the pattern it follows), and what it does in production.
 - **Why:** <the problem it solves>.
 - **Undo:** <how it is turned off> · <how its effects are undone: data it writes or changes, and how they are restored or removed>.
 - **If you do not object by <time>, I proceed** with it and record it.
@@ -170,10 +170,10 @@ Before:
 
 After:
 
-> ❓ **Decision: should downloading the calculation report keep calling the CJ directly, outside the gateway?**
+> ❓ **Decision: should downloading the calculation report keep calling the billing system directly, outside the gateway?**
 >
-> - **Context:** we decided that all access to the CJ goes through the gateway. The report download is the one place that still calls the CJ REST API directly, because the MCP token does not work on that route.
-> - **Options:** **A.** Record it as a documented exception to that rule: one line, nothing else changes. **B.** Move it into the gateway: the gateway then owns every CJ access, but this touches another developer's code and grows the first delivery. **C.** Leave it as is: the written rule stays false.
+> - **Context:** we decided that all access to the billing system goes through the gateway. The report download is the one place that still calls the billing system's REST API directly, because the MCP token does not work on that route.
+> - **Options:** **A.** Record it as a documented exception to that rule: one line, nothing else changes. **B.** Move it into the gateway: the gateway then owns every billing-system access, but this touches another developer's code and grows the first delivery. **C.** Leave it as is: the written rule stays false.
 > - **Recommendation:** A now, B as a follow-up task, because it keeps the rule honest without delaying the delivery.
 > - **If you do not decide now:** the first delivery's PRs stay in draft.
 > - **Reply with:** A, B, or C.
@@ -186,9 +186,9 @@ Before (vocabulary of whoever worked in the code):
 
 After (briefed for the directing architect):
 
-> **Where:** in the Voga AI chat embedded in the CJ, the backend streams each answer in pieces while the AI writes it.
+> **Where:** in the AI assistant chat embedded in the web app, the backend streams each answer in pieces while the AI writes it.
 >
-> **Problem:** when something fails mid-answer (a file too large, an unsupported file type, the token limit, an internal agent failure), the backend sends an error event with a message already written in Portuguese for the user. The frontend ignored that event: the user saw the answer simply stop, with no explanation.
+> **Problem:** when something fails mid-answer (a file too large, an unsupported file type, the token limit, an internal agent failure), the backend sends an error event with a message already written for the user in their language. The frontend ignored that event: the user saw the answer simply stop, with no explanation.
 >
 > **Decision and trade-off:** show the backend's message as is, instead of a generic frontend message. It is safe because the backend already writes it for end users; the cost is that wording changes now depend on the backend team.
 >

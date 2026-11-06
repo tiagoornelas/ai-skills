@@ -68,6 +68,11 @@ Apply the relevant lenses below (Section 4). Keep a focused assessment proportio
 - **Obviousness**: are names, consistency, and flows immediately clear? → [obvious-code.md](references/obvious-code.md)
 - **Dependency Direction**: does every boundary crossing between business logic and infrastructure point toward the business logic? → [dependency-direction.md](references/dependency-direction.md)
 - **Evolution** (for existing code): does the outcome look as though the new change had been planned from the start? → [strategic-programming.md](references/strategic-programming.md) (Section 5)
+- **Nothing built on the side**: does each new thing follow the project's established way of doing that kind of thing? → [below](#nothing-built-on-the-side)
+
+### Nothing Built on the Side
+
+Before introducing a folder, module, client, configuration variable, or cross-cutting mechanism (authentication, timeouts, retries, logging, error handling, data access), find how the project already does that kind of thing and follow it. A parallel structure, a duplicated mechanism, or a departure from an established convention is a Human Layer decision: bring it to the human with the reason before building it; never decide it alone. Typical cases built on the side: an HTTP client with its own timeout and retry beside the project's shared transport; a dedicated configuration variable where the project has a convention for that kind of setting; a new folder for something whose siblings live elsewhere. The [change card](../ai-assisted-software-development/references/change-card.md) shows the result for each new thing, and line (d) of the [evidence dossier](../provide-evidence/references/evidence-dossier.md) proves it.
 
 ### Step 5: Recommend and Communicate via the Human Layer
 - Select a recommendation and justify it using concepts from the reference lenses (e.g., "Alternative B eliminates format leakage between reader and writer").
