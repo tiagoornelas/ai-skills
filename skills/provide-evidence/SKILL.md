@@ -15,7 +15,6 @@ description: >-
   Triggered when the user asks for the evidence, the proof, or whether a
   delivery is done, or when a delivery must be verified before it is
   presented.
-disable-model-invocation: true
 argument-hint: "[PR number, URL, or branch] [verify]"
 ---
 
