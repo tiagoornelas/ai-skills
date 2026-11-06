@@ -15,7 +15,7 @@
 
 For each behavior in the Definition of Done (DoD), decide upfront:
 
-1. **Is it testable via code?** See [testing.md](testing.md), Section 5. LLM prompt text, UI visual layout, static copy, environment configuration, and thin glue code are not.
+1. **Is it testable via code?** See [testing.md](testing.md), Section 5.
 2. **At what altitude?** Public interface behavior or component integration ([testing.md](testing.md), Section 1).
 3. **With which infrastructure?** Strictly using what the project already has in place ([testing.md](testing.md), Section 4).
 
@@ -41,8 +41,7 @@ One behavior per cycle. Tests are authored against public interfaces, as if the 
 
 ## 4. Where TDD Does Not Apply
 
-- For concerns not testable via code, implement directly and **write the declaration immediately**: state the behavior, explain why it cannot be tested via code, describe how it was verified, and provide step-by-step instructions for human validation.
-- Test surrounding logic that is testable (e.g., parsing logic that handles an LLM response, using a stubbed LLM), even if the model core itself is not code-testable.
+- For concerns not testable via code, implement directly and **write the declaration immediately** ([testing.md](testing.md), Section 5).
 
 ---
 

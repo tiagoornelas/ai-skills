@@ -1,6 +1,6 @@
 # Functions
 
-> **Central thesis**: a good function does **what its name promises**, can be understood **without reading other functions**, and features a signature that clearly indicates how to call it. Between the camp of tiny two-line functions and the camp of sprawling monolithic routines, the position here is balanced: **extraction aids comprehension when the extracted piece is independent**, and harms comprehension when it merely scatters logic that must be read together.
+> **Central thesis**: a good function does **what its name promises**, can be understood **without reading other functions**, and features a signature that clearly indicates how to call it. **Extraction aids comprehension when the extracted piece is independent**, and harms comprehension when it merely scatters logic that must be read together.
 
 ---
 

@@ -13,7 +13,6 @@
 
 ## 1. How to Use This Catalog
 
-- Each smell provides: **signal** (how to recognize it), **why it hurts**, **remediations** (canonical refactoring patterns), and **when not to apply**.
 - **Prioritize by impact**, in this order:
   1. bug risk (shared mutable state, commands disguised as queries, missed edge cases);
   2. change cost (likely subsequent changes touching multiple files);
@@ -117,4 +116,3 @@ Do not report or apply, even if present in classic catalogs:
 - Rules for safe refactoring: [refactoring-principles.md](refactoring-principles.md).
 - Functions, naming, comments, and error handling: [functions.md](functions.md), [naming.md](naming.md), [comments.md](comments.md), [error-handling.md](error-handling.md).
 - Symptoms and root causes of complexity: [nature-of-complexity.md](../../software-designing/references/nature-of-complexity.md).
-- Architectural design lenses taking precedence: [`software-designing`](../../software-designing/SKILL.md).
