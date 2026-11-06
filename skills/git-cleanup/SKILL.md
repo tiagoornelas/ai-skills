@@ -7,9 +7,7 @@ description: >-
   request, recent work without a pull request, or active agent) and which to
   remove (closed or merged pull requests and everything else), lets the user
   freely edit that list, and removes only what the user explicitly approves,
-  even when the branch or worktree is the one currently in use. Inside the
-  Herdr App (herdr-app + hc, not the Herdr terminal multiplexer), also offers
-  to remove team folders of concluded or closed spaces. Triggered
+  even when the branch or worktree is the one currently in use. Triggered
   when the user asks to clean, prune, or tidy local branches or worktrees.
 argument-hint: "[recent-work window in days, default 14]"
 ---
@@ -20,7 +18,7 @@ Removes useless local branches and worktrees without losing work the user still 
 
 Worktrees follow [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md): a delivery has one worktree per repository, all on the same branch name, so a row's branch may have siblings in other repositories that finish together.
 
-**Scope is local only.** Remote branches, pull requests, and the stash are never touched. Herdr team folders (section 3.3) are the only non-Git items offered.
+**Scope is local only.** Remote branches, pull requests, and the stash are never touched.
 
 ---
 
@@ -30,7 +28,7 @@ Worktrees follow [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md): a
 - Record the **calling session's location**: the worktree it runs in (`git rev-parse --show-toplevel`) and its branch (`git branch --show-current`). They can be cleaned like any other row; section 6 explains how.
 - Resolve the remote (`origin` unless the repository only has another one) and the **default branch** from `git symbolic-ref --short refs/remotes/<remote>/HEAD`, stripping the `<remote>/` prefix (fall back to `main`, then `master`).
 - Check whether the GitHub CLI is authenticated (`gh auth status`). Without it, pull request state cannot be detected: say so, and keep every branch that has commits not in the default branch (status **PR unknown**).
-- Check whether the Herdr App is active (`test -n "${HC_TERMINAL_ID:-}" && command -v hc >/dev/null 2>&1 && command -v herdr-app >/dev/null 2>&1`). When active, record `$HC_TERMINAL_ID` as the session's own terminal, and its pane, tab, and space from `herdr-app ls`. When absent, operate as standard Git/GH CLI. Never use the `herdr` CLI of the Herdr terminal multiplexer: it talks to a different session.
+- Check whether the Herdr App is active (`test -n "${HC_TERMINAL_ID:-}" && command -v hc >/dev/null 2>&1 && command -v herdr-app >/dev/null 2>&1`). When active, read its state per [`herdr`](../herdr/SKILL.md), and record `$HC_TERMINAL_ID` as the session's own terminal, with its pane, tab, and space from `herdr-app ls`. When absent, operate as standard Git/GH CLI.
 
 ---
 
@@ -82,11 +80,7 @@ A branch counts as **merged** when any of these hold:
 
 An upstream marked `[gone]` is only a hint, never proof of merge.
 
-### 3.3. Herdr Team Folders
-
-When the Herdr App is active and `~/.herdr-teams/` exists, list its team folders as defined in [team-folder.md](../herdr-team-lead/references/team-folder.md): direct children holding `leader.md` or a `handoff-*.md` file. Never list anything else there. For each, record the space name from `leader.md` (or the folder name), whether its space ID still appears in `herdr-app ls`, and its `State` line. Folders not named `sp…` are legacy teams from the Herdr terminal multiplexer: mark them `legacy`.
-
-### 3.4. Summary of the Work
+### 3.3. Summary of the Work
 
 Write one short phrase (at most ~8 words, in the user's session language) saying **what the work is**, not its status. Sources, in order: the PR title, the subjects of the commits unique to the branch, the latest commit subjects, the branch name.
 
@@ -117,8 +111,6 @@ The pull request state is the main signal: an open PR keeps the work, a closed P
 - ⚠️ **Unmerged, no PR**: stale work outside the window. Same details as above.
 - ⚠️ **Detached HEAD**: a worktree with no branch whose HEAD is not in the default branch. Same details as above; use ✅ when it is.
 - 🧹 **Prunable**: a worktree entry whose directory no longer exists.
-
-**Herdr team folders** form their own rows: **Clean** when `leader.md` says `concluded`, or when neither the folder's space ID nor the space name recorded in `leader.md` matches an open space; **Keep** (reason **Active team**) otherwise. A `legacy` folder whose `leader.md` is not `concluded` is **Keep** (reason **Legacy team, not migrated**): its work may still be running in the Herdr terminal multiplexer, which this skill cannot observe.
 
 Flag rows that need special handling at execution (section 6), so the user knows before approving:
 
@@ -177,8 +169,7 @@ Process the approved rows in this order, one command per item, never stopping th
 3. **Worktrees**:
    - **Plain Git worktree**: `git worktree remove <path>`. Use `--force` only for a worktree the user approved knowing it had uncommitted changes.
    - **Prunable entries**: `git worktree prune`.
-4. **Herdr team folders**: `rm -r ~/.herdr-teams/<folder>` for each approved row, after checking the path is a team folder (3.3).
-5. **Branches**: `git branch -d <branch>`. If Git refuses because it does not see the work as merged (squash merges, closed PRs, commits after a merged PR, stale work), use `git branch -D <branch>` only for rows the user approved in that state.
+4. **Branches**: `git branch -d <branch>`. If Git refuses because it does not see the work as merged (squash merges, closed PRs, commits after a merged PR, stale work), use `git branch -D <branch>` only for rows the user approved in that state.
 
 Never run `git reset`, `git clean`, `git push --delete`, or any command on the remote.
 
@@ -196,7 +187,7 @@ Never run `git reset`, `git clean`, `git push --delete`, or any command on the r
 ## 8. Success Validation
 
 - [ ] The default branch was fetched and fast-forwarded (or the reason it could not be is reported); history was never rewritten, and nothing on the remote was modified.
-- [ ] Every local branch and worktree (and, in the Herdr App, team folder under `~/.herdr-teams/`) appeared in exactly one group with a short work summary; each branch was matched to its PR by head name or `pr-<N>`, and the PR state drove the classification.
+- [ ] Every local branch and worktree appeared in exactly one group with a short work summary; each branch was matched to its PR by head name or `pr-<N>`, and the PR state drove the classification.
 - [ ] Keep reasons were limited to the table's list; closed PRs were recommended for cleaning even with recent commits; closed-unmerged, stale, detached, and dirty items were flagged with what would be lost.
 - [ ] Nothing was removed before the user explicitly approved the final list; every edit was re-confirmed; `--force` and `-D` were used only on rows approved in that state; the default branch and the main worktree were never removed.
 - [ ] A branch in use by the main worktree was switched away only from a clean worktree; the session left a worktree before removing it; Herdr App terminals were matched by path, affected panes disclosed, closed only with explicit approval (working agents separately, state rechecked), the session's own terminal handed to the user as commands, and the `herdr` terminal CLI never used.
