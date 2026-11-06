@@ -67,6 +67,7 @@ A craft-oriented stylistic review, **never a mechanical checklist of rigid prohi
 - Do not strip structure, technical precision, or professional dignity merely to sound casual.
 - Never invent citations, statistics, or personal narratives without verification.
 - Do not apply heavy rewrites to text that already possesses a distinctive, effective voice: preserve what works.
+- Reading a long text for what matters to the user is [`tl-dr`](../tl-dr/SKILL.md)'s job; this skill writes.
 
 ---
 
