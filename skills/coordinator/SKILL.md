@@ -58,7 +58,7 @@ Your work · Fri 14:20 · ❓ 3 depend on you in 2 tasks
 3. ✋ Customer import: the agent in tab "import" stopped at a permission dialog · open that tab
 
 Next focus: Export invoices as PDF · answering 1 and 2 ships it this week; the import waits for a CSV sample from support anyway.
-In flight: 3 deliveries · limit 2–4 · 1 waits for your review, so one more can start after 2.
+In flight: 3 deliveries · limit 2–4 · 1 waits for your review (item 2), so one more may start.
 
 <the task state of each task, in the task-state format>
 
