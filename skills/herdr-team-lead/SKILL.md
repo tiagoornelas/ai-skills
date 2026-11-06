@@ -109,7 +109,7 @@ When the objective is met or abandoned, report the outcome to the user, set `Sta
 - [ ] The Leader wrote no code; changes went to tab agents.
 - [ ] Decisions followed the three tiers: internal details were not reported, every new production component or reversible operational change was announced before being built with a deadline and its outcome recorded, and only tier-3 decisions became cards.
 - [ ] At most three decisions were open for the user at once; each card said why it is the user's and whether it is easy or hard; no subject open in another space was asked again here; every decision or action was checked as still open before being asked, and re-asked only after a change, saying what changed.
-- [ ] Every delivery was verified with `provide-evidence` after the tab agent's clean `agent-self-review` verdict and reached the user with its change card and six-line evidence dossier for the head commit, each line showing its artifact; none with a ❌ or without a card was offered for merge.
+- [ ] Every delivery was verified with `provide-evidence` after the tab agent's clean `agent-self-review` verdict and reached the user with its change card and six-line evidence dossier for the head commit, each line showing its artifact; none was offered for merge against the dossier's no-merge rule.
 - [ ] Tab agent terms that reached the user more than once are in the `leader.md` Glossary; the Leader resumed in the user's language after any compaction.
 - [ ] `scope-review` ran before the split and whenever the objective shifted; its conclusion reached the user.
 - [ ] The split was presented as a visual plan, with each agent's change card, and tab agents were created through `herdr-handoff` only after the user approved it.
