@@ -153,6 +153,15 @@ else
   echo "  ✗ Uninstall changed the user's hooks" >&2; exit 1
 fi
 
+echo "  Setup leaves a hooks.json it cannot parse untouched..."
+echo 'not json' > "$HOME/.cursor/hooks.json"
+PATH=/usr/bin:/bin "$SCRIPT_DIR/setup-global.sh" --global-instructions > "$TEST_TMP/setup-invalid.log" 2>&1
+if [ "$(cat "$HOME/.cursor/hooks.json")" = "not json" ] && grep -q "not a valid hooks file" "$TEST_TMP/setup-invalid.log"; then
+  echo "  ✓ Invalid hooks.json left untouched and reported"
+else
+  echo "  ✗ Setup changed an invalid hooks.json or did not report it" >&2; exit 1
+fi
+
 echo "Test 7: Testing --all flag forces all harness directories..."
 PATH=/usr/bin:/bin "$SCRIPT_DIR/setup-global.sh" --skills-only --all > "$TEST_TMP/setup-all.log" 2>&1
 
