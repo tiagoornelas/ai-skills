@@ -7,7 +7,7 @@
 ## When to consult
 
 - Whenever a delivery reaches the human: a pull request ready for their review, a finished stream, a change reported as done. A delivery is always a specific version: the commit at the head of its branch or pull request.
-- A lead agent (such as a Herdr App Leader) about to present a delivery has it verified first with [`provide-evidence`](../SKILL.md)'s verify action, and so does anyone when the human asks; an author agent working alone never starts the reviewer on its own. Every delivery is presented with its [change card](../../ai-assisted-software-development/references/change-card.md).
+- The writer of a delivery, about to present it to the human as ready, has it verified first with [`provide-evidence`](../SKILL.md)'s verify action, and so does anyone when the human asks. Every delivery is presented with its [change card](../../ai-assisted-software-development/references/change-card.md).
 - On demand, `provide-evidence` shows any delivery's dossier as recorded and judges each line against its proof, for one's own PRs or anyone else's.
 
 The dossier does not replace the notice that tier 2 requires before building ([the boundary test](../../ai-assisted-software-development/SKILL.md#4-the-boundary-test)) nor the briefing of the change ([Briefing a Change](../../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change)): it is the proof that closes the briefing, next to the change card it proves.
@@ -44,7 +44,7 @@ A bare result ("✅ tested", "reviewed", "no risk", "tests pass") is ❌, whatev
 When the change has a user interface or a behavior a user can see, line (f) includes screenshots (or a recording) of the attested commit, taken with [`browser-test`](../../browser-test/SKILL.md), organized by **context**: one flow or screen the human recognizes (`export-report`, `login-error`).
 
 ```text
-evidence/<short-commit>/
+.git/evidence/<commit>/
 ├── export-report/
 │   ├── index.md            what each image shows · commit · environment
 │   ├── 01-open-reports.png
@@ -77,13 +77,13 @@ Line (f) holds only when its real run executed the commit the dossier attests. A
 - **Six lines, nothing more.** The dossier is a summary of proof, not a report. The Human Layer explanation of the change stays in its briefing or, on request, in `human-review`.
 - **Every line shows its claim, why, and proof** ([above](#every-line-convinces-claim-why-proof)); a summary count such as "6/6" never stands in for the lines.
 - **A line not yet proven is a no.** Write ❌ with what is missing, never a hopeful ✅.
-- **Presented in full by whoever presents it.** When the evidence or analysis was produced by someone else (an author agent, a sub-agent, the independent reviewer), the one presenting it to the human presents the complete dossier itself, in the human's language: every line with its claim, why it convinces, and its argument or proof inline, the change card, and the image contexts. Never a summary, never "see the file", "see the tab", or "see the report", never only paths: links and paths follow the content as lookup keys, they are not the content.
+- **Presented in full by whoever presents it.** When the evidence or analysis was produced by someone else (a subagent, the independent reviewer), the one presenting it to the human presents the complete dossier itself, in the human's language: every line with its claim, why it convinces, and its argument or proof inline, the change card, and the image contexts. Never a summary, never "see the file", "see the tab", or "see the report", never only paths: links and paths follow the content as lookup keys, they are not the content.
 - **No ❌, no merge request.** A delivery with any ❌, a proof of another version, or no change card is never presented as ready and never accompanied by a request to merge; it goes back to whoever closes the gap.
 
 ### Where Artifacts Live
 
 - **The note** (Section 2) holds the six lines with their links, commands, and output excerpts. It stays on this machine: **never push `refs/notes/evidence`** to a remote, and never add it to a push refspec.
-- **Files that do not fit in a note** (screenshots, recordings, long logs) go to a local evidence folder outside the repository, one per attested commit, with screenshots in one subfolder per context ([visual proof](#visual-proof)) (a scratch or temporary folder of the harness; in a Herdr App team, its [team folder](../../herdr-team-lead/references/team-folder.md)'s `evidence/<short-commit>/`), and the note cites them by absolute path. Never write credentials or secrets there; crop or redact screenshots that show them.
+- **Files that do not fit in a note** (screenshots, recordings, long logs) go to `evidence/<commit>/` inside the repository's shared git directory (`"$(git rev-parse --path-format=absolute --git-common-dir)/evidence/<commit>/"`, `<commit>` being the full hash), with screenshots in one subfolder per context ([visual proof](#visual-proof)). Git never versions it, every worktree of the repository sees the same folder, and it outlives temporary-folder cleanups. The note cites the files by absolute path. Never write credentials or secrets there; crop or redact screenshots that show them.
 - **Shared artifacts never cite these paths.** A PR body, commit, or review comment carries links that anyone can open (a CI run, the PR itself) and, when the human wants a file shared, the file attached to the PR, never a local path ([no local references](../../ai-assisted-software-development/references/no-local-references.md)).
 
 ---
@@ -107,7 +107,7 @@ Lines (c)–(f) are attested by a reviewer that did not write the change and sta
   The note survives the reviewer and any context loss; anyone presenting the delivery again reads it with `git notes --ref=evidence show <commit>`. It stays local ([where artifacts live](#where-artifacts-live)).
 - **When a new review is needed.** Presenting the same commit again reuses its note. Any new commit on the delivery (a fix, a rebase, a merge from the base) needs a new attestation of lines (c)–(f) before the dossier is shown again; until then, the dossier shows the old commit's lines marked as outdated, never as current.
 - **Disagreement goes to the dossier.** When the reviewer's answer differs from the author's, the reviewer's answer is the one shown, with the author's fix or rebuttal on the detail line.
-- It runs as a subagent per [subagent-delegation.md](../../ai-assisted-software-development/references/subagent-delegation.md), in any harness; in a Herdr App team, as a sub-agent under the rules of [`herdr-handoff`](../../herdr-handoff/SKILL.md#31-sub-agents).
+- It runs as a subagent per [subagent-delegation.md](../../ai-assisted-software-development/references/subagent-delegation.md), in any harness.
 - **Old notes keep their letters.** A note written before line (d) existed has five lines; read its (c), (d), (e) as today's (c), (e), (f), and its (d) "nothing built on the side" as ❌ "no record".
 
 ### Reviewer Questions
@@ -129,7 +129,7 @@ Brief the reviewer with these questions, verbatim, together with the change and 
 - [ ] Every "no" had a detail line on what is missing and what happens next; nothing unproven was marked yes.
 - [ ] A user-visible change had screenshots of the attested commit in one subfolder per context, each with its `index.md`, listed in line (f).
 - [ ] Line (f)'s real run executed the attested commit, named it, and named the validation environment and its commit when one exists.
-- [ ] The evidence note stayed local (never pushed); files beyond the note sit in the evidence folder outside the repository and are cited by absolute path; no shared artifact cites a local path.
+- [ ] The evidence note stayed local (never pushed); files beyond the note sit in the repository's unversioned `.git/evidence/<commit>/` folder and are cited by absolute path; no shared artifact cites a local path.
 - [ ] The delivery reached the reviewer only after a clean branch-mode `agent-self-review` verdict from its author; the reviewer complemented that review and did not replace or waive it.
 - [ ] Lines (c)–(f) were attested by a reviewer that did not write the change, started from a clean context, was briefed with the change and the reviewer questions, not the author's answers, and produced its artifacts by running things itself.
 - [ ] The attestation names the reviewed commit, was stored as an `evidence` git note on it before the reviewer ended, and was redone after any new commit on the delivery.

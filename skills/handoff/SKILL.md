@@ -7,9 +7,11 @@ description: >-
   colleague, or in a parallel delivery forked from the current session. References
   existing artifacts instead of duplicating them, separates verified facts
   from unverified assumptions, suggests next-session skills, and purges
-  sensitive secrets. Triggered strictly upon explicit user request.
+  sensitive secrets. Delivers it to a new session the user opens or, inside
+  the Herdr App, to a new tab or space started from it. Triggered strictly
+  upon explicit user request.
 disable-model-invocation: true
-argument-hint: "[what the subsequent session will be used for]"
+argument-hint: "[what the subsequent session will be used for] [new session | Herdr tab | Herdr space]"
 ---
 
 # Handoff
@@ -86,7 +88,9 @@ Rules:
 
 1. Write the file into the **operating system temporary directory**, never inside the project workspace: it is a transit document, not a repository artifact.
 2. **Return the absolute path** to the user. Warn that temporary directories are ephemeral and may be cleared upon reboot: if the next session is delayed or runs in another environment, the user should copy the file to durable storage.
-3. Provide resumption guidance: in the new session, **instruct the agent to read the file** ("read this file and resume work"), avoiding pasting summaries into shell commands where backticks and command substitutions can corrupt payloads. When one skill drives the next session, suggest opening it with that skill's command instead: `/<skill> <args> Before starting, read <path> and resume the work it describes.`
+3. **Deliver to the destination.** The start prompt is always "read <path> and resume the work it describes", never a pasted summary, where backticks and command substitutions can corrupt the payload; when one skill drives the next session, prefix it with that skill's command: `/<skill> <args> Before starting, read <path> and resume the work it describes.`
+   - **New session** (default): give the user that prompt to open the session with.
+   - **Herdr tab or space**, when the user asks for one inside the Herdr App: open it per [`herdr`](../herdr/SKILL.md) as an independent session, in the folder the next session works in (a forked delivery's own worktree, created per `agentic-parallel-work`), with that prompt in its start command, and report its tab and pick-up state.
 4. Encourage the user to scan the brief and downgrade any claims they recognize as mere assumptions.
 
 When forking a delivery, the current session remains active: do not terminate or clear current context.
@@ -96,7 +100,7 @@ When forking a delivery, the current session remains active: do not terminate or
 ## 5. Success Validation
 
 - [ ] Handoff was justified (work travels), or explicitly re-confirmed by user; a forked delivery is independent per `agentic-parallel-work`.
-- [ ] Document written to OS temporary directory outside workspace, with absolute path and volatility notice returned.
+- [ ] Document written to OS temporary directory outside workspace, with absolute path and volatility notice returned, and delivered as a "read <path>" start prompt to a new session or a Herdr tab or space.
 - [ ] Existing artifacts cited via link/path without copied text; zero local machine paths for peer handoffs.
 - [ ] Every unverified claim flagged with ❓, and every cited handle (PR, issue, ADR, session label) carries its meaning.
 - [ ] Recommended skills section exists, aligns with declared next step, and gives each skill's absolute `SKILL.md` path (name only for a human peer).
