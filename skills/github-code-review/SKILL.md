@@ -103,15 +103,13 @@ Conclude with summary and **recommended verdict**:
 🟡 Warning:    N   — worth discussing
 🟢 Suggestion: N   — optional
 
-Highest-risk axis: **<axis>** (<key finding in one line>)
+Highest-risk axis: **<axis>** (<key finding in one line>)   ← only when the review axes ran
 
 **Suggested Verdict:** ✅ Approve | 🔁 Request changes
 <single sentence rationale>
 ```
 
-Verdict rule: a critical defect or a material unresolved architectural/business decision that makes the current change unsuitable → **Request changes**, with the reason explicit. Incomplete evidence → state the limitation and pending verification, not automatic approval. Recommend **Approve** only within the reviewed scope when no material impediment remains. A focused Human Layer review does not certify unreviewed Agent Layer quality. **The verdict belongs to the user**; accepted concessions are respected unless new evidence changes their premises. The report summary and rationale are for discussion with the user, not a general PR review comment.
-
-Verdict rule: a critical defect, a material unresolved decision, or a failing proof → **Request changes**, with the reason. Incomplete evidence → state the limitation and what remains to verify, never an automatic approval. **Approve** only within the reviewed scope when nothing material remains. **The verdict belongs to the user**; accepted concessions are respected unless new evidence changes their premises. Discuss with the user, who may promote, demote, or discard findings.
+Verdict rule: a critical defect, a material unresolved decision, or a failing proof → **Request changes**, with the reason. Incomplete evidence → state the limitation and what remains to verify, never an automatic approval. **Approve** only within the reviewed scope when nothing material remains; a focused Human Layer review does not certify unreviewed Agent Layer quality. **The verdict belongs to the user**; accepted concessions are respected unless new evidence changes their premises. The summary and rationale are for discussion with the user, who may promote, demote, or discard findings; they are not a general PR review comment.
 
 When the PR was authored by the agent pipeline (the user's own work), tag each accepted Agent Layer finding with its escape cause per [escape-classification.md](../agent-self-review/references/escape-classification.md) and add the one-line tally to the summary.
 
@@ -170,6 +168,6 @@ Never publish automatically. If the user explicitly requests publication, displa
 - [ ] The diff was captured once and validated; the user's working tree stayed untouched.
 - [ ] The review came from `human-review` and the proof from `provide-evidence`, not re-derived here; deeper axes ran only on request.
 - [ ] In re-review mode, every prior feedback item got a resolution status and only the incremental diff was evaluated.
-- [ ] Every finding had `file:line` and a severity badge; the recommended verdict followed the verdict rule and the user decided.
+- [ ] Every finding had `file:line` and a severity badge; on the user's own work, accepted Agent Layer findings carry their escape cause and the summary its tally; the recommended verdict followed the verdict rule and the user decided.
 - [ ] Only accepted findings became humanized comments, with exact locations and no AI footers; no general review body unless requested.
 - [ ] Nothing was published without an explicit request and confirmation.
