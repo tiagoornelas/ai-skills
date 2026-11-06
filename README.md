@@ -79,6 +79,8 @@ I don't leave criteria to chance. Every design or code judgment is grounded in a
 | **Kent Beck**, *Test-Driven Development* | **Red → green → refactor.** A test that has never failed proves nothing. | Implementation. |
 | **Classical Testing School** (Vladimir Khorikov, *Unit Testing Principles, Practices, and Patterns*) | The unit of testing is an **observable behavior via public interface**. Internal collaborators run for real; test doubles only for things outside process control (network, system clock, LLMs). A test that breaks upon refactoring is a bad test. | Testing and test review. |
 
+Where schools diverge, I state my position. For instance: between the tiny functions of *Clean Code* and the deep, cohesive functions of Ousterhout, my rule is to extract **when the extracted piece is independent**, avoiding extractions that merely scatter what should be read together.
+
 ### Agents in parallel
 
 More agents are not more throughput. The rules for running agents in parallel come from studies of multi-agent systems and from how practitioners run coding agents today; the full reasoning is in [`agentic-parallel-work`](skills/agentic-parallel-work/references/studies-and-practices.md).
@@ -91,9 +93,7 @@ More agents are not more throughput. The rules for running agents in parallel co
 | **Cognition**, [*Don't Build Multi-Agents*](https://cognition.ai/blog/dont-build-multi-agents) and [*Multi-Agents: What's Actually Working*](https://cognition.com/blog/multi-agents-working) | Parallel writers make conflicting implicit decisions: **single-threaded writes**, helpers that contribute intelligence, and a **clean-context reviewer**. | One writer per delivery; subagents answer once; the independent reviewer of `provide-evidence`. |
 | **Practitioners and tools**: [Simon Willison](https://simonwillison.net/2025/Oct/5/parallel-coding-agents/), [Addy Osmani](https://addyosmani.com/blog/future-agentic-coding/), [Conductor](https://www.conductor.build/docs/concepts/git-worktrees), [Cursor](https://cursor.com/docs/configuration/worktrees) and [Codex](https://developers.openai.com/codex/app/worktrees) worktrees, Claude Code [agent teams](https://code.claude.com/docs/en/agent-teams) | **One worktree per agent**, the human reviewing deliveries instead of transcripts, and a few agents in flight because **review capacity is the limit**. | Branches and worktrees, the in-flight limit. |
 
-A measured case: a lead agent coordinating tab agents that messaged each other spent about 5× the tokens per changed line of a one-session-per-task flow, with half of it in review rounds over wording and a quarter in relaying messages.
-
-Where schools diverge, I state my position. For instance: between the tiny functions of *Clean Code* and the deep, cohesive functions of Ousterhout, my rule is to extract **when the extracted piece is independent**, avoiding extractions that merely scatter what should be read together.
+A measured case: a lead agent coordinating tab agents that messaged each other spent about 5× the tokens per changed line of a one-session-per-task flow, with about half of it in review rounds, mostly over wording, and a quarter in relaying messages.
 
 
 ## 🧩 What the Skills Have in Common
