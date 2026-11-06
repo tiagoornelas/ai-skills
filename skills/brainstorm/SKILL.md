@@ -22,29 +22,29 @@ An open question with several defensible answers: a design direction, an approac
 
 ## 2. Write One Brief
 
-Create a new folder in the operating system's temporary directory, outside any repository, and write `brief.md` there, the same file for every participant:
+Create a new folder in the operating system's temporary directory, outside any repository, and write `brief.md` there, the same file for every participant; each participant's answer goes to its own `<folder>/<participant>/answer.md`:
 
 - The question, and what a good answer lets the user decide.
 - Every fact a participant needs, since it has none of this conversation: what each handle means, absolute paths of the files to read, constraints, and what is already ruled out.
 - The problem, never the caller's own leaning: a brief that hints at an answer gets that answer back.
 - The answer's shape: recommendation first, then reasons, risks, confidence, and what would change its mind.
-- Read-only: participants change no file outside their own answer.
+- Read-only: participants change no file outside their own answer, and read only `brief.md` and the files it names, never opening other files in this folder.
 
 ## 3. Run Them in Parallel
 
 Participants are the harnesses or models the user names; otherwise three of the installed ones. The caller may add its own answer only if it writes it before reading any other.
 
-- **Herdr App active** (per [`herdr`](../herdr/SKILL.md#1-preconditions)): one collected run per participant in its own tab, per [`herdr`](../herdr/SKILL.md#3-open-a-tab-or-space-with-an-agent), each told to read the brief and write its answer to `<folder>/<participant>.md`.
+- **Herdr App active** (per [`herdr`](../herdr/SKILL.md#1-preconditions)): one collected run per participant in its own tab, per [`herdr`](../herdr/SKILL.md#3-open-a-tab-or-space-with-an-agent), each told to read the brief and write its answer to `<folder>/<participant>/answer.md`.
 - **Otherwise, headless**: all at once in the background, from the folder the question is about, standard input closed, each answer captured from standard output:
 
   | Harness | Command |
   | :--- | :--- |
-  | Claude Code | `claude -p "<prompt>" > <folder>/claude.md` |
-  | Codex | `codex exec --skip-git-repo-check --ephemeral -s read-only -o <folder>/codex.md "<prompt>"` |
-  | Cursor | `cursor-agent -p --trust --output-format text "<prompt>" > <folder>/cursor.md` |
-  | Antigravity | `agy -p "<prompt>" > <folder>/agy.md`, through `<user's shell> -ic` when `agy` is a shell alias |
+  | Claude Code | `claude -p "<prompt>" > <folder>/claude/answer.md` |
+  | Codex | `codex exec --skip-git-repo-check --ephemeral -s read-only -o <folder>/codex/answer.md "<prompt>"` |
+  | Cursor | `cursor-agent -p --trust --output-format text "<prompt>" > <folder>/cursor/answer.md` |
+  | Antigravity | `agy -p "<prompt>" > <folder>/agy/answer.md`, through `<user's shell> -ic` when `agy` is a shell alias |
 
-  `<prompt>` is "Read <folder>/brief.md and answer it." Pass a model flag only when the user names a model.
+  `<prompt>` is "Read <folder>/brief.md and answer it." Create each participant's folder before its run. Pass a model flag only when the user names a model.
 - **No harness CLI**, or the user prefers it: one subagent per participant, briefed with the same file, answering once.
 
 Wait for every run to end before reading any answer. A run that fails or produces nothing is reported with its error; the others still count. After the runs, check that the project's `git status` is unchanged and report any change to the user.
@@ -66,7 +66,7 @@ A claim that drives the recommendation is verified first, or marked as not verif
 ## Success Validation
 
 - [ ] Every participant got the same brief, with the facts it needed and no hint of the caller's leaning.
-- [ ] Participants ran in parallel, alone, and never saw or answered each other; none changed the project.
+- [ ] Participants ran in parallel, alone, each writing to its own `<participant>/answer.md` and briefed to read only `brief.md` and the files it names; none saw or answered another or changed the project.
 - [ ] Every answer was read only after all runs ended; failed runs were reported.
 - [ ] The synthesis opened with a recommendation, then convergences, divergences with what settles each, and unique ideas, attributed by participant.
 - [ ] Claims driving the recommendation were verified or marked as not verified.
