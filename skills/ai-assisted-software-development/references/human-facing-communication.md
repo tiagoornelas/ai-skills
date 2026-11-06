@@ -48,12 +48,12 @@ How to explain work done or proposed (a delivery, a PR, a fix, an architectural 
 
 The human's job is to judge the **decisions**, not to learn the code. What matters most goes first, but only after the minimum context that makes it intelligible:
 
-1. **Where on the map.** Which product and which part of it, what that part does, and how a user meets it. One to three sentences, plus a [`visualize-it`](../../visualize-it/SKILL.md) map when the change crosses modules.
+1. **Where on the map.** Which product and which part of it, what that part does, and how a user meets it. One to three sentences, plus a [`visualize-it`](../../visualize-it/SKILL.md) swimlane when the change alters a flow across places of the system.
 2. **The problem.** A concrete scenario: who was doing what, what happened, and why (the cause, in system terms). Say whether it was a bug users hit, a risk, or a structural cost.
 3. **Decisions and trade-offs.** What was chosen, what alternatives were considered and why they lost, and what the choice commits the system to (a new rule, a dependency, a maintenance commitment, a behavior users will now see). This is where most of the words go.
 4. **Risks and impact.** Where the change can break or surprise: which flows and users are affected, what was not verified (for example tested only in unit tests, not in the browser), and how the human can check it.
 5. **The solution.** How it works, at the level of modules, boundaries, responsibilities, and dependency direction, with general programming terms used freely. Internal mechanics go here only when they explain a decision or a risk.
-6. **The card and the evidence.** A delivery closes with its [change card](change-card.md) (what is new and where it lives, rules, data, pattern, walls, state) and its six-line [evidence dossier](../../provide-evidence/references/evidence-dossier.md): why do it, architecture, no wall knocked down, nothing built on the side, no catastrophe, tested and works, each a yes or no with its claim, why it convinces, and its argument or proof, presented in full.
+6. **The card and the evidence.** A delivery closes with its [change card](change-card.md) (the plan of what is new, changed, removed, yours to decide, or out of pattern, and the state) and its six-line [evidence dossier](../../provide-evidence/references/evidence-dossier.md): why do it, architecture, no wall knocked down, nothing built on the side, no catastrophe, tested and works, each a yes or no with its claim, why it convinces, and its argument or proof, presented in full.
 
 A change with nothing to decide still follows the order: it says plainly that the decisions were routine Agent Layer choices and moves on to impact.
 
@@ -97,7 +97,7 @@ Emojis help the human scan a message and spot what needs attention. They are mar
 
 **Who acts.** ❓, 👀, and ✋ mean the human acts; 🤖 means an agent does; ⏳ means it is already moving; ⏸️ means nobody can move it now. In a list that mixes owners (next steps, pending items), mark every item with one of these so the human sees at a glance what is theirs. Work waiting for the human is never ⏸️: it is ❓, 👀, or ✋.
 
-Skills that define their own legend (the change notation in `visualize-it`) keep it inside their own outputs. Do not invent other meanings within a session: the same emoji always means the same thing.
+Skills that define their own symbols (the plan symbols of the [change card](change-card.md)) keep them inside their own outputs. Do not invent other meanings within a session: the same emoji always means the same thing.
 
 ### Definition of Done Legend
 
@@ -117,7 +117,7 @@ Prompt instructions or documentation are never automated verification.
 1. **Mark, do not decorate.** An emoji goes at the start of a line, bullet, or table cell whose status matters. No emojis in headings for decoration, in the middle of prose, or next to every bullet.
 2. **Few enough to stand out.** One emoji per line at most. If most lines in a message carry one, they stop signaling: keep them for status and attention points.
 3. **Never the only carrier.** The text must still say what the emoji signals ("⚠️ the migration locks the table for about a minute"), so the message survives a reader who skims past the symbol.
-4. **Not inside box-drawn diagrams.** Emojis are two columns wide in terminals and break alignment; use the one-column markers from `visualize-it`.
+4. **Not inside box-drawn diagrams.** Emojis are two columns wide in terminals and break alignment; use one-column marks (`+ ~ - ? !`, `■`, `↻`) as the [change card](change-card.md) and [`visualize-it`](../../visualize-it/SKILL.md) do.
 5. **Conversation, not commits.** This applies to messages to the human. Commit messages and titles of tickets or PRs carry no emojis; other shared artifacts follow their own skill.
 
 ---
