@@ -43,7 +43,7 @@ Forks the current work into agent sessions while leaving the calling terminal's 
   | Work | Kind | Shape |
   | :--- | :--- | :--- |
   | Writes code in its own worktree, or is responsible for a delivery in a pull request | **Tab agent** ("tab" for short) | Own tab in the space, its own handoff file, started with `--no-parent --outlive-parent`; lives until the user ends it; tab agents are kept terminals that can be resumed after a restart |
-  | Writes no code: a review, an investigation, a check, running commands and tests, ending in one report | **Sub-agent** | Child of the team tab that creates it, with no tab (listed under its creator in the app's Agents sidebar), brief in its start prompt or a file, ended and removed by its creator once its report is in; sub-agents end with their creator and are not kept |
+  | Writes no code: a review, an investigation, a check, running commands and tests, ending in one report | **Sub-agent** | Child of the team tab that creates it, in a tab of its own named `↳ <name>` so it counts in the space, brief in its start prompt or a file, ended and removed by its creator once its report is in (removing it closes its tab); sub-agents end with their creator and are not kept |
   | An investigation that turns into code | The sub-agent reports to its creator and is removed; the code goes to a **tab agent** per Section 3.1 | — |
 
   The kind never depends on a guess at how long the work will take. A sub-agent never writes code. A Leader writes no code, yet takes the tab agent's shape (own tab, no parent, outlives its creator) because it coordinates the space. Only the Leader creates tab agents, and only after the user approves; a tab agent that needs another code stream mid-work asks its Leader, who brings it to the user. Any team tab may create sub-agents under Section 3.1.
@@ -90,7 +90,7 @@ hc run --bg --json --name <agent-name> --cwd <dir> --outlive-parent --no-parent 
 ```
 
 - `--outlive-parent` is mandatory: without it, the agent ends when the agent that started it ends.
-- `--no-parent` is mandatory for tab agents and Leaders alike. The app's Agents sidebar nests every live child under its parent even when the child has its own tab, while also listing that tab, so a tab agent with a parent appears twice. The cost: herdr-core no longer notifies the Leader when a tab agent blocks, errors, or exits, so the Leader checks its tab agents itself ([`herdr-team-lead`](../herdr-team-lead/SKILL.md), Coordinate Tab Agents).
+- `--no-parent` is mandatory for tab agents and Leaders alike. The app's Agents sidebar nests every live child under its parent even when the child has its own tab, while also listing that tab, so a tab agent with a parent appears twice. The cost: herdr-core no longer notifies the Leader when a tab agent blocks, errors, or exits, so the Leader checks its tab agents itself ([`herdr-team-lead`](../herdr-team-lead/SKILL.md#2-guidance), Coordinate tab agents).
 - Then find the new terminal's tab in `herdr-app ls` and name it with `herdr-app do tab.rename --id <tab> --name <label>`.
 
 **New team.** Create the space with `herdr-app do space.new --name <name> --folder <dir>`; it returns `space`, `tab`, and `terminal` and starts a plain shell in that first tab. Start the Leader with `hc run` as above, rename its tab to `Leader`, then close the initial shell tab with `herdr-app do tab.close --id <initial tab> --confirmed true` after checking in `herdr-app ls` that it holds only that shell. The Leader's tab is then first. Create the Leader before any tab agent, and record the Leader's address (terminal name) in every tab agent's handoff. If the Leader fails to start, stop creating that team: leave the new space and its shell tab in place, and report the space name so the user can retry or close it.
@@ -101,21 +101,22 @@ hc run --bg --json --name <agent-name> --cwd <dir> --outlive-parent --no-parent 
 
 ### 3.1. Sub-agents
 
-Any tab of a team, the Leader or a tab agent, may start a sub-agent. The creator runs this from its own terminal, so it becomes the sub-agent's parent by default; the sub-agent carries no `herdr.space` label and so gets no tab:
+Any tab of a team, the Leader or a tab agent, may start a sub-agent. The creator runs this from its own terminal, so it stays the sub-agent's parent (herdr-core notifies it when the sub-agent blocks, errors, or exits), and the `herdr.space` label gives the sub-agent a tab in the space:
 
 ```bash
-hc run --bg --json --name <agent-name> --cwd <dir> \
+hc run --bg --json --name <agent-name> --cwd <dir> --label herdr.space=<space-id> \
   env TERM=xterm-256color <command> "<brief, or the path of its brief file, plus: you write no code and start no agents; report with hc send <creator-address> when done or stuck>"
 ```
 
-1. **Within the creator's approved mission only.** A sub-agent never widens scope or settles a Human Layer decision; those still go from a tab agent to the Leader, and from the Leader to the user.
-2. **A sub-agent creates no agents**, neither sub-agents nor tab agents; its brief says so.
-3. **The creator owns its sub-agent.** It receives the report (and herdr-core's note if the sub-agent blocks, errors, or exits), uses it, then ends and removes the sub-agent with `hc kill <agent-name>` and `hc rm <agent-name>`. No finished sub-agent is left behind.
-4. **A sub-agent writes no code**; its brief says so. When its work turns into code (an investigation finds the fix), it reports to its creator and is removed; when the code fits the creating tab agent's mission, that tab agent writes it, otherwise it becomes a new tab agent, which only the Leader creates, after the user approves.
-5. **Sub-agents are not recorded in `leader.md`.** The Leader sees them nested under their creator in the app's Agents sidebar.
+1. **Name its tab first.** Right after `hc run`, find the sub-agent's tab in `herdr-app ls` (it opens with a default name, possibly before the creator's tab) and rename it with `herdr-app do tab.rename --id <tab> --name "↳ <name>"`. `hc rm` closes that tab when the creator removes the sub-agent. With a parent and a tab, the sub-agent appears twice in the app's Agents sidebar (as its own tab and under its creator); that is accepted, because the tab is what makes it visible and counted in the space.
+2. **Within the creator's approved mission only.** A sub-agent never widens scope or settles a Human Layer decision; those still go from a tab agent to the Leader, and from the Leader to the user.
+3. **A sub-agent creates no agents**, neither sub-agents nor tab agents; its brief says so.
+4. **The creator owns its sub-agent.** It receives the report (and herdr-core's note if the sub-agent blocks, errors, or exits), uses it, then ends and removes the sub-agent with `hc kill <agent-name>` and `hc rm <agent-name>`. No finished sub-agent is left behind.
+5. **A sub-agent writes no code**; its brief says so. When its work turns into code (an investigation finds the fix), it reports to its creator and is removed; when the code fits the creating tab agent's mission, that tab agent writes it, otherwise it becomes a new tab agent, which only the Leader creates, after the user approves.
+6. **Sub-agents are not recorded in `leader.md`.** They show as `↳ <name>` tabs of the space while they run.
 
 - Without `--outlive-parent` a sub-agent ends with its creator, which suits work that ends in one report.
-- If the user wants to watch or talk to a sub-agent, show it with `herdr-app do agent.focus --terminal <address>`, or give it a tab by asking the Leader to restart it as a tab agent.
+- The user can watch or talk to a sub-agent in its `↳` tab.
 - To end an agent, use `hc kill`. `hc send <agent> "/exit"` does not end it: `hc send` wraps the text as an `<hc from=…>` message, which the agent only reads. A graceful exit needs keystrokes: `hc keys <agent> / e x i t`, then `hc keys <agent> enter`.
 
 **Pick-up check.** Run `hc wait <agent-name> --timeout 60` and inspect `hc get <agent-name>`. `working`, `idle`, or `done` after its first turn means the work was picked up. On `blocked` (for example a folder-trust dialog) or `error`, read `hc read <agent-name> --lines 40`, leave the tab open, and report the needed action to the user; never answer the dialog yourself. Do not restart or re-prompt automatically. Continue other streams.
@@ -133,6 +134,6 @@ Open with one plain sentence per stream: what it will deliver for the user's goa
 - [ ] Branch naming and base follow `git-branch`, without switching the calling checkout; mandatory project instructions were respected.
 - [ ] Every code-writing stream's handoff lists `coding`, `agent-self-review`, `commit`, `github-pull-request`, and `git-branch` with absolute `SKILL.md` paths.
 - [ ] Each stream's kind fits its work: tab agents and the Leader were started with `--outlive-parent`, `--no-parent`, the `herdr.space` label, and a semantically named tab; only the Leader created tab agents. Every agent has a unique name and its start prompt in the start command.
-- [ ] Each sub-agent was started by a team tab within its approved mission, as a tab-less child of that tab, for work that writes no code, with a brief that forbids writing code and starting agents and names where to report; the creator ended and removed it after its report.
+- [ ] Each sub-agent was started by a team tab within its approved mission, as a child of that tab with the `herdr.space` label and a `↳ <name>` tab, for work that writes no code, with a brief that forbids writing code and starting agents and names where to report; the creator ended and removed it after its report.
 - [ ] Every stream reached a picked-up state or a reported failure; no dialog was answered and nothing was retried automatically.
 - [ ] The report covers every stream and retained checkout, with no automatic cleanup.

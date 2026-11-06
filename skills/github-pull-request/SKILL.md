@@ -118,7 +118,7 @@ graph LR
 
 ## Delivered Behaviors (Definition of Done)
 
-Status table mapping implemented behaviors to verification status, adhering to the legend from [`human-review`](../human-review/SKILL.md) (Verification and decision section):
+Status table mapping implemented behaviors to verification status, adhering to the [Definition of Done legend](../ai-assisted-software-development/references/human-facing-communication.md#definition-of-done-legend):
 
 | Status | Delivered Behavior | Verification | Action for Reviewer |
 | :---: | :--- | :--- | :--- |

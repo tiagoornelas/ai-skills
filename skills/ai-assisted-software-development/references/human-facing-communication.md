@@ -97,7 +97,20 @@ Emojis help the human scan a message and spot what needs attention. They are mar
 
 **Who acts.** ❓, 👀, and ✋ mean the human acts; 🤖 means an agent does; ⏳ means it is already moving; ⏸️ means nobody can move it now. In a list that mixes owners (next steps, pending items), mark every item with one of these so the human sees at a glance what is theirs. Work waiting for the human is never ⏸️: it is ❓, 👀, or ✋.
 
-Skills that define their own legend (the DoD status legend in `human-review`, the change notation in `visualize-it`) keep it inside their own outputs. Do not invent other meanings within a session: the same emoji always means the same thing.
+Skills that define their own legend (the change notation in `visualize-it`) keep it inside their own outputs. Do not invent other meanings within a session: the same emoji always means the same thing.
+
+### Definition of Done Legend
+
+Wherever delivered behaviors are listed against their verification (a PR body, a code review, a conflict resolution), each behavior carries one of these:
+
+| Status | Meaning |
+| :---: | :--- |
+| ✅ | Covered by a named automated test verifying behavior through the public interface. |
+| 🔎 | Not code-testable; verified by alternative means, with the method disclosed. |
+| 👤 | Requires manual human validation. |
+| 🚨 | Missing, or lacking both test coverage and declaration. |
+
+Prompt instructions or documentation are never automated verification.
 
 ### Rules
 
