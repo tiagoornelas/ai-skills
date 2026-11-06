@@ -52,8 +52,7 @@ Plan: 9 +  2 ~  0 -  2 ?  1 !  2 draft PRs, 1 awaiting your review
 ⏳ billing-api#88 · invoice PDF export · draft · CI ok · agent ok · proof — · you —
 👀 web-app#212 · download PDF button · CI ok · agent ok · proof ok · you pending
 ⏳ infra#41 · invoice PDF bucket · draft · CI running · agent — · proof — · you —
-thread  web-app#212 review · layout of the PDF header · author's move
-thread  team chat · support asked when PDFs ship · your move
+thread  team chat · support asked when PDFs ship · your move · +1 thread, author's move
 next    🤖 billing-api#88 runs its proof once infra#41 is green
 ```
 
