@@ -88,7 +88,7 @@ When destination instructions arrive:
 - If a specific tool skill exists (e.g., Jira skill), load it and adhere to its rules.
 - **Confirm prior to writing** to any external system: display what will be created or changed, where, and with what fields or from → to values, and write only what the user approved.
 - Create in relational order (epic → parent → subtasks → links), replacing temporary keys with real tracking IDs.
-- Present a final mapping table: `Temporary Key → Real ID / Link`.
+- Present a final mapping table: `Temporary Key → Real ID / Link` for new tasks and, in update mode, `Change → Result (applied / failed, link)`.
 
 ---
 
@@ -126,6 +126,7 @@ In update mode, the change list:
 ```markdown
 ## Changes to Existing Tasks
 | Task | Change | From → To | Evidence |
+| :--- | :--- | :--- | :--- |
 | PROJ-12 | status | In Progress → Done | PR #48 merged |
 | PROJ-15 | parent | — → PROJ-10 | same export feature |
 ```
