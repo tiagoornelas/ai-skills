@@ -6,8 +6,8 @@
 
 ## When to consult
 
-- Whenever a message is addressed to the human: status reports, delivery summaries, PR descriptions, reviews, questions, pending decisions, recaps, and relays of what a peer agent said.
-- Messages between agents (herdr-talk envelopes, handoff files, subagent briefs) may use handles and code vocabulary freely, provided each handle carries its meaning the first time it appears: the peer does not share your context either.
+- Whenever a message is addressed to the human: status reports, delivery summaries, PR descriptions, reviews, questions, pending decisions, recaps, and summaries of what a subagent or reviewer reported.
+- Text written for another agent (handoff files, subagent briefs) may use handles and code vocabulary freely, provided each handle carries its meaning the first time it appears: the peer does not share your context either.
 
 ---
 
@@ -35,7 +35,7 @@ The right column is not forbidden; it is **not self-explanatory**. Every item in
 3. **Labels live for one message.** A label coined in a message (`P3`, `option B`) may be reused only inside that same message. In a later message, repeat its meaning: "P3 (fetch cases one by one through the show route)". When the human returns after a gap, restate each pending item in one sentence of its own instead of citing "decision 2" or "option B".
 4. **Code identifiers only when they matter.** Say what the code does ("the tool that downloads the calculation report"); add the identifier in parentheses only when the human will need it to look something up.
 5. **Status in terms of the goal.** Report what is done and what is missing for the human's objective. Hashes, stack order, test counts, and pane IDs go below, in a details block, or only on request.
-6. **Translate relays.** When passing on what a peer agent said, rewrite it for the human; never paste the peer's envelope or wording.
+6. **Translate reports.** When passing on what a subagent or reviewer reported, rewrite it for the human; never paste its wording.
 7. **Directing-architect test.** Before sending, read every noun and every claim and ask: would someone who knows only what the product does and its high-level architecture know what this refers to, when it happens, and why it matters? Would they understand it as the first thing they read after two hours in another tab, without scrolling up or opening anything? If not, situate it or rewrite.
 
 ---
@@ -126,7 +126,7 @@ Prompt instructions or documentation are never automated verification.
 
 ### Ask less
 
-- **Decide what is yours.** Agent Layer choices and reversible, in-scope operational steps (notifying a peer agent, running a check, updating a note) are not questions: do them and report them. Ask only for Human Layer decisions or for actions that are irreversible or outward-facing (tier 3 of [the boundary test](../SKILL.md#4-the-boundary-test)); only what the test places in tier 2 (a new component or reversible operational change in production, effects included) is announced instead of asked ([notice](#announcing-before-building)).
+- **Decide what is yours.** Agent Layer choices and reversible, in-scope operational steps (running a check, updating a note) are not questions: do them and report them. Ask only for Human Layer decisions or for actions that are irreversible or outward-facing (tier 3 of [the boundary test](../SKILL.md#4-the-boundary-test)); only what the test places in tier 2 (a new component or reversible operational change in production, effects included) is announced instead of asked ([notice](#announcing-before-building)).
 - **Check before asking.** Before asking a decision or an action, confirm it is still open: the PR may be merged, the human may have decided it in another tab or space, the agent may already have done it. Asking again for what is done costs the human more than one look costs the agent.
 - **Ask once.** A decision is asked again only when something changed since it was asked, and the new card opens by saying what changed.
 - **Never make the human the courier.** Agents do not message each other ([`agentic-parallel-work`](../../agentic-parallel-work/SKILL.md#2-who-talks-to-whom)), so never ask the human to carry a message to another agent either. What one delivery needs from another is a contract, and the contract is the human's decision: bring it as a decision card.
