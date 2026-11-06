@@ -49,7 +49,7 @@ The scope is a **git range**, never a description of the work. An author-written
 
 ### 3.1. Increment Mode (default)
 
-Inspect everything since the **last clean checkpoint**: `<checkpoint>..HEAD` plus uncommitted changes (`git diff HEAD`). This includes merges authored in the session, commits made by subagents or background agents, and code written after a previous run started.
+Inspect everything since the **last clean checkpoint**: `<checkpoint>..HEAD` plus uncommitted changes (`git diff HEAD`). This includes merges authored in the session, commits made by any other agent or session, and code written after a previous run started.
 
 - **Checkpoint**: the nearest ancestor of `HEAD` carrying a self-review note (Section 6):
   ```bash
@@ -212,7 +212,7 @@ When a later review accepts a rules, tests, or code-quality finding on code this
 
 ## 8. Success Validation
 
-- [ ] Scope was a git range (increment from the checkpoint, or branch against the merge-base), including merges and subagent commits, never an author-written summary; branch mode ran at most once per head commit, with Phases 4b–5 restricted to cross-commit concerns.
+- [ ] Scope was a git range (increment from the checkpoint, or branch against the merge-base), including merges and commits by any other agent or session, never an author-written summary; branch mode ran at most once per head commit, with Phases 4b–5 restricted to cross-commit concerns.
 - [ ] Objective checks (Phases 1–3, 4a) ran before judgment checks (4b, 5); the rule ledger lists every applicable rule file, each read in full, test files included; every violation and claimed exception quotes the rule; mechanizable rules without automated checks were escalated once each; migrations and queries were audited against [database-and-migrations.md](../coding/references/database-and-migrations.md) when database code changed.
 - [ ] Every ✅ DoD behavior names its test and the assertion that would fail without it, enforcement claims name the enforcing code, wiring behaviors are tested through the composed entry point, and every removed test case has a destination.
 - [ ] Failure-path questions were answered before code-quality judgment; at most 5 Should fix remediations across at most 3 rounds, each ending fixed, justified, or over budget; no critical defect or project rule violation used that budget; fixes were re-checked against Phases 1–3 and 4a; every contract, boundary, or dependency direction change was escalated, never applied.
