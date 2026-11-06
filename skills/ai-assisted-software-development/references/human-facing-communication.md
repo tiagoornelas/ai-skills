@@ -117,7 +117,7 @@ Prompt instructions or documentation are never automated verification.
 1. **Mark, do not decorate.** An emoji goes at the start of a line, bullet, or table cell whose status matters. No emojis in headings for decoration, in the middle of prose, or next to every bullet.
 2. **Few enough to stand out.** One emoji per line at most. If most lines in a message carry one, they stop signaling: keep them for status and attention points.
 3. **Never the only carrier.** The text must still say what the emoji signals ("⚠️ the migration locks the table for about a minute"), so the message survives a reader who skims past the symbol.
-4. **Not inside box-drawn diagrams.** Emojis are two columns wide in terminals and break alignment; use one-column marks (`+ ~ - ? !`, `■`, `↻`) as the [change card](change-card.md) and [`visualize-it`](../../visualize-it/SKILL.md) do.
+4. **Not inside box-drawn diagrams.** Emojis are two columns wide in terminals and break alignment; use one-column marks (`+ ~ - ? !`, `■`, `▲`) as the [change card](change-card.md) and [`visualize-it`](../../visualize-it/SKILL.md) do.
 5. **Conversation, not commits.** This applies to messages to the human. Commit messages and titles of tickets or PRs carry no emojis; other shared artifacts follow their own skill.
 
 ---
