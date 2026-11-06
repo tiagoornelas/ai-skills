@@ -153,7 +153,7 @@ GitHub CLI and API cannot upload images into a PR body, so do not try to attach 
 
 1. **Branch Self-Review**:
    - If the branch carries code authored by the agent pipeline, run [`agent-self-review`](../agent-self-review/SKILL.md) in **branch mode** (Section 3.2) unless `HEAD` already carries a `branch` self-review note. Resolve its Blocking findings before continuing; list its Escalate findings for the developer.
-2. **Check the Facts Agree**: the objective and acceptance criteria (issue or conversation), the user's decisions, and the change card describe the same change; fix the one that drifted before opening. When the draft PR already exists (opened at the first decision), update its body instead of opening another.
+2. **Check the Facts Agree**: the objective and acceptance criteria (issue or conversation), the user's decisions, and the change card describe the same change; fix the one that drifted before opening, and carry the decisions into the body.
 3. **Ensure Remote is Up to Date**:
    - Verify all commits are recorded and push the branch:
      ```bash
