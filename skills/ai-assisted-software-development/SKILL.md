@@ -88,7 +88,7 @@ During ordinary work, briefly surface material architectural or scope opportunit
 
 ## 6. Where a Task's Facts Live
 
-Each fact lives in the thing it describes, and the task's state is derived from those sources whenever someone asks. No agent keeps a registry, status file, or copy of these facts beside them: a copy goes stale and then contradicts the source.
+Each fact lives in the thing it describes, and the task's state is derived from those sources whenever someone asks, shown in the [task state](../tl-dr/references/task-state.md) format. No agent keeps a registry, status file, or copy of these facts beside them: a copy goes stale and then contradicts the source.
 
 | Fact | Where it lives |
 | :--- | :--- |

@@ -12,7 +12,7 @@ Only at these moments, never on every reply:
 2. **At delivery**: when a change is presented as ready for the human, together with its [evidence](../../provide-evidence/references/evidence-dossier.md).
 3. **On demand**: when the human asks to see a change ([`human-review`](../../human-review/SKILL.md)) or its proof ([`provide-evidence`](../../provide-evidence/SKILL.md)).
 
-Between those moments, status messages name the change in one line and do not repeat the card.
+Between those moments, status messages name the change in one line and do not repeat the card; the [task state](../../tl-dr/references/task-state.md) carries only its count line.
 
 ## 2. The Plan
 

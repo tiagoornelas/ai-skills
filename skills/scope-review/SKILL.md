@@ -43,7 +43,7 @@ The human decides scope, behavior, and architecture under [ai-assisted-software-
 
 ## Proportional use
 
-During ordinary work, a concrete signal already encountered may justify a brief alert. Broad investigations, cross-repository exploration, multiple agents, complete alternative designs, and artifacts are deeper work on demand. No mandatory interview, score, persistent decision record, or downstream skill chain. Reuse evidence from an ongoing review; do not re-run it to apply this lens.
+During ordinary work, a concrete signal already encountered may justify a brief alert. Broad investigations, cross-repository exploration, multiple agents, complete alternative designs, and artifacts are deeper work on demand. Across all of the user's open work, [`coordinator`](../coordinator/SKILL.md) applies the three questions to pick the next focus. No mandatory interview, score, persistent decision record, or downstream skill chain. Reuse evidence from an ongoing review; do not re-run it to apply this lens.
 
 ## Success Validation
 
