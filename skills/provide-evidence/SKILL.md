@@ -92,13 +92,13 @@ The proof block of a fictional delivery:
 
 ```text
 Proof: 4 ✓  2 ✗  commit 5b699b1
-  ✓ a why                   invoices are exported by hand today    issue #301: support asks weekly
-  ✓ b architecture          9 new things, all on the plan          rebuilt inventory matches
-  ✓ c no wall knocked down  contracts, tests unchanged             git diff main...5b699b1 -- api/ test/ → empty
-  ✗ d nothing on the side   PDF layout written inside the job      others use app/templates/
+  ✓ a why                   exported by hand today     issue #301: support asks weekly
+  ✓ b architecture          9 new things, all on plan  rebuilt inventory matches
+  ✓ c no wall knocked down  contracts, tests intact    git diff main...5b699b1 -- api/ test/ → empty
+  ✗ d nothing on the side   PDF layout inside the job  others use app/templates/
       → 🤖 author: move the layout to app/templates/, beside the receipt template
-  ✓ e no catastrophe        flag off; migration only adds a table  revert: git revert 5b699b1
-  ✗ f tested and works      missing the end-to-end run             CI run 1432: 212 passed
+  ✓ e no catastrophe        flag off; one table added  revert: git revert 5b699b1
+  ✗ f tested and works      end-to-end run missing     CI run 1432: 212 passed
       → 🤖 reviewer: export one invoice in the review app on 5b699b1, with screenshots
 ```
 
