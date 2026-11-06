@@ -176,6 +176,9 @@ else
       echo "  [removed] sessionStart hook from $CURSOR_HOOKS_FILE"
     fi
     removed=$((removed + 1))
+  elif ! command -v jq >/dev/null 2>&1 && [ -f "$CURSOR_HOOKS_FILE" ] &&
+    grep -Fq -- "$CURSOR_HOOK_SCRIPT" "$CURSOR_HOOKS_FILE"; then
+    echo "  [kept] $CURSOR_HOOKS_FILE: jq not found; remove the sessionStart entry running $(cursor_hook_command "$CURSOR_HOOK_SCRIPT") manually"
   fi
 fi
 

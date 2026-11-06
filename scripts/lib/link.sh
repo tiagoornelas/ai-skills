@@ -203,8 +203,18 @@ register_cursor_hook() {
     | .hooks.sessionStart = ((.hooks.sessionStart // []) + [{command: $c, timeout: 10}])' "$cmd"
 }
 
+# cursor_hooks_backed_up: true when some setup run backed up hooks.json, which
+# register_cursor_hook does whenever the file existed before it.
+cursor_hooks_backed_up() {
+  local backup
+  for backup in "$AI_SKILLS_BACKUP_ROOT"/*/"$CURSOR_HOOKS_BACKUP_LABEL"/hooks.json; do
+    [ -e "$backup" ] && return 0
+  done
+  return 1
+}
+
 # unregister_cursor_hook <hook-script>: removes setup's entry from hooks.json,
-# and the file itself when nothing else is left in it.
+# and the file itself when setup created it and nothing else is left in it.
 unregister_cursor_hook() {
   local cmd
   cmd="$(cursor_hook_command "$1")"
@@ -212,7 +222,8 @@ unregister_cursor_hook() {
   # shellcheck disable=SC2016 # $c is a jq variable
   write_cursor_hooks '.hooks.sessionStart |= map(select(.command != $c))
     | if .hooks.sessionStart == [] then del(.hooks.sessionStart) else . end' "$cmd"
-  if jq -e '. == {version: 1, hooks: {}}' "$CURSOR_HOOKS_FILE" >/dev/null 2>&1; then
+  if ! cursor_hooks_backed_up &&
+    jq -e '. == {version: 1, hooks: {}}' "$CURSOR_HOOKS_FILE" >/dev/null 2>&1; then
     rm -f "$CURSOR_HOOKS_FILE"
   fi
 }

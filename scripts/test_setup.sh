@@ -153,6 +153,27 @@ else
   echo "  ✗ Uninstall changed the user's hooks" >&2; exit 1
 fi
 
+echo "  Uninstall keeps an empty hooks.json the user had before setup..."
+printf '{"version": 1, "hooks": {}}\n' > "$HOME/.cursor/hooks.json"
+PATH=/usr/bin:/bin "$SCRIPT_DIR/setup-global.sh" --global-instructions > "$TEST_TMP/setup-empty.log" 2>&1
+PATH=/usr/bin:/bin "$SCRIPT_DIR/uninstall-global.sh" > "$TEST_TMP/uninstall-empty.log" 2>&1
+if [ -f "$HOME/.cursor/hooks.json" ] && [ "$(hook_count)" -eq 0 ]; then
+  echo "  ✓ The user's own empty hooks.json survived uninstall"
+else
+  echo "  ✗ Uninstall deleted a hooks.json the user had before setup" >&2; exit 1
+fi
+
+echo "  Setup with --skills-only leaves the old Cursor rules link alone..."
+mkdir -p "$HOME/.cursor/rules"
+ln -s "$REPO_ROOT/global/AGENTS.md" "$HOME/.cursor/rules/global.md"
+PATH=/usr/bin:/bin "$SCRIPT_DIR/setup-global.sh" --skills-only > "$TEST_TMP/setup-skills-only.log" 2>&1
+if [ -L "$HOME/.cursor/rules/global.md" ]; then
+  echo "  ✓ --skills-only touched no instruction path"
+else
+  echo "  ✗ --skills-only removed an instruction link" >&2; exit 1
+fi
+rm "$HOME/.cursor/rules/global.md"
+
 echo "  Setup leaves a hooks.json it cannot parse untouched..."
 echo 'not json' > "$HOME/.cursor/hooks.json"
 PATH=/usr/bin:/bin "$SCRIPT_DIR/setup-global.sh" --global-instructions > "$TEST_TMP/setup-invalid.log" 2>&1

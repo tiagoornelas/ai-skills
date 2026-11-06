@@ -125,15 +125,6 @@ else
   echo "  ✓ Successfully linked $count skill(s)!"
 fi
 
-# Remove links an earlier setup made at instruction paths no harness reads
-for target in "${LEGACY_INSTRUCTION_FILES[@]}"; do
-  path="${target#*:}"
-  if [ -L "$path" ] && [ "$(readlink "$path")" = "$GLOBAL_AGENTS_FILE" ]; then
-    rm "$path"
-    echo "     [removed] unused instruction link: $path"
-  fi
-done
-
 # 3. Global instructions (global/AGENTS.md)
 echo ""
 echo "⚙️ Global Instructions ($GLOBAL_AGENTS_FILE):"
@@ -164,6 +155,14 @@ if [ "$GLOBAL_INSTRUCTIONS" = "yes" ]; then
     mkdir -p "$(dirname "$path")"
     safe_link "$GLOBAL_AGENTS_FILE" "$path" "${target%%:*}"
     echo "  ✓ ~${path#"$HOME"} -> $GLOBAL_AGENTS_FILE"
+  done
+  # Remove links an earlier setup made at instruction paths no harness reads
+  for target in "${LEGACY_INSTRUCTION_FILES[@]}"; do
+    path="${target#*:}"
+    if [ -L "$path" ] && [ "$(readlink "$path")" = "$GLOBAL_AGENTS_FILE" ]; then
+      rm "$path"
+      echo "     [removed] unused instruction link: $path"
+    fi
   done
   if [ "$CURSOR_ACTIVE" = "yes" ]; then
     register_cursor_hook "$CURSOR_HOOK_SCRIPT"
