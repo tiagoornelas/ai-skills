@@ -18,7 +18,7 @@ argument-hint: "[what to explain — by default the last discussed topic]"
 
 ## 1. Audience
 
-The reader is a **junior developer on their first days in the project**:
+The reader is a **junior developer on their first days in the project**, reading in the user's session language:
 
 - **Knows**: general programming, the language basics, Git, and what an API or a database is.
 - **Does not know**: the business, its users and vocabulary, which applications exist, how they talk to each other, or why the code is shaped the way it is.

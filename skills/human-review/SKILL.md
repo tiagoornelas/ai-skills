@@ -5,8 +5,9 @@ description: >-
   someone else's, answering "what changed, where does it live, and what do I
   need to understand or decide?" in one screen: one sentence on what changes
   for whom, the change card's plan built from the actual change, the critical
-  findings with their consequence, and one line on the proof. Explains a part in depth only when the user points at it. Stays
-  critical: it judges the change, it does not approve it. Use on demand.
+  findings with their consequence, and one line on the proof. Explains a part
+  in depth only when the user points at it. Stays critical: it judges the
+  change, it does not approve it. Use on demand.
 argument-hint: "[PR, diff, delivery, or focused review question]"
 ---
 

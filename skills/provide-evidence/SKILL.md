@@ -10,9 +10,9 @@ description: >-
   independent reviewer, which rebuilds the inventory of new things from the
   diff, compares it with the change card, and attests lines (c)–(f) for the
   current commit. Verify runs only when the user asks for it or when the
-  writer of a delivery is about to present it to the user. Triggered when the user asks for the evidence, the proof, or
-  whether a delivery is done, or when a writer is about to present a delivery
-  as ready.
+  writer of a delivery is about to present it to the user. Triggered when the
+  user asks for the evidence, the proof, or whether a delivery is done, or
+  when a writer is about to present a delivery as ready.
 argument-hint: "[PR number, URL, or branch] [verify]"
 ---
 
