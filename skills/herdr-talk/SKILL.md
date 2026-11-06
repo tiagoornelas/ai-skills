@@ -89,12 +89,9 @@ When the exchange is an agent's own coordination (a Leader with its tab agents, 
 
 ## 7. Success Validation
 
-- [ ] Herdr App environment (`HC_TERMINAL_ID`, `hc`) and CLI syntax were verified; the `herdr` terminal CLI and `--on` were not used; no agent was created.
-- [ ] Every peer was resolved to a unique name or terminal address, with ambiguity resolved by the user.
+- [ ] Herdr App environment (`HC_TERMINAL_ID`, `hc`) and CLI syntax were verified; the `herdr` terminal CLI and `--on` were not used; no agent was created; every peer was resolved to a unique name or terminal address, with ambiguity resolved by the user.
 - [ ] The pattern fits the need; a Brief had a verifiable goal, a lead that owns termination, and a backstop.
-- [ ] Every message carried the envelope and an explicit reply rule, with its content in the user's session language; long content traveled as a file path; no secrets were sent.
-- [ ] A tab agent whose user decided something in its tab notified its Leader at once.
-- [ ] Sends used no `--wait` or `--force`, no blocked dialog was answered, and no send was retried automatically.
-- [ ] Requests for code, branch, commit, or pull request work named their governing skill.
+- [ ] Every message carried the envelope and an explicit reply rule, with its content in the user's session language; long content traveled as a file path; no secrets were sent; requests for code, branch, commit, or pull request work named their governing skill.
+- [ ] Sends used no `--wait` or `--force`, no blocked dialog was answered, and no send was retried automatically; a tab agent whose user decided something in its tab notified its Leader at once.
 - [ ] Handles in messages carried their meaning; anything reaching the user was translated into system terms, with decisions as cards.
 - [ ] When the user asked for the exchange, they received the outcome of every peer, including skipped or silent ones; an agent's own coordination produced no report of the exchange itself.
