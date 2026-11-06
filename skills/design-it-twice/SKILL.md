@@ -67,7 +67,7 @@ Construct the comparison matrix (Section 5) using the criteria from [references/
 - **None are compelling** → use discovered weaknesses to formulate a fresh design axis and return to Step 3 (maximum one additional round; if still unresolved, escalate to the human as an ill-defined problem).
 
 ### Step 6: Present via the Human Layer
-Present a module map per alternative (side-by-side using [`visualize-it`](../visualize-it/SKILL.md)) alongside the comparison matrix. Selecting between alternatives that impact contracts, boundaries, or dependency direction is a **human decision**: state the agent recommendation and solicit a decision as a decision card in system terms ([human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md)). In agent-to-agent delegation, mark it as pending.
+Present each alternative's [change card](../ai-assisted-software-development/references/change-card.md) plan (what it would add and where) and, when its main flow differs, a [`visualize-it`](../visualize-it/SKILL.md) swimlane, alongside the comparison matrix. Selecting between alternatives that impact contracts, boundaries, or dependency direction is a **human decision**: state the agent recommendation and solicit a decision as a decision card in system terms ([human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md)). In agent-to-agent delegation, mark it as pending.
 
 Once decided, the winning design proceeds through Step 6 of `software-designing` (decision record and handoff to [`coding`](../coding/SKILL.md)). Document rejected alternatives and rejection rationales in the decision record.
 
@@ -96,9 +96,10 @@ and do not dilute it: peer agents are covering the other axes.
 
 ## Deliverable
 A Design Brief containing ONE alternative (omit the "Alternatives Considered" table).
-Must include: module map, minimal interface cards and separate contract decisions (promise, hidden
-knowledge, failure modes) as defined by visualize-it, and a "Known Weaknesses"
-section listing honest limitations of this approach.
+Must include: the change card plan of what it would add and where, a swimlane
+of its main flow via visualize-it, its contracts in system terms (who calls,
+what crosses, promise, hidden knowledge, failure modes), and a "Known
+Weaknesses" section listing honest limitations of this approach.
 Cost strictly in relative terms (complexity, risk, change footprint), with zero
 schedule estimates or project delivery phases.
 Do not write implementation code.
@@ -114,7 +115,7 @@ Do not write implementation code.
 
 ## Alternatives
 ### A — <Axis Name>
-<Core concept in 2–3 sentences + module map + interface card of the primary interface>
+<Core concept in 2–3 sentences + change card plan + swimlane of the main flow + primary contract in system terms>
 ### B — <Axis Name>
 ...
 

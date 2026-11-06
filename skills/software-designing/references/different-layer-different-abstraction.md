@@ -118,7 +118,7 @@ Every added design artifact (an interface, argument, class, or abstraction layer
 4. Ensure each module's interface is expressed in caller concepts, not internal storage structures.
 5. Identify pass-through variables and introduce a context object or shared state where appropriate.
 
-When presenting to the human, diagram the layers (via [`visualize-it`](../../visualize-it/SKILL.md)), annotating the unique abstraction of each layer alongside explicit dependency direction.
+When presenting to the human, list the layers from top to bottom, each with its unique abstraction and the layer it depends on.
 
 ---
 

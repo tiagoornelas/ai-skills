@@ -22,7 +22,7 @@ Compare opportunities by recurring cost, likely evolution, failure impact, and t
 
 ## Make improvement understandable
 
-Lead with the business purpose of the affected area and situate every internal term, per [Briefing a Change](../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change). Present meaningful opportunities with evidence, a plausible change/failure scenario, the current obligation, a recommended direction, and its trade-offs. Use [visualize-it](../visualize-it/SKILL.md) for the appropriate structural or before/after view; no separate HTML format or report file is prescribed. Use [explain-it](../explain-it/SKILL.md) for a requested deeper explanation, reusing the investigation.
+Lead with the business purpose of the affected area and situate every internal term, per [Briefing a Change](../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change). Present meaningful opportunities with evidence, a plausible change/failure scenario, the current obligation, a recommended direction, and its trade-offs. Show what an opportunity would add, change, or remove as a [change card](../ai-assisted-software-development/references/change-card.md) plan, and a flow it changes with [visualize-it](../visualize-it/SKILL.md); no separate HTML format or report file is prescribed. Use [explain-it](../explain-it/SKILL.md) for a requested deeper explanation, reusing the investigation.
 
 For discovery, finish with a recommendation of what to pursue. For a chosen opportunity, develop the design at the requested depth. For analysis-only requests, stop at recommendations; for authorized analysis and implementation, continue in the same session under existing Human Layer governance and [coding](../coding/SKILL.md). Architectural refactoring can preserve product behavior while changing contracts; those changes still require human decisions. Behavior changes are separate scope, not silently included refactoring.
 
@@ -36,6 +36,6 @@ No automatic backlog, ADR, file, handoff, monitoring, or implementation follows 
 
 - [ ] Findings are grounded in the requested area and concrete evolution or failure scenarios.
 - [ ] Proposed improvements reduce system-wide complexity or justify the remaining commitment.
-- [ ] Presentation follows visualize-it and distinguishes evidence, uncertainty, and coverage.
+- [ ] Presentation uses the change card plan and visualize-it, and distinguishes evidence, uncertainty, and coverage.
 - [ ] Discovery, design, and implementation advance only as far as requested/authorized.
 - [ ] No automatic audit, artifact, task queue, or mandatory skill chain was introduced.

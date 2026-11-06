@@ -125,7 +125,7 @@ For each proposed module:
 4. **Count total interfaces** across the entire design, not just lines per file: fewer, deeper modules are consistently superior to a sprawling collection of shallow ones.
 5. **Verify the abstraction**: was critical information omitted? Were trivial details exposed?
 
-When presenting to the human, format each module as an interface card (via [`visualize-it`](../../visualize-it/SKILL.md)) and describe what it promises and hides in separate text keyed by interface/method. The hidden knowledge is the evidence of depth; state in the surrounding text why it qualifies as deep.
+When presenting to the human, describe each module in system terms: what it promises to its callers and what it hides. The hidden knowledge is the evidence of depth; state why it qualifies as deep.
 
 ---
 

@@ -77,7 +77,7 @@ Before introducing a folder, module, client, configuration variable, or cross-cu
 ### Step 5: Recommend and Communicate via the Human Layer
 - Select a recommendation and justify it using concepts from the reference lenses (e.g., "Alternative B eliminates format leakage between reader and writer").
 - Present to the human **only** what belongs to the Human Layer: modules and responsibilities, dependency direction, contracts and failure modes, behaviors, and trade-offs.
-- **Visualize** with [`visualize-it`](../visualize-it/SKILL.md): module map with explicit dependency direction, and a minimal interface card for each new or altered contract; describe promise, hidden knowledge, and failure modes separately, keyed by interface/method.
+- **Show** what the design adds and where as a [change card](../ai-assisted-software-development/references/change-card.md) plan (a dependency pointing away from business rules is a `!` line), the main flow as a [`visualize-it`](../visualize-it/SKILL.md) swimlane, and each new or altered contract in system terms: who calls it, what crosses, what it promises and hides, and how it fails. No method names or signatures.
 - List **pending decisions** explicitly, each with options, risk/cost of each option, and an agent recommendation. To the human, present each one as a decision card in system terms, each fully explained with its recommendation ([human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md)).
 - **Cost is relative, never schedule-based**: compare options in terms of complexity, risk, and change footprint (e.g., "Option B modifies three modules; Option A modifies only one"). Do not estimate days or craft phased release timelines—project scheduling is outside the scope of software design.
 
@@ -142,11 +142,14 @@ Use this structure for a substantial design brief; omit irrelevant sections in a
 ## Recommendation
 <chosen alternative + justification using reference concepts>
 
-## Module Map
-<diagram via visualize-it — explicit dependency direction>
+## Plan
+<change card plan: what the design adds and where; a dependency pointing away from business rules is a `!` line>
+
+## How It Works
+<swimlane of the main flow via visualize-it>
 
 ## Contracts
-<interface card per new/modified module via visualize-it: interface name and marked methods only; separate text covers promise, hidden knowledge, and failure modes>
+<per new or altered contract, in system terms: who calls it, what crosses, what it promises and hides, how it fails>
 
 ## Pending Decisions (Human Layer)
 | # | Decision | Options | Recommendation | Cost of Error |
@@ -163,10 +166,7 @@ A design is complete only when:
 
 - [ ] Alternatives match the decision depth: a finalized design compares materially different options; high-consequence decisions use `design-it-twice`; focal assessments need not produce complete designs.
 - [ ] Both **fundamental questions** were evaluated: plausible future change vectors are localized, and runtime failure paths and implicit assumptions are surfaced and contained ([changeability-and-fragility.md](references/changeability-and-fragility.md)).
-- [ ] Each module has an **interface described in a few sentences** and is **deep** (interface is substantially simpler than what it encapsulates).
-- [ ] Every relevant design decision has **a single owner module** (no leakage).
-- [ ] **Failure modes** for each contract passed through elimination techniques, and remaining ones are explicit.
-- [ ] **Dependency direction** is diagrammed and points toward business rules ([dependency-direction.md](references/dependency-direction.md)).
-- [ ] No red flag from Section 4 was left unaddressed or unjustified.
+- [ ] Each module has an **interface described in a few sentences**, is **deep** (interface substantially simpler than what it encapsulates), and is the **single owner** of each design decision it holds (no leakage).
+- [ ] **Failure modes** for each contract passed through elimination techniques and the remaining ones are explicit; **dependency direction** points toward business rules, any exception a `!` line on the plan ([dependency-direction.md](references/dependency-direction.md)).
 - [ ] All **Human Layer decisions** were determined by the human (interactive mode) or marked as pending (agent mode).
-- [ ] A reader who did not participate in the conversation can understand the design purely from the module map and contracts.
+- [ ] No red flag from Section 4 was left unaddressed or unjustified, and a reader who did not participate in the conversation can understand the design purely from the plan, the flow, and the contracts.

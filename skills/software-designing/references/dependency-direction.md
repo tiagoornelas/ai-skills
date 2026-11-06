@@ -92,7 +92,7 @@ PostgresPersistence ──implements──┘
 
 ## How to Apply
 
-1. On the module map, **classify every module** as policy or detail. When classification hinges on business context, confirm with the human.
+1. **Classify every module** as policy or detail. When classification hinges on business context, confirm with the human.
 2. **Draw the boundary** between policy and detail.
 3. For every dependency pointing from policy toward detail, **define a port on the policy side**, in policy vocabulary, containing only the operations the policy needs. The detail implements the port.
 4. Verify that the port **encapsulates** the detail: no infrastructure artifacts may leak through.
@@ -100,7 +100,7 @@ PostgresPersistence ──implements──┘
 6. **The plug-in test**: for each detail, ask "Can this be replaced with an in-memory double without editing business logic?" If not, the boundary is leaking.
 7. List **infrastructure decisions that can be deferred** and the criteria needed to make them.
 
-When presenting to the human, use the [`visualize-it`](../../visualize-it/SKILL.md) type symbols to tell core domain (`◆`), ports (`◇`), and plug-ins (`■`) apart on the module map, showing all boundary-crossing arrows pointing inward, accompanied by interface cards for each port. Dependency direction, ports, and deferred decisions belong to the Human Layer.
+When presenting to the human, name which modules are policy and which are detail, and describe each port in system terms (what the policy needs from it); a dependency pointing from policy toward detail is a `!` line on the [change card](../../ai-assisted-software-development/references/change-card.md) plan. Dependency direction, ports, and deferred decisions belong to the Human Layer.
 
 ---
 
