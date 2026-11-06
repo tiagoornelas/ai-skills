@@ -108,13 +108,12 @@ hc run --bg --json --name <agent-name> --cwd <dir> --label herdr.space=<space-id
   env TERM=xterm-256color <command> "<brief, or the path of its brief file, plus: you write no code and start no agents; report with hc send <creator-address> when done or stuck>"
 ```
 
-1. **Within the creator's approved mission only.** A sub-agent never widens scope or settles a Human Layer decision; those still go from a tab agent to the Leader, and from the Leader to the user.
-2. **A sub-agent creates no agents**, neither sub-agents nor tab agents; its brief says so.
-3. **The creator owns its sub-agent.** It receives the report (and herdr-core's note if the sub-agent blocks, errors, or exits), uses it, then ends and removes the sub-agent with `hc kill <agent-name>` and `hc rm <agent-name>`. No finished sub-agent is left behind.
-4. **A sub-agent writes no code**; its brief says so. When its work turns into code (an investigation finds the fix), it reports to its creator and is removed; when the code fits the creating tab agent's mission, that tab agent writes it, otherwise it becomes a new tab agent, which only the Leader creates, after the user approves.
-5. **Sub-agents are not recorded in `leader.md`.** They show as `↳ <name>` tabs of the space while they run.
-
-- Then find the sub-agent's tab in `herdr-app ls` and name it `↳ <name>` with `herdr-app do tab.rename --id <tab> --name "↳ <name>"`; `hc rm` closes that tab when the creator removes the sub-agent.
+1. **Name its tab first.** Right after `hc run`, find the sub-agent's tab in `herdr-app ls` (it opens with a default name, possibly before the creator's tab) and rename it with `herdr-app do tab.rename --id <tab> --name "↳ <name>"`. `hc rm` closes that tab when the creator removes the sub-agent. With a parent and a tab, the sub-agent appears twice in the app's Agents sidebar (as its own tab and under its creator); that is accepted, because the tab is what makes it visible and counted in the space.
+2. **Within the creator's approved mission only.** A sub-agent never widens scope or settles a Human Layer decision; those still go from a tab agent to the Leader, and from the Leader to the user.
+3. **A sub-agent creates no agents**, neither sub-agents nor tab agents; its brief says so.
+4. **The creator owns its sub-agent.** It receives the report (and herdr-core's note if the sub-agent blocks, errors, or exits), uses it, then ends and removes the sub-agent with `hc kill <agent-name>` and `hc rm <agent-name>`. No finished sub-agent is left behind.
+5. **A sub-agent writes no code**; its brief says so. When its work turns into code (an investigation finds the fix), it reports to its creator and is removed; when the code fits the creating tab agent's mission, that tab agent writes it, otherwise it becomes a new tab agent, which only the Leader creates, after the user approves.
+6. **Sub-agents are not recorded in `leader.md`.** They show as `↳ <name>` tabs of the space while they run.
 
 - Without `--outlive-parent` a sub-agent ends with its creator, which suits work that ends in one report.
 - The user can watch or talk to a sub-agent in its `↳` tab.

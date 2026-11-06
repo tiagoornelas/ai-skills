@@ -24,7 +24,7 @@ Establish the scope (the PR, the branch against its base, or the uncommitted dif
 In the user's language, briefed per [human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md):
 
 1. **One sentence**: what changes, for whom, in product terms.
-2. **The [change card](../ai-assisted-software-development/references/change-card.md)**, built from the change itself, not from the author's description: what is new and where it lives, business rules, data, pattern followed or built on the side, walls, state.
+2. **The [change card](../ai-assisted-software-development/references/change-card.md)**, built from the change itself, not from the author's description (for a large PR, by the light path of [`provide-evidence`](../provide-evidence/SKILL.md#2-gather)): what is new and where it lives, business rules, data, pattern followed or built on the side, walls, state.
 3. **What is yours to decide**: each pending Human Layer decision the change embeds (a rule, a contract, a new component no one approved, a trade-off with a lasting [maintenance commitment](../software-designing/references/maintenance-commitment.md)), as a decision card with a recommendation. Do not infer that the author consciously accepted a trade-off just because the code embodies it.
 4. **What matters**: only the findings with a concrete consequence (a plausible failure or change scenario, its impact, a direction of solution and its trade-off), most consequential first. Distinguish problems the change introduced or aggravated from old ones. A preference without a consequence is not a finding.
 
@@ -34,6 +34,7 @@ Omit every empty part except the card, which is always shown. Never list method 
 
 - Judge architecture with the relevant [`software-designing`](../software-designing/SKILL.md) lenses, and value with [`scope-review`](../scope-review/SKILL.md)'s three questions, inside the same investigation. Consider a healthier design before suggesting a cut.
 - Compare what the change claims (description, issue, docs) with what it does, and name divergences.
+- Respect accepted concessions; reopen them only with new evidence, a higher cost, or a broken premise.
 - Name what is unverified. Whether the change is proven is [`provide-evidence`](../provide-evidence/SKILL.md)'s job: point to it, never imply proof. A favorable review is not an approval or a readiness to merge.
 
 ## 4. Explain on Request
