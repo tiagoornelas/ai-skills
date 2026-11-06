@@ -85,7 +85,7 @@ A message wrapped as `<hc from="<address> <name>">…</hc>` comes from another a
 
 Report only when the user is waiting for it. When the user asked for the exchange, tell them, in their language and following [human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md), who was contacted (by mission, not only by agent name), the pattern, and the outcome: answers (consolidated for Fan-out), the Brief summary and whether its goal was met, or the peers skipped and why. Message files in the temporary directory may disappear on reboot.
 
-When the exchange is an agent's own coordination (a Leader with its tab agents, sub-agents, or another space's Leader; a tab agent with its Leader), nothing is reported to the user for it: a Leader writes to the user only on the triggers of [When to Show It](../herdr-team-lead/references/panel-format.md#when-to-show-it), and a tab agent reports to its Leader per the tab agent contract of [`herdr-handoff`](../herdr-handoff/SKILL.md#3-write-and-start-each-stream).
+When the exchange is an agent's own coordination (a Leader with its tab agents, sub-agents, or another space's Leader; a tab agent with its Leader), the exchange itself is not reported to the user; what reaches the user follows the sender's own role ([`herdr-team-lead`](../herdr-team-lead/SKILL.md) for a Leader, the tab agent contract of [`herdr-handoff`](../herdr-handoff/SKILL.md#3-write-and-start-each-stream) for a tab agent).
 
 ## 7. Success Validation
 
@@ -97,4 +97,4 @@ When the exchange is an agent's own coordination (a Leader with its tab agents, 
 - [ ] Sends used no `--wait` or `--force`, no blocked dialog was answered, and no send was retried automatically.
 - [ ] Requests for code, branch, commit, or pull request work named their governing skill.
 - [ ] Handles in messages carried their meaning; anything reaching the user was translated into system terms, with decisions as cards.
-- [ ] When the user asked for the exchange, they received the outcome of every peer, including skipped or silent ones; an agent's own coordination produced no report to the user beyond the Panel triggers.
+- [ ] When the user asked for the exchange, they received the outcome of every peer, including skipped or silent ones; an agent's own coordination produced no report of the exchange itself.
