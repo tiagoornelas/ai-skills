@@ -12,10 +12,10 @@ description: >-
   independent reviewer, which rebuilds the inventory of new things from the
   diff, schema, and infrastructure files, compares it with the change card,
   and attests lines (c)–(f) for the current commit. Verify runs only when the
-  user asks for it or when a lead agent (such as a Herdr App Leader) is about
-  to present a delivery; an author agent working alone never starts it.
-  Triggered when the user asks for the evidence, the proof, or whether a
-  delivery is done, or when a lead agent is about to present a delivery.
+  user asks for it or when the writer of a delivery is about to present it to
+  the user. Triggered when the user asks for the evidence, the proof, or
+  whether a delivery is done, or when a writer is about to present a delivery
+  as ready.
 argument-hint: "[PR number, URL, or branch] [verify]"
 ---
 
@@ -27,7 +27,7 @@ The user needs to know at once: **is the work done, what does it add to the syst
 
 - **Scope**: the PR or branch given as argument; without one, the PR of the current branch (`gh pr view --json number`); without a PR, the current branch itself, compared with its base. Any PR works, whoever wrote it.
 - **Show the proof** (default): read-only. Never run tests, fix, commit, push, merge, write a note or file, or message an agent.
-- **Verify and produce what is missing**: only when the user asks for it, or when a lead agent is about to present a delivery, run the [independent reviewer](#4-verify) for the current head, in any harness, inside or outside the Herdr App. An author agent working alone never starts it, per the [evidence dossier](references/evidence-dossier.md#when-to-consult).
+- **Verify and produce what is missing**: only when the user asks for it, or when the writer of a delivery is about to present it to the user as ready, run the [independent reviewer](#4-verify) for the current head, in any harness, per the [evidence dossier](references/evidence-dossier.md#when-to-consult).
 - When `gh` is missing or not authenticated, show what git alone proves and say the PR part was skipped; never guess PR states.
 
 ## 2. Gather
@@ -46,7 +46,7 @@ Observe in parallel where the harness allows it.
 | Base moved after the proof | `git fetch origin <base>`, then `git log --format='%h %an %cI %s' <proven commit>..origin/<base>`: commits dated after the attestation moved the base; name each one's author and PR |
 | The change card | always, for every PR, the inventory of new things **rebuilt** from the diff, schema, and infrastructure files, in the kinds of the [change card](../ai-assisted-software-development/references/change-card.md) (for a large PR, from `git diff --name-status` plus the full diff of only the schema, migration, job, route, secret, configuration, and client files, saying so); and the card presented with the delivery (PR body, issue, or the note), when there is one. Each item's approval comes from the issue or PR, otherwise "no record" |
 | Uncommitted files | `git status --porcelain` in the current checkout |
-| Validation environment's deployed commit | read it where the project, or in a Herdr App space its `leader.md`, records how (a deploy URL, a status endpoint, a CI environment, or the commit itself); "not observable" only when neither records it. When `leader.md` contradicts itself, prefer its *Verified* record, and among several *Verified* records for the same environment the newest by its recorded date, not its position in the file; list the contradiction among the facts |
+| Validation environment's deployed commit | read it, at the time of asking, where the project records how (a deploy URL, a status endpoint, a CI environment); "not observable" when it records none |
 
 **Re-check before printing.** Read each PR's `headRefOid` again right before writing; if it moved, mark that card's evidence as outdated for the new head. Never copy secrets or credentials from output, notes, or logs.
 
@@ -98,23 +98,18 @@ Under every ❌, one line says **what is missing and who acts**: 🤖 the agent 
 
 ## 4. Verify
 
-Only on the user's request or a lead agent's delivery (Section 1), run the dossier's [independent reviewer](references/evidence-dossier.md#2-the-independent-reviewer) for the current head, as a subagent per [subagent-delegation.md](../ai-assisted-software-development/references/subagent-delegation.md), briefed with the change, its change card, and the [reviewer questions](references/evidence-dossier.md#reviewer-questions), never the author's answers.
+Only on the user's request or before the writer presents a delivery (Section 1), run the dossier's [independent reviewer](references/evidence-dossier.md#2-the-independent-reviewer) for the current head, as a subagent per [subagent-delegation.md](../ai-assisted-software-development/references/subagent-delegation.md), briefed with the change, its change card, and the [reviewer questions](references/evidence-dossier.md#reviewer-questions), never the author's answers.
 
 - **A delivery from an agent** reaches the reviewer only with a clean branch-mode `agent-self-review` on its head; without one, it goes back to its author. **Someone else's PR** may be verified without one: the card says "author's review: no record".
-- The reviewer rebuilds the inventory of new things, produces its proof (screenshots per context for a user-visible change), and stores the six lines as a local `evidence` note (never pushed); then show the updated card and lines (Section 3).
+- The reviewer rebuilds the inventory of new things, produces its proof (screenshots per context for a user-visible change) in the [evidence folder](references/evidence-dossier.md#where-artifacts-live), and stores the six lines as a local `evidence` note (never pushed); then show the updated card and lines (Section 3).
 - Any ❌ after verification follows the dossier's [no ❌, no merge request](references/evidence-dossier.md#1-the-six-lines) rule.
 - A delivery gets at most two review rounds, and only some findings block, per the [limits of `agentic-parallel-work`](../agentic-parallel-work/SKILL.md#4-limits); a third verify on the same delivery is the user's call.
 
-## 5. Inside the Herdr App (optional)
+## 5. Success Validation
 
-When `HC_TERMINAL_ID` is set and `hc` and `herdr-app` are on `PATH`, a space may be given instead of a PR: match it in `herdr-app ls` by name or `sp…` id, or by the `Space:` name in a team folder's `leader.md` ([team-folder.md](../herdr-team-lead/references/team-folder.md)); without one, use this terminal's `herdr.space` label, or ask which space when there is none. The scope becomes every delivery of the space (its PRs, found as in [finding a space's PRs](../herdr-team-lead/references/team-folder.md#4-finding-a-spaces-prs)), the objective, approvals, and the validation environment's deployed commit (or how to read it) come from its `leader.md` first, and tabs still working and contradictions with `leader.md` are listed among the facts. Use only the Herdr App (`herdr-app`, `hc`) of this machine, never the `herdr` terminal CLI or `--on`. In a space, the verify reviewer is a sub-agent under [`herdr-handoff`](../herdr-handoff/SKILL.md#31-sub-agents)'s rules, with its files in the team folder's evidence folder.
-
-
-## 6. Success Validation
-
-- [ ] Show wrote nothing; verify ran only on the user's request or a lead agent's delivery, after a branch-clean self-review for an agent's delivery, and stored a local note only.
+- [ ] Show wrote nothing; verify ran only on the user's request or before the writer presented a delivery, after a branch-clean self-review for an agent's delivery, and stored a local note only.
 - [ ] The output opened with one verdict line and the objective, then, per PR, the change card beside the inventory rebuilt from the diff (undeclared clients, variables, or mechanisms marked built on the side), the proven version against the current head, and whether the base moved.
 - [ ] All six lines appeared in full, each with its claim, why it convinces, and its argument or proof (image contexts one line each); bare results, a missing or mismatched card in (b), or a real run of another commit in (f) were ❌, each with what is missing and who acts.
 - [ ] A missing note read "no record on this machine"; a note on an older commit read "outdated: proves X, the PR is at Y"; a note in the older five-line format was mapped, its (d) "no record"; an incremental or ancestor self-review was not branch-clean.
-- [ ] The validation environment's commit came from the project or `leader.md` when recorded, and any ❌ followed the dossier's no-merge rule.
+- [ ] The validation environment's commit was read from the environment when the project records how, and any ❌ followed the dossier's no-merge rule.
 - [ ] Everything was in the user's language; no secrets were copied.
