@@ -6,7 +6,8 @@ description: >-
   streams collided, deciphers the intent of each side, separates mechanical
   resolutions from delicate compositional synthesis, detects semantic conflicts
   that Git misses, and resolves clashes while preserving the behavior and
-  architecture of both streams.
+  architecture of both streams. Used on demand when a pull request or branch
+  conflicts with its base or with another branch.
 disable-model-invocation: true
 argument-hint: "[PR number/URL, or two branches: <ours> <theirs>]"
 ---

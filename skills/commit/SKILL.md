@@ -3,17 +3,16 @@ name: commit
 description: >-
   Prepares and validates standardized Conventional Commits messages,
   strictly in English, ensuring concise, traceable commits free of local machine references.
+  Triggered before every commit, including self-review remediation commits.
 ---
 
 # Commit
-
-Produces high-quality commit messages strictly adhering to the mandatory conventions below.
 
 ---
 
 ## 1. Mandatory Rules
 
-These rules are non-negotiable and apply to **every** commit created by Claude, Codex, or Antigravity.
+These rules apply to **every** commit, whichever agent or harness writes it.
 
 - **Title-Only by Default**: In the vast majority of cases, the title (first line) is the entire message. Do not add a body. Do not explain the "why" or "how" unless explicitly requested by the user.
 - **No Task Key in the Title**: The first line must describe what was done, without any issue or task key (e.g., `DEV-1234`, `PROJ-56`). If referencing an issue, place it isolated on the third line (following a blank line).

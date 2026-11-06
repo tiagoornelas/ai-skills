@@ -4,12 +4,12 @@ description: >-
   Formats and opens pull requests (on GitHub, through the gh CLI) focused on
   high-level review: a direct executive summary at the top, the change card's
   plan of what is new and where it lives, a swimlane via visualize-it when a
-  flow across the system changes, and issue linkage verification.
+  flow across the system changes, and issue linkage verification. Triggered
+  before opening or updating a pull request, or when a skill hands off to open
+  one.
 ---
 
 # Pull Request
-
-Skill for structuring, documenting, and opening pull requests, on GitHub through the GitHub CLI (`gh`).
 
 ---
 
@@ -149,9 +149,7 @@ GitHub CLI and API cannot upload images into a PR body, so do not try to attach 
      gh pr create --draft --title "<title>" --body-file <body-file>
      ```
    - Create as `--draft` unless the user explicitly requests ready for review.
-5. **Output**:
-   - Return the clickable GitHub PR link.
-   - For a visible UI change without an embedded screenshot, mention that the developer may add one through GitHub's web interface.
+5. **Output**: return the clickable GitHub PR link, plus the screenshot reminder of the Screenshot section when it applies.
 
 ---
 
