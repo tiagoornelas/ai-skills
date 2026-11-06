@@ -73,7 +73,7 @@ The Leader's handoff to itself: the format of the [`handoff`](../../handoff/SKIL
 
 - Omit empty sections. Give every handle its meaning, as the `handoff` skill requires.
 - **Tasks and Issues** holds references only; their status always comes from the tracking tool.
-- **Tab agents** lists the agents with their own tab; sub-agents are never recorded. Files written before this name may call the section **Members**; read it the same way.
+- **Tab agents** lists the tab agents; sub-agents, shown as `↳` tabs while they run, are never recorded. Files written before this name may call the section **Members**; read it the same way.
 - **Glossary** holds at most ten terms from the tab agents' vocabulary that reached the user, each situated in the product. It is how the Leader re-situates a term the same way every time; drop a term once it stops appearing to make room for a new one.
 - Every **Decisions & Rationale** entry starts with the ISO date it was taken (`2026-11-05`), so any reader can tell when it was decided.
 - A tier-2 notice stays under **Pending Decisions** until its deadline or the user's answer, then moves to **Decisions & Rationale** with its outcome (proceeded, or turned into a decision).

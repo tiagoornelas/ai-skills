@@ -23,7 +23,7 @@ For an unqualified review request, establish the baseline below and apply [human
 
 Systematic Agent Layer review, full multi-axis review, or selected axes are available when requested. The detailed axis workflow below applies to that requested scope; it is not a prerequisite for a focused Human Layer review. Create an isolated checkout only when execution requires it; a read-only diff analysis needs none. Load relevant references selectively. Use subagents for requested depth where useful, not automatically for every review.
 
-For focused review, use human-review's selective presentation, coverage limits, and decision-oriented ordering rather than the full per-axis report. Missing business context is disclosed; ask only if it changes the recommendation. Never infer expected requirements solely from the implementation. Optional batch triage prioritizes deeper review and does not certify PRs.
+For focused review, use human-review's shape (one sentence, the change card, the user's decisions, and only the findings with a consequence), stating what was not covered, rather than the full per-axis report. Missing business context is disclosed; ask only if it changes the recommendation. Never infer expected requirements solely from the implementation. Optional batch triage prioritizes deeper review and does not certify PRs.
 
 For requested multi-axis review, preserve the business/decision assessment from `human-review` as the opening synthesis and reuse its architecture evidence. Delegate only the remaining requested work; do not repeat that assessment in each axis. Up to five axes can execute via **parallel subagents**:
 
