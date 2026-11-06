@@ -11,8 +11,6 @@ description: >-
 
 # Software Designing
 
-The generalist software architect of the ecosystem. Applies to any context where software design and architecture add value: from a single public function to a distributed system, from a greenfield project to surgical changes in legacy codebases.
-
 ---
 
 ## 1. Core Principle
@@ -54,7 +52,7 @@ In both modes, the received context must be preserved verbatim (*ipsis litteris*
   1. Resolve the questions only the human can answer first, so alternatives do not invent contradictory assumptions.
   2. Pick 2–4 **radically different premises** (unit of abstraction, where knowledge lives, sync vs. events, mutable state vs. event log, one deep module vs. separate services); drop any that only renames the same decomposition.
   3. Develop each as the strongest design its premise allows, with its known weaknesses. For a major decision, give each premise to its own subagent with the same verbatim framing, launched together ([subagent delegation](../ai-assisted-software-development/references/subagent-delegation.md)), because a context that drafted one alternative anchors on it.
-  4. Compare all of them on the same criteria, ease of use for callers first, then simplicity, generality, failure modes, and relative cost. Recommend one, a hybrid (the hybrid passes the Step 4 lenses again), or a redesign from the weaknesses found, at most once more before escalating the problem as ill-defined; the human decides per Step 5.
+  4. Compare all of them on the same criteria: ease of use for callers first, then simplicity, generality, efficiency of the implementation, failure modes, and relative cost. Recommend one, a hybrid (the hybrid passes the Step 4 lenses again), or a redesign from the weaknesses found, at most once more before escalating the problem as ill-defined; the human decides per Step 5.
   5. Record the rejected alternatives and why in the decision (Step 6).
 - **When a brief assigns one design premise**, develop the best design within it and generate no alternatives.
 - Reuse decisions already authorized in the session; ask about unresolved Human Layer choices rather than restarting an approval ceremony.
@@ -95,8 +93,6 @@ Before introducing a folder, module, client, configuration variable, or cross-cu
 ---
 
 ## 4. References (Loaded On-Demand)
-
-Load only the references needed for the specific design decision.
 
 | Reference | Load when… |
 | :--- | :--- |

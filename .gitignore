@@ -24,4 +24,4 @@ tmp/
 *.log
 
 # Git worktrees and review branches
-*-review-*/
+/*-review-*/

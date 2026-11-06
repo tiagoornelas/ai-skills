@@ -28,9 +28,7 @@ For discovery, finish with a recommendation of what to pursue. For a chosen oppo
 
 ## Ordinary work and optional follow-up
 
-During another task, briefly mention a material opportunity already observed, normally at delivery; raise it earlier if it compromises the current solution. This does not activate a broad scan or widen the task. Larger investigation remains on demand.
-
-No automatic backlog, ADR, file, handoff, monitoring, or implementation follows from an observation. Offer a dedicated investigation or [handoff](../handoff/SKILL.md) when useful; creating a session or recording work depends on the user's request. Reuse findings from PR reviews without repeating the analysis.
+During another task, an opportunity already observed follows the [proportional observation rule](../ai-assisted-software-development/SKILL.md#5-derived-operational-workflows): mentioned briefly, normally at delivery, without widening the task. No automatic backlog, ADR, file, handoff, monitoring, or implementation follows from it. Offer a dedicated investigation or [handoff](../handoff/SKILL.md) when useful; creating a session or recording work depends on the user's request. Reuse findings from PR reviews without repeating the analysis.
 
 ## Success Validation
 

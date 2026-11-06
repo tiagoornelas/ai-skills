@@ -2,7 +2,7 @@
 
 > Loaded by `pr-code-review` and `pr-review-react` when a review accepts a rules, tests, or code-quality finding on code the agent pipeline authored.
 
-When a later review (peer review, [`pr-code-review`](../../pr-code-review/SKILL.md), or [`pr-review-react`](../../pr-review-react/SKILL.md)) accepts a rules, tests, or code-quality finding on code this pipeline authored, classify why self-review let it through. The classification guides the fix: only some causes are fixed by reviewing harder.
+Classify why self-review let the finding through (the review may be a peer's, [`pr-code-review`](../../pr-code-review/SKILL.md), or [`pr-review-react`](../../pr-review-react/SKILL.md)). The classification guides the fix: only some causes are fixed by reviewing harder.
 
 | Cause | Meaning | Remedy |
 | :--- | :--- | :--- |

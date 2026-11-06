@@ -11,7 +11,7 @@ description: >-
 
 # Humanize Writing
 
-A craft-oriented stylistic review, **never a mechanical checklist of rigid prohibitions**. Text preserves its purpose, tone, facts, and target language. Never invent data, lived experiences, or sources to simulate a human voice.
+A craft-oriented stylistic review, **never a mechanical checklist of rigid prohibitions**. Text preserves its purpose, tone, facts, and target language.
 
 ---
 
@@ -70,7 +70,7 @@ A craft-oriented stylistic review, **never a mechanical checklist of rigid prohi
 ## 5. Boundaries
 
 - Do not strip structure, technical precision, or professional dignity merely to sound casual.
-- Never invent citations, statistics, or personal narratives without verification.
+- Never invent citations, statistics, sources, or personal narratives to simulate a human voice.
 - Do not apply heavy rewrites to text that already possesses a distinctive, effective voice: preserve what works.
 - Reading a long text for what matters to the user is [`tl-dr`](../tl-dr/SKILL.md)'s job; this skill writes.
 

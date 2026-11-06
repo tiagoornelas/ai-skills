@@ -65,7 +65,6 @@ Exporting a component's labels for this purpose does not violate Section 1: the 
 ## 4. Leverage Existing Project Infrastructure
 
 - Author tests using the frameworks, runner types, and conventions **already established in the project**. If integration tests with a database exist, leverage them.
-- If a specific testing tier does not exist in the repository and creating it is outside task scope, operate strictly within available testing tiers.
 - **Introducing new test infrastructure** (new test runners, containerized test databases, end-to-end browser harnesses) is never a side effect of a coding task. It is a Human Layer scoping decision.
 
 ---

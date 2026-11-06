@@ -55,7 +55,7 @@ Signals that two pieces of logic should live together:
 ### Decouple General-Purpose Machinery from Specialized Logic
 
 - If a module encapsulates a mechanism capable of serving multiple purposes, it should expose **only** that general mechanism. Specialized logic tailored to a single use case belongs in higher layers.
-- Example: an **undo/redo** manager. The action history stack (tracking items, moving forward and backward) is general and independent of action types. Details of how to revert specific actions (text edits, selections, styles) belong in the respective action handlers registered into the history. Mixing them would tightly couple the history stack to every feature in the application.
+- Example: the undo/redo manager in [general-purpose-modules.md](general-purpose-modules.md), Section 5.
 - In general, lower layers tend to be general-purpose, while upper layers are specialized.
 
 ### Examples of Poor Merging and Separation

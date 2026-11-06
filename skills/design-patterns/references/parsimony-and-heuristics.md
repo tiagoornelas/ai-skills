@@ -38,7 +38,7 @@ In modern languages (TypeScript, Python, Go, Rust, modern Java/C#):
 
 ## 3. The Parsimony Gate Checklist
 
-Before proposing or implementing any design pattern, verify the following three criteria:
+Detail for the Parsimony Gate in [SKILL.md](../SKILL.md), which also requires exhausting language primitives first:
 
 ### Criterion 1: Concrete Variation Axis
 - Can you name the exact dimension along which this code will vary independently?
@@ -46,7 +46,7 @@ Before proposing or implementing any design pattern, verify the following three 
   - "We must support 3 different payment processors whose APIs change independently." (Justifies Adapter).
   - "We must parse 4 distinct file formats producing the same internal domain AST." (Justifies Factory Method or Strategy).
 - Examples of fake/speculative axes:
-  - "Maybe someday we will switch from PostgreSQL to MongoDB." (YAGNI; does not justify full Abstract Factory abstraction layer unless actively planned).
+  - "Maybe someday we will switch from PostgreSQL to MongoDB." (YAGNI: does not justify an Abstract Factory or a multi-database abstraction layer. A policy-side persistence port is justified by dependency direction, for testability and keeping business rules apart from infrastructure, never by a hypothetical swap; see [dependency-direction.md](../../software-designing/references/dependency-direction.md).)
   - "What if we need to undo this action later?" (Premature Command pattern).
 
 ### Criterion 2: Depth of the Resulting Abstraction
@@ -66,5 +66,5 @@ Before proposing or implementing any design pattern, verify the following three 
 A design pattern is justified when:
 1. **The language primitive lacks needed lifecycle or state**: A closure is great for a stateless algorithm (Strategy), but if the strategy needs to hold state, expose lifecycle methods (`init`, `teardown`), or be serialized, a dedicated class/interface structure becomes warranted.
 2. **Recursive composition is natural**: Trees of UI widgets, AST nodes, or permission rules naturally benefit from the **Composite** pattern.
-3. **Decoupling across architectural boundaries**: When business rules must communicate with infrastructure without depending on it (Dependency Inversion), **Adapter** or **Facade** provides an explicit, testable contract.
+3. **Decoupling across architectural boundaries**: Dependency Inversion: the domain declares the port in its own vocabulary ([dependency-direction.md](../../software-designing/references/dependency-direction.md) §3); an **Adapter** implements it on the infrastructure side. A **Facade** may simplify a vendor subsystem behind that adapter, but it is not the inversion.
 4. **Coordinating complex multi-object choreography**: When 6 subsystems communicate in an entangled N×N mesh, a **Mediator** pulls complexity downward and restores order.

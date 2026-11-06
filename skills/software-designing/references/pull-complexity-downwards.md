@@ -27,7 +27,7 @@
 ## 2. Example: Text Model vs. View
 
 - If a text model exposes a line-oriented API, every UI editing action must coordinate string splitting and joining across line breaks. Complexity is pushed upward into the UI and duplicated across actions.
-- A character-oriented interface **pulls that complexity downwards**: the text engine manages line breaks and indexing internally once, making the entire UI significantly cleaner.
+- A range-oriented interface **pulls that complexity downwards**: the text engine manages line breaks and indexing internally once, making the entire UI significantly cleaner.
 
 ---
 

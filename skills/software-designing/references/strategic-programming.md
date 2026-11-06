@@ -21,12 +21,6 @@
 - Because complexity is incremental (see [nature-of-complexity.md](nature-of-complexity.md)), these shortcuts compound. The system quickly becomes resistant to change, and **"later" never arrives**: the next task is equally urgent.
 - By the time the problem is acknowledged, remediating it requires an enormous overhaul, making the next tactical shortcut seem like the only viable option.
 
-### The "Tactical Tornado"
-
-- Many organizations have a developer who churns out code much faster than anyone else, but does so entirely tactically.
-- Management sometimes hails them as heroes because they ship features rapidly.
-- They leave behind a trail of devastation: developers who follow must clean up the mess, and their progress appears sluggish compared to the "hero".
-
 ---
 
 ## 2. Strategic Programming
@@ -43,7 +37,7 @@
 
 ### Reactive Investments
 
-- Regardless of skill, design flaws inevitably emerge. When discovering a design flaw, **never ignore it or patch around it**: set aside time to fix it cleanly.
+- Regardless of skill, design flaws inevitably emerge. When discovering a design flaw, **never ignore it or patch around it**: fix it cleanly within the code the task touches, or escalate it (How to Apply, item 4).
 - In strategic programming, the system continuously improves over time rather than steadily degrading.
 
 ---
@@ -51,7 +45,7 @@
 ## 3. How Much to Invest?
 
 - Massive upfront design (attempting to architect the entire system before writing code) fails: deep understanding of the problem only surfaces during construction.
-- The sweet spot is **small, continuous investments**. A practical benchmark is dedicating **roughly 10–20% of total development time** to design investments.
+- The sweet spot is **small, continuous investments**. Ousterhout's benchmark is dedicating **roughly 10–20% of total development time** to design investments: a team habit, not an estimate; when comparing options, cost stays relative ([`software-designing`](../SKILL.md), "Cost is relative, never schedule-based").
 - This is small enough to avoid derailing delivery schedules, yet large enough that velocity benefits compound rapidly: within months, strategic development outpaces tactical development and keeps accelerating, while tactical velocity grinds to a halt.
 
 ```text
@@ -77,8 +71,6 @@ Early on, tactical programming seems faster; soon, strategic programming overtak
 - The most common justification for tactical shortcuts is deadline pressure: "we must ship now, we'll refactor later".
 - In practice, once a codebase degenerates into spaghetti, **remediating it is almost impossible**. Development friction remains permanently high.
 - **Technical debt** is rarely paid off in lump sums. The "interest payments" (sluggish velocity, regression bugs, painful onboarding) are levied on every subsequent ticket.
-- Code quality directly affects an organization's ability to attract and retain strong engineers: talented engineers care deeply about craftsmanship and design.
-- Teams that start with "move fast and break things" invariably pivot when the codebase becomes an anchor; teams with a strong design culture maintain steady velocity over years.
 
 ---
 
@@ -122,7 +114,7 @@ In every design task, the agent must:
 1. **Reject accidental complexity**: if the quickest path introduces avoidable dependencies or obscurity, formulate the clean alternative and its true cost.
 2. **Evaluate alternatives** before locking in a solution, following Step 3 of [`software-designing`](../SKILL.md#step-3-compare-alternatives-proportionally).
 3. **Plan for the next change**: what is the most probable subsequent enhancement in this domain? Does the design make it effortless?
-4. **Fix instead of work around** whenever encountering a design flaw along the path, provided it falls within the code touched by the task and within a sensible investment budget (~10–20%). If the remediation exceeds scope, **escalate to the human** as an explicit trade-off with clear trade-off analysis.
+4. **Fix instead of work around** whenever encountering a design flaw along the path, provided it falls within the code touched by the task and with a footprint small next to the task's own change. If the remediation exceeds scope, **escalate to the human** as an explicit trade-off with clear trade-off analysis.
 5. **Make debt explicit**: when a tactical compromise is deliberately chosen by the human, document the decision and the outstanding cleanup.
 
 ---

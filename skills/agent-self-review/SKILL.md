@@ -7,24 +7,19 @@ description: >-
   committed since the last clean checkpoint (increment mode) or over the whole
   branch before a pull request is opened (branch mode), in a self-correction
   loop that budgets discretionary improvements while keeping critical defects and
-  project standards outside the budget.
+  project standards outside the budget. Triggered after committing work and
+  before delivering it to the human or opening a pull request.
 ---
 
 # Agent Self-Review
-
-Pre-human quality gate executed autonomously by the coding agent.
 
 ---
 
 ## 1. Operational Principle
 
-The goal is to ensure zero mechanical defects, typing errors, linter regressions, project rule violations, or unverified DoD behaviors reach the human developer.
+No mechanical defect, typing error, linter regression, project rule violation, or unverified DoD behavior reaches the human. The goal is code that is **correct, covered, and free of high-cost defects**, not aesthetic perfection: apply the few highest-impact corrections and stop; a marginal stylistic improvement never justifies another loop iteration.
 
-The goal is **not** flawless aesthetic perfection. The goal is code that is **correct, covered, and devoid of high-cost defects**. Marginal stylistic improvements never justify an additional loop iteration. The agent focuses on the 80/20 rule: apply the few highest-impact corrections and stop.
-
-The "zero-tolerance" posture from [`software-designing`](../software-designing/SKILL.md) applies to **architectural design decisions**. Below contracts, the Section 5 budget applies only to discretionary improvements; critical defects and project standards remain mandatory.
-
-The operational cycle is **evaluate → fix → re-evaluate**, adhering to convergence rules in Section 5.
+The "zero-tolerance" posture of [`software-designing`](../software-designing/SKILL.md) applies to **architectural design decisions**. Below contracts, the Section 5 budget applies only to discretionary improvements; critical defects and project standards remain mandatory.
 
 ---
 
@@ -162,8 +157,8 @@ Execute objective checks (Phases 1, 2, 3, and 4a) first. Then execute judgment c
 ### Re-evaluation
 - After applying fixes, re-run Phases **1 and 3** in their entirety (they are fast and deterministic).
 - Re-run Phase **2** against the existing rule ledger, over the lines changed by the fixes. Do not rebuild the ledger or re-read rule files. Fixes are code like any other: a fix that breaks a ledger rule is Blocking.
-- Re-run Phase **4a** over test lines changed by the fixes. Do not repeat the full Phases **4b and 5** review; inspect the fixes for critical defects as specified below.
-- **Zero second-order discretionary findings**: do not repeat the full Phases 4b–5 review for marginal improvements. Still inspect every remediation for newly introduced critical defects or project rule violations; those remain Blocking, as do objective violations from Phases 1–3 and 4a.
+- Re-run Phase **4a** over test lines changed by the fixes.
+- **Zero second-order discretionary findings**: do not repeat the full Phases 4b–5 review. Inspect every remediation only for newly introduced critical defects or project rule violations; those remain Blocking.
 
 ### Iteration Limit
 - Maximum of **3 rounds** of evaluate → fix → re-evaluate. This is a stopping limit on autonomous attempts, never an acceptance threshold for Blocking findings.

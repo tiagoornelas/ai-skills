@@ -9,9 +9,9 @@ description: >-
   know, decide, or do) with the one line of context it needs, fact kept apart
   from claim, or a plain statement that nothing requires anything from the
   user. Read-only; whether a delivery is proven is provide-evidence's job,
-  and reviewing a change is human-review's. Triggered when the user asks for a tl;dr, the gist, a
-  digest, "what do I need from this", or how a task or PR stands, or faces a
-  long text they do not want to read.
+  and reviewing a change is human-review's. Triggered when the user asks for
+  a tl;dr, the gist, a digest, "what do I need from this", or how a task or
+  PR stands, or faces a long text they do not want to read.
 argument-hint: "[task, issue, PR, link, or text; nothing = the last long answer]"
 ---
 

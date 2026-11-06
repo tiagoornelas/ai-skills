@@ -1,12 +1,10 @@
 ---
 name: ai-assisted-software-development
 description: >-
-  Core principles of governance and division of responsibilities in AI-assisted development. Defines the boundary between the Human Layer (governance, architecture, and contracts) and the Agent Layer (internal implementation, automation, and self-review).
+  Core principles of governance and division of responsibilities in AI-assisted development. Defines the boundary between the Human Layer (governance, architecture, and contracts) and the Agent Layer (internal implementation, automation, and self-review), the change card, and where a task's facts live. Load when deciding whether a choice is the human's or the agent's, before announcing or building anything new in production, and when writing to the human.
 ---
 
 # AI-Assisted Software Development
-
-Guidelines and principles for the division of labor between humans and AI agents.
 
 ---
 
@@ -32,7 +30,7 @@ The sphere of human governance and decision-making. **Only what belongs to this 
 - **Business Decisions and Trade-offs**: Behavior, restrictions, assumptions, value versus scope, and continuing [maintenance commitment](../software-designing/references/maintenance-commitment.md). Agents investigate and recommend; humans decide.
 - **Manual Verifications**: Execution of checks that cannot be automated.
 
-The human is the **human directing architect**: the owner of this layer's decisions and of the product's direction, who knows what the product does and its high-level architecture but not the inside of the module the agent worked on. Not knowing the inside never moves a decision to the agent, and no agent is ever the directing architect. Agents bring this layer to the human with that context. Every internal term is situated in the product before use; every change is briefed decisions, trade-offs, and risks first, solution last; each decision is a self-contained card with a recommendation. See [human-facing-communication.md](references/human-facing-communication.md).
+The human is the **human directing architect**: the owner of this layer's decisions and of the product's direction, who knows what the product does and its high-level architecture but not the inside of the module the agent worked on. Not knowing the inside never moves a decision to the agent, and no agent is ever the directing architect. Agents bring this layer to the human with that context, per [human-facing-communication.md](references/human-facing-communication.md).
 
 ---
 
@@ -78,7 +76,7 @@ This theory guides complementary workflows and independently callable entry poin
 1. **[`agent-self-review`](../agent-self-review/SKILL.md)**: Executed autonomously by the agent. The agent inspects its own implementation (linter/types, DoD coverage, and tests), recursively fixing issues until approved.
 2. **[`human-review`](../human-review/SKILL.md)**: The user's on-demand guide to one change, own or third-party: what changed, where it lives (the change card), and what the user needs to understand or decide, with critical findings that carry a consequence; a part is explained in depth only when the user points at it.
 3. **[`scope-review`](../scope-review/SKILL.md)** and **[`improve-architecture`](../improve-architecture/SKILL.md)**: Independently callable entry points for scope/value decisions and architectural improvement. Reuse shared evidence; these are not mandatory stages.
-4. **[Change card](references/change-card.md)**: the glanceable form of the tiers, printed before building, at delivery, and on demand: a plan with one count line, then one line per thing that is new, changed, removed, the human's to decide, or out of pattern, and the state.
+4. **[Change card](references/change-card.md)**: the glanceable form of the tiers, printed before building, at delivery, and on demand.
 5. **[`agentic-parallel-work`](../agentic-parallel-work/SKILL.md)** owns how agents work in parallel: the delivery as the unit, one writer, branches and worktrees, in-flight and review-round limits.
 6. **[`provide-evidence`](../provide-evidence/SKILL.md)** owns the evidence: every delivery carries the six-line [evidence dossier](../provide-evidence/references/evidence-dossier.md), each line with its claim, why it convinces, and its argument or proof, the last four attested by an independent reviewer.
 

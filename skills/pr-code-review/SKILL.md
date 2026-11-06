@@ -8,7 +8,8 @@ description: >-
   pull-request mechanics: the comparison baseline, re-review of prior feedback
   against incremental commits, a recommended verdict, and accepted findings
   turned into humanized line comments ready to paste or publish on
-  confirmation. Deeper review axes run only on request.
+  confirmation. Deeper review axes run only on request. Used on demand when
+  the user asks to review or re-review a pull request or diff.
 disable-model-invocation: true
 argument-hint: "[PR number/URL, branch, SHA, or base ref] [--re-review]"
 ---
@@ -136,9 +137,7 @@ For each accepted finding, generate a ready-to-paste comment in the language of 
 
 ### 5.2. General Review Comment (Only on Explicit Request)
 
-By default, leave the overall review body empty for both **Approve** and **Request changes**. Line comments and existing thread replies carry the accepted feedback; do not repeat them in a general review comment. Draft a general review body only if the user explicitly requests one, aligned with their chosen verdict.
-
-Run any requested general review body through `humanize-writing`.
+By default, leave the overall review body empty for both **Approve** and **Request changes**. Line comments and existing thread replies carry the accepted feedback; do not repeat them in a general review comment. Draft a general review body only if the user explicitly requests one, aligned with their chosen verdict, and run it through `humanize-writing`.
 
 ### 5.3. Thread Replies in Re-review Mode
 
@@ -159,7 +158,7 @@ When conducting a re-review, findings often continue existing unresolved convers
 
 ## 6. Publishing
 
-Never publish automatically. If the user explicitly requests publication, display the exact payload, including the verdict, each accepted line comment or thread reply, and the general review body only when explicitly requested; publish strictly upon confirmation. Submit **Approve** or **Request changes** without a general body by default. Use a submission method that supports the accepted point-by-point comments and an empty review body. If the GitHub interface rejects an empty body for **Request changes**, explain that constraint and ask the user how to proceed; do not invent a summary or silently switch the verdict.
+Never publish automatically. If the user explicitly requests publication, display the exact payload, including the verdict, each accepted line comment or thread reply, and the general review body only when explicitly requested; publish strictly upon confirmation. Use a submission method that supports the accepted point-by-point comments and an empty review body. If the GitHub interface rejects an empty body for **Request changes**, explain that constraint and ask the user how to proceed; do not invent a summary or silently switch the verdict.
 
 ---
 
