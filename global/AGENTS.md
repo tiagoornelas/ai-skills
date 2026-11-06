@@ -42,6 +42,17 @@ Division of labor follows the `ai-assisted-software-development` skill: the huma
 | Before any commit | Use `commit`. |
 | Before opening a pull request | Use `github-pull-request`. |
 
+### What I watch
+
+Whatever the task, the user watches these; an agent that would break one stops and brings it to the user first. Every delivery's change card (`change-card` reference of the `ai-assisted-software-development` skill) shows the first five, its State line shows whether the user has authorized the release, and the independent reviewer of `provide-evidence` checks them in line (c) of its evidence dossier:
+
+- **Everything new is visible, with where it lives**: tables, jobs, routes, services, secrets, costs, folders, clients.
+- **Nothing built on the side**: each new thing follows the project's existing way of doing it.
+- **No wall knocked down**: boundaries, contracts, and dependency direction stay intact.
+- **Rules and tests not weakened**: no project rule bypassed, no test disabled, skipped, or loosened.
+- **Proof of the real version**: the evidence is for the exact commit being delivered.
+- **Release only with the user's authorization**: no merge, deploy, or publication without it.
+
 ---
 
 ## 4. Subagents and delegation

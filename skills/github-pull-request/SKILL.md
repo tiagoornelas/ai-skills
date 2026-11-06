@@ -16,7 +16,8 @@ Skill for structuring, documenting, and opening Pull Requests on GitHub.
 
 - **Designed for the Reviewer**: The reviewer must understand the purpose of the PR within the first 5 seconds of reading.
 - **Focus on High-Level Review**: Grounded in the philosophy of [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md) and [`human-review`](../human-review/SKILL.md). Do not clutter the PR with internal implementation minutiae already validated by [`agent-self-review`](../agent-self-review/SKILL.md).
-- **Visuals via `visualize-it`**: a clean Mermaid module map shows boundaries and dependency direction; separate interface cards show what each component exposes and what changed.
+- **The change card first**: right after the summary, the body carries the change's [change card](../ai-assisted-software-development/references/change-card.md), complete with its State block, so the reviewer sees what is new and where it lives before anything else. This skill cites the card; it never redefines it.
+- **Visuals via `visualize-it`**: a clean Mermaid module map shows boundaries and dependency direction; contract cards show, in system terms, what crosses each new or changed boundary and for whom, never method signatures.
 
 ---
 
@@ -75,6 +76,14 @@ Use the structure below:
 
 ---
 
+## Change Card
+
+```text
+[The change card of this PR, per the change-card reference of ai-assisted-software-development: new and where it lives (with approvals, and the "none" line), business rule, data, pattern, walls, and State with the PR line. Inside a text block, so its columns stay aligned.]
+```
+
+---
+
 ## Traceability & Issue
 - **Issue**: [Link and issue key, e.g.: `#42` or `PROJ-123`] (short summary of the issue)
 - **Origin**: [Labeled link to the report or discussion that started the work]
@@ -103,16 +112,13 @@ graph LR
 
 <One-paragraph reading of the map: what is new, and confirmation that dependencies keep pointing inward toward business rules ([dependency-direction.md](../software-designing/references/dependency-direction.md)), or the ⚠️ deviation.>
 
-### Interface Cards
-<!-- Cards for new/altered contracts and unchanged guarantees material to understanding the change, in the visualize-it interface card format. Explain changed guarantees or failure modes separately, keyed by interface/method; keep cards limited to the interface name and marked methods. -->
+### Contracts
+<!-- One card per new or altered contract, and per unchanged guarantee material to understanding the change. Say in system terms what crosses the boundary, for whom, what it promises, and how it fails; no method names or signatures. Omit when no contract changed. -->
 
 #### ◆ Sign-in 🔧
-`SignInService` · 4 methods · 2 in scope
-
-- 🔧 `signIn(email, password, device) → Session` · before: `signIn(email, password)`
-- `refresh(token) → Session` · _used by this change_
-
-<sub>Out of scope: `signOut` · `revokeAll`</sub>
+- **Who calls it**: the login screen and the mobile app.
+- 🔧 **What crosses**: sign-in now also receives the device, so each session is tied to the device that opened it.
+- **Promise and failure**: an expired session is refused and the user is sent back to login; nothing else changes for callers.
 
 ---
 
@@ -167,10 +173,8 @@ GitHub CLI and API cannot upload images into a PR body, so do not try to attach 
 ## 6. Success Validation
 
 - [ ] Agent-authored branches passed `agent-self-review` in branch mode before the PR was opened.
-- [ ] Existing issue links were verified; absence of an issue did not block PR creation.
-- [ ] Supporting references found in context are listed with descriptive labels, with no empty categories.
-- [ ] Title follows standardized format (`Type/Description`).
-- [ ] Body includes direct summary, module map and interface cards (via `visualize-it`), and DoD table with official legend.
-- [ ] Section headings, DoD table header, and legend are in the team/repository language, not the template's English.
-- [ ] For a visible UI change, an available screenshot was embedded or the developer was reminded after creation that one can be added.
-- [ ] PR was opened (defaulting to `--draft`) and clickable link returned.
+- [ ] Existing issues and supporting references were linked with descriptive labels, with no empty categories; no issue did not block creation.
+- [ ] Title follows `Type/Description`; headings, DoD table header, and legend are in the team/repository language.
+- [ ] Body has the summary, the complete change card with its State block, the module map (via `visualize-it`) and contract cards in system terms, and the DoD table with its legend.
+- [ ] For a visible UI change, an available screenshot was embedded or the developer was reminded one can be added.
+- [ ] The PR was opened (defaulting to `--draft`) and its clickable link returned.
