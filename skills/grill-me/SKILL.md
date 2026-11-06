@@ -92,11 +92,9 @@ When a frontier question depends on a factual premise:
 
 ## 5. Questions Conversation Cannot Resolve
 
-Some questions can be answered through dialogue. Others cannot, and no amount of interviewing will resolve them.
-
 "A long single-page form or a three-step wizard?", "What should this interaction look like?", and "Does this complex state machine hold up?" are questions that **cannot be resolved purely in conversation**: they require concrete interactive feedback. When one surfaces, **pause the interview**. Build a disposable artifact using the [`prototype`](../prototype/SKILL.md) skill, inspect it collaboratively with the user, then return to the interview and record the answer in a single sentence. The resolution enters the tree as a settled decision, and interviewing resumes.
 
-Insisting on prose debates for interactive questions is where sessions bloat: the agent rephrases, the user guesses, and speculative scope expands to fill the void.
+Debating such a question in prose bloats the session: the agent rephrases, the user guesses, and speculative scope grows.
 
 ---
 

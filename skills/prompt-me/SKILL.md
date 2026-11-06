@@ -56,6 +56,7 @@ Deliver as many steps as can be reliably charted in a single, scannable response
 - **Explicit verification criteria**: Each step must explain how to confirm it succeeded before moving to the next.
 - **Autonomous verification when possible**: If an outcome can be verified via local CLI or file inspection, the agent inspects it rather than asking the user to manually verify.
 - **Acknowledge uncertainty**: if screen layouts or vendor UIs vary, state potential variations and ask what the user sees if stuck. Never guess button locations.
+- **Only the background a step needs**: no conceptual explanations the action does not depend on.
 
 ---
 
@@ -115,17 +116,7 @@ If invoked mid-flow by another skill, return control and state which step resume
 
 ---
 
-## 6. What Not to Do
-
-- Drip-feeding steps one by one when they can be reliably provided together.
-- Forcing the user to send back-and-forth confirmations for simple, predictable consecutive actions.
-- Executing the user's manual action "to get ahead", or assuming success on unverified external actions.
-- Dropping context or failing to provide the remaining sequence after resolving a roadblock.
-- Overwhelming steps with excessive conceptual background.
-
----
-
-## 7. Success Validation
+## 6. Success Validation
 
 - [ ] Objective confirmed in a single line and prerequisites listed upfront.
 - [ ] Delivered maximum viable steps in a batch upfront with clear action and verification criteria per step.

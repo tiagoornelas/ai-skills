@@ -5,14 +5,14 @@ description: >-
   colleague who just joined the project and has no context on the business or
   on the applications themselves: starts from the problem the business solves,
   defines every domain term and project-specific name, and only then descends
-  into the code. Leverages visualize-it to draw flows and states.
+  into the code. Leverages visualize-it to draw flows and states. Used on
+  demand when the user asks for an explanation, and by human-review when the
+  user points at a part of a change.
 disable-model-invocation: true
 argument-hint: "[what to explain — by default the last discussed topic]"
 ---
 
 # Explain It
-
-Educational skill for explaining components, architectures, workflows, and technical decisions to someone who has just arrived.
 
 ---
 
@@ -32,7 +32,6 @@ Every explanation is written for that reader. If a sentence only makes sense to 
 - **Business before code**: open with the real-world problem: who uses this, what they are trying to achieve, and what goes wrong without it. Code comes after the reader knows why it exists.
 - **Shared context principles**: apply [Giving context](../ai-assisted-software-development/references/human-facing-communication.md#giving-context) (outside in, situate before naming, concrete before and after, say why or say it is unknown, no condescension, grounded). This reader also lacks the business, so domain terms are defined too, not only internal names.
 - **Visuals**: invoke the [`visualize-it`](../visualize-it/SKILL.md) skill whenever explaining a flow across parts of the system or the states a user sees; this reader needs the code names, so give them beside the drawing, keyed by step.
-- Respond in the same language the user is communicating in during the session.
 
 ---
 
