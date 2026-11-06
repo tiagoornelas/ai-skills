@@ -23,13 +23,14 @@ Skill for structuring, documenting, and opening Pull Requests on GitHub.
 
 ## 2. Issue Linkage and Traceability
 
-Link a tracking issue when one already exists in context. An issue is not required to open the PR.
+The issue holds the objective and acceptance criteria, and the PR body holds the user's decisions and the change card, per [where a task's facts live](../ai-assisted-software-development/SKILL.md#6-where-a-tasks-facts-live). A missing issue never blocks the PR.
 
 ### Agent Workflow:
 1. **If an issue exists in context** (Jira, GitHub Issues, Linear, etc.):
    - Link the identifier and URL in the PR traceability section.
    - Link every issue the PR resolves, not only the main one.
-2. **If no issue exists in context**: proceed without an issue link. Do not ask the user to create one.
+2. **If no issue exists**: proceed without an issue link; the objective and acceptance criteria stay in the conversation.
+3. **A delivery across repositories** opens one PR per repository from the same branch name; the main PR carries the change card and the merge order, and every PR links the others under Related PRs, per [branch-and-worktrees.md](../agentic-parallel-work/references/branch-and-worktrees.md#4-one-delivery-several-repositories).
 
 ### Supporting References
 
@@ -152,19 +153,20 @@ GitHub CLI and API cannot upload images into a PR body, so do not try to attach 
 
 1. **Branch Self-Review**:
    - If the branch carries code authored by the agent pipeline, run [`agent-self-review`](../agent-self-review/SKILL.md) in **branch mode** (Section 3.2) unless `HEAD` already carries a `branch` self-review note. Resolve its Blocking findings before continuing; list its Escalate findings for the developer.
-2. **Ensure Remote is Up to Date**:
+2. **Check the Facts Agree**: the objective and acceptance criteria (issue or conversation), the user's decisions, and the change card describe the same change; fix the one that drifted before opening, and carry the decisions into the body.
+3. **Ensure Remote is Up to Date**:
    - Verify all commits are recorded and push the branch:
      ```bash
      git push -u origin <branch-name>
      ```
-3. **Create the PR**:
+4. **Create the PR**:
    - Prepare and verify the title and body, then open the PR without a separate approval prompt or preview. The user's request to open the PR authorizes creation of the draft.
    - Run the command via GitHub CLI:
      ```bash
      gh pr create --draft --title "<title>" --body-file <body-file>
      ```
    - Create as `--draft` unless the user explicitly requests ready for review.
-4. **Output**:
+5. **Output**:
    - Return the clickable GitHub PR link.
    - For a visible UI change without an embedded screenshot, mention that the developer may add one through GitHub's web interface.
 
@@ -173,8 +175,8 @@ GitHub CLI and API cannot upload images into a PR body, so do not try to attach 
 ## 6. Success Validation
 
 - [ ] Agent-authored branches passed `agent-self-review` in branch mode before the PR was opened.
-- [ ] Existing issues and supporting references were linked with descriptive labels, with no empty categories; no issue did not block creation.
+- [ ] Existing issues and supporting references were linked with descriptive labels, with no empty categories; no issue did not block creation; the PRs of a multi-repository delivery link each other and the main one carries the card and merge order.
+- [ ] Objective, acceptance criteria, decisions, and change card were checked against each other before opening.
 - [ ] Title follows `Type/Description`; headings, DoD table header, and legend are in the team/repository language.
 - [ ] Body has the summary, the complete change card with its State block, the module map (via `visualize-it`) and contract cards in system terms, and the DoD table with its legend.
-- [ ] For a visible UI change, an available screenshot was embedded or the developer was reminded one can be added.
-- [ ] The PR was opened (defaulting to `--draft`) and its clickable link returned.
+- [ ] The PR was opened (defaulting to `--draft`) and its clickable link returned; for a visible UI change, an available screenshot was embedded or the developer was reminded one can be added.

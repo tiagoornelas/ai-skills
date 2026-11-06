@@ -79,18 +79,34 @@ This theory guides complementary workflows and independently callable entry poin
 2. **[`human-review`](../human-review/SKILL.md)**: The user's on-demand guide to one change, own or third-party: what changed, where it lives (the change card), and what the user needs to understand or decide, with critical findings that carry a consequence; a part is explained in depth only when the user points at it.
 3. **[`scope-review`](../scope-review/SKILL.md)** and **[`improve-architecture`](../improve-architecture/SKILL.md)**: Independently callable entry points for scope/value decisions and architectural improvement. Reuse shared evidence; these are not mandatory stages.
 4. **[Change card](references/change-card.md)**: the glanceable form of the tiers, printed before building, at delivery, and on demand: what is new and where it lives, rule changes, data deleted or rewritten, pattern followed or built on the side, walls, and state.
-5. **[`provide-evidence`](../provide-evidence/SKILL.md)** owns the evidence: every delivery carries the six-line [evidence dossier](../provide-evidence/references/evidence-dossier.md), each line with its claim, why it convinces, and its argument or proof, the last four attested by an independent reviewer.
+5. **[`agentic-parallel-work`](../agentic-parallel-work/SKILL.md)** owns how agents work in parallel: the delivery as the unit, one writer, branches and worktrees, in-flight and review-round limits.
+6. **[`provide-evidence`](../provide-evidence/SKILL.md)** owns the evidence: every delivery carries the six-line [evidence dossier](../provide-evidence/references/evidence-dossier.md), each line with its claim, why it convinces, and its argument or proof, the last four attested by an independent reviewer.
 
 During ordinary work, briefly surface material architectural or scope opportunities already encountered, normally at delivery and earlier only if they compromise the current solution. Broad scans, deeper investigations, artifacts, and follow-up sessions stay on demand. An observation does not expand implementation scope or create a backlog.
 
 ---
 
-## 6. Success Validation
+## 6. Where a Task's Facts Live
 
-- [ ] The boundary between the Human Layer and Agent Layer was respected, with both questions of the boundary test applied.
-- [ ] Decisions regarding modules, contracts, dependency direction, or DoD behaviors were brought to the human (tier 3).
+Each fact lives in the thing it describes, and the task's state is derived from those sources whenever someone asks. No agent keeps a registry, status file, or copy of these facts beside them: a copy goes stale and then contradicts the source.
+
+| Fact | Where it lives |
+| :--- | :--- |
+| Objective and acceptance criteria | The **issue**, in the tracker the repository or context points to (issue keys in branches, commits, or PRs; the project's docs). When none is detectable, ask the user where; when the user declines an issue, they live only in the conversation. |
+| The user's decisions | While the work is in progress, the **issue** when there is one (recorded as soon as each decision is made), otherwise the conversation. Once the work is ready, the **PR body** carries them. |
+| The change card | The **PR body**, opened when the work is ready. A delivery across repositories keeps its card in the main PR ([branch-and-worktrees.md](../agentic-parallel-work/references/branch-and-worktrees.md#4-one-delivery-several-repositories)). |
+| Code, branches, CI, reviews | Git and the code host. |
+| Proof | Git notes on the commit they attest, per [`agent-self-review`](../agent-self-review/SKILL.md) and [`provide-evidence`](../provide-evidence/SKILL.md). |
+
+When the PR is opened, check that the objective, the acceptance criteria, the decisions, and the change card agree, and fix the one that drifted.
+
+---
+
+## 7. Success Validation
+
+- [ ] The boundary between the Human Layer and Agent Layer was respected, with both questions of the boundary test applied; decisions on modules, contracts, dependency direction, or DoD behaviors went to the human (tier 3), and internal details were resolved autonomously with tests and self-review.
 - [ ] Anything new that runs, costs, stores data, or holds permissions in production was classified by the boundary test before being built: tier-2 items were announced with a stated deadline and their outcome recorded; anything that deletes or rewrites production data or changes a business rule went to the human as a decision card (tier 3).
 - [ ] Every notice, split plan, and delivery carried its [change card](references/change-card.md), and every delivery its six-line [evidence dossier](../provide-evidence/references/evidence-dossier.md), with lines (c)–(f) attested by an independent reviewer.
-- [ ] Internal details below contracts were resolved autonomously by the agent with tests and self-review.
+- [ ] Objective and acceptance criteria were in the issue (or, when the user declined one, the conversation); the user's decisions were in the issue or the conversation until the PR carried them with the change card; no registry or status file copied them.
 - [ ] No local or unversioned paths were exposed in shared artifacts.
 - [ ] Messages to the human passed the directing-architect test of [human-facing-communication.md](references/human-facing-communication.md): no internal term used before being situated, changes briefed in its order (where, problem, decisions and trade-offs, risks and impact, solution, evidence), no explanation handed back to the human, each pending decision was a self-contained card saying why it is the human's and whether it is easy or hard, checked as still open before being asked, every ✋ came with why only the human can do it, and emojis were used only as status and attention markers.

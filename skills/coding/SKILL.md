@@ -18,6 +18,9 @@ Centralize engineering guidelines, quality standards, and operational workflows 
 - Bug fixing and refactoring.
 - Writing and executing automated tests.
 
+## Starting Work
+Before the first edit, work on the delivery's own branch and worktrees, created per [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md): one worktree per repository, all with the same branch name.
+
 ## Testing
 Implement test-driven development following [test-driven-development.md](references/test-driven-development.md), governed by criteria in [testing.md](references/testing.md).
 
@@ -49,6 +52,7 @@ Upon completing code changes, the agent must execute the [`agent-self-review`](.
 
 ## Success Validation
 
+- [ ] Changes were made on the delivery's branch and worktrees per [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md), never in a checkout shared with other work.
 - [ ] Implementation was test-driven (TDD) adhering to [test-driven-development.md](references/test-driven-development.md).
 - [ ] Tests verify observable behavior through public interfaces adhering to [testing.md](references/testing.md).
 - [ ] Refactorings preserved behavior with green tests adhering to [refactoring-principles.md](references/refactoring-principles.md).

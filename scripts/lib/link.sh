@@ -23,8 +23,18 @@ GLOBAL_INSTRUCTION_FILES=(
   "gemini:$HOME/.gemini/config/AGENTS.md"
   "gemini:$HOME/.gemini/GEMINI.md"
   "codex:$HOME/.codex/AGENTS.md"
+)
+# Instruction paths an earlier setup linked and no harness reads. Setup removes
+# its own links there; uninstall and restore still recognize them.
+LEGACY_INSTRUCTION_FILES=(
   "cursor:$HOME/.cursor/rules/global.md"
 )
+# Cursor CLI reads no global rules file: setup registers a sessionStart hook
+# here that injects global/AGENTS.md into every session.
+CURSOR_HOOKS_FILE="$HOME/.cursor/hooks.json"
+# Backup label of hooks.json. It is edited in place, never moved, so
+# `uninstall --restore` must not move it back: the label maps to no path.
+CURSOR_HOOKS_BACKUP_LABEL="cursor-hooks"
 
 # is_harness_installed <label>
 # Returns 0 (true) if the harness is installed or its base configuration directory exists.
@@ -88,7 +98,7 @@ prune_dangling_links() {
 # moving it to <backup>/<label>/<name>. Prints nothing for an unknown label.
 backup_original_path() {
   local label="$1" name="$2" target
-  for target in "${GLOBAL_INSTRUCTION_FILES[@]}"; do
+  for target in "${GLOBAL_INSTRUCTION_FILES[@]}" "${LEGACY_INSTRUCTION_FILES[@]}"; do
     if [ "${target%%:*}" = "$label" ] && [ "$(basename "${target#*:}")" = "$name" ]; then
       echo "${target#*:}"
       return 0
@@ -128,4 +138,92 @@ prune_empty_backups() {
     rmdir "$dir" 2>/dev/null || true
   done
   rmdir "$AI_SKILLS_BACKUP_ROOT" 2>/dev/null || true
+}
+
+# cursor_hook_command <hook-script>: the command string setup registers, which
+# also identifies setup's entry in hooks.json.
+cursor_hook_command() {
+  printf '"%s"' "$1"
+}
+
+# cursor_hook_registered <hook-script>: true when hooks.json holds setup's entry.
+cursor_hook_registered() {
+  [ -f "$CURSOR_HOOKS_FILE" ] && command -v jq >/dev/null 2>&1 &&
+    jq -e --arg c "$(cursor_hook_command "$1")" \
+      'any(.hooks.sessionStart[]?; .command == $c)' "$CURSOR_HOOKS_FILE" >/dev/null 2>&1
+}
+
+# cursor_hooks_writable: true when hooks.json is absent or a hooks object
+# setup can edit (an object whose sessionStart, if any, is a list).
+cursor_hooks_writable() {
+  [ ! -e "$CURSOR_HOOKS_FILE" ] ||
+    jq -e 'type == "object" and ((.hooks // {}) | type) == "object"
+      and ((.hooks.sessionStart // []) | type) == "array"' "$CURSOR_HOOKS_FILE" >/dev/null 2>&1
+}
+
+# write_cursor_hooks <jq-filter> <hook-command>: applies the filter to
+# hooks.json ({} when absent), writing through any symlink.
+write_cursor_hooks() {
+  local filter="$1" cmd="$2" tmp
+  tmp="$(mktemp)"
+  { if [ -e "$CURSOR_HOOKS_FILE" ]; then cat "$CURSOR_HOOKS_FILE"; else echo '{}'; fi; } |
+    jq --arg c "$cmd" "$filter" > "$tmp"
+  cat "$tmp" > "$CURSOR_HOOKS_FILE"
+  rm -f "$tmp"
+}
+
+# register_cursor_hook <hook-script>: adds setup's sessionStart entry to
+# hooks.json, keeping everything the user has there. The file is backed up
+# before its first change.
+register_cursor_hook() {
+  local cmd
+  cmd="$(cursor_hook_command "$1")"
+  if ! command -v jq >/dev/null 2>&1; then
+    echo "     [skipped] jq not found: add to $CURSOR_HOOKS_FILE a sessionStart hook running $cmd"
+    return 0
+  fi
+  if cursor_hook_registered "$1"; then
+    return 0
+  fi
+  if ! cursor_hooks_writable; then
+    echo "     [skipped] $CURSOR_HOOKS_FILE is not a valid hooks file; left untouched"
+    return 0
+  fi
+  mkdir -p "$(dirname "$CURSOR_HOOKS_FILE")"
+  if [ -e "$CURSOR_HOOKS_FILE" ]; then
+    local backup="$AI_SKILLS_BACKUP_DIR/$CURSOR_HOOKS_BACKUP_LABEL/hooks.json"
+    mkdir -p "$(dirname "$backup")"
+    cp "$CURSOR_HOOKS_FILE" "$backup"
+    echo "     [backup] $CURSOR_HOOKS_FILE -> $backup"
+    AI_SKILLS_BACKED_UP=1
+  fi
+  # A new file needs Cursor's schema version; an existing one keeps its own.
+  # shellcheck disable=SC2016 # $c is a jq variable
+  write_cursor_hooks 'if . == {} then {version: 1} else . end
+    | .hooks.sessionStart = ((.hooks.sessionStart // []) + [{command: $c, timeout: 10}])' "$cmd"
+}
+
+# cursor_hooks_backed_up: true when some setup run backed up hooks.json, which
+# register_cursor_hook does whenever the file existed before it.
+cursor_hooks_backed_up() {
+  local backup
+  for backup in "$AI_SKILLS_BACKUP_ROOT"/*/"$CURSOR_HOOKS_BACKUP_LABEL"/hooks.json; do
+    [ -e "$backup" ] && return 0
+  done
+  return 1
+}
+
+# unregister_cursor_hook <hook-script>: removes setup's entry from hooks.json,
+# and the file itself when setup created it and nothing else is left in it.
+unregister_cursor_hook() {
+  local cmd
+  cmd="$(cursor_hook_command "$1")"
+  cursor_hook_registered "$1" || return 0
+  # shellcheck disable=SC2016 # $c is a jq variable
+  write_cursor_hooks '.hooks.sessionStart |= map(select(.command != $c))
+    | if .hooks.sessionStart == [] then del(.hooks.sessionStart) else . end' "$cmd"
+  if ! cursor_hooks_backed_up &&
+    jq -e '. == {version: 1, hooks: {}}' "$CURSOR_HOOKS_FILE" >/dev/null 2>&1; then
+    rm -f "$CURSOR_HOOKS_FILE"
+  fi
 }

@@ -35,7 +35,7 @@ Division of labor follows the `ai-assisted-software-development` skill: the huma
 | :--- | :--- |
 | Before deciding modules, boundaries, interfaces, contracts, or dependency direction | Load `software-designing`. |
 | Before locking in a high-consequence design decision | Run through `design-it-twice`. |
-| Before creating a Git branch | Use `git-branch`. |
+| Before starting a delivery (branch or worktree), splitting work, opening another session, tab, or subagent, or running anything in parallel | Load `agentic-parallel-work`. |
 | **Before creating, editing, testing, or refactoring any code file** | **Load `coding`**, even for a small change. |
 | **Before creating or changing any prompt** (system prompts, agent instructions, skills and their references, AGENTS.md, CLAUDE.md, rule and memory files, tool and skill descriptions, brief templates) | **Load `prompt-engineering`**, even for a one-word change. |
 | Before delivering code to the human | Run `agent-self-review` and fix findings until a clean verdict is reached. |
@@ -58,6 +58,7 @@ Whatever the task, the user watches these; an agent that would break one stops a
 
 ## 4. Subagents and delegation
 
+- Parallel work follows the `agentic-parallel-work` skill: one writer per delivery, no conversation between agents, and a subagent answers once and ends.
 - When a workflow requires background execution or isolated context, use the current harness's subagent mechanism:
   - **Claude Code**: `Agent` tool with `general-purpose` type.
   - **Antigravity CLI**: `invoke_subagent` with `TypeName: "self"` or a specific type.

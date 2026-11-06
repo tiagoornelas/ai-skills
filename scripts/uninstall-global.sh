@@ -2,8 +2,8 @@
 # ==============================================================================
 # scripts/uninstall-global.sh
 # Reverts setup-global.sh: removes the global skills and instructions it
-# installed from this repository, whether as links or as copies. Anything else
-# in the harness folders is left untouched.
+# installed from this repository, whether as links or as copies, and its entry
+# in Cursor's hooks.json. Anything else in the harness folders is left untouched.
 #
 # Usage:
 #   ./scripts/uninstall-global.sh               # removes skills and instructions
@@ -18,6 +18,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SKILLS_DIR="$REPO_ROOT/skills"
 GLOBAL_AGENTS_FILE="$REPO_ROOT/global/AGENTS.md"
+CURSOR_HOOK_SCRIPT="$SCRIPT_DIR/cursor-global-instructions.sh"
 
 RESTORE=0
 SKILLS_ONLY=0
@@ -94,7 +95,7 @@ remove_skills() {
 
 is_instruction_path() {
   local target
-  for target in "${GLOBAL_INSTRUCTION_FILES[@]}"; do
+  for target in "${GLOBAL_INSTRUCTION_FILES[@]}" "${LEGACY_INSTRUCTION_FILES[@]}"; do
     [ "${target#*:}" = "$1" ] && return 0
   done
   return 1
@@ -159,7 +160,7 @@ if [ "$SKILLS_ONLY" -eq 1 ]; then
   echo "⚙️ Global instructions kept (--skills-only)."
 else
   echo "⚙️ Removing global instructions..."
-  for target in "${GLOBAL_INSTRUCTION_FILES[@]}"; do
+  for target in "${GLOBAL_INSTRUCTION_FILES[@]}" "${LEGACY_INSTRUCTION_FILES[@]}"; do
     path="${target#*:}"
     if installed_by_setup "$path"; then
       remove_entry "$path"
@@ -167,6 +168,18 @@ else
       report_kept "$path"
     fi
   done
+  if cursor_hook_registered "$CURSOR_HOOK_SCRIPT"; then
+    if [ "$DRY_RUN" -eq 1 ]; then
+      echo "  [would remove] sessionStart hook from $CURSOR_HOOKS_FILE"
+    else
+      unregister_cursor_hook "$CURSOR_HOOK_SCRIPT"
+      echo "  [removed] sessionStart hook from $CURSOR_HOOKS_FILE"
+    fi
+    removed=$((removed + 1))
+  elif ! command -v jq >/dev/null 2>&1 && [ -f "$CURSOR_HOOKS_FILE" ] &&
+    grep -Fq -- "$CURSOR_HOOK_SCRIPT" "$CURSOR_HOOKS_FILE"; then
+    echo "  [kept] $CURSOR_HOOKS_FILE: jq not found; remove the sessionStart entry running $(cursor_hook_command "$CURSOR_HOOK_SCRIPT") manually"
+  fi
 fi
 
 echo ""
