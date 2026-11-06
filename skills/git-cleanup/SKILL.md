@@ -28,7 +28,7 @@ Worktrees follow [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md): a
 - Record the **calling session's location**: the worktree it runs in (`git rev-parse --show-toplevel`) and its branch (`git branch --show-current`). They can be cleaned like any other row; section 6 explains how.
 - Resolve the remote (`origin` unless the repository only has another one) and the **default branch** from `git symbolic-ref --short refs/remotes/<remote>/HEAD`, stripping the `<remote>/` prefix (fall back to `main`, then `master`).
 - Check whether the GitHub CLI is authenticated (`gh auth status`). Without it, pull request state cannot be detected: say so, and keep every branch that has commits not in the default branch (status **PR unknown**).
-- Check whether the Herdr App is active (`test -n "${HC_TERMINAL_ID:-}" && command -v hc >/dev/null 2>&1 && command -v herdr-app >/dev/null 2>&1`). When active, read its state per [`herdr`](../herdr/SKILL.md), and record `$HC_TERMINAL_ID` as the session's own terminal, with its pane, tab, and space from `herdr-app ls`. When absent, operate as standard Git/GH CLI.
+- When the Herdr App is active per [`herdr`](../herdr/SKILL.md#1-preconditions), record `$HC_TERMINAL_ID` as the session's own terminal, with its pane, tab, and space from `herdr-app ls`. When absent, operate as standard Git/GH CLI.
 
 ---
 
@@ -57,7 +57,7 @@ Gather everything up front, in as few calls as possible:
 | Commits not in the default branch | `git log --oneline <remote>/<default>..<branch>` |
 | Herdr App spaces, tabs, panes & terminals (when the Herdr App is active) | `herdr-app ls`, `hc ls`, `hc get <terminal>` |
 
-When the Herdr App is active, correlate **every** Git worktree path with live terminals from `hc ls`. A terminal uses a worktree when its `cwd` or its `foreground.cwd` (from `hc get <terminal>`) equals that path or lies beneath it; compare path components, not string prefixes. Record terminal address and name, its pane, tab, and space (from `herdr-app ls`), its program (`foreground.argv`), and `status.state`. Worktrees created by the Herdr App's own worktree feature live under `~/.herdr/worktrees/<repo>/<branch>` and are shown as their own space; they are still plain Git worktrees. When every terminal of such a space uses the worktree, record that space too: removing the checkout leaves the space open, so its closing (`herdr-app do space.close --id <space> --confirmed true`) is disclosed and approved with the row.
+When the Herdr App is active, correlate **every** Git worktree path with live terminals from `hc ls`. A terminal uses a worktree as [`herdr`](../herdr/SKILL.md#2-read-the-state) defines it. Record terminal address and name, its pane, tab, and space (from `herdr-app ls`), its program (`foreground.argv`), and `status.state`. Worktrees created by the Herdr App's own worktree feature live under `~/.herdr/worktrees/<repo>/<branch>` and are shown as their own space; they are still plain Git worktrees. When every terminal of such a space uses the worktree, record that space too: removing the checkout leaves the space open, so its closing (`herdr-app do space.close --id <space> --confirmed true`) is disclosed and approved with the row.
 
 ### 3.1. Which Pull Request Belongs to the Branch?
 
