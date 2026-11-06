@@ -61,8 +61,6 @@ Comparison:
 - **System Decomposition**: which modules exist and how domain responsibilities are partitioned.
 - **User Interfaces**: workflows, screen layouts, and interaction flows similarly benefit from exploring radically different wireframes.
 
-At every level, designing twice is vastly cheaper than it appears. For a small module, sketching candidate interfaces takes an hour or two—negligible compared to weeks spent implementing and maintaining it. On system-wide architectures, the upfront investment is larger, but the cost of getting it wrong is catastrophic.
-
 ---
 
 ## 5. The "Smart Person" Trap

@@ -11,8 +11,6 @@ description: >-
 
 # Software Designing
 
-The generalist software architect of the ecosystem. Applies to any context where software design and architecture add value: from a single public function to a distributed system, from a greenfield project to surgical changes in legacy codebases.
-
 ---
 
 ## 1. Core Principle
@@ -95,8 +93,6 @@ Before introducing a folder, module, client, configuration variable, or cross-cu
 ---
 
 ## 4. References (Loaded On-Demand)
-
-Load only the references needed for the specific design decision.
 
 | Reference | Load when… |
 | :--- | :--- |

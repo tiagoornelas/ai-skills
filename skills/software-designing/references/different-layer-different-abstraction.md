@@ -71,7 +71,7 @@
 ## 4. Interface vs. Implementation
 
 - A class's interface should typically be **different** from its internal implementation: internal data structures should not dictate the exposed abstraction.
-- Example: in a text editor, internal text storage might naturally be an array of lines. If the class exposes a line-oriented interface (`getLine`, `putLine`), common operations (inserting or deleting characters spanning line breaks) force callers to perform tedious line-splitting and concatenation arithmetic. A **character-oriented interface** (`insert`, `delete` by coordinate/offset) is far simpler for callers and cleanly encapsulates line-splitting mechanics internally.
+- Example: in a text editor, internal text storage might naturally be an array of lines. If the class exposes a line-oriented interface (`getLine`, `putLine`), common operations (inserting or deleting characters spanning line breaks) force callers to perform tedious line-splitting and concatenation arithmetic. A **range-oriented interface** (`insert`, `delete` over arbitrary positions) is far simpler for callers and cleanly encapsulates line-splitting mechanics internally.
 - If the interface mirrors the implementation, the class is shallow.
 
 ---

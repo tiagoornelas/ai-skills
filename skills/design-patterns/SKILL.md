@@ -82,37 +82,7 @@ When a pattern passes the Parsimony Gate:
 
 ---
 
-## 4. References (Loaded On-Demand)
-
-| Reference | Category | Load when... |
-| :--- | :--- | :--- |
-| [parsimony-and-heuristics.md](references/parsimony-and-heuristics.md) | Core | Evaluating whether to use any pattern or suspecting overengineering. |
-| [factory-method.md](references/factory-method.md) | Creational | Delegating object creation to subclasses or decoupled factories. |
-| [abstract-factory.md](references/abstract-factory.md) | Creational | Creating families of related or dependent objects. |
-| [builder.md](references/builder.md) | Creational | Constructing complex step-by-step representations. |
-| [prototype.md](references/prototype.md) | Creational | Cloning existing instances instead of building from scratch. |
-| [singleton.md](references/singleton.md) | Creational | Ensuring a single instance with controlled access. |
-| [adapter.md](references/adapter.md) | Structural | Bridging incompatible interfaces between caller and callee. |
-| [bridge.md](references/bridge.md) | Structural | Decoupling abstraction from implementation along two dimensions. |
-| [composite.md](references/composite.md) | Structural | Composing nested tree structures with uniform leaf/branch interfaces. |
-| [decorator.md](references/decorator.md) | Structural | Dynamically attaching responsibilities to objects. |
-| [facade.md](references/facade.md) | Structural | Providing a simplified high-level interface to a complex subsystem. |
-| [flyweight.md](references/flyweight.md) | Structural | Sharing common state across vast numbers of fine-grained instances. |
-| [proxy.md](references/proxy.md) | Structural | Providing a surrogate or placeholder to control access to an object. |
-| [chain-of-responsibility.md](references/chain-of-responsibility.md) | Behavioral | Passing requests along a dynamic chain of potential handlers. |
-| [command.md](references/command.md) | Behavioral | Encapsulating requests as objects for queuing, undo, or scheduling. |
-| [iterator.md](references/iterator.md) | Behavioral | Traversing elements of a collection without exposing underlying structure. |
-| [mediator.md](references/mediator.md) | Behavioral | Reducing chaotic dependencies among collaborating components. |
-| [memento.md](references/memento.md) | Behavioral | Saving and restoring object state snapshots without breaking encapsulation. |
-| [observer.md](references/observer.md) | Behavioral | Establishing a publish-subscribe notification mechanism. |
-| [state.md](references/state.md) | Behavioral | Altering object behavior when its internal state transitions. |
-| [strategy.md](references/strategy.md) | Behavioral | Defining a family of interchangeable algorithms. |
-| [template-method.md](references/template-method.md) | Behavioral | Defining algorithm skeleton while deferring specific steps. |
-| [visitor.md](references/visitor.md) | Behavioral | Separating algorithms from the object structures on which they operate. |
-
----
-
-## 5. Success Validation
+## 4. Success Validation
 
 A design pattern application is successful only when:
 

@@ -17,7 +17,7 @@
 
 - In obvious code, readers do not need to expend mental effort deciphering intent, and are unlikely to introduce regressions when modifying it.
 - In non-obvious code, readers spend excessive time deciphering mechanics, or make incorrect assumptions that introduce bugs.
-- **Obviousness lives in the mind of the reader.** It is far easier to spot obscurity in someone else's code than in your own. The gold standard for obviousness is **peer review**: if a reader finds code non-obvious, it *is* non-obvious, no matter how clear it felt to the author. Do not argue; identify what confused the reader and clarify the design.
+- **Obviousness lives in the mind of the reader.** If a reader finds code non-obvious, it *is* non-obvious, no matter how clear it felt to the author. Do not argue; identify what confused the reader and clarify the design.
 - Code achieves obviousness when it provides all **necessary context** without cognitive leaps, and remains **consistent with developer expectations**.
 
 ---
@@ -26,7 +26,6 @@
 
 - **Precise naming**: across contracts (modules, types, operations, public properties), accurate names clarify intent and reduce the need for explanatory text. If a name is hard to choose, the underlying concept is usually muddled. Naming principles: [naming.md](../../coding/references/naming.md).
 - **Consistency**: similar things look similar; different things look different. When readers recognize established patterns, they confidently draw conclusions without exhaustive re-analysis. Naming conventions, code styling, interface shapes, design patterns, and invariants must remain consistent.
-- **Judicious whitespace**: visual formatting dramatically impacts scanning velocity. Blank lines delimiting logical blocks, aligned parameters, and consistent spacing help readers parse structural hierarchy instantly.
 - **Strategic comments**: where code cannot express the full rationale, a concise comment fills the knowledge gap. What and how to document: [comments.md](../../coding/references/comments.md).
 
 ---
@@ -42,7 +41,6 @@
 
 ## 4. Guiding Principle
 
-- Software must be designed for reading, not writing. Shortcuts that save keystrokes for the author at the expense of comprehension for future maintainers are poor engineering: code is read orders of magnitude more often than it is written.
 - Two primary avenues to make code obvious:
   1. **Reduce required context** (clean abstractions, eliminating special cases, deep information hiding).
   2. **Leverage existing knowledge** (consistency with established project patterns and industry idioms), so readers need no new orientation.

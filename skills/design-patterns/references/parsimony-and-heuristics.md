@@ -38,7 +38,7 @@ In modern languages (TypeScript, Python, Go, Rust, modern Java/C#):
 
 ## 3. The Parsimony Gate Checklist
 
-Before proposing or implementing any design pattern, verify the following three criteria:
+Detail for the Parsimony Gate in [SKILL.md](../SKILL.md), which also requires exhausting language primitives first:
 
 ### Criterion 1: Concrete Variation Axis
 - Can you name the exact dimension along which this code will vary independently?
