@@ -3,20 +3,11 @@ name: coding
 description: >-
   Instructions and guidelines for implementing, writing, testing, and
   refactoring software code. Must be triggered whenever developing or modifying
-  code in any project.
+  code in any project: new features, bug fixes, refactorings, and automated
+  tests.
 ---
 
 # Coding
-
-Baseline skill for software implementation standards.
-
-## Purpose
-Centralize engineering guidelines, quality standards, and operational workflows for writing and modifying code.
-
-## Activation Context
-- Implementing new features.
-- Bug fixing and refactoring.
-- Writing and executing automated tests.
 
 ## Starting Work
 Before the first edit, work on the delivery's own branch and worktrees, created per [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md): one worktree per repository, all with the same branch name.
