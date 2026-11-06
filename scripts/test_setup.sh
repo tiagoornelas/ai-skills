@@ -58,19 +58,41 @@ else
 fi
 
 echo "Test 4: Running setup-global.sh conditionally with only cursor present..."
-# Only .cursor exists in fakehome; use clean PATH to prevent system binaries from falsifying test
+# Only .cursor exists in fakehome; use clean PATH to prevent system binaries from falsifying test.
+# Seed a link an earlier setup left at a path Cursor never reads, and a link to a skill removed from the repo.
+mkdir -p "$HOME/.cursor/rules" "$HOME/.cursor/skills"
+ln -s "$REPO_ROOT/global/AGENTS.md" "$HOME/.cursor/rules/global.md"
+ln -s "$REPO_ROOT/skills/removed-skill" "$HOME/.cursor/skills/removed-skill"
 PATH=/usr/bin:/bin "$SCRIPT_DIR/setup-global.sh" --global-instructions > "$TEST_TMP/setup.log" 2>&1
 
-if [ -L "$HOME/.cursor/rules/global.md" ]; then
-  echo "  ✓ ~/.cursor/rules/global.md correctly linked"
+HOOK_COMMAND="\"$SCRIPT_DIR/cursor-global-instructions.sh\""
+hook_count() {
+  jq --arg c "$HOOK_COMMAND" '[.hooks.sessionStart[]? | select(.command == $c)] | length' "$HOME/.cursor/hooks.json"
+}
+
+if [ -f "$HOME/.cursor/hooks.json" ] && [ "$(hook_count)" -eq 1 ]; then
+  echo "  ✓ Cursor sessionStart hook registered in ~/.cursor/hooks.json"
 else
-  echo "  ✗ ~/.cursor/rules/global.md not linked" >&2; exit 1
+  echo "  ✗ Cursor sessionStart hook not registered" >&2; exit 1
 fi
 
-if [ -d "$HOME/.cursor/skills" ]; then
-  echo "  ✓ ~/.cursor/skills directory created and linked"
+hook_context="$(echo '{}' | "$SCRIPT_DIR/cursor-global-instructions.sh" | jq -r '.additional_context')"
+if [ "$hook_context" = "$(cat "$REPO_ROOT/global/AGENTS.md")" ]; then
+  echo "  ✓ The hook prints global/AGENTS.md as additional context"
 else
-  echo "  ✗ ~/.cursor/skills directory not created" >&2; exit 1
+  echo "  ✗ The hook output does not match global/AGENTS.md" >&2; exit 1
+fi
+
+if [ ! -e "$HOME/.cursor/rules/global.md" ] && [ ! -L "$HOME/.cursor/rules/global.md" ]; then
+  echo "  ✓ Dead ~/.cursor/rules/global.md link removed"
+else
+  echo "  ✗ ~/.cursor/rules/global.md should have been removed" >&2; exit 1
+fi
+
+if [ ! -L "$HOME/.cursor/skills/removed-skill" ] && [ -L "$HOME/.cursor/skills/coding" ]; then
+  echo "  ✓ Skills linked and the link to a removed skill pruned"
+else
+  echo "  ✗ Skill links not updated" >&2; exit 1
 fi
 
 # Ensure uninstalled harnesses were skipped and not created
@@ -83,13 +105,55 @@ fi
 echo "Test 5: Running uninstall-global.sh..."
 PATH=/usr/bin:/bin "$SCRIPT_DIR/uninstall-global.sh" > "$TEST_TMP/uninstall.log" 2>&1
 
-if [ -L "$HOME/.cursor/rules/global.md" ]; then
-  echo "  ✗ ~/.cursor/rules/global.md should have been removed" >&2; exit 1
+if [ ! -e "$HOME/.cursor/hooks.json" ] && [ ! -L "$HOME/.cursor/skills/coding" ]; then
+  echo "  ✓ Skill links and the hooks.json setup created removed"
 else
-  echo "  ✓ ~/.cursor/rules/global.md uninstalled cleanly"
+  echo "  ✗ Uninstall left skill links or setup's hooks.json" >&2; exit 1
 fi
 
-echo "Test 6: Testing --all flag forces all harness directories..."
+echo "Test 6: Setup merges the hook into an existing hooks.json; uninstall keeps the user's hooks..."
+cat > "$HOME/.cursor/hooks.json" <<'JSON'
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [{ "command": "./hooks/mine.sh start", "timeout": 5 }],
+    "stop": [{ "command": "./hooks/mine.sh stop" }]
+  }
+}
+JSON
+cp "$HOME/.cursor/hooks.json" "$TEST_TMP/hooks.original.json"
+PATH=/usr/bin:/bin "$SCRIPT_DIR/setup-global.sh" --global-instructions > "$TEST_TMP/setup-merge.log" 2>&1
+PATH=/usr/bin:/bin "$SCRIPT_DIR/setup-global.sh" --global-instructions > "$TEST_TMP/setup-again.log" 2>&1
+
+if [ "$(hook_count)" -eq 1 ] &&
+  jq -e '.hooks.sessionStart[0].command == "./hooks/mine.sh start" and .hooks.stop[0].command == "./hooks/mine.sh stop"' \
+    "$HOME/.cursor/hooks.json" >/dev/null; then
+  echo "  ✓ Hook added once across two runs, the user's hooks kept"
+else
+  echo "  ✗ hooks.json merge lost the user's hooks or duplicated the entry" >&2; exit 1
+fi
+
+if find "$HOME/.ai-skills-backup" -path '*cursor-hooks/hooks.json' | grep -q .; then
+  echo "  ✓ The original hooks.json was backed up"
+else
+  echo "  ✗ No backup of the original hooks.json" >&2; exit 1
+fi
+
+PATH=/usr/bin:/bin "$SCRIPT_DIR/uninstall-global.sh" --dry-run > "$TEST_TMP/uninstall-dry.log" 2>&1
+if [ "$(hook_count)" -eq 1 ] && grep -q "would remove.*hooks.json" "$TEST_TMP/uninstall-dry.log"; then
+  echo "  ✓ Dry run reports the hook and changes nothing"
+else
+  echo "  ✗ Dry run changed hooks.json or did not report the hook" >&2; exit 1
+fi
+
+PATH=/usr/bin:/bin "$SCRIPT_DIR/uninstall-global.sh" > "$TEST_TMP/uninstall-merge.log" 2>&1
+if jq -e --slurpfile o "$TEST_TMP/hooks.original.json" '. == $o[0]' "$HOME/.cursor/hooks.json" >/dev/null; then
+  echo "  ✓ Uninstall removed only the hook setup added"
+else
+  echo "  ✗ Uninstall changed the user's hooks" >&2; exit 1
+fi
+
+echo "Test 7: Testing --all flag forces all harness directories..."
 PATH=/usr/bin:/bin "$SCRIPT_DIR/setup-global.sh" --skills-only --all > "$TEST_TMP/setup-all.log" 2>&1
 
 if [ -d "$HOME/.codex/skills" ] && [ -d "$HOME/.claude/skills" ]; then

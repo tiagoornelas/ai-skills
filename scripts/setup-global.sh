@@ -5,7 +5,7 @@
 # - Claude Code   (~/.claude)
 # - Antigravity   (~/.gemini/config)
 # - Codex         (~/.codex)
-# - Cursor CLI    (~/.cursor)
+# - Cursor CLI    (~/.cursor; instructions through a sessionStart hook)
 #
 # Usage:
 #   ./scripts/setup-global.sh                         # links for detected harnesses, prompts for instructions
@@ -20,6 +20,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SKILLS_DIR="$REPO_ROOT/skills"
 GLOBAL_AGENTS_FILE="$REPO_ROOT/global/AGENTS.md"
+CURSOR_HOOK_SCRIPT="$SCRIPT_DIR/cursor-global-instructions.sh"
 
 GLOBAL_INSTRUCTIONS="ask"
 INSTALL_ALL="no"
@@ -124,13 +125,27 @@ else
   echo "  ✓ Successfully linked $count skill(s)!"
 fi
 
+# Remove links an earlier setup made at instruction paths no harness reads
+for target in "${LEGACY_INSTRUCTION_FILES[@]}"; do
+  path="${target#*:}"
+  if [ -L "$path" ] && [ "$(readlink "$path")" = "$GLOBAL_AGENTS_FILE" ]; then
+    rm "$path"
+    echo "     [removed] unused instruction link: $path"
+  fi
+done
+
 # 3. Global instructions (global/AGENTS.md)
 echo ""
 echo "⚙️ Global Instructions ($GLOBAL_AGENTS_FILE):"
-for target in "${ACTIVE_INSTRUCTION_FILES[@]}"; do
+for target in ${ACTIVE_INSTRUCTION_FILES[@]+"${ACTIVE_INSTRUCTION_FILES[@]}"}; do
   path="${target#*:}"
   echo "  - ${target%%:*}: ~${path#"$HOME"}"
 done
+CURSOR_ACTIVE="no"
+if [ "$INSTALL_ALL" = "yes" ] || is_harness_installed cursor; then
+  CURSOR_ACTIVE="yes"
+  echo "  - cursor: ~${CURSOR_HOOKS_FILE#"$HOME"} (sessionStart hook that injects the file into every session)"
+fi
 echo ""
 
 if [ "$GLOBAL_INSTRUCTIONS" = "ask" ]; then
@@ -144,12 +159,18 @@ if [ "$GLOBAL_INSTRUCTIONS" = "ask" ]; then
 fi
 
 if [ "$GLOBAL_INSTRUCTIONS" = "yes" ]; then
-  for target in "${ACTIVE_INSTRUCTION_FILES[@]}"; do
+  for target in ${ACTIVE_INSTRUCTION_FILES[@]+"${ACTIVE_INSTRUCTION_FILES[@]}"}; do
     path="${target#*:}"
     mkdir -p "$(dirname "$path")"
     safe_link "$GLOBAL_AGENTS_FILE" "$path" "${target%%:*}"
     echo "  ✓ ~${path#"$HOME"} -> $GLOBAL_AGENTS_FILE"
   done
+  if [ "$CURSOR_ACTIVE" = "yes" ]; then
+    register_cursor_hook "$CURSOR_HOOK_SCRIPT"
+    if cursor_hook_registered "$CURSOR_HOOK_SCRIPT"; then
+      echo "  ✓ ~${CURSOR_HOOKS_FILE#"$HOME"} sessionStart -> $CURSOR_HOOK_SCRIPT"
+    fi
+  fi
 else
   echo "  Global instructions not linked (existing configurations preserved)."
 fi
