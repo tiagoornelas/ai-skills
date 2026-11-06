@@ -43,9 +43,9 @@ Observe in parallel where the harness allows it.
 | Evidence | `git notes --ref=evidence show <head>`; when absent, the newest `evidence` note on an earlier commit of the branch (`git log --format=%H <base>..<head>`) |
 | Artifacts the note cites | the links, commands, and local file paths inside the note; check each local file exists |
 | Base moved after the proof | `git fetch origin <base>`, then `git log --format='%h %an %cI %s' <proven commit>..origin/<base>`: commits dated after the attestation moved the base; name each one's author and PR |
-| The change card | the card presented with the delivery (PR body, issue, or the note); otherwise rebuilt from the diff, schema, and infrastructure files, per the [change card](../ai-assisted-software-development/references/change-card.md), with "no record" as each item's approval when none is found in the issue or PR |
+| The change card | always the inventory of new things **rebuilt** from the diff, schema, and infrastructure files, in the kinds of the [change card](../ai-assisted-software-development/references/change-card.md); and the card presented with the delivery (PR body, issue, or the note), when there is one. Each item's approval comes from the issue or PR, otherwise "no record" |
 | Uncommitted files | `git status --porcelain` in the current checkout |
-| Validation environment's deployed commit | only when the project records how to read it (a deploy URL, a status endpoint, a CI environment); otherwise "not observable" |
+| Validation environment's deployed commit | read it where the project, or in a Herdr App space its `leader.md`, records how (a deploy URL, a status endpoint, a CI environment, or the commit itself); "not observable" only when neither records it |
 
 **Re-check before printing.** Read each PR's `headRefOid` again right before writing; if it moved, mark that card's evidence as outdated for the new head. Never copy secrets or credentials from output, notes, or logs.
 
@@ -53,7 +53,8 @@ Observe in parallel where the harness allows it.
 
 For every PR, take the six lines from its evidence note and judge each per the dossier's [artifact rule](references/evidence-dossier.md#proof-is-an-artifact-not-prose): ✅ only when the line's artifact **proves that line's claim** and is reachable; ❌ when it is an assertion, says "no", cites a missing file, does not prove its claim, or is absent from the note.
 
-- Line (b) is ❌ when the change card is missing, or when the card and the diff disagree on what is new.
+- Line (b) is ❌ when the change card is missing, or when the card and the rebuilt inventory disagree on what is new.
+- **In show too**, without waiting for verify: print the rebuilt inventory beside a presented card, naming every difference; a new client, configuration variable, or cross-cutting mechanism the card does not declare marks **Pattern** ⚠️ *built on the side (undeclared)*, until verify's search shows the sibling it follows.
 - Line (f) is ❌ when its real run executed another commit; name the version it ran on, and the validation environment's commit when observable.
 - **A five-line note** predates line (d): read its (c), (d), (e) as (c), (e), (f), and show (d) as ❌ "no record (older note format)".
 - **No note on this machine** reads "no record on this machine", never "not reviewed".
@@ -71,6 +72,7 @@ Under every ❌, one line says **what is missing and who acts**: 🤖 the agent 
 
 ── <repo>#<n> · <short name>
 <the change card: new and where it lives (with approvals), business rule, data, pattern, walls, state>
+<rebuilt from the diff: matches the card | differs: <each item missing from either side>>
 <proven version> <short> = <current version> · <base moved after the proof: no | yes: what, by whom, when>
 ✅ (a) <Why>: <problem> · <left out>: <what> — <artifact>
 ✅ (b) <Architecture>: <touches> · <new things match the card> — <artifact>
@@ -98,17 +100,17 @@ Run the dossier's [independent reviewer](references/evidence-dossier.md#2-the-in
 
 - **A delivery from an agent** reaches the reviewer only with a clean branch-mode `agent-self-review` on its head; without one, it goes back to its author. **Someone else's PR** may be verified without one: the card says "author's review: no record".
 - The reviewer rebuilds the inventory of new things, produces its artifacts, and stores the six lines as a local `evidence` note (never pushed); then show the updated card and lines (Section 3).
-- Any ❌ after verification means the delivery is not presented as ready and no merge is requested.
+- Any ❌ after verification follows the dossier's [no ❌, no merge request](references/evidence-dossier.md#1-the-six-lines) rule.
 
 ## 5. Inside the Herdr App (optional)
 
-When `HC_TERMINAL_ID` is set and `hc` and `herdr-app` are on `PATH`, a space may be given instead of a PR: match it in `herdr-app ls` by name or `sp…` id, or by the `Space:` name in a team folder's `leader.md` ([team-folder.md](../herdr-team-lead/references/team-folder.md)); without one, use this terminal's `herdr.space` label, or ask which space when there is none. The scope becomes every delivery of the space (each tab agent's branch and each PR its `leader.md` references), the objective and approvals come from its `leader.md` first, and tabs still working and contradictions with `leader.md` are listed among the facts. Use only the Herdr App (`herdr-app`, `hc`) of this machine, never the `herdr` terminal CLI or `--on`. In a space, the verify reviewer is a sub-agent under [`herdr-handoff`](../herdr-handoff/SKILL.md#31-sub-agents)'s rules, with its files in the team folder's evidence folder.
+When `HC_TERMINAL_ID` is set and `hc` and `herdr-app` are on `PATH`, a space may be given instead of a PR: match it in `herdr-app ls` by name or `sp…` id, or by the `Space:` name in a team folder's `leader.md` ([team-folder.md](../herdr-team-lead/references/team-folder.md)); without one, use this terminal's `herdr.space` label, or ask which space when there is none. The scope becomes every delivery of the space (each tab agent's branch and each PR its `leader.md` references), the objective, approvals, and the validation environment's deployed commit (or how to read it) come from its `leader.md` first, and tabs still working and contradictions with `leader.md` are listed among the facts. Use only the Herdr App (`herdr-app`, `hc`) of this machine, never the `herdr` terminal CLI or `--on`. In a space, the verify reviewer is a sub-agent under [`herdr-handoff`](../herdr-handoff/SKILL.md#31-sub-agents)'s rules, with its files in the team folder's evidence folder.
 
 ## 6. Success Validation
 
 - [ ] Show wrote nothing; verify ran only on the user's request or a lead agent's delivery, after a branch-clean self-review for an agent's delivery, and stored a local note only.
-- [ ] The output opened with one verdict line and the objective, then, per PR, the change card, the proven version against the current head, and whether the base moved.
+- [ ] The output opened with one verdict line and the objective, then, per PR, the change card beside the inventory rebuilt from the diff (undeclared clients, variables, or mechanisms marked built on the side), the proven version against the current head, and whether the base moved.
 - [ ] All six lines appeared in full with their artifacts; lines without a proving artifact, a missing or mismatched card in (b), or a real run of another commit in (f) were ❌, each with what is missing and who acts.
-- [ ] A missing note read "no record on this machine"; an older note read "outdated"; an incremental or ancestor self-review was not branch-clean.
-- [ ] Any ❌ left the delivery not ready, with no merge request.
+- [ ] A missing note read "no record on this machine"; a note on an older commit read "outdated: proves X, the PR is at Y"; a note in the older five-line format was mapped, its (d) "no record"; an incremental or ancestor self-review was not branch-clean.
+- [ ] The validation environment's commit came from the project or `leader.md` when recorded, and any ❌ followed the dossier's no-merge rule.
 - [ ] Everything was in the user's language; no secrets were copied.
