@@ -6,7 +6,7 @@
 
 ## 1. Writing Rules
 
-- **The user's session language, end to end**, with standard technical terms in English (*pull request*, *merge*, *CI*, *draft*). Every fixed word in the templates below is a placeholder, not a literal: headings, block names, the first line, the closing line of empty blocks, and the words of the PR line (`agent`, `you`, `ok`, `pending`, `changes`, `conflict`, `merged`). The English words in the templates and examples mark where each word goes; the output always translates them, so a user speaking another language never sees `agent ok · you pending` or `Nothing blocked` in English.
+- **The user's session language, end to end**, with standard technical terms in English (*pull request*, *merge*, *CI*, *draft*). Every fixed word in the templates below is a placeholder, not a literal: headings, block names, the first line, the closing line of empty blocks, and the words of the PR line (`agent`, `proof`, `you`, `ok`, `pending`, `changes`, `conflict`, `merged`). The English words in the templates and examples mark where each word goes; the output always translates them, so a user speaking another language never sees `agent ok · you pending` or `Nothing blocked` in English.
 - **One line per item.** Every item in the Panel is one scannable line: a status emoji, a short identifier, and `·`-separated facts. The one indented line allowed is a PR's 🏗️ line of new things.
 - **System terms, not handles.** Apply [human-facing communication](../../ai-assisted-software-development/references/human-facing-communication.md): name each tab by its role, each task by what it delivers, each PR by what it changes. A PR number or task key appears only as a lookup key next to a short name.
 - **Context for the directing architect.** Write every item per [Briefing a Change](../../ai-assisted-software-development/references/human-facing-communication.md#3-briefing-a-change): situate each part of the product before naming it, and say what changes for whom rather than which mechanism changed.
@@ -76,8 +76,8 @@ The canonical state of the space. The Leader shows it whenever something changes
 | <what it delivers> | <tab role> | ⏳ <one line, including what it waits for inside the team> |
 
 **PRs**
-- ❌ <repo>#<n> · <short name> · <conflict> · CI <failing> · <agent> <ok> · <you> —
-- 👀 <repo>#<n> · <short name> · CI <ok> · <agent> <ok> · <you> <pending>
+- ❌ <repo>#<n> · <short name> · <conflict> · CI <failing> · <agent> <ok> · <proof> — · <you> —
+- 👀 <repo>#<n> · <short name> · CI <ok> · <agent> <ok> · <proof> <ok> · <you> <pending>
   🏗️ <new>: <job expired-invoice purge · table billing_invoices>
 - ✅ <merged>: <repo>#<n>
 

@@ -86,7 +86,7 @@ Under every ❌, one line says **what is missing and who acts**: 🤖 the agent 
 ````
 
 - **Verdict first, one line**: ✅ "proven on the current version; only your review is left" (six ✅ for the current head, complete card, base not moved, author branch-clean); ⚠️ "not proven: <the gaps>" (any ❌, outdated note, draft, conflict, failing CI, base moved, or a card item without approval); ⏳ "not done: <what is still running>"; ✅ "delivery proven; objective not verifiable" when there is no objective to check against.
-- **One card per PR**, open PRs first, merged PRs collapsed into one final line with their proven state. A branch without a PR shows its branch and head as the state.
+- **One card per PR**, open PRs first. A merged PR in scope gets a collapsed card: its PR line, its new things with where they live (or the "none" line), and its proven state; the six lines only when one is ❌. A branch without a PR shows its branch and head as the state.
 - **The six lines always in full**, each with its artifact; never a bare count such as "6/6".
 - **No task registered**: when no task reference exists in the PR, its branch, or its commits, suggest registering the work with [`report-work`](../report-work/SKILL.md).
 - **Closing line**: the user's next action, or that nothing depends on them and the agents' next step.

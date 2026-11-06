@@ -25,9 +25,9 @@ The layout in Section 3 is an example; this content is not optional.
 | **Data** | Production data the change deletes or rewrites, and how it is undone; or "none". |
 | **Pattern** | For each new thing: the existing sibling it follows (path), or ⚠️ *built on the side* with what it duplicates or departs from; see [nothing built on the side](../../software-designing/SKILL.md#nothing-built-on-the-side). |
 | **Walls** | Boundaries, contracts, dependency direction, project rules, and tests: "intact", or ⚠️ which one was crossed or weakened and why. |
-| **State** | The [PR line](#4-pr-line) (or the branch, before a PR exists), and at delivery whether the proof is for the current version. |
+| **State** | The [PR line](#4-pr-line), whose proof state says whether the proof is for the current version; before a PR exists, the branch or the plan. |
 
-**Kinds of new things**, always all accounted for: database · table · migration · service · cloud function · job or schedule · queue · route or endpoint · secret or permission · recurring cost · folder or module. Kinds with nothing new are printed together on one "none" line, so silence never hides an omission.
+**Kinds of new things**, always all accounted for: database · table · migration · service · cloud function · job or schedule · queue · route or endpoint · secret or permission · recurring cost · folder or module · client (to another system or service) · configuration variable · cross-cutting mechanism (authentication, timeouts, retries, logging, error handling, data access). These are the same structures lines (b) and (d) of the [evidence dossier](../../provide-evidence/references/evidence-dossier.md) check: a new client, configuration variable, or mechanism is listed even when it sits in an existing folder, so one built on the side never gets a clean card. Kinds with nothing new are printed together on one "none" line, so silence never hides an omission.
 
 **Never on the card**: method or function names, signatures, parameters, helpers, internal refactors, lint, test bodies, the order of commits. When one of these changes behavior, a contract, a boundary, or a risk, the card shows that consequence, not the detail.
 
@@ -41,12 +41,13 @@ New and where it lives
   table   billing_invoices           db/migrate/20261105_create_billing_invoices.rb   notice 2026-11-04
   job     expired-invoice purge      app/jobs/invoice_purge_job.rb                    decided by you 2026-11-04
   route   DELETE /internal/invoices  config/routes.rb                                 notice 2026-11-04
-  none    database, service, cloud function, queue, secret or permission, cost, folder or module
+  none    database, service, cloud function, queue, secret or permission, cost, folder or module,
+          client, configuration variable, cross-cutting mechanism
 Business rule  invoices expired for 90 days are deleted (was: kept forever) · decided by you 2026-11-04
 Data           deletes expired invoices · undo: restore from the daily backup
 Pattern        job follows app/jobs/session_purge_job.rb · route follows the other internal routes
 Walls          intact
-State          ✅ web-app#212 · invoice purge · CI ok · agent ok · you pending · proof = current version
+State          👀 web-app#212 · invoice purge · CI ok · agent ok · proof ok · you pending
 ```
 
 Before building, **State** reads the branch or the plan, and items carry the approval they will have. A change that adds nothing new prints the "none" line and the other blocks; an internal-only change prints only "none" lines and "intact", never its methods.
@@ -56,15 +57,16 @@ Before building, **State** reads the branch or the plan, and items carry the app
 Every PR is written the same way, on the card and in any message about the work:
 
 ```text
-<emoji> <repo>#<number> · <short name> · [draft · ][conflict · ]CI <state> · agent <state> · you <state>
+<emoji> <repo>#<number> · <short name> · [draft · ][conflict · ]CI <state> · agent <state> · proof <state> · you <state>
 ```
 
 - **`<repo>`** is the repository name without its owner (`web-app#212`). **`<short name>`** is two to four words naming what the PR changes.
 - **`draft`** and **`conflict`** appear only when true.
 - **CI**: the worst state among its checks: `failing`, `running`, `cancelled`, `ok`; `—` when it has none.
 - **agent**: the author's self-review on the PR head: `ok` (a clean branch-mode `agent-self-review`), or `—` for no record.
-- **you**: the human's review: `ok` (approved), `changes` (changes requested), `pending` (ready for them: not a draft, CI ok, agent ok), or `—` for no record.
-- **Leading emoji**, the worst that applies: ❌ conflict or CI failing · 👀 the human owes the review · ⏳ draft, CI running, or agent review missing · ✅ ready to merge.
+- **proof**: the [evidence](../../provide-evidence/references/evidence-dossier.md) of the PR head: `ok` (all six lines ✅ for the current head), `failing` (a line is ❌), `outdated` (it proves an earlier commit), or `—` for no record.
+- **you**: the human's review: `ok` (approved), `changes` (changes requested), `pending` (ready for them: not a draft, CI ok, agent ok, proof ok), or `—` for no record. Without `proof ok` it is never `pending`: the work is not ready for the human yet.
+- **Leading emoji**, the worst that applies: ❌ conflict, CI failing, or proof failing · ⏳ draft, CI running, agent review missing, or proof outdated or missing · 👀 proven and the human owes the review · ✅ proven and approved, ready to merge. An unproven PR is never 👀 or ✅.
 - A missing note reads "no record" (`—`), never "not reviewed": its absence on this machine proves nothing.
 
 ## 5. Success Validation

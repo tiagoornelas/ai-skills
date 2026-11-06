@@ -143,8 +143,7 @@ A tier-2 item (something that starts to run, cost, store data, or hold permissio
 ```markdown
 ⚠️ **Notice: <what will appear in the system, in one line>**
 
-- **What appears:** <component, permission or secret, or cost>, and what it does in production.
-- **Change card:** the [change card](change-card.md) of what will be built: each new thing with where it will live, and the pattern it follows.
+- **What appears:** the [change card](change-card.md) of what will be built (each new thing with where it will live, the pattern it follows), and what it does in production.
 - **Why:** <the problem it solves>.
 - **Undo:** <how it is turned off> · <how its effects are undone: data it writes or changes, and how they are restored or removed>.
 - **If you do not object by <time>, I proceed** with it and record it.
