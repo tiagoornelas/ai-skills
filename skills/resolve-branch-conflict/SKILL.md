@@ -131,7 +131,7 @@ Rules of resolution:
 - [ ] Zero conflict markers remaining: `git diff --check` and search for `<<<<<<<`, `=======`, `>>>>>>>`.
 - [ ] Project build, linters, and type checkers pass.
 - [ ] **Tests from both sides pass**; zero tests loosened or removed to force a pass.
-- [ ] Every intent from Section 2 remains fulfilled: enumerate behaviors from *ours* and *theirs* and verification evidence (DoD legend from [`human-review`](../human-review/SKILL.md), Section 2.3).
+- [ ] Every intent from Section 2 remains fulfilled: enumerate behaviors from *ours* and *theirs* and verification evidence ([Definition of Done legend](../ai-assisted-software-development/references/human-facing-communication.md#definition-of-done-legend)).
 - [ ] Semantic conflict points ⚠️ verified through execution or tests.
 
 Verification failures return to Section 6, not to the user, unless requiring an architectural decision.
