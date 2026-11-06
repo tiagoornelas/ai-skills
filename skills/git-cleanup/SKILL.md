@@ -18,6 +18,8 @@ argument-hint: "[recent-work window in days, default 14]"
 
 Removes useless local branches and worktrees without losing work the user still wants. The agent proposes, the user decides: nothing is removed before the user approves the final list.
 
+Worktrees follow [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md): a delivery has one worktree per repository, all on the same branch name, so a row's branch may have siblings in other repositories that finish together.
+
 **Scope is local only.** Remote branches, pull requests, and the stash are never touched. Herdr team folders (section 3.3) are the only non-Git items offered.
 
 ---
@@ -193,18 +195,9 @@ Never run `git reset`, `git clean`, `git push --delete`, or any command on the r
 
 ## 8. Success Validation
 
-- [ ] The default branch was fetched and fast-forwarded (or the reason it could not be is reported); history was never rewritten.
-- [ ] Every local branch and every worktree appeared in exactly one group, with a short work summary.
-- [ ] Each branch was matched to its pull request by head name or `pr-<N>`, and the PR state drove the classification.
-- [ ] Keep reasons were limited to open PR, recent work without a PR, commits after a merged PR, PR unknown, uncommitted changes, active agent in Herdr, default branch, active Herdr team, or legacy team not migrated; closed PRs were recommended for cleaning even with recent commits.
-- [ ] Closed-unmerged, stale, detached, and dirty items were flagged with what would be lost.
-- [ ] Nothing was removed before the user explicitly approved the final list; every edit was reflected and re-confirmed.
-- [ ] The default branch and the main worktree were never removed.
-- [ ] A branch in use by the main worktree was switched away (only from a clean worktree) before deletion; the session left a worktree before removing it.
-- [ ] Every Git worktree was checked for Herdr App terminals by path (`cwd` and foreground cwd); affected panes, tabs, and spaces were disclosed before approval; the `herdr` terminal CLI was not used.
-- [ ] Open panes were closed only with explicit approval; working agents required separate approval and their state was rechecked before closing.
-- [ ] The session's own Herdr App terminal was never closed by the agent; its removal was handed to the user as commands.
-- [ ] `--force` and `-D` were used only on rows approved in that state.
-- [ ] Only team folders under `~/.herdr-teams/` (never other entries there) were offered, legacy ones kept unless concluded or approved, and only approved ones were removed.
-- [ ] Nothing on the remote was modified.
+- [ ] The default branch was fetched and fast-forwarded (or the reason it could not be is reported); history was never rewritten, and nothing on the remote was modified.
+- [ ] Every local branch and worktree (and, in the Herdr App, team folder under `~/.herdr-teams/`) appeared in exactly one group with a short work summary; each branch was matched to its PR by head name or `pr-<N>`, and the PR state drove the classification.
+- [ ] Keep reasons were limited to the table's list; closed PRs were recommended for cleaning even with recent commits; closed-unmerged, stale, detached, and dirty items were flagged with what would be lost.
+- [ ] Nothing was removed before the user explicitly approved the final list; every edit was re-confirmed; `--force` and `-D` were used only on rows approved in that state; the default branch and the main worktree were never removed.
+- [ ] A branch in use by the main worktree was switched away only from a clean worktree; the session left a worktree before removing it; Herdr App terminals were matched by path, affected panes disclosed, closed only with explicit approval (working agents separately, state rechecked), the session's own terminal handed to the user as commands, and the `herdr` terminal CLI never used.
 - [ ] The report lists every removal, every failure, and a recovery command for each deleted branch.

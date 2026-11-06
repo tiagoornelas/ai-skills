@@ -129,7 +129,7 @@ Prompt instructions or documentation are never automated verification.
 - **Decide what is yours.** Agent Layer choices and reversible, in-scope operational steps (notifying a peer agent, running a check, updating a note) are not questions: do them and report them. Ask only for Human Layer decisions or for actions that are irreversible or outward-facing (tier 3 of [the boundary test](../SKILL.md#4-the-boundary-test)); only what the test places in tier 2 (a new component or reversible operational change in production, effects included) is announced instead of asked ([notice](#announcing-before-building)).
 - **Check before asking.** Before asking a decision or an action, confirm it is still open: the PR may be merged, the human may have decided it in another tab or space, the agent may already have done it. Asking again for what is done costs the human more than one look costs the agent.
 - **Ask once.** A decision is asked again only when something changed since it was asked, and the new card opens by saying what changed.
-- **Never make the human the courier.** If another agent must act, contact it yourself (for example via herdr-talk) instead of asking the human to carry the message, and say that you did.
+- **Never make the human the courier.** Agents do not message each other ([`agentic-parallel-work`](../../agentic-parallel-work/SKILL.md#2-who-talks-to-whom)), so never ask the human to carry a message to another agent either. What one delivery needs from another is a contract, and the contract is the human's decision: bring it as a decision card.
 - **Never park a question at the end of a status report.** A decision opens the message or gets its own message.
 
 ### Every decision fully explained
@@ -169,7 +169,7 @@ Give the human a real chance to see it: a deadline in their working hours, at le
 - Open with a short list of the decisions in the message, one line each, so the human sees the whole set before the details. Order them by what each one unblocks.
 - When one decision depends on another, say so and condition it explicitly ("if you choose A above, then..."), with a recommendation for each branch that matters.
 - Never trade explanation for count: if a message cannot explain every decision properly, explain fewer and list the rest as coming next.
-- When several agents raise decisions for the same human, one coordinating agent consolidates them before they reach the human, removing duplicates and ordering them by what each one unblocks. One subject is one card with one owner, even across teams: whoever finds the same question already open elsewhere refers to that card instead of opening another.
+- One subject is one card with one owner, even across deliveries: whoever finds the same question already open elsewhere (another delivery's PR or issue) refers to that card instead of opening another.
 
 ---
 

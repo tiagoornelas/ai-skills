@@ -103,6 +103,7 @@ Only on the user's request or a lead agent's delivery (Section 1), run the dossi
 - **A delivery from an agent** reaches the reviewer only with a clean branch-mode `agent-self-review` on its head; without one, it goes back to its author. **Someone else's PR** may be verified without one: the card says "author's review: no record".
 - The reviewer rebuilds the inventory of new things, produces its proof (screenshots per context for a user-visible change), and stores the six lines as a local `evidence` note (never pushed); then show the updated card and lines (Section 3).
 - Any ❌ after verification follows the dossier's [no ❌, no merge request](references/evidence-dossier.md#1-the-six-lines) rule.
+- A delivery gets at most two review rounds, and only some findings block, per the [limits of `agentic-parallel-work`](../agentic-parallel-work/SKILL.md#4-limits); a third verify on the same delivery is the user's call.
 
 ## 5. Inside the Herdr App (optional)
 

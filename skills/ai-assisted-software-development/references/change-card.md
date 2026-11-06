@@ -8,7 +8,7 @@
 
 Only at these moments, never on every reply:
 
-1. **Before building**: in the [notice](human-facing-communication.md#announcing-before-building) of a tier-2 item, and in a plan that splits work among agents (one card per stream, from what the plan will add).
+1. **Before building**: in the [notice](human-facing-communication.md#announcing-before-building) of a tier-2 item, and in a plan that splits work into deliveries (one card per delivery, from what the plan will add).
 2. **At delivery**: when a change is presented as ready for the human, together with its [evidence](../../provide-evidence/references/evidence-dossier.md).
 3. **On demand**: when the human asks to see a change ([`human-review`](../../human-review/SKILL.md)) or its proof ([`provide-evidence`](../../provide-evidence/SKILL.md)).
 

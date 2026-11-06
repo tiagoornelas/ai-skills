@@ -17,7 +17,7 @@ A merge conflict signals that two developers modified the same layer **without a
 
 > The agent analyzes, classifies, proposes, and executes. **Discarding someone's work, altering a public contract, or choosing between competing architectures is strictly the user's decision.**
 
-Uses [`visualize-it`](../visualize-it/SKILL.md) to diagram collisions, [`software-designing`](../software-designing/SKILL.md) when resolution touches architecture, and [`coding`](../coding/SKILL.md) for clean implementation. Catalog of conflict patterns and recipes resides in [`references/conflict-patterns.md`](references/conflict-patterns.md).
+Two deliveries in flight that collide are a sign they shared a file or contract, which [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md#4-limits) avoids; when they do collide, this skill resolves it. Uses [`visualize-it`](../visualize-it/SKILL.md) to diagram collisions, [`software-designing`](../software-designing/SKILL.md) when resolution touches architecture, and [`coding`](../coding/SKILL.md) for clean implementation. Catalog of conflict patterns and recipes resides in [`references/conflict-patterns.md`](references/conflict-patterns.md).
 
 ---
 

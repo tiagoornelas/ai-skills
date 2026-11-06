@@ -61,6 +61,7 @@ graph LR
 - **Before coding**, high-consequence decisions pass through the human. When a decision carries heavy weight, the agent designs **twice**, exploring radically different alternatives, and brings a recommendation instead of a single path.
 - **During**, the agent writes tests first whenever an observable behavior and a way to test it exist.
 - **Before the human**, the agent reviews itself with an iteration budget and limit: fixes blocking issues, fixes anything with a concrete failure scenario, discards style preferences, and **escalates** anything that would touch a contract.
+- **In parallel**, agents split work by delivery, never by layer: one session and one writer per delivery, one worktree per repository on the same branch name, no conversation between agents, and only a few deliveries in flight, because the human's review is the bottleneck.
 - **In review**, the human evaluates what was built against what was requested, in diagrams and a behavior table, rather than wading through a sea of lines.
 
 I use the same lenses for collaborating on other people's work: reviewing a peer's PR, responding to received reviews, and resolving conflicts between parallel branches without discarding either work.
@@ -77,6 +78,20 @@ I don't leave criteria to chance. Every design or code judgment is grounded in a
 | **Martin Fowler**, *Refactoring* | The catalog of **code smells** and named refactorings, in small steps, always with green tests, never mixed with behavioral changes. | Code quality below contracts. |
 | **Kent Beck**, *Test-Driven Development* | **Red → green → refactor.** A test that has never failed proves nothing. | Implementation. |
 | **Classical Testing School** (Vladimir Khorikov, *Unit Testing Principles, Practices, and Patterns*) | The unit of testing is an **observable behavior via public interface**. Internal collaborators run for real; test doubles only for things outside process control (network, system clock, LLMs). A test that breaks upon refactoring is a bad test. | Testing and test review. |
+
+### Agents in parallel
+
+More agents are not more throughput. The rules for running agents in parallel come from studies of multi-agent systems and from how practitioners run coding agents today; the full reasoning is in [`agentic-parallel-work`](skills/agentic-parallel-work/references/studies-and-practices.md).
+
+| Source | What was adopted | Where it appears |
+| :--- | :--- | :--- |
+| **Anthropic**, [*How we built our multi-agent research system*](https://www.anthropic.com/engineering/built-multi-agent-research-system) | Agents cost about 4× the tokens of a chat and multi-agent systems about 15×; they pay off on breadth-first work with independent parts, not on tightly interdependent work. **Parallelize only what is independent.** | Splitting work, `agentic-parallel-work`. |
+| **Google Research and MIT**, [*Towards a Science of Scaling Agent Systems*](https://arxiv.org/abs/2512.08296v3) | Multi-agent setups gained up to +80.8% on a decomposable task and lost up to −70% on sequential planning: **the architecture must match the task**. Its thresholds were revised between versions, so they are evidence, not laws. | One session per delivery; sequential work stays in one session. |
+| **UC Berkeley**, [*Why Do Multi-Agent LLM Systems Fail?*](https://arxiv.org/abs/2503.13657) (MAST) | About a third of multi-agent failures are **misalignment between agents**. | No conversation between agents. |
+| **Cognition**, [*Don't Build Multi-Agents*](https://cognition.ai/blog/dont-build-multi-agents) and [*Multi-Agents: What's Actually Working*](https://cognition.com/blog/multi-agents-working) | Parallel writers make conflicting implicit decisions: **single-threaded writes**, helpers that contribute intelligence, and a **clean-context reviewer**. | One writer per delivery; subagents answer once; the independent reviewer of `provide-evidence`. |
+| **Practitioners and tools**: [Simon Willison](https://simonwillison.net/2025/Oct/5/parallel-coding-agents/), [Addy Osmani](https://addyosmani.com/blog/future-agentic-coding/), [Conductor](https://www.conductor.build/docs/concepts/git-worktrees), [Cursor](https://cursor.com/docs/configuration/worktrees) and [Codex](https://developers.openai.com/codex/app/worktrees) worktrees, Claude Code [agent teams](https://code.claude.com/docs/en/agent-teams) | **One worktree per agent**, the human reviewing deliveries instead of transcripts, and a few agents in flight because **review capacity is the limit**. | Branches and worktrees, the in-flight limit. |
+
+A measured case: a lead agent coordinating tab agents that messaged each other spent about 5× the tokens per changed line of a one-session-per-task flow, with half of it in review rounds over wording and a quarter in relaying messages.
 
 Where schools diverge, I state my position. For instance: between the tiny functions of *Clean Code* and the deep, cohesive functions of Ousterhout, my rule is to extract **when the extracted piece is independent**, avoiding extractions that merely scatter what should be read together.
 
@@ -128,7 +143,7 @@ Most skills need nothing beyond the harness. A few drive command-line tools, whi
 
 | Tool | Used by | Required for |
 | :--- | :--- | :--- |
-| [Git](https://git-scm.com/) | `commit`, `git-branch`, `git-cleanup`, `github-code-review`, `provide-evidence`, `report-work`, `resolve-branch-conflict` | Reading history and diffs, creating branches and commits. |
+| [Git](https://git-scm.com/) | `agentic-parallel-work`, `commit`, `git-cleanup`, `github-code-review`, `provide-evidence`, `report-work`, `resolve-branch-conflict` | Reading history and diffs, creating branches and commits. |
 | [GitHub CLI](https://cli.github.com/) (`gh`) | `git-cleanup`, `github-code-review`, `github-pull-request`, `github-review-react`, `provide-evidence`, `herdr-scope-review`, `report-work`, `resolve-branch-conflict` | Reading and writing pull requests, reviews, and comments. Run `gh auth login` first. |
 | [Herdr App](https://herdr.dev/) (`herdr-app` and `hc`) | `git-cleanup` (optional), `provide-evidence` (optional), `herdr-handoff`, `herdr-scope-review`, `herdr-talk`, `herdr-team-lead` | Opening spaces and tabs with agents, running a space as a team led by a Leader agent, messaging agents in other terminals, showing all of a space's deliveries with their proof, prioritizing fronts across all spaces and listing what depends on the user, and safely cleaning up terminals and team folders. Requires the Herdr App (desktop app with herdr-core); the older Herdr terminal multiplexer (`herdr` CLI) is not supported. |
 | [Playwright CLI](https://playwright.dev/docs/getting-started-cli) (`playwright-cli`) | `browser-test` | Driving a browser, headless by default, to test and verify web pages. Install with `npm install -g @playwright/cli@latest`, then `playwright-cli install-browser chromium`. |
@@ -143,7 +158,7 @@ Issue trackers (Jira, GitHub Issues, Linear) are mentioned only as places to ref
 | **Claude Code** | `CLAUDE.md` → `AGENTS.md` | `.claude/skills/` | `~/.claude/skills/` |
 | **Codex** | `AGENTS.md` | `.agents/skills/` | `~/.codex/skills/` |
 | **Antigravity CLI** | `AGENTS.md` or `GEMINI.md` | `.agents/skills/` | `~/.gemini/config/skills/` |
-| **Cursor CLI** | `AGENTS.md` or `~/.cursor/rules/` | `.cursor/skills/` or `.agents/skills/` | `~/.cursor/skills/` |
+| **Cursor CLI** | `AGENTS.md`; globally, a `sessionStart` hook in `~/.cursor/hooks.json` | `.cursor/skills/` or `.agents/skills/` | `~/.cursor/skills/` |
 
 ### Global (recommended)
 
@@ -153,11 +168,19 @@ Issue trackers (Jira, GitHub Issues, Linear) are mentioned only as places to ref
 
 1. Detects which harnesses are installed on your machine (`claude`, `gemini`/`agy`, `codex`, `cursor`) and skips uninstalled ones automatically to avoid polluting your home directory with empty dotfiles (use `--all` to force installation for all harnesses).
 2. Symlinks each skill from `skills/` into the global skills folder of each detected harness. Any real folder with the same name (legacy copy) is moved to `~/.ai-skills-backup/<timestamp>/` before the link is created, and dangling links to skills removed from the repo are pruned.
-3. Prompts whether to link [`global/AGENTS.md`](global/AGENTS.md) as the global instruction across the detected harnesses (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`, `~/.gemini/config/AGENTS.md`, and `~/.cursor/rules/global.md`). Existing files are moved to the same backup. Use `--global-instructions` to link without prompting, or `--skills-only` to install only the skills.
+3. Prompts whether to link [`global/AGENTS.md`](global/AGENTS.md) as the global instruction across the detected harnesses (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`, and `~/.gemini/config/AGENTS.md`). Existing files are moved to the same backup. Cursor CLI reads no global rules file, so setup instead adds a `sessionStart` hook to `~/.cursor/hooks.json` that injects the current `global/AGENTS.md` into every session, keeping any hooks already there (the original file is backed up first; needs `jq`). Use `--global-instructions` to link without prompting, or `--skills-only` to install only the skills.
 
 [`global/AGENTS.md`](global/AGENTS.md) is what makes the workflow mandatory across any project: it specifies, by trigger, when to load each skill (for example, `coding` before editing any code file). The root [`AGENTS.md`](AGENTS.md) serves strictly to maintain this repository.
 
 Because everything is symlinked, a `git pull` instantly updates skills and instructions across all harnesses. Re-run the script only when skills are added or removed.
+
+#### Checking the harnesses
+
+```bash
+./scripts/check-harnesses.sh [--skill <name>]
+```
+
+Asks each installed harness CLI (`claude`, `codex`, `agy`, `cursor-agent`) one short headless question from an empty folder, and prints whether its context holds the global instructions and whether it sees a skill (`agentic-parallel-work` by default). It changes no configuration and costs one short model call per harness.
 
 #### Uninstalling
 
@@ -165,7 +188,7 @@ Because everything is symlinked, a `git pull` instantly updates skills and instr
 ./scripts/uninstall-global.sh
 ```
 
-1. Removes what setup installed from this repository, in the global skill folders and the global instruction paths: links that point into the repo, and identical copies (Git Bash on Windows copies instead of linking when it lacks symlink permission). Your own skills, links to other sources, and anything that differs from the repo are left untouched and reported.
+1. Removes what setup installed from this repository: in the global skill folders and the global instruction paths, links that point into the repo and identical copies (Git Bash on Windows copies instead of linking when it lacks symlink permission); in Cursor's `hooks.json`, only the hook setup added. Your own skills, links to other sources, and anything that differs from the repo are left untouched and reported.
 2. Leaves `~/.ai-skills-backup/` alone and tells you it is there. Use `--restore` to move what setup replaced back to where it was. The most recent backup of each path wins, and a path already in use is never overwritten.
 
 Use `--skills-only` to keep the global instructions, and `--dry-run` to see what would change without changing anything. Run it from the same clone that ran setup: links are recognized by where they point, and copies by matching its content.
