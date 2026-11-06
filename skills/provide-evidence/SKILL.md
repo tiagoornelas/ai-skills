@@ -11,11 +11,11 @@ description: >-
   missing and who acts; "verify and produce what is missing" runs the dossier's
   independent reviewer, which rebuilds the inventory of new things from the
   diff, schema, and infrastructure files, compares it with the change card,
-  and attests lines (c)–(f) for the current commit. Verify runs when the user
-  asks for it or when a lead agent (such as a Herdr App Leader) delivers.
+  and attests lines (c)–(f) for the current commit. Verify runs only when the
+  user asks for it or when a lead agent (such as a Herdr App Leader) is about
+  to present a delivery; an author agent working alone never starts it.
   Triggered when the user asks for the evidence, the proof, or whether a
-  delivery is done, or when a delivery must be verified before it is
-  presented.
+  delivery is done, or when a lead agent is about to present a delivery.
 argument-hint: "[PR number, URL, or branch] [verify]"
 ---
 
@@ -27,7 +27,7 @@ The user needs to know at once: **is the work done, what does it add to the syst
 
 - **Scope**: the PR or branch given as argument; without one, the PR of the current branch (`gh pr view --json number`); without a PR, the current branch itself, compared with its base. Any PR works, whoever wrote it.
 - **Show the proof** (default): read-only. Never run tests, fix, commit, push, merge, write a note or file, or message an agent.
-- **Verify and produce what is missing**: when the user asks for it, or when a lead agent is about to present a delivery, run the [independent reviewer](#4-verify) for the current head. In any harness; inside or outside the Herdr App.
+- **Verify and produce what is missing**: only when the user asks for it, or when a lead agent is about to present a delivery, run the [independent reviewer](#4-verify) for the current head, in any harness, inside or outside the Herdr App. An author agent working alone never starts it, per the [evidence dossier](references/evidence-dossier.md#when-to-consult).
 - When `gh` is missing or not authenticated, show what git alone proves and say the PR part was skipped; never guess PR states.
 
 ## 2. Gather
@@ -98,7 +98,7 @@ Under every ❌, one line says **what is missing and who acts**: 🤖 the agent 
 
 ## 4. Verify
 
-Run the dossier's [independent reviewer](references/evidence-dossier.md#2-the-independent-reviewer) for the current head, as a subagent per [subagent-delegation.md](../ai-assisted-software-development/references/subagent-delegation.md), briefed with the change, its change card, and the [reviewer questions](references/evidence-dossier.md#reviewer-questions), never the author's answers.
+Only on the user's request or a lead agent's delivery (Section 1), run the dossier's [independent reviewer](references/evidence-dossier.md#2-the-independent-reviewer) for the current head, as a subagent per [subagent-delegation.md](../ai-assisted-software-development/references/subagent-delegation.md), briefed with the change, its change card, and the [reviewer questions](references/evidence-dossier.md#reviewer-questions), never the author's answers.
 
 - **A delivery from an agent** reaches the reviewer only with a clean branch-mode `agent-self-review` on its head; without one, it goes back to its author. **Someone else's PR** may be verified without one: the card says "author's review: no record".
 - The reviewer rebuilds the inventory of new things, produces its proof (screenshots per context for a user-visible change), and stores the six lines as a local `evidence` note (never pushed); then show the updated card and lines (Section 3).
@@ -106,7 +106,16 @@ Run the dossier's [independent reviewer](references/evidence-dossier.md#2-the-in
 
 ## 5. Inside the Herdr App (optional)
 
-When `HC_TERMINAL_ID` is set and `hc` and `herdr-app` are on `PATH`, a space may be given instead of a PR: match it in `herdr-app ls` by name or `sp…` id, or by the `Space:` name in a team folder's `leader.md` ([team-folder.md](../herdr-team-lead/references/team-folder.md)); without one, use this terminal's `herdr.space` label, or ask which space when there is none. The scope becomes every delivery of the space (each tab agent's branch and each PR its `leader.md` references; when a terminal's current branch has no PR (an agent back on the default branch after a merge), fall back to the recent PRs of the same author in that repository (`gh pr list --state all --author @me --limit 10`) and to branches in its reflog (`git -C <cwd> reflog --format=%gs | grep 'checkout: moving'`), and show each PR found this way as *found by fallback*), the objective, approvals, and the validation environment's deployed commit (or how to read it) come from its `leader.md` first, and tabs still working and contradictions with `leader.md` are listed among the facts. Use only the Herdr App (`herdr-app`, `hc`) of this machine, never the `herdr` terminal CLI or `--on`. In a space, the verify reviewer is a sub-agent under [`herdr-handoff`](../herdr-handoff/SKILL.md#31-sub-agents)'s rules, with its files in the team folder's evidence folder.
+When `HC_TERMINAL_ID` is set and `hc` and `herdr-app` are on `PATH`, a space may be given instead of a PR: match it in `herdr-app ls` by name or `sp…` id, or by the `Space:` name in a team folder's `leader.md` ([team-folder.md](../herdr-team-lead/references/team-folder.md)); without one, use this terminal's `herdr.space` label, or ask which space when there is none. The scope becomes every delivery of the space (its PRs, found as described [below](#finding-a-spaces-prs)), the objective, approvals, and the validation environment's deployed commit (or how to read it) come from its `leader.md` first, and tabs still working and contradictions with `leader.md` are listed among the facts. Use only the Herdr App (`herdr-app`, `hc`) of this machine, never the `herdr` terminal CLI or `--on`. In a space, the verify reviewer is a sub-agent under [`herdr-handoff`](../herdr-handoff/SKILL.md#31-sub-agents)'s rules, with its files in the team folder's evidence folder.
+
+### Finding a Space's PRs
+
+The PRs of a space, here and in [`herdr-scope-review`](../herdr-scope-review/SKILL.md):
+
+1. **Recorded**: each PR its `leader.md` references.
+2. **By branch**: for each terminal, the branch of its working directory (`hc get <terminal>` `foreground.cwd`, then `git -C <cwd> branch --show-current`), and the space's own `folder` from `herdr-app ls`; each branch's PRs with `gh pr list --head <branch> --state all`. When the working directory is outside git, try the space folder, then the `leader.md` references.
+3. **Folder gone**: when a recorded folder or worktree no longer exists, treat it as a likely merge: look up PRs by the branch name recorded in `leader.md` or by the worktree's name, and say *folder gone*.
+4. **Fallback, unconfirmed**: only when the steps above find no PR for a terminal (an agent back on the default branch after a merge), list the recent PRs of the same author in that repository (`gh pr list --state all --author @me --limit 10`) and the branches in its reflog (`git -C <cwd> reflog --format=%gs | grep 'checkout: moving'`). Drop every PR already attributed to another space (its `leader.md` references or its terminals' branches) and keep only those whose head branch matches this space's branches, reflog, or folder name; label what remains *found by fallback, unconfirmed*.
 
 ## 6. Success Validation
 
