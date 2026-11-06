@@ -7,8 +7,8 @@ description: >-
   names tabs and spaces, reads the live state of terminals and agents, moves a
   running session to another space, and keeps, parks, or ends terminals.
   Triggered while running inside the Herdr App when the user or another skill
-  (handoff, brainstorm, coordinator, git-cleanup) needs to open, find, read, rename, move, or close
-  Herdr tabs, spaces, or agent terminals.
+  (handoff, brainstorm, coordinator, git-cleanup) needs to open, find, read,
+  rename, move, or close Herdr tabs, spaces, or agent terminals.
 argument-hint: "[what to open, read, or move]"
 ---
 
