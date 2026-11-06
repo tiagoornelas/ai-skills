@@ -95,6 +95,13 @@ More agents are not more throughput. The rules for running agents in parallel co
 
 A measured case: a lead agent coordinating tab agents that messaged each other spent about 5× the tokens per changed line of a one-session-per-task flow, with about half of it in review rounds, mostly over wording, and a quarter in relaying messages.
 
+### Reading for the reader
+
+| Source | What was adopted | Where it appears |
+| :--- | :--- | :--- |
+| **BLUF** (bottom line up front), from military writing; [Matt Ström-Awn, *Bottom Line Up Front: write to make decisions faster*](https://mattstromawn.com/writing/bluf/) | The first sentence says what the reader must know, decide, or do, as a concrete action, not a description of the text. The criterion is relevance to the reader, not compression. | `tl-dr` digests, `coordinator`, `brainstorm` syntheses. |
+| **Bryan A. Garner**, [*Should the bottom line be up front? Only with context*](https://www.abajournal.com/columns/article/should-the-bottom-line-be-up-front-only-with-context-says-bryan-garner) (ABA Journal) | A bottom line without one line of context skips the delicate part: **add the condition or risk that would change the action**. | The context line of a `tl-dr` digest. |
+
 
 ## 🧩 What the Skills Have in Common
 
@@ -109,7 +116,7 @@ A measured case: a lead agent coordinating tab agents that messaged each other s
 The current catalog is in [`skills/`](skills/). It evolves over time; the philosophy above is what remains.
 
 
-## Focused Review and Improvement
+## Focused Entry Points
 
 These entry points can be used independently, without a mandatory sequence:
 
@@ -119,6 +126,10 @@ These entry points can be used independently, without a mandatory sequence:
 | Challenge scope or priorities before or during construction | [scope-review](skills/scope-review/SKILL.md) | Is it worth doing, what comes first, what can be left out and what is lost: do, reduce, postpone, or stop, for human judgment. |
 | Know whether a delivery is done and proven, for any PR | [provide-evidence](skills/provide-evidence/SKILL.md) | A verdict and, per PR, the change card's plan and the six evidence lines, one line each with its claim and its proof (screenshots grouped by context), and what is missing and who acts. Its verify action runs an independent reviewer that produces the missing proof. |
 | Find or pursue structural improvements | [improve-architecture](skills/improve-architecture/SKILL.md) | Evidence-backed opportunities or a focused refactoring/design investigation; implementation when authorized. |
+
+| See what needs you now and what to focus on next, across all your work | [coordinator](skills/coordinator/SKILL.md) | What depends on you first, then the next focus with its reason, the deliveries in flight against the limit, and each task's state. Read-only; offers to report tasks or clean up branches. |
+| Get one task, or a long text, down to what matters to you | [tl-dr](skills/tl-dr/SKILL.md) | A task in about ten lines (what depends on you, issue, plan count, PRs, threads), or a digest: the bottom line, its context, decisions, and fact kept apart from claim. |
+| Hear several models on one open question | [brainstorm](skills/brainstorm/SKILL.md) | The same brief to each, answers written alone, then convergences, divergences, and a recommendation. |
 
 For example, invoke `/scope-review <idea or PR>` or `/improve-architecture <area or recurring difficulty>`, using the harness's skill invocation syntax. Both use the shared [maintenance commitment](skills/software-designing/references/maintenance-commitment.md) lens. During normal work, observations stay brief; broader investigation is requested explicitly. Visual presentation follows [visualize-it](skills/visualize-it/SKILL.md), without a prescribed HTML report or automatic backlog.
 
@@ -143,9 +154,10 @@ Most skills need nothing beyond the harness. A few drive command-line tools, whi
 
 | Tool | Used by | Required for |
 | :--- | :--- | :--- |
-| [Git](https://git-scm.com/) | `agentic-parallel-work`, `commit`, `git-cleanup`, `pr-code-review`, `provide-evidence`, `report-work`, `resolve-branch-conflict` | Reading history and diffs, creating branches and commits. |
-| [GitHub CLI](https://cli.github.com/) (`gh`) | `git-cleanup`, `pr-code-review`, `pull-request`, `pr-review-react`, `provide-evidence`, `report-work`, `resolve-branch-conflict` | Reading and writing pull requests, reviews, and comments. Run `gh auth login` first. |
-| [Herdr App](https://herdr.dev/) (`herdr-app` and `hc`) | `herdr`, used by `handoff` and `git-cleanup` (optional) | Opening tabs and spaces with an agent of any harness, reading the live state of agents, and noting which agents use a worktree before cleaning it. Requires the Herdr App (desktop app with herdr-core); the older Herdr terminal multiplexer (`herdr` CLI) is not supported. |
+| [Git](https://git-scm.com/) | `agentic-parallel-work`, `commit`, `coordinator`, `git-cleanup`, `pr-code-review`, `provide-evidence`, `report-work`, `resolve-branch-conflict` | Reading history and diffs, creating branches and commits. |
+| [GitHub CLI](https://cli.github.com/) (`gh`) | `coordinator`, `git-cleanup`, `pr-code-review`, `pull-request`, `pr-review-react`, `provide-evidence`, `report-work`, `resolve-branch-conflict`, `tl-dr` | Reading and writing pull requests, reviews, and comments. Run `gh auth login` first. |
+| [Herdr App](https://herdr.dev/) (`herdr-app` and `hc`) | `herdr`, used by `handoff`, `brainstorm`, `coordinator`, `tl-dr`, and `git-cleanup` (optional) | Opening tabs and spaces with an agent of any harness, reading the live state of agents, and noting which agents use a worktree before cleaning it. Requires the Herdr App (desktop app with herdr-core); the older Herdr terminal multiplexer (`herdr` CLI) is not supported. |
+| Harness CLIs (`claude`, `codex`, `cursor-agent`, `agy`) | `brainstorm` (optional) | Asking other models headless; without them, `brainstorm` uses subagents. |
 | [Playwright CLI](https://playwright.dev/docs/getting-started-cli) (`playwright-cli`) | `browser-test` | Driving a browser, headless by default, to test and verify web pages. Install with `npm install -g @playwright/cli@latest`, then `playwright-cli install-browser chromium`. |
 
 Issue trackers (Jira, GitHub Issues, Linear) are mentioned only as places to reference or file work: the skills use whatever access the harness already has and never require a specific integration.
