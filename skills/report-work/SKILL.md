@@ -4,11 +4,14 @@ description: >-
   Understands the work the user is actively doing or has completed
   (conversation, commits, diffs, branches, PRs) and reports it as concise
   actionable tasks with titles and descriptions in the user's session language,
-  optionally organized into contexts/epics, parent tasks, and relationships.
-  Tool-agnostic: formats tasks and pauses, awaiting user instructions on where
-  and how to persist them (Jira, GitHub Issues, Linear, markdown file, etc.).
+  optionally organized into contexts/epics, parent tasks, and relationships;
+  also brings the status of existing tasks up to date with that work and helps
+  organize them (regroup, link, merge duplicates, close stale ones).
+  Tool-agnostic: shows every change and writes to a tracker (Jira, GitHub
+  Issues, Linear, markdown file, etc.) only after the user approves it.
   Triggered when the user asks to report, log, document, or convert work into
-  tickets/tasks, whether the entire scope or a slice of it.
+  tickets/tasks, whether the entire scope or a slice of it, or to update,
+  sync, or tidy the status and structure of tasks already created.
 argument-hint: "[slice of work to report — by default, current session's work]"
 ---
 
@@ -23,7 +26,7 @@ Inverts the traditional task creation sequence: **first you do the work to under
 > The skill **understands and drafts**; the user **decides where and how to persist**.
 
 - **Tool-agnostic**: produces a neutral, clean task representation. Zero tracker-specific fields, statuses, or rituals are assumed until instructed by the user.
-- **Never saves autonomously**: after presenting tasks, the skill stops and awaits target destination instructions.
+- **Never writes without approval**: a tracker is read by other people, so every creation, status change, or reorganization is shown as a change list (what, where, from → to) and written only after the user approves that list.
 - **Reports evidence**: every task is grounded in real evidence (conversations, commits, diffs, PRs). Nothing is fabricated to pad out the backlog.
 
 ---
@@ -36,7 +39,7 @@ Determine **which work** to report:
 2. **No explicit target** → use work discussed and performed **in the current conversation**.
 3. **Ambiguous** (session spans unrelated tasks, or zero work occurred in chat) → ask which slice to report, presenting identified options.
 
-Declare the selected slice in one line before proceeding.
+Declare the selected slice in one line before proceeding, and the mode: **report** new tasks, **update** existing ones, or both. Update applies when the user names existing tasks, an epic, or a tracker, or when the slice's evidence links issues (branch, commits, PR body).
 
 ### Step 2: Gather Evidence
 Inspect strictly what is needed for the slice:
@@ -44,6 +47,7 @@ Inspect strictly what is needed for the slice:
 - **Git**: `git log <base>..HEAD --oneline`, `git diff <base>...HEAD --stat` and diffs of relevant files; involved branches.
 - **PRs/issues** (if present): title, description, linked tickets (e.g. `gh pr view`).
 - **Files** touched, when diffs alone do not convey intent.
+- **Existing tasks** (update mode): read their current status, parent, and links from the tracker, through its tool skill when one exists. Reading is free; nothing is written here.
 
 ### Step 3: Understand the Work
 Before drafting, clarify:
@@ -65,24 +69,32 @@ Before drafting, clarify:
 - Use **temporary keys** (`E1`, `T1`, `T1.1`) to express relationships before real IDs exist.
 - Without natural grouping → flat list. **Never force hierarchy.**
 
-### Step 6: Draft Tasks
+### Step 6: Update and Organize Existing Tasks (Update Mode)
+Compare each existing task with the evidence:
+- **Status**: propose the status the evidence supports (a merged PR → done; an open PR → in review or in progress, per the tracker's own status names), never further than the evidence goes.
+- **Organization**: propose regrouping under an epic or parent, linking related or blocking tasks, merging duplicates, splitting a task that holds two outcomes, and closing tasks the work made obsolete, each with its reason.
+- New work the existing tasks do not cover becomes a new task (Steps 4, 5, and 7).
+
+### Step 7: Draft Tasks
 Follow the Section 3 format and Section 4 writing guidelines.
 
-### Step 7: Present and Await
-Present tasks and **stop**. Conclude by asking how the user wishes to save them: e.g., target tool, project key, existing epic, issue types, labels, assignee, sprint, or file export format.
+### Step 8: Present and Await
+Present the new tasks and, in update mode, the change list, then **stop**. Conclude by asking for approval and, when the destination is not yet known, how the user wishes to save them: e.g., target tool, project key, existing epic, issue types, labels, assignee, sprint, or file export format.
 
 User requested edits (merging, splitting, rewriting, shifting hierarchy) are applied and the updated set re-presented until approved.
 
-### Step 8: Save per User Instruction
+### Step 9: Save per User Instruction
 When destination instructions arrive:
 - If a specific tool skill exists (e.g., Jira skill), load it and adhere to its rules.
-- **Confirm prior to writing** to any external system: display what will be created, where, and with what fields.
+- **Confirm prior to writing** to any external system: display what will be created or changed, where, and with what fields or from → to values, and write only what the user approved.
 - Create in relational order (epic → parent → subtasks → links), replacing temporary keys with real tracking IDs.
 - Present a final mapping table: `Temporary Key → Real ID / Link`.
 
 ---
 
 ## 3. Output Format
+
+The layout is an example; its headings, labels, and status values are written in the user's session language (statuses as the tracker names them, once known).
 
 ```markdown
 ## Reported Slice
@@ -107,6 +119,15 @@ When destination instructions arrive:
 
 #### T1.1 — <Subtask Title>                  ← strictly if subtask exists
 ...
+```
+
+In update mode, the change list:
+
+```markdown
+## Changes to Existing Tasks
+| Task | Change | From → To | Evidence |
+| PROJ-12 | status | In Progress → Done | PR #48 merged |
+| PROJ-15 | parent | — → PROJ-10 | same export feature |
 ```
 
 After tasks:
@@ -140,4 +161,4 @@ After tasks:
 - [ ] Each task represents a single verifiable outcome; zero tasks per file or per commit.
 - [ ] In-flight and outstanding discoveries captured as *To Do*.
 - [ ] Hierarchy and relationships exist strictly where natural groupings occur; temporary keys resolve consistently.
-- [ ] Zero tool-specific assumptions made prior to user instruction, and zero items saved to external systems without explicit confirmation.
+- [ ] Existing tasks got only the status and organization changes their evidence supports, and nothing was written to an external system before the user approved the exact change list.
