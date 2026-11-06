@@ -38,13 +38,9 @@ Comparison:
 
 ## 3. Comparing Alternatives
 
-- Enumerate candid **pros and cons** for each candidate design.
-- The single most critical criterion for an interface is **ease of use for the higher-level software consuming it**.
-- Additional evaluation factors:
-  - Is one interface noticeably **simpler** than the other?
-  - Is one interface more **general-purpose**?
-  - Does one interface enable a **more efficient implementation**?
-- Rigorous comparison almost always exposes hidden trade-offs and weaknesses in every option. This insight is immensely valuable in its own right.
+- Ease of use for the higher-level software consuming an interface comes first: an interface is written once and called many times, so every awkwardness is paid by each caller.
+- Rigorous comparison almost always exposes hidden trade-offs and weaknesses in every option; that insight is valuable in its own right.
+- The criteria and their order are in [`software-designing`](../SKILL.md#step-3-compare-alternatives-proportionally), Step 3, item 4.
 
 ### When No Alternative is Compelling
 
