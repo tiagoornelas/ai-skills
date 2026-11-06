@@ -7,7 +7,7 @@ description: >-
   names tabs and spaces, reads the live state of terminals and agents, moves a
   running session to another space, and keeps, parks, or ends terminals.
   Triggered while running inside the Herdr App when the user or another skill
-  (handoff, git-cleanup) needs to open, find, read, rename, move, or close
+  (handoff, brainstorm, coordinator, git-cleanup) needs to open, find, read, rename, move, or close
   Herdr tabs, spaces, or agent terminals.
 argument-hint: "[what to open, read, or move]"
 ---
@@ -51,7 +51,7 @@ Only when the user asks, or when a skill the user invoked (such as [`handoff`](.
    ```
 
    - **An independent session** (another delivery, a handoff) takes `--no-parent --outlive-parent`: it survives the caller, and the app's agent list shows it once instead of also nesting it under the caller.
-   - **A run whose result the caller collects** (one opinion among several, a check the user wants to watch) omits both flags: it ends with its caller, and hc notifies the caller when it finishes, blocks, or exits (`hc wait --children all`). Ask it to write its answer to a file and read that file; once read, end it with `hc kill <slug>` and `hc rm <slug>`.
+   - **A run whose result the caller collects** (one opinion among several in a [`brainstorm`](../brainstorm/SKILL.md), a check the user wants to watch) omits both flags: it ends with its caller, and hc notifies the caller when it finishes, blocks, or exits (`hc wait --children all`). Ask it to write its answer to a file and read that file; once read, end it with `hc kill <slug>` and `hc rm <slug>`.
    - `<slug>` is unique among live terminals in `hc ls`, `[a-z0-9_-]{1,32}`.
    - `env TERM=xterm-256color` keeps the harness in color: hc starts terminals with `TERM=dumb`.
    - Put the start prompt in the command itself: a message sent to a booting agent can be dropped. For anything longer than a sentence, write a file and make the prompt "read <path> and resume the work it describes".
