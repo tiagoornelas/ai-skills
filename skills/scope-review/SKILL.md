@@ -37,7 +37,7 @@ Preserve the objective unless evidence exposes a contradiction, invalid premise,
 
 ## Communicate and continue
 
-Present the decision-relevant benefit, commitment, alternatives, and recommendation, including lost value and uncertainty. Distinguish evidence from inference and business assumptions. Use [visualize-it](../visualize-it/SKILL.md) when a comparison or boundary is clearer visually; explain domain terms before internals.
+Present the decision-relevant benefit, commitment, alternatives, and recommendation, including lost value and uncertainty. Distinguish evidence from inference and business assumptions. Use [visualize-it](../visualize-it/SKILL.md) when a flow is clearer drawn; explain domain terms before internals.
 
 The human decides scope, behavior, and architecture under [ai-assisted-software-development](../ai-assisted-software-development/SKILL.md). End with the useful recommendation or the decisive question. Continue implementation only when requested/authorized; use [software-designing](../software-designing/SKILL.md) for architectural decisions and [coding](../coding/SKILL.md) for code changes within the same session as appropriate.
 

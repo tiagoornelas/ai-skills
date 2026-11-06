@@ -52,9 +52,9 @@ For each side, gather the underlying intent, not just raw diff lines:
 
 Summarize in a single sentence per side: **"We intended X. They intended Y."** If intent is ambiguous from evidence, declare that and ask the user rather than guessing.
 
-Diagram the divergence using `visualize-it`:
-- **Timeline**: merge-base, commits from each side, and where each modified the conflict area.
-- **Module Collision Map**: which modules each side modified using `visualize-it` change notation (`+ ~ − !` in terminal diagrams, 🆕 🔧 🗑️ ⚠️ in rendered Markdown), marking points of collision as deviations (`!` / ⚠️).
+Show the divergence:
+- **Timeline**: in the swimlane shape of [`visualize-it`](../visualize-it/SKILL.md), one column per side, the merge-base at the top, commits flowing down, and a note where each side modified the conflict area.
+- **What each side adds**: each side's [change card](../ai-assisted-software-development/references/change-card.md) plan lines, with the things both sides touch marked `!`.
 
 ---
 
@@ -80,7 +80,7 @@ Class ⚠️ is what Git's merge engine cannot see. To locate semantic conflicts
 - **Ours** (<branch>, <authors>): <intent in one sentence>
 - **Theirs** (<branch>, <authors>): <intent in one sentence>
 
-<timeline and module map via visualize-it>
+<timeline via visualize-it and each side's plan lines>
 
 ## Conflict Points — 🟢 N · 🟡 N · 🔴 N · ⚠️ N
 

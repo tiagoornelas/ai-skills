@@ -100,7 +100,7 @@ Format the report for quick scanning. **Never combine or re-order findings acros
 
 ### 🏗️ Architecture and Contracts — 🔴 0 · 🟡 1 · 🟢 1
 
-<module map via visualize-it>
+<the change card plan lines of what is new and where; a visualize-it swimlane only when a flow across places changed>
 
 - 🟡 **<title>** — <detail>
 - 🟢 **<title>** — <detail>

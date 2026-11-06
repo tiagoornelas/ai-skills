@@ -70,7 +70,7 @@ When completing a design, review it **as a reader**, not as the author:
 3. **Strong typing in contracts**: replace generic tuples and primitives with descriptive types.
 4. **Indirect flows**: is the trigger sequence for every event, hook, and callback documented?
 5. **Surprises**: does any behavior contradict standard expectations? Document or eliminate it.
-6. **The outsider test**: could a developer who was not in the design conversation understand the system purely from the module map and contract cards? If extensive verbal explanation is needed, treat that as a design defect.
+6. **The outsider test**: could a developer who was not in the design conversation understand the system purely from the design brief's plan, flow, and contracts? If extensive verbal explanation is needed, treat that as a design defect.
 
 ---
 
