@@ -115,7 +115,7 @@ These entry points can be used independently, without a mandatory sequence:
 
 | Request | Skill | Result |
 | :--- | :--- | :--- |
-| Understand and evaluate a PR or local change | [human-review](skills/human-review/SKILL.md), or [github-code-review](skills/github-code-review/SKILL.md) for GitHub review mechanics | One sentence on what changes for whom, the change card (what is new and where it lives, rules, pattern, walls), the decisions that are yours, and the findings that matter. Explains a part in depth when you point at it. |
+| Understand and evaluate a PR or local change | [human-review](skills/human-review/SKILL.md), or [pr-code-review](skills/pr-code-review/SKILL.md) for GitHub review mechanics | One sentence on what changes for whom, the change card (what is new and where it lives, rules, pattern, walls), the decisions that are yours, and the findings that matter. Explains a part in depth when you point at it. |
 | Challenge scope or priorities before or during construction | [scope-review](skills/scope-review/SKILL.md) | Is it worth doing, what comes first, what can be left out and what is lost: do, reduce, postpone, or stop, for human judgment. |
 | Know whether a delivery is done and proven, for any PR | [provide-evidence](skills/provide-evidence/SKILL.md) | A verdict and, per PR, its change card (what is new and where it lives, rules, pattern, walls) and the six evidence lines, each with its claim, why it convinces, and its argument or proof (screenshots grouped by context), and what is missing and who acts. Its verify action runs an independent reviewer that produces the missing proof. |
 | Find or pursue structural improvements | [improve-architecture](skills/improve-architecture/SKILL.md) | Evidence-backed opportunities or a focused refactoring/design investigation; implementation when authorized. |
@@ -143,8 +143,8 @@ Most skills need nothing beyond the harness. A few drive command-line tools, whi
 
 | Tool | Used by | Required for |
 | :--- | :--- | :--- |
-| [Git](https://git-scm.com/) | `agentic-parallel-work`, `commit`, `git-cleanup`, `github-code-review`, `provide-evidence`, `report-work`, `resolve-branch-conflict` | Reading history and diffs, creating branches and commits. |
-| [GitHub CLI](https://cli.github.com/) (`gh`) | `git-cleanup`, `github-code-review`, `github-pull-request`, `github-review-react`, `provide-evidence`, `report-work`, `resolve-branch-conflict` | Reading and writing pull requests, reviews, and comments. Run `gh auth login` first. |
+| [Git](https://git-scm.com/) | `agentic-parallel-work`, `commit`, `git-cleanup`, `pr-code-review`, `provide-evidence`, `report-work`, `resolve-branch-conflict` | Reading history and diffs, creating branches and commits. |
+| [GitHub CLI](https://cli.github.com/) (`gh`) | `git-cleanup`, `pr-code-review`, `pull-request`, `pr-review-react`, `provide-evidence`, `report-work`, `resolve-branch-conflict` | Reading and writing pull requests, reviews, and comments. Run `gh auth login` first. |
 | [Herdr App](https://herdr.dev/) (`herdr-app` and `hc`) | `herdr`, used by `handoff` and `git-cleanup` (optional) | Opening tabs and spaces with an agent of any harness, reading the live state of agents, and noting which agents use a worktree before cleaning it. Requires the Herdr App (desktop app with herdr-core); the older Herdr terminal multiplexer (`herdr` CLI) is not supported. |
 | [Playwright CLI](https://playwright.dev/docs/getting-started-cli) (`playwright-cli`) | `browser-test` | Driving a browser, headless by default, to test and verify web pages. Install with `npm install -g @playwright/cli@latest`, then `playwright-cli install-browser chromium`. |
 

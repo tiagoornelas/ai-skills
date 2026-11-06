@@ -1,14 +1,15 @@
 ---
-name: github-pull-request
+name: pull-request
 description: >-
-  Formats and opens GitHub Pull Requests focused on high-level review, with
-  direct executive summary at the top, visual architecture diagrams generated
-  via visualize-it, and issue linkage verification.
+  Formats and opens pull requests (on GitHub, through the gh CLI) focused on
+  high-level review, with direct executive summary at the top, visual
+  architecture diagrams generated via visualize-it, and issue linkage
+  verification.
 ---
 
-# GitHub Pull Request
+# Pull Request
 
-Skill for structuring, documenting, and opening Pull Requests on GitHub.
+Skill for structuring, documenting, and opening pull requests, on GitHub through the GitHub CLI (`gh`).
 
 ---
 
@@ -155,7 +156,7 @@ GitHub CLI and API cannot upload images into a PR body, so do not try to attach 
    - If the branch carries code authored by the agent pipeline, run [`agent-self-review`](../agent-self-review/SKILL.md) in **branch mode** (Section 3.2) unless `HEAD` already carries a `branch` self-review note. Resolve its Blocking findings before continuing; list its Escalate findings for the developer.
 2. **Check the Facts Agree**: the objective and acceptance criteria (issue or conversation), the user's decisions, and the change card describe the same change; fix the one that drifted before opening, and carry the decisions into the body.
 3. **Ensure Remote is Up to Date**:
-   - Verify all commits are recorded and push the branch:
+   - Verify all commits are recorded, each following [`commit`](../commit/SKILL.md), and push the branch:
      ```bash
      git push -u origin <branch-name>
      ```

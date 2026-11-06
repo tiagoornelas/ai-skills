@@ -8,7 +8,7 @@
 
 - When authoring, reviewing, or refactoring database migrations, schema definitions, or DDL scripts.
 - When writing, modifying, or reviewing SQL queries, ORM calls, repositories, query builders, or GraphQL resolvers.
-- During [`agent-self-review`](../../agent-self-review/SKILL.md) and [`github-code-review`](../../github-code-review/SKILL.md) whenever a changeset touches database access patterns or schema files.
+- During [`agent-self-review`](../../agent-self-review/SKILL.md) and [`pr-code-review`](../../pr-code-review/SKILL.md) whenever a changeset touches database access patterns or schema files.
 
 ---
 

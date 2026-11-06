@@ -5,7 +5,7 @@ description: >-
   patterns of AI-generated prose, preserving authentic voice, point of view,
   and context. Triggered for emails, articles, blog posts, documents, scripts,
   and professional communications when the user requests natural, authentic
-  writing, and by github-code-review and github-review-react when drafting PR
+  writing, and by pr-code-review and pr-review-react when drafting PR
   comments and replies so they read as written by a human peer.
 ---
 

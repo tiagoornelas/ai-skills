@@ -1,19 +1,20 @@
 ---
-name: github-review-react
+name: pr-review-react
 description: >-
-  Responds to review comments left by a teammate on the user's GitHub Pull Request:
-  collects pending comments, evaluates each for validity and feasibility,
-  visualizes problems and proposed solutions, collaborates with the user to
-  determine whether to accept, adjust, defer, or reject, applies accepted
-  modifications via the coding skill in traceable commits, and crafts courteous,
-  concise replies referencing the fix commit or rejection rationale.
+  Responds to review comments left by a teammate on the user's pull request
+  (on GitHub, through the gh CLI): collects pending comments, evaluates each
+  for validity and feasibility, visualizes problems and proposed solutions,
+  collaborates with the user to determine whether to accept, adjust, defer, or
+  reject, applies accepted modifications via the coding skill in traceable
+  commits, and crafts courteous, concise replies referencing the fix commit or
+  rejection rationale.
 disable-model-invocation: true
 argument-hint: "[PR number/URL — by default, current branch's PR]"
 ---
 
-# GitHub Review React
+# PR Review React
 
-The counterpart to [`github-code-review`](../github-code-review/SKILL.md): here the PR belongs **to the user**, and a peer provided the review. The deliverable is **every pending review comment assigned a clear disposition**, accepted changes implemented, and a polished reply prepared for each thread.
+The counterpart to [`pr-code-review`](../pr-code-review/SKILL.md): here the PR belongs **to the user**, and a peer provided the review. The deliverable is **every pending review comment assigned a clear disposition**, accepted changes implemented, and a polished reply prepared for each thread.
 
 > A review comment is neither an order nor an attack. It is evaluated purely on **merit**: does the issue genuinely exist? Does the suggested change resolve it? Does it belong in this PR? The reviewer may have context the agent lacks; the agent may have inspected implementation details more closely. **The decision belongs to the user.**
 
