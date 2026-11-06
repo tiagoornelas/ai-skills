@@ -156,7 +156,7 @@ A tier-2 item (something that starts to run, cost, store data, or hold permissio
 ```markdown
 ⚠️ **Notice: <what will appear in the system, in one line>**
 
-- **What appears:** the [change card](change-card.md) of what will be built (each new thing with where it will live, the pattern it follows), and what it does in production.
+- **What appears:** the [change card](change-card.md) of what will be built with its [where it lives](change-card.md#4-where-it-lives-optional-detail) detail, each new thing with where it will live and `follows <existing sibling>`, and what it does in production.
 - **Why:** <the problem it solves>.
 - **Undo:** <how it is turned off> · <how its effects are undone: data it writes or changes, and how they are restored or removed>.
 - **If you do not object by <time>, I proceed** with it and record it.
@@ -166,7 +166,7 @@ Give the human a real chance to see it: a deadline in their working hours, at le
 
 ### Several decisions
 
-- Open with a short list of the decisions in the message, one line each, so the human sees the whole set before the details. Order them by what each one unblocks.
+- Open with a short list of the decisions in the message, one line each, so the human sees the whole set before the details. Order them by what each one unblocks. A change card's `?` lines are that list.
 - When one decision depends on another, say so and condition it explicitly ("if you choose A above, then..."), with a recommendation for each branch that matters.
 - Never trade explanation for count: if a message cannot explain every decision properly, explain fewer and list the rest as coming next.
 - One subject is one card with one owner, even across deliveries: whoever finds the same question already open elsewhere (another delivery's PR or issue) refers to that card instead of opening another.

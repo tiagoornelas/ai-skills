@@ -28,6 +28,7 @@ In the user's language, per [human-facing communication](../ai-assisted-software
 <one sentence: what changes, for whom, in product terms>
 
 <the plan of the change card>
+<the decision card of each `?` line that blocks merge>
 
 <Findings>
   🔴 <what goes wrong, for whom, when> → <direction of a fix and its trade-off>
@@ -35,11 +36,11 @@ In the user's language, per [human-facing communication](../ai-assisted-software
 <proof>  <N>/6 on <short commit> · <missing: each failing letter and name>
 ```
 
-1. **The [change card](../ai-assisted-software-development/references/change-card.md)'s plan**, built from the change itself, not from the author's description (for a large PR, by the light path of [`provide-evidence`](../provide-evidence/SKILL.md#2-gather)). Its `?` lines are the user's decisions the change embeds: a rule, a contract, a new component no one approved, a trade-off with a lasting [maintenance commitment](../software-designing/references/maintenance-commitment.md). Do not infer that the author consciously accepted a trade-off just because the code embodies it.
+1. **The [change card](../ai-assisted-software-development/references/change-card.md)'s plan**, built from the change itself, not from the author's description (for a large PR, by the light path of [`provide-evidence`](../provide-evidence/SKILL.md#2-gather)). Its `?` lines are the user's decisions the change embeds, each with its options or default, the recommendation, and whether it blocks merge: a rule, a contract, a new component no one approved, a trade-off with a lasting [maintenance commitment](../software-designing/references/maintenance-commitment.md). Do not infer that the author consciously accepted a trade-off just because the code embodies it.
 2. **Critical findings only**: 🔴, and 🟡 that change a behavior, each one or two lines with a plausible scenario, its impact, and a direction of solution with its trade-off, most consequential first; mark a problem the change did not introduce as older. A preference without a consequence is not a finding. Other findings are counted and given on request.
 3. **One proof line**, read from the delivery's evidence note by [`provide-evidence`](../provide-evidence/SKILL.md)'s show rules: how many of the six lines hold on which commit and which are missing, "outdated: proves X, the PR is at Y", or "no record on this machine".
 
-Omit the findings when there are none; the plan and the proof line always appear. Nothing below contracts appears unless it changes a behavior, contract, boundary, or risk; then the screen shows that consequence.
+Under the plan, each `?` line that blocks merge opens as its decision card; the others wait until the user turns to them. Omit the findings when there are none; the plan and the proof line always appear. Nothing below contracts appears unless it changes a behavior, contract, boundary, or risk; then the screen shows that consequence.
 
 ## 3. Stay Critical
 
@@ -64,7 +65,7 @@ It records that a review ran and what it recommended, never an approval. It stay
 
 ## 6. Success Validation
 
-- [ ] The screen opened with one sentence on what changes for whom, then the change card's plan built from the actual change, with the user's decisions as `?` lines.
+- [ ] The screen opened with one sentence on what changes for whom, then the change card's plan built from the actual change, with the user's decisions as `?` lines carrying options and recommendation, and a decision card for each one that blocks merge.
 - [ ] Only critical findings followed, each with scenario, impact, and direction; the others were counted, not listed; nothing below contracts appeared unless it changed behavior, contract, boundary, or risk.
 - [ ] One proof line closed the screen, read from the evidence note; divergences between claims and the change, and what is unverified, were named; no proof or approval was implied.
 - [ ] A part was explained in depth, or a `?` line turned into a decision card, only when the user pointed at it.

@@ -70,7 +70,7 @@ Under every ❌, one line says **what is missing and who acts**: 🤖 the agent 
 ````text
 🧾 <repository and branch> · <Evidence> · <time>
 <verdict line>
-<Objective>: <one or two sentences, or "not verifiable"> · <task and status, or "status unavailable">
+<Objective>: <one or two sentences, or "not verifiable"> · <task and status, or "unavailable">
 
 ── <repo>#<n> · <short name>
 <the plan of the change card>
@@ -80,22 +80,22 @@ Under every ❌, one line says **what is missing and who acts**: 🤖 the agent 
 <Proof>: <N> ✓  <N> ✗  <commit> <proven commit>[ · <the PR is at <head>: outdated>]
   ✓ <letter> <name>   <claim>   <proof>
   ✗ <letter> <name>   <what is missing>   <proof so far>
-      🖼 <context> · <folder> · <what its images show>   (under f, one line per context, user-visible changes)
+      🖼 <context> · <folder> · <what its images show>   (under f, one per context)
       → 🤖 <who>: <what closes it>   or   → ✋ <you>: <action> (<only you because: reason>)
 
 <uncommitted files, or nothing uncommitted>
 📋 <No task registered: suggest report-work, when no task reference exists>
-➡️ <the one next action when it is the user's>   or   <Nothing depends on you now; next: <agent step>>
+➡️ <the user's one next action>   or   <Nothing depends on you now; next: <agent step>>
 ````
 
 The proof block of a fictional delivery:
 
 ```text
 Proof: 4 ✓  2 ✗  commit 5b699b1
-  ✓ a why                   invoices are exported by hand today    issue #301
-  ✓ b architecture          8 new things, all on the plan          inventory rebuilt from the diff matches
-  ✓ c no wall knocked down  contracts, rules, tests unchanged      git diff main...5b699b1 -- api/ test/ → empty
-  ✗ d nothing on the side   PDF layout written inside the job      other documents use app/templates/
+  ✓ a why                   invoices are exported by hand today    issue #301: support asks weekly
+  ✓ b architecture          9 new things, all on the plan          rebuilt inventory matches
+  ✓ c no wall knocked down  contracts, rules, tests unchanged      git diff -- api/ test/ → empty
+  ✗ d nothing on the side   PDF layout written inside the job      others use app/templates/
       → 🤖 author: move the layout to app/templates/, beside the receipt template
   ✓ e no catastrophe        flag off; migration only adds a table  revert: git revert 5b699b1
   ✗ f tested and works      missing the end-to-end run             CI run 1432: 212 passed
