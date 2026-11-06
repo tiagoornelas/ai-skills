@@ -94,7 +94,7 @@ The proof block of a fictional delivery:
 Proof: 4 ✓  2 ✗  commit 5b699b1
   ✓ a why                   invoices are exported by hand today    issue #301: support asks weekly
   ✓ b architecture          9 new things, all on the plan          rebuilt inventory matches
-  ✓ c no wall knocked down  contracts, rules, tests unchanged      git diff -- api/ test/ → empty
+  ✓ c no wall knocked down  contracts, tests unchanged             git diff main...5b699b1 -- api/ test/ → empty
   ✗ d nothing on the side   PDF layout written inside the job      others use app/templates/
       → 🤖 author: move the layout to app/templates/, beside the receipt template
   ✓ e no catastrophe        flag off; migration only adds a table  revert: git revert 5b699b1

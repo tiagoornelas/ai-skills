@@ -76,7 +76,7 @@ Plan: 9 +  2 ~  0 -  2 ?  1 !  3 draft PRs, nothing merged
   approved   the split of 2026-11-04
   unchanged  no new database, service, cloud function, queue, secret or permission, client,
              folder or module, cross-cutting mechanism, or prompt or agent tool
-             no data rewritten or sent to third parties · walls intact
+             deleting PDFs is the ? rule above · no data rewritten or sent out · walls intact
   state      ⏳ billing-api#88 · invoice PDF export · draft · CI ok · agent ok · proof — · you —
              ⏳ web-app#212 · download PDF button · draft · CI ok · agent ok · proof — · you —
              ⏳ infra#41 · invoice PDF bucket · draft · CI ok · agent — · proof — · you —

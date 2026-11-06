@@ -51,7 +51,7 @@ Under the plan, each `?` line that blocks merge opens as its decision card; the 
 
 ## 4. Explain on Request
 
-When the user points at a part ("explain this job", "why this table?", a `?` or `!` line), explain that part only, following [`explain-it`](../explain-it/SKILL.md), situated in the product and drawn with [`visualize-it`](../visualize-it/SKILL.md) when a flow helps. A `?` line the user turns to becomes a decision card with a recommendation. "Where does it live?" adds the change card's [where it lives](../ai-assisted-software-development/references/change-card.md#4-where-it-lives-optional-detail) detail. Never explain the whole change unasked.
+When the user points at a part ("explain this job", "why this table?", a `?` or `!` line), explain that part only, following [`explain-it`](../explain-it/SKILL.md), situated in the product and drawn with [`visualize-it`](../visualize-it/SKILL.md) when a flow helps. A non-blocking `?` line the user turns to becomes a decision card with a recommendation. "Where does it live?" adds the change card's [where it lives](../ai-assisted-software-development/references/change-card.md#4-where-it-lives-optional-detail) detail. Never explain the whole change unasked.
 
 ## 5. Local Review Note
 
@@ -68,5 +68,5 @@ It records that a review ran and what it recommended, never an approval. It stay
 - [ ] The screen opened with one sentence on what changes for whom, then the change card's plan built from the actual change, with the user's decisions as `?` lines carrying options and recommendation, and a decision card for each one that blocks merge.
 - [ ] Only critical findings followed, each with scenario, impact, and direction; the others were counted, not listed; nothing below contracts appeared unless it changed behavior, contract, boundary, or risk.
 - [ ] One proof line closed the screen, read from the evidence note; divergences between claims and the change, and what is unverified, were named; no proof or approval was implied.
-- [ ] A part was explained in depth, or a `?` line turned into a decision card, only when the user pointed at it.
+- [ ] A part was explained in depth, or a non-blocking `?` line turned into a decision card, only when the user pointed at it.
 - [ ] A local `human-review` note was recorded on the reviewed commit when it exists locally.
