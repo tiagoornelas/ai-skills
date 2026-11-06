@@ -1,21 +1,21 @@
 ---
-name: github-code-review
+name: pr-code-review
 description: >-
-  Reviews a GitHub Pull Request (a teammate's or the user's own) or a diff
-  from a fixed reference point, as a thin adapter over two base skills:
-  human-review for what changed, where it lives, and what the user must
-  decide, and provide-evidence for whether it is proven. Adds the GitHub
-  mechanics: the comparison baseline, re-review of prior feedback against
-  incremental commits, a recommended verdict, and accepted findings turned
-  into humanized line comments ready to paste or publish on confirmation.
-  Deeper review axes run only on request.
+  Reviews a pull request (a teammate's or the user's own; on GitHub, through
+  the gh CLI) or a diff from a fixed reference point, as a thin adapter over
+  two base skills: human-review for what changed, where it lives, and what the
+  user must decide, and provide-evidence for whether it is proven. Adds the
+  pull-request mechanics: the comparison baseline, re-review of prior feedback
+  against incremental commits, a recommended verdict, and accepted findings
+  turned into humanized line comments ready to paste or publish on
+  confirmation. Deeper review axes run only on request.
 disable-model-invocation: true
 argument-hint: "[PR number/URL, branch, SHA, or base ref] [--re-review]"
 ---
 
-# GitHub Code Review
+# PR Code Review
 
-For reviewing a GitHub PR or any diff from a fixed base, whoever wrote it. The deliverable is **helping the user decide** (approve or request changes) and **the specific points they will comment on**. This skill owns only the GitHub mechanics; the review itself is [`human-review`](../human-review/SKILL.md) and the proof is [`provide-evidence`](../provide-evidence/SKILL.md). Nothing is modified: everything becomes a finding, and the user chooses what to comment on.
+For reviewing a pull request (on GitHub, through `gh`) or any diff from a fixed base, whoever wrote it. The deliverable is **helping the user decide** (approve or request changes) and **the specific points they will comment on**. This skill owns only the pull-request mechanics; the review itself is [`human-review`](../human-review/SKILL.md) and the proof is [`provide-evidence`](../provide-evidence/SKILL.md). Nothing is modified: everything becomes a finding, and the user chooses what to comment on.
 
 ## 1. Establish the Comparison Baseline
 

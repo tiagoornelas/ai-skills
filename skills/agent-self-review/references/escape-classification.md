@@ -1,8 +1,8 @@
 # Escape Classification
 
-> Loaded by `github-code-review` and `github-review-react` when a review accepts a rules, tests, or code-quality finding on code the agent pipeline authored.
+> Loaded by `pr-code-review` and `pr-review-react` when a review accepts a rules, tests, or code-quality finding on code the agent pipeline authored.
 
-When a later review (peer review, [`github-code-review`](../../github-code-review/SKILL.md), or [`github-review-react`](../../github-review-react/SKILL.md)) accepts a rules, tests, or code-quality finding on code this pipeline authored, classify why self-review let it through. The classification guides the fix: only some causes are fixed by reviewing harder.
+When a later review (peer review, [`pr-code-review`](../../pr-code-review/SKILL.md), or [`pr-review-react`](../../pr-review-react/SKILL.md)) accepts a rules, tests, or code-quality finding on code this pipeline authored, classify why self-review let it through. The classification guides the fix: only some causes are fixed by reviewing harder.
 
 | Cause | Meaning | Remedy |
 | :--- | :--- | :--- |
