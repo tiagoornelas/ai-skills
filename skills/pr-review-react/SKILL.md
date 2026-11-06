@@ -211,10 +211,8 @@ gh pr comment <pr> --body-file <file with quote reply>
 ## 8. Success Validation
 
 - [ ] Unresolved threads and review comments collected; outdated ones verified against current code.
-- [ ] Every comment categorized with validity, applicability, and user-approved disposition.
+- [ ] Every comment categorized with validity, applicability, and user-approved disposition; every ❌ rejection has concrete rationale, and every 🔀 adjustment explains why the alternative resolves the concern.
 - [ ] Accepted rules, test, and code-quality comments on agent-authored code tagged with their self-review escape cause.
-- [ ] Every ❌ rejection has concrete rationale, and every 🔀 adjustment explains why the alternative resolves the concern.
 - [ ] Accepted modifications implemented via `coding`, passed `agent-self-review`, and committed with recorded SHA.
-- [ ] Every thread has a concise, courteous, humanized reply free of local paths and signatures.
-- [ ] Replies delivered to original locations (in-thread for line comments; quote reply for review bodies/comments).
+- [ ] Every thread has a concise, courteous, humanized reply free of local paths and signatures, delivered to its original location (in-thread for line comments; quote reply for review bodies/comments).
 - [ ] Zero items published to GitHub (push, replies, issues, thread resolutions) without explicit request and confirmation.

@@ -75,8 +75,6 @@ A craft-oriented stylistic review, **never a mechanical checklist of rigid prohi
 - [ ] Text is in the requested language and honors its register and conventions.
 - [ ] Facts, purpose, and professional tone are preserved; zero fabricated details.
 - [ ] Final pass against Section 3 completed; strictly automated tropes were rewritten.
-- [ ] Zero em-dashes or en-dashes appear within communicative prose.
-- [ ] Headings and bullet leads are direct noun labels in sentence case; no "the X that Y" teasers remain in prose.
-- [ ] No importance announcements, staged reveals, or announce-then-answer preambles remain.
+- [ ] Prose has zero em-dashes or en-dashes; headings and bullet leads are direct noun labels in sentence case; no "the X that Y" teasers, importance announcements, staged reveals, or announce-then-answer preambles remain.
 - [ ] Texts that deliver facts open with the situation and link each fact to its cause or effect; numbers carry their reference point.
 - [ ] Delivered ready-to-use without commentary, unless specifically requested.
