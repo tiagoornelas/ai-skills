@@ -34,6 +34,8 @@ These rules apply to **every** commit, whichever agent or harness writes it.
 
 ## 3. Message Structure
 
+Write the description and body following [`technical-writing`](../technical-writing/SKILL.md); this section owns the structure.
+
 - **Standard — title only:**
 ```text
 <type>(<scope>): <description>

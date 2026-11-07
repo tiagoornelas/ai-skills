@@ -30,6 +30,7 @@ A pull request is the permanent record of one change, written for developers who
 
 - **Title**: the repository's PR title convention, read from its latest pull requests (`gh pr list --state all --limit 20 --json title`). Without one, `Type/Concise description`, with `Feat`, `Fix`, `Refactor`, `Chore`, `Perf`, or `Docs` (e.g. `Fix/Intermittent timeout on payment gateway call`).
 - **Language**: the title and the whole body, headings and table headers included, use the language of most of the repository's pull requests; without pull requests, the language of its documentation and commits; English when nothing indicates one. Technical terms and code identifiers stay as they are.
+- **Sentences**: the title and every sentence of the body follow [`technical-writing`](../technical-writing/SKILL.md); this skill owns the structure.
 
 ---
 
