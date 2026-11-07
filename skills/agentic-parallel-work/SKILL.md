@@ -53,7 +53,7 @@ A large, isolated part of a delivery (a whole frontend built against a mock) may
 ## 4. Limits
 
 - **In flight**: 2 to 4 deliveries being built at once; start with 2. A delivery waiting for the user's ratification is no longer in flight, and nothing limits how many wait: each arrives complete, proven, and with its decisions ordered by cost to reverse, so the user reviews them in any batch. [`coordinator`](../coordinator/SKILL.md) shows the waiting pile, with each task's state, when the user asks.
-- **Two deliveries never touch the same contract or file at once**: the second waits, or both become one sequential delivery.
+- **Two deliveries never touch the same contract or file at once**: the second stacks on the first, or both become one sequential delivery.
 - **Independent review**: at most 2 rounds per delivery. Only 🔴 findings and 🟡 findings that change behavior block; other 🟡 and every 🟢 go to a follow-up list for the user, recorded in the issue when there is one, never into a new round. After round 2, open blocking findings go to the user as pending, never as approval.
 
 ## References
