@@ -50,10 +50,10 @@ The human's job is to judge the **decisions**, not to learn the code. What matte
 
 1. **Where on the map.** Which product and which part of it, what that part does, and how a user meets it. One to three sentences, plus a [`visualize-it`](../../visualize-it/SKILL.md) swimlane when the change alters a flow across places of the system.
 2. **The problem.** A concrete scenario: who was doing what, what happened, and why (the cause, in system terms). Say whether it was a bug users hit, a risk, or a structural cost.
-3. **Decisions and trade-offs.** What was chosen, what alternatives were considered and why they lost, and what the choice commits the system to (a new rule, a dependency, a maintenance commitment, a behavior users will now see). This is where most of the words go.
+3. **Decisions and trade-offs.** What was chosen and why, and what the choice commits the system to (a new rule, a dependency, a maintenance commitment, a behavior users will now see). This is where most of the words go.
 4. **Risks and impact.** Where the change can break or surprise: which flows and users are affected, what was not verified (for example tested only in unit tests, not in the browser), and how the human can check it.
 5. **The solution.** How it works, at the level of modules, boundaries, responsibilities, and dependency direction, with general programming terms used freely. Internal mechanics go here only when they explain a decision or a risk.
-6. **The card and the evidence.** A delivery closes with its [change card](change-card.md) (the plan of what is new, changed, removed, yours to decide, or out of pattern, and the state) and its six-line [evidence dossier](../../provide-evidence/references/evidence-dossier.md): why do it, architecture, no wall knocked down, nothing built on the side, no catastrophe, tested and works, each a yes or no with its claim, why it convinces, and its argument or proof, presented in full.
+6. **The card and the evidence.** A delivery closes with its [change card](change-card.md) (the plan of what is new, changed, removed, yours to ratify, or out of pattern, and the state) and its six-line [evidence dossier](../../provide-evidence/references/evidence-dossier.md): why do it, architecture, no wall knocked down, nothing built on the side, no catastrophe, tested and works, each a yes or no with its claim, why it convinces, and its argument or proof, presented in full.
 
 A change with nothing to decide still follows the order: it says plainly that the decisions were routine Agent Layer choices and moves on to impact.
 
@@ -89,7 +89,7 @@ Emojis help the human scan a message and spot what needs attention. They are mar
 | ❌ | Failed or not done. |
 | ⚠️ | Attention point: a risk, surprise, or side effect the human should notice. |
 | ❓ | Decision the human must make: a choice between options (opens a decision card). |
-| 👀 | Review the human owes. |
+| 👀 | Review the human owes, including decisions to ratify. |
 | ✋ | Action only the human can take, with nothing to choose: log in, validate in a browser, grant access, answer an agent's dialog. Written as steps, not options. Raised only after the agent tried it itself, and always with one line saying why only the human can: "only you because: <personal credential · account permission · production decision · …>". |
 | 🤖 | Step an agent takes, without the human. |
 | ⏸️ | Blocked: waiting for something neither the human nor any agent can do now (a time to pass, metrics to settle, another team or a third party). Always says what it waits for and when or by whom it ends. |
@@ -126,10 +126,10 @@ Prompt instructions or documentation are never automated verification.
 
 ### Ask less
 
-- **Decide what is yours.** Agent Layer choices and reversible, in-scope operational steps (running a check, updating a note) are not questions: do them and report them. Ask only for Human Layer decisions or for actions that are irreversible or outward-facing (tier 3 of [the boundary test](../SKILL.md#4-the-boundary-test)); only what the test places in tier 2 (a new component or reversible operational change in production, effects included) is announced instead of asked ([notice](#announcing-before-building)).
+- **Decide, then present.** Agent Layer choices are done and reported; Human Layer decisions inside a delivery are taken and [presented for ratification](#presenting-decisions-taken). Ask only before an action where the agent [always stops](../SKILL.md#where-the-agent-always-stops), or for a choice outside any delivery that only the human can make.
 - **Check before asking.** Before asking a decision or an action, confirm it is still open: the PR may be merged, the human may have decided it in another tab or space, the agent may already have done it. Asking again for what is done costs the human more than one look costs the agent.
 - **Ask once.** A decision is asked again only when something changed since it was asked, and the new card opens by saying what changed.
-- **Never make the human the courier.** Agents do not message each other ([`agentic-parallel-work`](../../agentic-parallel-work/SKILL.md#2-who-talks-to-whom)), so never ask the human to carry a message to another agent either. What one delivery needs from another is a contract, and the contract is the human's decision: bring it as a decision card.
+- **Never make the human the courier.** Agents do not message each other ([`agentic-parallel-work`](../../agentic-parallel-work/SKILL.md#2-who-talks-to-whom)), so never ask the human to carry a message to another agent either. What one delivery needs from another is a contract: the delivery that owns it decides it and presents it for ratification.
 - **Never park a question at the end of a status report.** A decision opens the message or gets its own message.
 
 ### Every decision fully explained
@@ -139,7 +139,7 @@ Several decisions may share a message. What matters is that each one is explaine
 ```markdown
 ❓ **Decision: <the question in one line, in system terms>**
 
-- **Why it is yours:** <one line: contract · business rule · irreversible · outward-facing> · <easy: reversible, low cost of a wrong answer | hard: costly or impossible to undo>
+- **Why it is yours:** <one line: the action that leaves the branch, or why only the human can choose> · <easy: reversible, low cost of a wrong answer | hard: costly or impossible to undo>
 - **Context:** where this sits in the product, what happens today, and what changed that requires a choice (1–3 sentences, no bare handles).
 - **Options:** for each, what changes in the system or for users, what it costs, and what it commits the system to.
 - **Recommendation:** <option>, because <reason in the human's terms>.
@@ -149,24 +149,24 @@ Several decisions may share a message. What matters is that each one is explaine
 
 A table of options is fine inside the card when there are three or more options or several criteria.
 
-### Announcing before building
+### Presenting decisions taken
 
-A tier-2 item (something that starts to run, cost, store data, or hold permissions in production, and can be undone together with its effects) is not a decision card: it is a notice the human may object to, sent before anything is built. Only an item the [boundary test](../SKILL.md#4-the-boundary-test) places in tier 2 becomes a notice: a business rule, or anything that deletes or rewrites production data, is always a decision card.
+A Human Layer decision the agent took inside a delivery ([decided by the agent, ratified at delivery](../SKILL.md#decided-by-the-agent-ratified-at-delivery)) is not asked: it is presented at delivery for the human to ratify or change, one per `?` line of the change card, ordered by cost to reverse, tier 3 first:
 
 ```markdown
-⚠️ **Notice: <what will appear in the system, in one line>**
+👀 **Decided: <what the agent decided, in one line, in system terms>**
 
-- **What appears:** the [change card](change-card.md) of what will be built with its [where it lives](change-card.md#4-where-it-lives-optional-detail) detail, each new thing with where it will live and `follows <existing sibling>`, and what it does in production.
-- **Why:** <the problem it solves>.
-- **Undo:** <how it is turned off> · <how its effects are undone: data it writes or changes, and how they are restored or removed>.
-- **If you do not object by <time>, I proceed** with it and record it.
+- **Why it needs you:** <tier 3: contract · business rule · data · irreversible | tier 2: new component or reversible operational change>
+- **Context:** where this sits in the product, what happens today, and what required a choice (1–3 sentences, no bare handles).
+- **What I decided and why:** the choice and its reason in the human's terms, naming the principle it follows.
+- **Evidence:** the prototype, measurement, or test behind it; "low confidence" and why, when the evidence is thin.
+- **Cost to reverse after merge:** what changing it later would take.
+- **Reply with:** "ratify", or what to change.
 ```
-
-Give the human a real chance to see it: a deadline in their working hours, at least one hour away. At the deadline without an objection, proceed and record it where the team keeps its decisions; on an objection, it becomes a decision card.
 
 ### Several decisions
 
-- Open with a short list of the decisions in the message, one line each, so the human sees the whole set before the details. Order them by what each one unblocks. A change card's `?` lines are that list.
+- Open with a short list of the decisions in the message, one line each, so the human sees the whole set before the details. Order questions by what each one unblocks, and decisions to ratify by cost to reverse. A change card's `?` lines are that list.
 - When one decision depends on another, say so and condition it explicitly ("if you choose A above, then..."), with a recommendation for each branch that matters.
 - Never trade explanation for count: if a message cannot explain every decision properly, explain fewer and list the rest as coming next.
 - One subject is one card with one owner, even across deliveries: whoever finds the same question already open elsewhere (another delivery's PR or issue) refers to that card instead of opening another.
@@ -175,21 +175,22 @@ Give the human a real chance to see it: a deadline in their working hours, at le
 
 ## 6. Examples
 
-### A decision
+### A decision taken
 
 Before:
 
-> The first delivery is complete except for one decision: the calculation report download (calculation_report_tool.py). A. Record as an exception in ADR-039 (recommended). B. Move to the gateway later. C. Ignore. With A, #171 will be rebased again.
+> The first delivery is complete. Decision: the calculation report download (calculation_report_tool.py) stays outside the gateway, recorded as an exception in ADR-039. #171 was rebased.
 
 After:
 
-> ❓ **Decision: should downloading the calculation report keep calling the billing system directly, outside the gateway?**
+> 👀 **Decided: downloading the calculation report keeps calling the billing system directly, outside the gateway**
 >
-> - **Context:** we decided that all access to the billing system goes through the gateway. The report download is the one place that still calls the billing system's REST API directly, because the MCP token does not work on that route.
-> - **Options:** **A.** Record it as a documented exception to that rule: one line, nothing else changes. **B.** Move it into the gateway: the gateway then owns every billing-system access, but this touches another developer's code and grows the first delivery. **C.** Leave it as is: the written rule stays false.
-> - **Recommendation:** A now, B as a follow-up task, because it keeps the rule honest without delaying the delivery.
-> - **If you do not decide now:** the first delivery's PRs stay in draft.
-> - **Reply with:** A, B, or C.
+> - **Why it needs you:** tier 3 · it makes an exception to the rule that all billing-system access goes through the gateway.
+> - **Context:** the report download is the one place that still calls the billing system's REST API directly, because the gateway's token does not work on that route.
+> - **What I decided and why:** I recorded it as a documented exception to the rule, so the written rule stays true without growing this delivery into another developer's gateway code.
+> - **Evidence:** the download fails through the gateway with the token error; the direct call passes its test.
+> - **Cost to reverse after merge:** low: moving the call into the gateway later touches one route and removes the exception line.
+> - **Reply with:** "ratify", or what to change.
 
 ### A change
 

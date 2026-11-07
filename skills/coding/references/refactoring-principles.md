@@ -55,7 +55,7 @@ The default direction of every change is toward less code. Each line kept is a l
 
 ## 5. Refactoring and the Human Layer
 
-- Autonomous internal refactoring takes place strictly **below contracts**. Any modification detectable by callers outside the module (public signatures, cross-module responsibilities, architectural boundaries, dependency direction) can be architectural refactoring when product behavior is preserved, but it is a Human Layer concern, governed by the boundary test in [`ai-assisted-software-development`](../../ai-assisted-software-development/SKILL.md) (Section 4). Do not alter unilaterally; escalate via [`software-designing`](../../software-designing/SKILL.md).
+- Autonomous internal refactoring takes place strictly **below contracts**. Any modification detectable by callers outside the module (public signatures, cross-module responsibilities, architectural boundaries, dependency direction) can be architectural refactoring when product behavior is preserved, but it is a Human Layer concern, governed by the boundary test in [`ai-assisted-software-development`](../../ai-assisted-software-development/SKILL.md) (Section 4). Decide it through [`software-designing`](../../software-designing/SKILL.md) and present it for ratification.
 
 ---
 

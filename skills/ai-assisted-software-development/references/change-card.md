@@ -8,7 +8,7 @@
 
 Only at these moments, never on every reply:
 
-1. **Before building**: in the [notice](human-facing-communication.md#announcing-before-building) of a tier-2 item, and in a plan that splits work into deliveries (one card per delivery, from what the plan will add).
+1. **In a split plan**: a plan that splits work into deliveries (one card per delivery, from what the plan will add).
 2. **At delivery**: when a change is presented as ready for the human, together with its [evidence](../../provide-evidence/references/evidence-dossier.md).
 3. **On demand**: when the human asks to see a change ([`human-review`](../../human-review/SKILL.md)) or its proof ([`provide-evidence`](../../provide-evidence/SKILL.md)).
 
@@ -24,7 +24,7 @@ The layout in Section 3 is an example; this content is not optional. Every word 
 
 | Column | What it says |
 | :--- | :--- |
-| **Symbol** | `+` new · `~` changed · `-` removed · `?` the human's to decide · `!` out of pattern, crosses a wall, or provisional. |
+| **Symbol** | `+` new · `~` changed · `-` removed · `?` decided by the agent, awaiting the human's ratification · `!` out of pattern, crosses a wall, or provisional. |
 | **What** | A product-level noun the human recognizes ("table of exported invoices", "Download PDF button"), never a method, class, or file name. |
 | **Kind · place** | The kind of thing and the place of the system it lives in (`table · billing-api`, `screen · web-app`, `flag · billing-api · off`). In a delivery across repositories, the place is the repository. |
 
@@ -33,15 +33,15 @@ What each part of the change becomes on the plan:
 | Part | On the plan |
 | :--- | :--- |
 | **New and where it lives** | A `+` line per new thing of the kinds below; the [where it lives](#4-where-it-lives-optional-detail) detail gives its folder or file, and for infrastructure the file that creates it (migration, deploy or infrastructure definition). |
-| **Approval** | `+` and `~` lines are approved: in the approved split, by a notice whose deadline passed, or by the human's decision; the `approved` closing line says which. An item with no record, or a notice still running, is a `?` line. |
-| **The human's decisions** | A `?` line carries its options, or the default that applies without an answer, the recommendation, and whether it blocks merge ("90 days (recommended) or kept forever · blocks merge", "goes ahead Fri 12:00 unless you object"). The `?` lines are the upfront list of the decisions; each opens as a [decision card](human-facing-communication.md#every-decision-fully-explained). |
-| **Business rule** | A `~` line of kind `rule` with before and after ("expired invoices deleted after 90 days (was: kept)"), or a `?` line while undecided. |
-| **Data** | A line of kind `data` for production data deleted or rewritten (with how it is undone) and for data sent to a new third party or processor (what leaves, to whom). Deleting or rewriting production data is always the human's decision ([tier 3](../SKILL.md#4-the-boundary-test)). |
+| **Ratification** | A tier-2 or tier-3 item the human has not ratified is a `?` line; once ratified, it becomes its `+`, `~`, or `-` line, and the `ratified` closing line says which and when. A `!` line stays `!` and ends with `to ratify` until ratified. |
+| **Decisions to ratify** | A `?` line names what the agent decided, its kind · place, and the cost to reverse it after merge ("PDFs deleted after 90 days · rule · billing-api · hard to reverse: deleted PDFs are gone"). The `?` lines are ordered by cost to reverse, tier 3 first; each blocks merge and opens as a [decision to ratify](human-facing-communication.md#presenting-decisions-taken). |
+| **Business rule** | A `~` line of kind `rule` with before and after ("expired invoices deleted after 90 days (was: kept)"), or a `?` line until ratified. |
+| **Data** | A line of kind `data` for production data deleted or rewritten (with how it is undone) and for data sent to a new third party or processor (what leaves, to whom). Deleting or rewriting production data is always [tier 3](../SKILL.md#4-the-boundary-test), and running it is an action where the agent [always stops](../SKILL.md#where-the-agent-always-stops). |
 | **Pattern** | A thing without `!` follows an existing sibling; a thing [built on the side](../../software-designing/SKILL.md#nothing-built-on-the-side) is a `!` line saying what it duplicates or departs from. |
 | **Walls** | Boundaries, contracts, dependency direction, project rules, and tests crossed or weakened are `!` lines saying which and why. |
 | **State** | The `<state>` of the count line, and a `state` closing line with one [PR line](#5-pr-line) per PR; before a PR exists, the branch or the plan. |
 
-**Closing lines**, after the things: `order` (merge order, when there is more than one PR), `missing` (what is left before the delivery is done), `approved`, `unchanged` (every kind below with nothing new; "no rule changed" when there is no `rule` line; "no data deleted, rewritten, or sent out" for each of those with no `data` line; and "walls intact" when no `!` line crosses a wall; it may wrap), and `state`. Omit `order` and `missing` when empty; the others always appear, so silence never hides an omission.
+**Closing lines**, after the things: `order` (merge order, when there is more than one PR), `missing` (what is left before the delivery is done), `ratified`, `unchanged` (every kind below with nothing new; "no rule changed" when there is no `rule` line; "no data deleted, rewritten, or sent out" for each of those with no `data` line; and "walls intact" when no `!` line crosses a wall; it may wrap), and `state`. Omit `order` and `missing` when empty; the others always appear, so silence never hides an omission.
 
 **Kinds of new things**, always all accounted for, on a line or in `unchanged`: database · table · migration · service · cloud function · job or schedule · queue · route or endpoint · secret or permission · recurring cost · folder or module · client (to another system or service) · library · configuration variable or flag · cross-cutting mechanism (authentication, timeouts, retries, logging, error handling, data access) · screen · prompt or agent tool. These are the structures lines (b) and (d) of the [evidence dossier](../../provide-evidence/references/evidence-dossier.md) check: a new client, configuration variable, or mechanism is listed even when it sits in an existing folder, so one built on the side never gets a clean card.
 
@@ -67,13 +67,13 @@ Plan: 9 +  2 ~  0 -  2 ?  1 !  3 draft PRs, nothing merged
   +  "preparing your PDF" notice        screen · web-app
   ~  invoice page offers the export     screen · web-app
   ~  deploy passes the new flag         deploy · billing-api
-  ?  PDFs deleted after 90 days         rule · 90 days (recommended) or kept forever · blocks merge
-  ?  bucket storage, about $4 a month   cost · goes ahead Fri 12:00 unless you object (recommended)
-  !  PDF layout written inside the job  out of pattern · other documents use the templates folder
+  ?  PDFs deleted after 90 days         rule · billing-api · hard to reverse: deleted PDFs are gone
+  ?  bucket storage, about $4 a month   cost · infra · easy to reverse: delete the bucket
+  !  PDF layout written inside the job  out of pattern · other documents use the templates folder · to ratify
 
   order      infra → billing-api → web-app
   missing    end-to-end run in the review app · turning the flag on
-  approved   the split of 2026-11-04
+  ratified   PDF export route and rendering job, 2026-11-05
   unchanged  no new database, service, cloud function, queue, secret or permission, client,
              folder or module, cross-cutting mechanism, or prompt or agent tool
              deleting PDFs is the ? rule above · no data rewritten or sent out · walls intact
@@ -82,11 +82,11 @@ Plan: 9 +  2 ~  0 -  2 ?  1 !  3 draft PRs, nothing merged
              ⏳ infra#41 · invoice PDF bucket · draft · CI ok · agent — · proof — · you —
 ```
 
-Before building, `state` reads the branch or the plan, and lines carry the approval they will have. A change that adds nothing new prints the count line, `unchanged`, and `state`; an internal-only change prints only those, never its methods.
+In a split plan, `state` reads the plan. A change that adds nothing new prints the count line, `unchanged`, and `state`; an internal-only change prints only those, never its methods.
 
 ## 4. Where It Lives (Optional Detail)
 
-Printed under the plan when the human asks where things live, or when a `!` line needs its place shown. One block per repository (or per place, in a single repository) with a bar of how much of the change was born there, then one line per thing with its folder or file and, when the item follows an existing sibling, `follows <sibling>`; in a [notice](human-facing-communication.md#announcing-before-building) before building, every item carries that note, so the human sees the pattern before it is built. An out-of-place item appears where it actually is, marked `!` beside the bar. The detail ends with the path a user's action takes through the places, and the `unchanged` line.
+Printed under the plan when the human asks where things live, or when a `!` line needs its place shown. One block per repository (or per place, in a single repository) with a bar of how much of the change was born there, then one line per thing with its folder or file and, when the item follows an existing sibling, `follows <sibling>`. An out-of-place item appears where it actually is, marked `!` beside the bar. The detail ends with the path a user's action takes through the places, and the `unchanged` line.
 
 ```text
 Where it lives   9 +   2 ~   1 !   0 -
@@ -130,9 +130,9 @@ Every PR is written the same way, on the card and in any message about the work:
 
 ## 6. Success Validation
 
-- [ ] The card was printed only before building (notice or split plan), at delivery, or on demand.
+- [ ] The card was printed only in a split plan, at delivery, or on demand.
 - [ ] It opened with the count line, whose numbers match the lines below it, then one line per thing with its symbol, a product-level noun, and kind · place.
-- [ ] Every new thing had its line and its approval (or a `?` line); rule changes, data deleted or rewritten or sent to a new third party, things built on the side, and walls crossed had their lines; every kind with nothing new, and intact walls, were on the `unchanged` line.
+- [ ] Every new thing had its line and its ratification (or a `?` line, ordered by cost to reverse); rule changes, data deleted or rewritten or sent to a new third party, things built on the side, and walls crossed had their lines; every kind with nothing new, and intact walls, were on the `unchanged` line.
 - [ ] No method, signature, file name, helper, internal refactor, lint, test body, or commit order appeared on the plan, except as a consequence on behavior, contract, boundary, or risk; folders and files appeared only in the "Where it lives" detail.
 - [ ] The `state` line used the PR line, and at delivery said whether the proof is for the current version.
 - [ ] Every word was in the human's session language; only the symbols stayed as they are.

@@ -31,7 +31,7 @@ Refactoring the system without a design system starts with Create. For a screen 
 Before any choice:
 
 1. **Subject**: per [craft.md](references/craft.md#1-ground-the-design-in-the-subject).
-2. **Existing design system**: read it wherever the project keeps it (CSS variables, Tailwind or theme configuration, shared components, design docs). It is the brief, and departing from it is the user's decision. When Create replaces it, it is instead evidence for the audit of what to keep and what fails.
+2. **Existing design system**: read it wherever the project keeps it (CSS variables, Tailwind or theme configuration, shared components, design docs). It is the brief, and departing from it is a decision presented for the user's ratification. When Create replaces it, it is instead evidence for the audit of what to keep and what fails.
 3. **Stack and conventions**: how the project writes styles and components. Everything new follows them.
 4. **Running the app**: how to start it, sign in, and reach each state of the screens involved (loading, empty, error); ask the user for credentials, seed data, or fixtures the project does not provide.
 
@@ -53,7 +53,7 @@ Before any choice:
 3. Fix it with [`coding`](../coding/SKILL.md), using only the design system's tokens and components.
 4. Capture the "after" and present each pair with the findings it closes.
 
-A visual change within the approved design system is the agent's call; a change in what the screen does (its flow, an action's result, the meaning of its copy) is the user's.
+A visual change within the approved design system is the agent's call; a change in what the screen does (its flow, an action's result, the meaning of its copy) is a Human Layer decision, presented for ratification.
 
 ## References
 
@@ -70,5 +70,5 @@ A visual change within the approved design system is the agent's call; a change 
 - [ ] The mode matched the request, and the subject, any existing design system, and how to run the app were established before the first choice.
 - [ ] Every direction was planned, reviewed against the brief, and revised where generic before code; the user chose it.
 - [ ] The design system lives where the project keeps it or where the user approved, with three token layers, component states, and usage rules; components hold no raw values.
-- [ ] A system refactor ran as deliveries the user approved, and shared component contract changes went to the user.
+- [ ] A system refactor ran as deliveries, and shared component contract changes were presented for ratification.
 - [ ] Every changed screen passed the audit and has before-and-after screenshots per [refactoring.md](references/refactoring.md#4-evidence).

@@ -57,7 +57,7 @@ PLAYWRIGHT_MCP_BROWSER=chromium PLAYWRIGHT_MCP_OUTPUT_DIR="<scratch-dir>" \
 - **Screenshots as delivery evidence** go where the evidence dossier says, one subfolder per context with its `index.md`, per its [visual proof](../provide-evidence/references/evidence-dossier.md#visual-proof) rule.
 - Check `console` for errors and `requests` for failed calls whenever a behavior does not match expectations.
 - State each expectation before acting, then record pass or fail with the evidence that proves it. Follow the user's path and check side effects, per the proof standards of the [evidence dossier](../provide-evidence/references/evidence-dossier.md#reviewer-questions), line (f).
-- **Project suites:** if the project already depends on `@playwright/test` and the request is to run its tests, run them instead of driving the CLI: `PLAYWRIGHT_HTML_OPEN=never npx playwright test`, adding `--headed` only under the rule in Section 2. Never add `@playwright/test` to a project without the user's approval: it is a new dependency.
+- **Project suites:** if the project already depends on `@playwright/test` and the request is to run its tests, run them instead of driving the CLI: `PLAYWRIGHT_HTML_OPEN=never npx playwright test`, adding `--headed` only under the rule in Section 2. Adding `@playwright/test` to a project is a new dependency: a decision to ratify on the change card.
 
 ### Safety
 

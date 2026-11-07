@@ -29,7 +29,7 @@ Read recent commits, reverts, review comments, the agent instruction files (AGEN
 4. **Test the behavior.** Fix or delete any test that still passes when the behavior it checks breaks, or that fails when only the internals change.
 5. **Write an agent rule last**, only for judgment calls nothing can check, following [`prompt-engineering`](../prompt-engineering/SKILL.md).
 
-A fix at level 1, or one that alters a contract or module boundary, is a Human Layer decision: bring it through [`software-designing`](../software-designing/SKILL.md). A new check, CI job, or lint dependency is a new thing on the delivery's [change card](../ai-assisted-software-development/references/change-card.md).
+A fix at level 1, or one that alters a contract or module boundary, is a Human Layer decision: take it through [`software-designing`](../software-designing/SKILL.md) and present it for ratification. A new check, CI job, or lint dependency is a new thing on the delivery's [change card](../ai-assisted-software-development/references/change-card.md).
 
 ## 3. Fix and Prove
 
@@ -57,6 +57,6 @@ For each class: the occurrences that prove it, the level chosen, why a higher le
 - [ ] Each class was backed by at least two real occurrences.
 - [ ] Each class was fixed at the highest level that works, and the report says why each higher level did not.
 - [ ] Every new check was shown failing on a real past mistake and runs the same locally and in CI.
-- [ ] Architecture or contract changes went to the user through `software-designing`, and new checks appeared on the change card.
+- [ ] Architecture or contract changes were decided through `software-designing` and presented for ratification, and new checks appeared on the change card.
 - [ ] The rule table pairs each rule with its enforcer, and rules whose mistake can no longer happen were dropped.
 - [ ] Written rules were added only for judgment calls, following `prompt-engineering`.

@@ -32,7 +32,7 @@ Every discovered finding falls into one of four distinct categories. The categor
 | **Blocking** | Tool or test failure; violation of an applicable documented project rule, including a preference-worded standard (Phase 2); unsafe database migration; DoD behavior lacking test coverage and lacking explicit declaration; or a critical defect with a concrete failure scenario. Critical means a credible path to data loss or corruption, security exposure, irreversible side effects, or failure of a required behavior. A credible critical risk blocks even when no run can prove it ([proven-findings.md](../ai-assisted-software-development/references/proven-findings.md)). | Fix regardless of budget. If unresolved, report a blocked verdict. |
 | **Should fix** | Judgment **with a concrete failure scenario** that does not meet the Blocking criteria: a lower-impact bug proven by a run per [proven-findings.md](../ai-assisted-software-development/references/proven-findings.md), expensive future change, or reader confusion. | Fix within the budget (Section 5) or justify in one line why it remains. |
 | **Discard** | Judgment lacking a concrete scenario, personal style preference, "could be slightly cleaner". | Do not fix and do not record. |
-| **Escalate** | The remediation would alter a public contract, module boundary, or dependency direction; or a checkable rule has no automated check (Phase 2). | Do not apply. Record as a pending Human Layer decision. If a Blocking finding needs that decision, the verdict stays blocked. |
+| **Escalate** | The remediation would alter a public contract, module boundary, or dependency direction; or a checkable rule has no automated check (Phase 2). | Not a self-review fix: decide it through [`software-designing`](../software-designing/SKILL.md), apply it, and show it on the change card as a decision to ratify. A rule without a check is reported for [`correct`](../correct/SKILL.md). |
 
 Classify severity before applying any budget. When uncertain whether a credible scenario is critical, keep it Blocking until evidence rules out the critical impact. When uncertain between **Should fix** and **Discard**: if a concrete failure scenario does not come to mind immediately, discard it.
 
@@ -162,7 +162,7 @@ Execute objective checks (Phases 1, 2, 3, and 4a) first. Then execute judgment c
 
 ### Iteration Limit
 - Maximum of **3 rounds** of evaluate → fix → re-evaluate. This is a stopping limit on autonomous attempts, never an acceptance threshold for Blocking findings.
-- If **Blocking** issues persist after round 3, stop with a **blocked** verdict. Document each unresolved finding, its impact, and what was attempted; request the necessary Human Layer decision or help. Do not deliver the code as clean, open or mark a pull request ready, or create a clean checkpoint. A later run must review the unresolved scope again.
+- If **Blocking** issues persist after round 3, stop with a **blocked** verdict. Document each unresolved finding, its impact, and what was attempted; ask the user for help. Do not deliver the code as clean, open or mark a pull request ready, or create a clean checkpoint. A later run must review the unresolved scope again.
 
 ### Anti-Oscillation
 - If a proposed fix would revert a previous fix, or contradicts a decision already finalized in this review, **preserve the current implementation** and move forward only for discretionary findings. For Blocking findings, stop with a blocked verdict and document the conflict.
