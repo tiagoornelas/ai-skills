@@ -19,7 +19,7 @@ A pull request is the permanent record of one change, written for developers who
 ## 1. What the Body Holds, and What It Never Holds
 
 - **Holds facts about the change** that stay true after merge: why it exists, what it adds, changes, or removes and where, the decisions taken and their reasons, how a changed flow works, how each behavior was tested, and what it breaks.
-- **Never holds the state of the work or the flow that produced it**: draft, CI, review, or proof status; approvals; decisions still open; what is missing; review rounds or follow-up lists; and the vocabulary of the authoring workflow (change card, plan, notice, self-review, agents, sessions). Open decisions are settled before the PR is opened.
+- **Never holds the state of the work or the flow that produced it**: draft, CI, review, or proof status; approvals; decisions still open; what is missing; review rounds or follow-up lists; and the vocabulary of the authoring workflow (change card, plan, notice, self-review, agents, sessions). Decisions are taken before the PR is opened; whether the user ratified them lives outside the body.
 - **Nothing reads the body back.** No workflow takes state, decisions, or approvals from a PR; those live in the issue, the conversation, or git notes.
 - **Updating a PR rewrites the body to describe the change as it now is**, never appends a log of what changed since the last version.
 - **Lead with the reader's question**: what this changes, for whom, and why, in the first lines. No implementation detail already settled below the contracts.

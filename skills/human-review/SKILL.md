@@ -27,7 +27,7 @@ In the user's language, per [human-facing communication](../ai-assisted-software
 ```text
 <one sentence: what changes, for whom, in product terms>
 
-<a decision-to-ratify card per `?` line, ordered by cost to reverse>
+<a decision-to-ratify card per `?` line and `!` line to ratify, ordered by cost to reverse>
 <the plan of the change card>
 
 <Findings>
@@ -36,12 +36,12 @@ In the user's language, per [human-facing communication](../ai-assisted-software
 <proof>  <N>/6 on <short commit> · <missing: each failing letter and name>
 ```
 
-1. **The decisions to ratify**, first: one [decision-to-ratify card](../ai-assisted-software-development/references/human-facing-communication.md#presenting-decisions-taken) per `?` line, ordered by cost to reverse after merge, tier 3 first. They are the Human Layer decisions the change embeds, recorded by the author or not: a rule, a contract, a new component, a departure from a pattern, a trade-off with a lasting [maintenance commitment](../software-designing/references/maintenance-commitment.md). Do not infer that the author consciously accepted a trade-off just because the code embodies it.
+1. **The decisions to ratify**, first: one [decision-to-ratify card](../ai-assisted-software-development/references/human-facing-communication.md#presenting-decisions-taken) per `?` line and per `!` line marked `to ratify`, ordered by cost to reverse after merge, tier 3 first. They are the Human Layer decisions the change embeds, recorded by the author or not: a rule, a contract, a new component, a departure from a pattern, a trade-off with a lasting [maintenance commitment](../software-designing/references/maintenance-commitment.md). Do not infer that the author consciously accepted a trade-off just because the code embodies it.
 2. **The [change card](../ai-assisted-software-development/references/change-card.md)'s plan**, built from the change itself, not from the author's description (for a large PR, by the light path of [`provide-evidence`](../provide-evidence/SKILL.md#2-gather)).
 3. **Critical findings only**: 🔴, and 🟡 that change a behavior, each one or two lines with a plausible scenario, its impact, and a direction of solution with its trade-off, most consequential first; mark a problem the change did not introduce as older. A preference without a consequence is not a finding. Other findings are counted and given on request.
 4. **One proof line**, read from the delivery's evidence note by [`provide-evidence`](../provide-evidence/SKILL.md)'s show rules: how many of the six lines hold on which commit and which are missing, "outdated: proves X, the PR is at Y", or "no record on this machine".
 
-Omit the findings when there are none, and the decisions when there are no `?` lines; the plan and the proof line always appear. Nothing below contracts appears unless it changes a behavior, contract, boundary, or risk; then the screen shows that consequence.
+Omit the findings when there are none, and the decisions when there is nothing to ratify; the plan and the proof line always appear. Nothing below contracts appears unless it changes a behavior, contract, boundary, or risk; then the screen shows that consequence.
 
 ## 3. Stay Critical
 
@@ -66,7 +66,7 @@ It records that a review ran and what it recommended, never an approval. It stay
 
 ## 6. Success Validation
 
-- [ ] The screen opened with one sentence on what changes for whom, then a decision-to-ratify card per `?` line ordered by cost to reverse, then the change card's plan built from the actual change.
+- [ ] The screen opened with one sentence on what changes for whom, then a decision-to-ratify card per `?` line and `!` line to ratify, ordered by cost to reverse, then the change card's plan built from the actual change.
 - [ ] Only critical findings followed, each with scenario, impact, and direction; the others were counted, not listed; nothing below contracts appeared unless it changed behavior, contract, boundary, or risk.
 - [ ] One proof line closed the screen, read from the evidence note; divergences between claims and the change, and what is unverified, were named; no proof or approval was implied.
 - [ ] A part was explained in depth only when the user pointed at it.
