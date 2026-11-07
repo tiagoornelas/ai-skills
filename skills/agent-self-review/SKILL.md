@@ -178,7 +178,7 @@ The deliverable is **clean** at the agent layer when:
 
 - zero **Blocking** issues exist;
 - every reported **Should fix** was remediated, justified in a single sentence, or named as over budget;
-- every **Escalate** finding is logged as a pending Human Layer decision.
+- every **Escalate** finding is on the change card as a decision to ratify, or reported for `correct`.
 
 Record a concise traceability log: the reviewed range and mode, the rule files in the ledger, the DoD table with named tests, the removed-test destinations, what was fixed, what was justified, what was over budget, and what was escalated. Findings classified **Discard** are not recorded.
 
