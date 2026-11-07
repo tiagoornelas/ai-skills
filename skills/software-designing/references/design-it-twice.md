@@ -6,15 +6,14 @@
 
 ## When to consult
 
-- Prior to locking in any major design decision: system decomposition, module interface, API contract, or core mechanism implementation.
-- When the first idea "feels obvious" and no one has explored alternatives.
+- Running the arena of [`software-designing`](../SKILL.md#step-3-compare-alternatives-proportionally): a Human Layer decision (system decomposition, module interface, API contract, data model, core mechanism) the project has no established way to settle.
 - When evaluating and contrasting alternative architectures.
 
 ---
 
 ## 1. The Core Principle
 
-- For every high-impact design decision, never settle on the first idea. Sketch **two or more distinct approaches**, evaluate them side-by-side, and choose or combine the best elements.
+- For every high-impact design decision, never settle on the first idea. Sketch **two distinct approaches**, evaluate them side-by-side, and choose one, grafting a strength of the other when it fits.
 - Alternatives must be **radically different**, not superficial variations of the same underlying concept. Minor tweaks explore very little of the design space. Radically different designs deepen understanding of the problem domain, even when they are ultimately discarded.
 - This holds true even when one approach appears to be the only plausible path. Sketching an alternative—even one you suspect is sub-optimal—illuminates the specific strengths that make the preferred design superior.
 
@@ -45,17 +44,16 @@ Comparison:
 ### When No Alternative is Compelling
 
 - Occasionally, none of the proposed alternatives are satisfying. In that case, use the discovered flaws to synthesize a **new design**.
-- The optimal architecture is frequently a **hybrid combination** blending the best traits of disparate options, or a novel concept sparked by the comparative analysis.
-- If no design feels right, it is a clear indicator that the problem domain is not yet well understood. Invest in clarifying requirements before committing to code.
+- The chosen design often grafts one strength of the other option, or is a novel concept sparked by the comparison.
+- If no design feels right, the problem domain is not yet well understood: redesign once from the weaknesses found, then present the problem as ill-defined.
 
 ---
 
 ## 4. Architectural Levels of Application
 
 - **Module Interfaces**: the most critical application level.
-- **Internal Mechanisms**: applicable to core algorithmic engines where performance and simplicity intersect.
 - **System Decomposition**: which modules exist and how domain responsibilities are partitioned.
-- **User Interfaces**: workflows, screen layouts, and interaction flows similarly benefit from exploring radically different wireframes.
+- **User Interfaces**: workflows, screen layouts, and interaction flows benefit from radically different variants, built as a disposable [`prototype`](../../prototype/SKILL.md).
 
 ---
 

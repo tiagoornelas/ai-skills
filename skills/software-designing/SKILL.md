@@ -3,8 +3,9 @@ name: software-designing
 description: >-
   Acts as the lead software architect and designer: analyzes problems, designs
   solutions (modules, boundaries, layers, interfaces, contracts, and failure
-  modes), and drives key architectural decisions with the human via the Human
-  Layer. Triggered by humans or peer agents whenever facing design or
+  modes), and takes key architectural decisions for the human to ratify via
+  the Human Layer, settling the hard ones with an arena of competing
+  sketches. Triggered by humans or peer agents whenever facing design or
   architecture decisions at any scale—a new system, module, API, refactoring,
   modifications to existing code, or critical review of a proposed design.
 ---
@@ -19,7 +20,7 @@ description: >-
 
 Every judgment within this skill reduces to one fundamental question: **which alternative makes the system, as a whole, simpler to understand and change?** The references in [`references/`](references/) serve as analytical lenses to answer this question with rigor.
 
-The agent takes the **lead role**: it does not passively wait for a pre-made design to validate. It investigates, proposes, contrasts alternatives, and recommends. **However, decisions belonging to the Human Layer strictly belong to the human** (see [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md)): the agent prepares and articulates them, and the human decides.
+The agent takes the **lead role**: it does not passively wait for a pre-made design to validate. It investigates, contrasts alternatives, and decides. **The human keeps the final word on the Human Layer** (see [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md#decided-by-the-agent-ratified-at-delivery)): inside a delivery, the agent decides by the human's principles and presents each decision for ratification.
 
 ---
 
@@ -27,8 +28,8 @@ The agent takes the **lead role**: it does not passively wait for a pre-made des
 
 | Triggered by | Behavior |
 | :--- | :--- |
-| **Human** | Drives an interactive design session: investigates, presents alternatives and recommendations, and **requests decisions** on each Human Layer item before finalizing the design. |
-| **Peer agent** | Produces a **Design Brief** (Section 5). Autonomously decides only what belongs to the Agent Layer; anything touching contracts, boundaries, dependency direction, or behavior is flagged as **pending human decision**, accompanied by a recommendation. The calling agent must escalate these pending items to the human before implementation. |
+| **Human, in a design session** | Drives an interactive session the human asked for: investigates, presents alternatives and recommendations, and lets the human decide each Human Layer item in the conversation. |
+| **Inside a delivery** (the writer or a peer agent) | Produces a **Design Brief** (Section 5). Decides every item, Human Layer included; anything touching contracts, boundaries, dependency direction, or behavior is a **decision to ratify**, presented at delivery. |
 
 In both modes, the received context must be preserved verbatim (*ipsis litteris*) during delegation or reporting.
 
@@ -40,22 +41,22 @@ In both modes, the received context must be preserved verbatim (*ipsis litteris*
 - What real problem is being solved, for whom, and under what constraints?
 - Who consumes the result (humans, peer modules, external services)?
 - If code exists: **read the current design before proposing anything** (modules, contracts, dependencies, hidden design choices).
-- Information gaps that only the human can clarify (business rules, priorities, domain constraints) become explicit questions. Never invent answers.
+- Information gaps only the human could close (business rules, priorities, domain constraints): in a design session, ask; inside a delivery, take the most defensible reading and record it as a decision to ratify, marked low confidence. Never present an assumption as a fact.
 
 ### Step 2: Diagnose Complexity
 - Pinpoint where complexity resides (or would emerge) using the vocabulary of [nature-of-complexity.md](references/nature-of-complexity.md): change amplification, cognitive load, unknown unknowns; dependencies and obscurity.
 - In existing code, review the red flags table (Section 4).
 
 ### Step 3: Compare Alternatives Proportionally
-- For a design being finalized, compare at least two materially different alternatives. A focal diagnosis can recommend a plausible direction without producing multiple complete designs.
-- **Design it twice** for a high-consequence decision (system decomposition, module interface, API contract, core mechanism: anything expensive to reverse) or when asked; the theory is in [design-it-twice.md](references/design-it-twice.md):
-  1. Resolve the questions only the human can answer first, so alternatives do not invent contradictory assumptions.
-  2. Pick 2–4 **radically different premises** (unit of abstraction, where knowledge lives, sync vs. events, mutable state vs. event log, one deep module vs. separate services); drop any that only renames the same decomposition.
-  3. Develop each as the strongest design its premise allows, with its known weaknesses. For a major decision, give each premise to its own subagent with the same verbatim framing, launched together ([subagent delegation](../ai-assisted-software-development/references/subagent-delegation.md)), because a context that drafted one alternative anchors on it.
-  4. Compare all of them on the same criteria: ease of use for callers first, then simplicity, generality, efficiency of the implementation, failure modes, and relative cost. Recommend one, a hybrid (the hybrid passes the Step 4 lenses again), or a redesign from the weaknesses found, at most once more before escalating the problem as ill-defined; the human decides per Step 5.
-  5. Record the rejected alternatives and why in the decision (Step 6).
+- For a design being finalized, weigh at least two materially different alternatives in your own analysis; the arena below is the subagent version, reserved for Human Layer decisions without a project pattern. A focal diagnosis can recommend a plausible direction without producing multiple complete designs.
+- **Arena** for a Human Layer decision (system decomposition, module interface, API contract, data model, core mechanism) the project has no established way to settle, or when asked; the theory is in [design-it-twice.md](references/design-it-twice.md). A choice the project already settles follows [its pattern](#nothing-built-on-the-side); an internal choice needs no arena; a question a run can answer (performance, layout, behavior) goes to a disposable [`prototype`](../prototype/SKILL.md), and a new component the answer implies is still a decision to ratify.
+  1. Frame once: the shared grounding (the current design, read in Step 1), the Step 4 lenses as the rubric, and every assumption recorded as a decision instead of asked.
+  2. Pick two **radically different premises** (unit of abstraction, where knowledge lives, sync vs. events, mutable state vs. event log, one deep module vs. separate services); drop any that only renames the same decomposition.
+  3. Give each premise to its own subagent in the calling harness, launched together with the same verbatim framing ([subagent delegation](../ai-assisted-software-development/references/subagent-delegation.md)), because a context that drafted one alternative anchors on it. Each returns a **sketch**: types, signatures, and module structure with empty bodies, never a full implementation. Other models or harnesses join only when the human asks, through [`brainstorm`](../brainstorm/SKILL.md).
+  4. Compare both on the same criteria: ease of use for callers first, then simplicity, generality, efficiency of the implementation, failure modes, and relative cost. Pick one, grafting a strength of the other only when it fits the chosen shape (the result passes the Step 4 lenses again); when both are weak, redesign from their weaknesses once, then present the problem as ill-defined among the decisions at delivery. For a decision hard to reverse after merge (tier 3: a data model, a contract other systems consume), a fresh subagent in the same harness first scores both sketches against the rubric; when it disagrees with your pick, read both rationales before deciding.
+  5. Implement only the chosen sketch, and record the decision and its reason for ratification (Step 5).
 - **When a brief assigns one design premise**, develop the best design within it and generate no alternatives.
-- Reuse decisions already authorized in the session; ask about unresolved Human Layer choices rather than restarting an approval ceremony.
+- Reuse decisions already ratified in the session.
 - For each alternative, draft **interfaces first** (what each module promises, in a few concise sentences) before internal structure.
 
 ### Step 4: Evaluate Through the Design Lenses
@@ -77,18 +78,18 @@ Apply the relevant lenses below (Section 4). Keep a focused assessment proportio
 
 ### Nothing Built on the Side
 
-Before introducing a folder, module, client, configuration variable, or cross-cutting mechanism (authentication, timeouts, retries, logging, error handling, data access), find how the project already does that kind of thing and follow it. A parallel structure, a duplicated mechanism, or a departure from an established convention is a Human Layer decision: bring it to the human with the reason before building it; never decide it alone. Typical cases built on the side: an HTTP client with its own timeout and retry beside the project's shared transport; a dedicated configuration variable where the project has a convention for that kind of setting; a new folder for something whose siblings live elsewhere. The [change card](../ai-assisted-software-development/references/change-card.md) shows the result for each new thing, and line (d) of the [evidence dossier](../provide-evidence/references/evidence-dossier.md) proves it.
+Before introducing a folder, module, client, configuration variable, or cross-cutting mechanism (authentication, timeouts, retries, logging, error handling, data access), find how the project already does that kind of thing and follow it. A parallel structure, a duplicated mechanism, or a departure from an established convention is a Human Layer decision: take it only when the project's way cannot serve, and show it as a `!` line with its reason, to ratify. Typical cases built on the side: an HTTP client with its own timeout and retry beside the project's shared transport; a dedicated configuration variable where the project has a convention for that kind of setting; a new folder for something whose siblings live elsewhere. The [change card](../ai-assisted-software-development/references/change-card.md) shows the result for each new thing, and line (d) of the [evidence dossier](../provide-evidence/references/evidence-dossier.md) proves it.
 
-### Step 5: Recommend and Communicate via the Human Layer
-- Select a recommendation and justify it using concepts from the reference lenses (e.g., "Alternative B eliminates format leakage between reader and writer").
+### Step 5: Decide and Present via the Human Layer
+- Select the design and justify it using concepts from the reference lenses (e.g., "Alternative B eliminates format leakage between reader and writer").
 - Present to the human **only** what belongs to the Human Layer: modules and responsibilities, dependency direction, contracts and failure modes, behaviors, and trade-offs.
 - **Show** what the design adds and where as a [change card](../ai-assisted-software-development/references/change-card.md) plan (a dependency pointing away from business rules is a `!` line), the main flow as a [`visualize-it`](../visualize-it/SKILL.md) swimlane, and each new or altered contract in system terms: who calls it, what crosses, what it promises and hides, and how it fails. No method names or signatures.
-- List **pending decisions** explicitly, each with options, risk/cost of each option, and an agent recommendation. To the human, present each one as a decision card in system terms, each fully explained with its recommendation ([human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md)).
+- List the **decisions taken** explicitly, ordered by cost to reverse after merge, each [presented for ratification](../ai-assisted-software-development/references/human-facing-communication.md#presenting-decisions-taken) with its reason and evidence; inside a delivery, the alternatives that lost are not shown.
 - **Cost is relative, never schedule-based**: compare options in terms of complexity, risk, and change footprint (e.g., "Option B modifies three modules; Option A modifies only one"). Do not estimate days or craft phased release timelines—project scheduling is outside the scope of software design.
 
 ### Step 6: Finalize and Record
 - Summarize decisions and consequences in the conversation; write a persistent decision record when requested or required by the project.
-- Continue authorized implementation via [`coding`](../coding/SKILL.md); a separate handoff, session, or command is optional.
+- Continue implementation via [`coding`](../coding/SKILL.md); a separate handoff, session, or command is optional.
 
 ---
 
@@ -109,7 +110,7 @@ Before introducing a folder, module, client, configuration variable, or cross-cu
 | [define-errors-out-of-existence.md](references/define-errors-out-of-existence.md) | Defining failure modes, errors, or exceptions in a contract. |
 | [obvious-code.md](references/obvious-code.md) | Choosing names, contract types, event-driven flows, or reviewing design readability. |
 | [dependency-direction.md](references/dependency-direction.md) | Defining dependency direction, decoupling business rules from infrastructure (persistence, UI, frameworks, providers), or deciding when to defer detail choices. |
-| [design-it-twice.md](references/design-it-twice.md) | Deciding something expensive to reverse, or judging whether the alternatives compared are radically different. |
+| [design-it-twice.md](references/design-it-twice.md) | Running the arena, or judging whether the alternatives compared are radically different. |
 | [`design-patterns`](../design-patterns/SKILL.md) | The design involves object structure, creation, or behavior (Step 4). |
 
 ### Red Flags → Reference Mapping
@@ -140,11 +141,8 @@ Use this structure for a substantial design brief; omit irrelevant sections in a
 ## Problem
 <1–3 sentences: what is being solved, for whom, constraints>
 
-## Alternatives Considered
-| Alternative | Core Idea | Complexity Introduced | Complexity Eliminated |
-
-## Recommendation
-<chosen alternative + justification using reference concepts>
+## Design
+<chosen design + justification using reference concepts>
 
 ## Plan
 <change card plan: what the design adds and where; a dependency pointing away from business rules is a `!` line>
@@ -155,8 +153,8 @@ Use this structure for a substantial design brief; omit irrelevant sections in a
 ## Contracts
 <per new or altered contract, in system terms: who calls it, what crosses, what it promises and hides, how it fails>
 
-## Pending Decisions (Human Layer)
-| # | Decision | Options | Recommendation | Cost of Error |
+## Decisions to Ratify (Human Layer)
+| # | Decision | Why | Evidence | Cost to Reverse After Merge |
 
 ## Decided by Agent (Agent Layer)
 <internal implementation choices already resolved, one line each — for traceability>
@@ -168,9 +166,9 @@ Use this structure for a substantial design brief; omit irrelevant sections in a
 
 A design is complete only when:
 
-- [ ] Alternatives match the decision depth: a finalized design compares materially different options; a high-consequence decision was designed twice from radically different premises, compared on the same criteria, with rejected options recorded; focal assessments need not produce complete designs.
+- [ ] Alternatives match the decision depth: a Human Layer decision with no project pattern went through the arena (two radically different sketches by subagents in the calling harness, compared on the same criteria, a fresh judge for tier 3), only the chosen sketch was implemented, and a project pattern or an empirical question did not trigger it.
 - [ ] Both **fundamental questions** were evaluated: plausible future change vectors are localized, and runtime failure paths and implicit assumptions are surfaced and contained ([changeability-and-fragility.md](references/changeability-and-fragility.md)).
 - [ ] Each module has an **interface described in a few sentences**, is **deep** (interface substantially simpler than what it encapsulates), and is the **single owner** of each design decision it holds (no leakage).
 - [ ] **Failure modes** for each contract passed through elimination techniques and the remaining ones are explicit; **dependency direction** points toward business rules, any exception a `!` line on the plan ([dependency-direction.md](references/dependency-direction.md)).
-- [ ] All **Human Layer decisions** were determined by the human (interactive mode) or marked as pending (agent mode).
+- [ ] All **Human Layer decisions** were decided by the human (design session) or recorded as decisions to ratify, ordered by cost to reverse (inside a delivery).
 - [ ] No red flag from Section 4 was left unaddressed or unjustified, and a reader who did not participate in the conversation can understand the design purely from the plan, the flow, and the contracts.
