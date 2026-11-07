@@ -15,6 +15,9 @@ Before the first edit, work on the delivery's own branch and worktrees, created 
 ## Testing
 Implement test-driven development following [test-driven-development.md](references/test-driven-development.md), governed by criteria in [testing.md](references/testing.md).
 
+## Debugging
+Fix bugs at the root cause following [debugging.md](references/debugging.md).
+
 ## Refactoring
 Refactor before modifying code that is difficult to change, and after every passing test, restricted to the code touched by the current task, following [refactoring-principles.md](references/refactoring-principles.md).
 
@@ -25,6 +28,10 @@ Refactor before modifying code that is difficult to change, and after every pass
 | [test-driven-development.md](references/test-driven-development.md) | Beginning to implement a task or fix a bug. |
 | [testing.md](references/testing.md) | Writing or reviewing tests. |
 | [refactoring-principles.md](references/refactoring-principles.md) | Refactoring, or evaluating whether a structural improvement is worth the investment now. |
+| [debugging.md](references/debugging.md) | Investigating a bug or a failing test, or when a fix did not work. |
+| [domain-models-and-types.md](references/domain-models-and-types.md) | Writing stateful or branching logic, designing types or signatures, or parsing external data. |
+| [retries-and-concurrency.md](references/retries-and-concurrency.md) | Writing jobs, commands, scripts, or backfills that mutate state, or when concurrent actors may write the same state. |
+| [measuring-performance.md](references/measuring-performance.md) | Running a benchmark, or reporting or acting on a performance number. |
 | [naming.md](references/naming.md) | Naming variables, functions, classes, or internal fields. |
 | [functions.md](references/functions.md) | Writing, splitting, or reviewing functions. |
 | [comments.md](references/comments.md) | Writing, maintaining, or reviewing comments. |

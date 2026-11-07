@@ -53,7 +53,7 @@ Database migrations run in production with production traffic active. Any migrat
 - **The Hazard**: Running heavy data updates (`UPDATE users SET status = 'active' WHERE ...` across millions of rows) inside a DDL transaction creates massive write-ahead log (WAL) bloat, holds row locks for minutes, and risks transaction rollback on timeouts.
 - **Rules**:
   1. **Separate DDL from DML**: Keep schema changes (DDL) separate from data backfill scripts (DML).
-  2. **Batch Data Backfills**: Backfill rows in bounded chunks (e.g., batches of 1,000–5,000 records) with sleep intervals or background workers, committing each batch independently.
+  2. **Batch Data Backfills**: Backfill rows in bounded chunks (e.g., batches of 1,000–5,000 records) with sleep intervals or background workers, committing each batch independently. A backfill resumes after a crash without redoing or duplicating work ([retries-and-concurrency.md](retries-and-concurrency.md)).
 
 ---
 

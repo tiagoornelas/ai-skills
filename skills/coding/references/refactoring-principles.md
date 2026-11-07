@@ -32,7 +32,19 @@ For ordinary implementation, **restrict refactoring to the code touched by the c
 
 ---
 
-## 3. When Not to Refactor
+## 3. Subtract, Migrate, Delete
+
+The default direction of every change is toward less code. Each line kept is a line every future reader and agent must understand.
+
+- **Subtract before you add.** Before building, remove dead code, redundant validators, unused parameters, and stale references in the code the task touches, then build on the simpler base. Write no guard, parser, or validator beyond what the requirement demands; design for observed usage, not speculative cases.
+- **Migrate callers, then delete the old API, in the same change.** When a new internal API replaces an old one, move every caller and delete the old API together. Tests assert the new contract; tests that only protected the old implementation are deleted. No adapter, shim, or deprecated wrapper stays "for safety".
+- **Converge on the end state.** In a planned rewrite or migration, write no temporary compatibility code to keep intermediate states working: reach the target design and verify the whole change, statically and at runtime, before delivering it.
+
+**Boundary**: this applies to internal APIs below contracts, whose callers all change in the same delivery. A contract or boundary between modules, an API consumed outside the repository, or a database schema read by code still running during a deploy keeps a backward-compatible transition ([database-and-migrations.md](database-and-migrations.md), Section 2.2), and changing it is a Human Layer decision (Section 5).
+
+---
+
+## 4. When Not to Refactor
 
 - The code works, does not need modification, and no one needs to understand it today.
 - The component is slated for rewrite or deprecation in the immediate future.
@@ -41,15 +53,15 @@ For ordinary implementation, **restrict refactoring to the code touched by the c
 
 ---
 
-## 4. Refactoring and the Human Layer
+## 5. Refactoring and the Human Layer
 
 - Autonomous internal refactoring takes place strictly **below contracts**. Any modification detectable by callers outside the module (public signatures, cross-module responsibilities, architectural boundaries, dependency direction) can be architectural refactoring when product behavior is preserved, but it is a Human Layer concern, governed by the boundary test in [`ai-assisted-software-development`](../../ai-assisted-software-development/SKILL.md) (Section 4). Do not alter unilaterally; escalate via [`software-designing`](../../software-designing/SKILL.md).
 
 ---
 
-## 5. Performance
+## 6. Performance
 
-- Author clean, obvious code first. Optimize later, strictly where **profiling and benchmarking** prove it is necessary, and isolate the optimization.
+- Author clean, obvious code first. Optimize later, strictly where **profiling and benchmarking** prove it is necessary, and isolate the optimization. Vet every number before acting on it: [measuring-performance.md](measuring-performance.md).
 
 ---
 
