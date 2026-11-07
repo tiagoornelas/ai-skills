@@ -59,7 +59,7 @@ A change with nothing to decide still follows the order: it says plainly that th
 
 ### Giving context
 
-- **Situate before naming.** The first time a term from the right column of Section 1 appears, say what it is and where it lives in the product: "the 'Thinking…' indicator, which the chat shows while the AI prepares its answer", not "'Thinking…'".
+- **Situate before naming.** The first time a term from the right column of Section 1 appears, say what it is and where it lives in the product: "the 'Thinking…' indicator, which the chat shows while the AI prepares its answer", not "'Thinking…'". The same rule for any reader, with terms the agent coins on the spot, is in [`unslop`](../../unslop/SKILL.md).
 - **Outside in.** Product → application → area → mechanism. Never start at a line of code or a function name.
 - **Before and after, concretely.** Every behavior change shows one realistic case: a user doing a specific thing, what they saw before, what they see now.
 - **Say why, and say when you do not know.** Explain the reason behind odd code (business rule, legacy constraint, past incident). If the reason or a fact is unknown, say so; never fill a gap with a plausible guess.

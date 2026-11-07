@@ -39,7 +39,7 @@ Show the task in the [task state](references/task-state.md) format, derived from
 5. **Keep fact apart from claim**: what the text shows (a link, a test result, a number with its source) is fact; what someone asserts is a claim, written with who said it and "not verified". Never add a fact the text lacks; when the user needs something the text does not say, say it is missing.
 6. **When nothing concerns the user**, say so in one sentence with the reason, such as "Nothing here requires anything from you: it restates the plan you approved on Monday."
 
-No headings, no "in summary", and no list of everything the text covers. Writing a reply to the text is [`humanize-writing`](../humanize-writing/SKILL.md)'s job.
+No headings, no "in summary", and no list of everything the text covers. Writing a reply to the text is [`unslop`](../unslop/SKILL.md)'s job.
 
 A fictional digest of a long thread about invoice PDFs:
 

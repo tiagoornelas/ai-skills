@@ -1,15 +1,18 @@
 ---
-name: humanize-writing
+name: unslop
 description: >-
-  Writes, edits, and reviews text in any language to reduce predictable
-  patterns of AI-generated prose, preserving authentic voice, point of view,
-  and context. Triggered for emails, articles, blog posts, documents, scripts,
-  and professional communications when the user requests natural, authentic
-  writing, and by pr-code-review and pr-review-react when drafting PR
-  comments and replies so they read as written by a human peer.
+  Writes, edits, and reviews text in any language to remove the predictable
+  patterns of AI-generated prose (AI slop): coined terms without context, AI
+  vocabulary, formulaic contrasts, staged reveals, and mannered phrasing,
+  preserving authentic voice, point of view, and context. Triggered for emails,
+  articles, blog posts, documents, scripts, and professional communications
+  when the user asks to unslop, humanize, or make text sound natural; by
+  technical-writing for every document it governs; and by pr-code-review and
+  pr-review-react when drafting PR comments and replies so they read as
+  written by a human peer.
 ---
 
-# Humanize Writing
+# Unslop
 
 A craft-oriented stylistic review, **never a mechanical checklist of rigid prohibitions**. Text preserves its purpose, tone, facts, and target language.
 
@@ -39,6 +42,14 @@ A craft-oriented stylistic review, **never a mechanical checklist of rigid prohi
 
 ## 3. Review Criteria
 
+- **Coined Terms Without Context** (the most damaging pattern): describe before naming. Never drop a term the reader has not met (a name invented on the spot such as "the Reconciliation Gate", a session label such as "finding 3" or "wave 2", an invented acronym, or internal vocabulary from the code or the team) as if it were shared knowledge. Coin a name only when the text reuses it several times, and introduce it with one plain sentence on what it is and where the reader meets it. **Test**: if the reader would ask "what is that?", rewrite with the description.
+- **AI Vocabulary**: crucial, pivotal, robust, seamless, delve, leverage, utilize, landscape, tapestry, testament, underscore, foster, showcase, and fancy stand-ins for "is" and "has" ("serves as", "stands as", "boasts"). Use the plain word. The language references list each language's own set.
+- **Abstract Metaphors and Mannered Prose**: metaphor nouns that pose as technical (substrate, wedge, vector, nexus, bedrock, paradigm, north star, flywheel, "API surface"), personified code ("the plan holds it"), figurative verbs ("rides along"), and aphorisms ("wire it or delete it"). Use the concrete word or the mechanism's real name.
+- **Feelings Instead of Mechanisms**: "the database stays close at hand" names a feeling; "`.toSQL()` returns the exact string sent to the database" names what happens. Write the mechanism, the fact, or the number. If a sentence could appear unchanged in another project's text, it says nothing about this one: cut it.
+- **Synonym Cycling**: call each thing by one name throughout; rotating synonyms makes the reader think they are different things.
+- **Forced Patterns**: false ranges ("from X to Y" where X and Y sit on no common scale), ideas forced into groups of three, "-ing" tails that tack on significance (", highlighting…", ", ensuring…"), and vague attributions ("experts agree"). List items directly, use the natural count, name the source or cut.
+- **Chatbot Residue**: openers and closers addressed to the requester ("Great question!", "Certainly!", "I hope this helps!") and stacked hedges ("could potentially perhaps"). Respond directly; keep one hedge where the uncertainty is real.
+- **Over-Compression**: dropped articles, verbless fragments, arrows, and abbreviations that make the reader decode ("bad date → exit 2, no write"). Write whole sentences: "The parser rejects a bad date, exits with code 2, and writes nothing."
 - **Formulaic Contrasts**: avoid "it's not about X, it's about Y" and its newer variants ("it's more than an X, it's a Y", "rather than simply X"). If a contrast is necessary, make it specific, surprising, and rooted in substance.
 - **Anaphora** (repeated sentence openings): use with restraint and intention, never as an unthinking rhythmic habit.
 - **Crutch Transitions** ("when that happens", "more than that"): replace with nuanced qualifications woven into the thought, or restructure the sentence directly.
@@ -73,6 +84,7 @@ A craft-oriented stylistic review, **never a mechanical checklist of rigid prohi
 - Never invent citations, statistics, sources, or personal narratives to simulate a human voice.
 - Do not apply heavy rewrites to text that already possesses a distinctive, effective voice: preserve what works.
 - Reading a long text for what matters to the user is [`tl-dr`](../tl-dr/SKILL.md)'s job; this skill writes.
+- Documentation, READMEs, PR descriptions, and commit messages also follow [`technical-writing`](../technical-writing/SKILL.md), which wins wherever the two differ on those texts (headings, punctuation, sentence rhythm); this skill owns the AI-pattern catalog both apply.
 
 ---
 
@@ -80,7 +92,7 @@ A craft-oriented stylistic review, **never a mechanical checklist of rigid prohi
 
 - [ ] Text is in the requested language and honors its register and conventions.
 - [ ] Facts, purpose, and professional tone are preserved; zero fabricated details.
-- [ ] Final pass against Section 3 completed; strictly automated tropes were rewritten.
-- [ ] Prose has zero em-dashes or en-dashes; headings and bullet leads are direct noun labels in sentence case; no "the X that Y" teasers, importance announcements, staged reveals, or announce-then-answer preambles remain.
+- [ ] Every term the reader has not met is described before or instead of being named; no AI vocabulary, metaphor nouns, or synonym cycling remains.
+- [ ] Communicative prose has zero em-dashes or en-dashes; headings and bullet leads are direct noun labels in sentence case; no "the X that Y" teasers, importance announcements, staged reveals, or announce-then-answer preambles remain.
 - [ ] Texts that deliver facts open with the situation and link each fact to its cause or effect; numbers carry their reference point.
 - [ ] Delivered ready-to-use without commentary, unless specifically requested.
