@@ -37,8 +37,8 @@ graph TB
 | | 👤 Human Layer | 🤖 Agent Layer |
 | :--- | :--- | :--- |
 | **Decides** | Which modules exist, what each promises, where dependencies point, what defines "done". | How each module fulfills its promises. |
-| **Reviews** | The plan of what is new and where it lives, contracts, and the behavior table—never the entire diff. | Its own code, in an automated loop, before any human sees it. |
-| **Receives from the other side** | Only what belongs to its layer: pending decisions, new contracts, manual verifications. | Clear contracts and acceptance criteria. |
+| **Reviews** | The plan of what is new and where it lives, contracts, the behavior table, and the evidence that the delivered commit does what was asked—never the entire diff. | Its own code, in an automated loop, before any human sees it. |
+| **Receives from the other side** | Only what belongs to its layer: pending decisions, new contracts, manual verifications, and the evidence for each claim. | Clear contracts and acceptance criteria. |
 
 **The boundary test**, whenever it is unclear who owns a decision:
 
@@ -53,7 +53,9 @@ graph LR
   D["Understand & decide<br/><i>interview, design,<br/>alternatives</i>"] --> I["Implement<br/><i>test-driven</i>"]
   I --> S["Self-review<br/><i>evaluate → fix →<br/>re-evaluate</i>"]
   S -- "blocking finding" --> I
-  S -- "clean" --> P["Pull Request<br/><i>summary & change card</i>"]
+  S -- "clean" --> E["Evidence<br/><i>independent reviewer<br/>proves each claim</i>"]
+  E -- "missing proof" --> I
+  E -- "proven" --> P["Pull Request<br/><i>summary & change card</i>"]
   P --> R["Human review<br/><i>Human Layer only</i>"]
   R -- "design decision" --> D
 ```
@@ -61,15 +63,15 @@ graph LR
 - **Before coding**, high-consequence decisions pass through the human. When a decision carries heavy weight, the agent designs **twice**, exploring radically different alternatives, and brings a recommendation instead of a single path.
 - **During**, the agent writes tests first whenever an observable behavior and a way to test it exist.
 - **Before the human**, the agent reviews itself with an iteration budget and limit: fixes blocking issues, fixes anything with a concrete failure scenario, discards style preferences, and **escalates** anything that would touch a contract.
-- **In parallel**, agents split work by delivery, never by layer: one session and one writer per delivery, one worktree per repository on the same branch name, no conversation between agents, and only a few deliveries in flight, because the human's review is the bottleneck.
-- **In review**, the human evaluates what was built against what was requested, in diagrams and a behavior table, rather than wading through a sea of lines.
+- **Before review**, the delivery carries its evidence: each claim (behavior covered, tests passing, nothing new left unlisted, no rule or test weakened) comes with a proof the human can open or re-run, for the exact commit being delivered. A reviewer with a clean context, not the agent that wrote the code, checks it. A claim without proof counts as not done.
+- **In review**, the human evaluates what was built against what was requested, in diagrams, a behavior table, and that evidence, rather than wading through a sea of lines.
 
 I use the same lenses for collaborating on other people's work: reviewing a peer's PR, responding to received reviews, and resolving conflicts between parallel branches without discarding either work.
 
 
 ## 📚 The Theories Behind It
 
-I don't leave criteria to chance. Every design or code judgment is grounded in an established concept with a name, drawn from foundational reference books, so findings are "this is a shallow module" rather than "I would have done it differently".
+Design and code judgments cite a named concept from the books in the table below. A finding reads "this is a shallow module", not "I would have done it differently".
 
 | Source | What was adopted | Where it appears |
 | :--- | :--- | :--- |
@@ -93,8 +95,6 @@ More agents are not more throughput. The rules for running agents in parallel co
 | **Cognition**, [*Don't Build Multi-Agents*](https://cognition.ai/blog/dont-build-multi-agents) and [*Multi-Agents: What's Actually Working*](https://cognition.com/blog/multi-agents-working) | Parallel writers make conflicting implicit decisions: **single-threaded writes**, helpers that contribute intelligence, and a **clean-context reviewer**. | One writer per delivery; subagents answer once; the independent reviewer of `provide-evidence`. |
 | **Practitioners and tools**: [Simon Willison](https://simonwillison.net/2025/Oct/5/parallel-coding-agents/), [Addy Osmani](https://addyosmani.com/blog/future-agentic-coding/), [Conductor](https://www.conductor.build/docs/concepts/git-worktrees), [Cursor](https://cursor.com/docs/configuration/worktrees) and [Codex](https://developers.openai.com/codex/app/worktrees) worktrees, Claude Code [agent teams](https://code.claude.com/docs/en/agent-teams) | **One worktree per agent**, the human reviewing deliveries instead of transcripts, and a few agents in flight because **review capacity is the limit**. | Branches and worktrees, the in-flight limit. |
 
-A measured case: a lead agent coordinating tab agents that messaged each other spent about 5× the tokens per changed line of a one-session-per-task flow, with about half of it in review rounds, mostly over wording, and a quarter in relaying messages.
-
 ### Reading for the reader
 
 | Source | What was adopted | Where it appears |
@@ -107,6 +107,7 @@ A measured case: a lead agent coordinating tab agents that messaged each other s
 
 - **The agent proposes, the human decides.** Nothing goes out to the world (push, comment, issue, message) without explicit confirmation.
 - **Facts are the agent's job; decisions belong to the human.** The agent doesn't ask what it can discover on its own, and doesn't answer its own decision questions.
+- **Done means proven.** An agent's work is accepted on evidence, not on its own report: every claim points to a proof the human can open or re-run, for the exact commit delivered, checked by a reviewer that did not write the code ([`provide-evidence`](skills/provide-evidence/SKILL.md)).
 - **Findings require concrete failure scenarios.** Judgment without a probable bug, an expensive change, or real reader confusion is preference, and preference does not become a finding.
 - **Show before describing.** What a change adds and where it lives reads as a plan, one line per thing; how a flow works reads as swimlanes.
 - **Nothing the reader cannot open.** Commits, PRs, and comments never reference local machine paths.
@@ -114,23 +115,6 @@ A measured case: a lead agent coordinating tab agents that messaged each other s
 - **Every skill specifies how to verify success.**
 
 The current catalog is in [`skills/`](skills/). It evolves over time; the philosophy above is what remains.
-
-
-## Focused Entry Points
-
-These entry points can be used independently, without a mandatory sequence:
-
-| Request | Skill | Result |
-| :--- | :--- | :--- |
-| Understand and evaluate a PR or local change | [human-review](skills/human-review/SKILL.md), or [pr-code-review](skills/pr-code-review/SKILL.md) for GitHub review mechanics | One screen: one sentence on what changes for whom, the change card's plan (a count line, then one line per new, changed, or removed thing, decision of yours, or deviation), the critical findings, and one line on the proof. Explains a part in depth when you point at it. |
-| Challenge scope or priorities before or during construction | [scope-review](skills/scope-review/SKILL.md) | Is it worth doing, what comes first, what can be left out and what is lost: do, reduce, postpone, or stop, for human judgment. |
-| Know whether a delivery is done and proven, for any PR | [provide-evidence](skills/provide-evidence/SKILL.md) | A verdict and, per PR, the change card's plan and the six evidence lines, one line each with its claim and its proof (screenshots grouped by context), and what is missing and who acts. Its verify action runs an independent reviewer that produces the missing proof. |
-| Find or pursue structural improvements | [improve-architecture](skills/improve-architecture/SKILL.md) | Evidence-backed opportunities or a focused refactoring/design investigation; implementation when authorized. |
-| See what needs you now and what to focus on next, across all your work | [coordinator](skills/coordinator/SKILL.md) | What depends on you first, then the next focus with its reason, the deliveries in flight against the limit, and each task's state. Read-only; offers to report tasks or clean up branches. |
-| Get one task, or a long text, down to what matters to you | [tl-dr](skills/tl-dr/SKILL.md) | A task in about ten lines (what depends on you, issue, plan count, PRs, threads), or a digest: the bottom line, its context, decisions, and fact kept apart from claim. |
-| Hear several models on one open question | [brainstorm](skills/brainstorm/SKILL.md) | The same brief to each, answers written alone, then convergences, divergences, and a recommendation. |
-
-For example, invoke `/scope-review <idea or PR>` or `/improve-architecture <area or recurring difficulty>`, using the harness's skill invocation syntax. Both use the shared [maintenance commitment](skills/software-designing/references/maintenance-commitment.md) lens. During normal work, observations stay brief; broader investigation is requested explicitly. Visual presentation follows [visualize-it](skills/visualize-it/SKILL.md), without a prescribed HTML report or automatic backlog.
 
 ## 🙏 Credits
 
