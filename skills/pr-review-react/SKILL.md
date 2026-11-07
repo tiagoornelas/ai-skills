@@ -150,7 +150,7 @@ If during implementation a change proves significantly more complex or risky tha
 
 ## 6. Author Replies
 
-One reply per thread, matching the language of the review (or reviewer's language). Draft and pass through [`humanize-writing`](../humanize-writing/SKILL.md): these are read by teammates.
+One reply per thread, matching the language of the review (or reviewer's language). Draft and pass through [`unslop`](../unslop/SKILL.md): these are read by teammates.
 
 | Disposition | Response Template |
 | :---: | :--- |

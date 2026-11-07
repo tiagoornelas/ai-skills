@@ -26,3 +26,4 @@
 - **Gerundism** ("vou estar enviando", "estaremos analisando"): use the simple form ("envio", "vamos analisar").
 - **Stacked formal connectives** ("Ademais", "Outrossim", "Nesse sentido", "Dessa forma" opening sentence after sentence): keep a connective only where it carries a logical link, and prefer plain ones ("além disso", "por isso", "então").
 - **Translated English idioms** ("no final do dia", "fazer sentido" for everything, "endereçar um problema"): use the Portuguese expression ("no fim das contas", "resolver", "tratar").
+- **AI vocabulary in Portuguese**: "robusto", "crucial", "fundamental", "alavancar", "potencializar", "jornada", "ecossistema", "sinergia", "cenário", "desbloquear", "elevar", "mergulhar fundo", "navegar" (figurative), and stand-ins for "é" and "tem" ("serve como", "se destaca como", "conta com"). Use the plain word ("usar", "ajudar", "é", "tem").

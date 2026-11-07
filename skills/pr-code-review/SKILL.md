@@ -122,7 +122,7 @@ As the user discusses each finding, establish whether they accept it and draft i
 
 ### 5.1. Line Comments
 
-For each accepted finding, generate a ready-to-paste comment in the language of the PR/repository (or user session language). Draft and pass through the [`humanize-writing`](../humanize-writing/SKILL.md) skill before presenting: comments are read by teammates, and formulaic AI phrasing damages collaborative rapport.
+For each accepted finding, generate a ready-to-paste comment in the language of the PR/repository (or user session language). Draft and pass through the [`unslop`](../unslop/SKILL.md) skill before presenting: comments are read by teammates, and formulaic AI phrasing damages collaborative rapport.
 
 <comment-template>
 
@@ -137,7 +137,7 @@ For each accepted finding, generate a ready-to-paste comment in the language of 
 
 ### 5.2. General Review Comment (Only on Explicit Request)
 
-By default, leave the overall review body empty for both **Approve** and **Request changes**. Line comments and existing thread replies carry the accepted feedback; do not repeat them in a general review comment. Draft a general review body only if the user explicitly requests one, aligned with their chosen verdict, and run it through `humanize-writing`.
+By default, leave the overall review body empty for both **Approve** and **Request changes**. Line comments and existing thread replies carry the accepted feedback; do not repeat them in a general review comment. Draft a general review body only if the user explicitly requests one, aligned with their chosen verdict, and run it through `unslop`.
 
 ### 5.3. Thread Replies in Re-review Mode
 
