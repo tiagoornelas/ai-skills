@@ -86,7 +86,7 @@ When designing a change:
 2. **Envision the ideal design** accommodating the new requirement, as if building it greenfield today.
 3. **Gauge the delta** between current and ideal:
    - Small → implement the ideal design directly, including necessary refactorings.
-   - Large → find a nearly-as-clean alternative that fits within scope; if none exists, **escalate to the human** as an explicit trade-off (cost now vs. cost later).
+   - Large → find a nearly-as-clean alternative that fits within scope; if none exists, decide and present it for ratification as an explicit trade-off (cost now vs. cost later).
 4. **Improve along the way, within the scope touched by the task**: refactoring scope follows [refactoring-principles.md](../../coding/references/refactoring-principles.md).
 5. **Update contract documentation simultaneously**, adhering to [comments.md](../../coding/references/comments.md).
 
@@ -114,7 +114,7 @@ In every design task, the agent must:
 1. **Reject accidental complexity**: if the quickest path introduces avoidable dependencies or obscurity, formulate the clean alternative and its true cost.
 2. **Evaluate alternatives** before locking in a solution, following Step 3 of [`software-designing`](../SKILL.md#step-3-compare-alternatives-proportionally).
 3. **Plan for the next change**: what is the most probable subsequent enhancement in this domain? Does the design make it effortless?
-4. **Fix instead of work around** whenever encountering a design flaw along the path, provided it falls within the code touched by the task and with a footprint small next to the task's own change. If the remediation exceeds scope, **escalate to the human** as an explicit trade-off with clear trade-off analysis.
+4. **Fix instead of work around** whenever encountering a design flaw along the path, provided it falls within the code touched by the task and with a footprint small next to the task's own change. If the remediation exceeds scope, present it for ratification as an explicit trade-off with clear trade-off analysis.
 5. **Make debt explicit**: when a tactical compromise is deliberately chosen by the human, record the decision and the outstanding cleanup where the project keeps decisions or tracks work, not in code comments.
 
 ---

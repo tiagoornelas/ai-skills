@@ -48,6 +48,8 @@ A decision costs nothing to change before merge; an action whose effect leaves t
 - creating resources that cost money or that others use (cloud resources, secrets, queues);
 - rewriting the history of a shared branch, or deleting data.
 
+Pushing the delivery's own branch and opening its draft pull requests stay inside the delivery; deploying to a validation environment others use is a deploy.
+
 ---
 
 ## 3. The Agent Layer

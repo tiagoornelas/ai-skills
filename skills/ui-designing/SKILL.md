@@ -20,8 +20,8 @@ Every color, typeface, spacing value, and word on a screen is a choice made for 
 
 | The request | Mode | Delivers |
 | :--- | :--- | :--- |
-| A visual identity or design system for a product that has none, or replaces it | **Create** (Section 3) | A direction the user chose, built into the project and applied to one screen |
-| The whole application brought onto a design system | **Refactor the system** (Section 4) | A plan of deliveries the user approved, run one by one |
+| A visual identity or design system for a product that has none, or replaces it | **Create** (Section 3) | The direction that best fits the brief, built into the project, applied to one screen, and ratified at delivery |
+| The whole application brought onto a design system | **Refactor the system** (Section 4) | A plan of deliveries, run one by one, each ratified at delivery |
 | One screen or flow improved | **Refactor a screen** (Section 5) | The screen rebuilt, with before-and-after screenshots |
 
 Refactoring the system without a design system starts with Create. For a screen in a project without one, ask whether to create one first or to work within the screen's current style; in the latter case, first gather the screen's existing values into local tokens, which then play the design system's role.
@@ -38,12 +38,12 @@ Before any choice:
 ## 3. Create a Design System
 
 1. Plan 2–3 radically different directions per [craft.md](references/craft.md#3-plan-review-build-critique).
-2. Render them on one representative screen with the UI branch of [`prototype`](../prototype/SKILL.md), each variant with its own planned tokens instead of the project's. For product screens, variants differ in identity (palette, type, signature element) and share a predictable structure. The user picks one or a hybrid: that is the decision.
+2. Render them on one representative screen with the UI branch of [`prototype`](../prototype/SKILL.md), each variant with its own planned tokens instead of the project's. For product screens, variants differ in identity (palette, type, signature element) and share a predictable structure. Pick the one that best fits the brief and record it as a decision to ratify, with its rendered screen as the evidence.
 3. Build the chosen direction per [design-system.md](references/design-system.md), recording it in the usage rules, and apply it to the representative screen with [`coding`](../coding/SKILL.md) as a screen refactor (Section 5).
 
 ## 4. Refactor the System
 
-1. Inventory the application and plan its deliveries per [refactoring.md](references/refactoring.md); the user approves the plan, including the contract changes it flags.
+1. Inventory the application and plan its deliveries per [refactoring.md](references/refactoring.md); each contract change it flags is a decision to ratify in the delivery that makes it.
 2. Run the deliveries one after another in this session, or in parallel only as [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md) allows, each as a screen refactor. A delivery of shared components or tokens is proven on the screens that use them.
 
 ## 5. Refactor a Screen
@@ -68,7 +68,7 @@ A visual change within the approved design system is the agent's call; a change 
 ## Success Validation
 
 - [ ] The mode matched the request, and the subject, any existing design system, and how to run the app were established before the first choice.
-- [ ] Every direction was planned, reviewed against the brief, and revised where generic before code; the user chose it.
+- [ ] Every direction was planned, reviewed against the brief, and revised where generic before code; the chosen one was presented for ratification.
 - [ ] The design system lives where the project keeps it or where the user approved, with three token layers, component states, and usage rules; components hold no raw values.
 - [ ] A system refactor ran as deliveries, and shared component contract changes were presented for ratification.
 - [ ] Every changed screen passed the audit and has before-and-after screenshots per [refactoring.md](references/refactoring.md#4-evidence).

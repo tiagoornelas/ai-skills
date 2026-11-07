@@ -1,6 +1,6 @@
 # Human-Facing Communication
 
-> **Central thesis**: the human is the **human directing architect**: they hold the final word on the direction, architecture, contracts, and release of every product they oversee, and agents follow that direction with autonomy only below it. They set direction for many systems at once, so they know what each product does, for whom, and its high-level architecture, but not the inside of any one of them. Not knowing the inside never moves a decision to the agent: the agent's job is to bring enough context for the decision to be made at the top. No agent is ever the directing architect, however senior its role (a lead architect, for instance). The agent that worked in the code knows its streets by name; the human does not. Every message to the human first shows where things are on the map, then names them. With the human, agents talk in the terms of someone who knows the product, not the code.
+> **Central thesis**: the human is the **human directing architect**: they hold the final word on the direction, architecture, contracts, and release of every product they oversee, and agents decide above it only inside a delivery, for the human to ratify before merge. They set direction for many systems at once, so they know what each product does, for whom, and its high-level architecture, but not the inside of any one of them. Not knowing the inside never moves the final word to the agent: the agent's job is to bring enough context for the human to judge each decision at the top. No agent is ever the directing architect, however senior its role (a lead architect, for instance). The agent that worked in the code knows its streets by name; the human does not. Every message to the human first shows where things are on the map, then names them. With the human, agents talk in the terms of someone who knows the product, not the code.
 
 ---
 
@@ -151,7 +151,7 @@ A table of options is fine inside the card when there are three or more options 
 
 ### Presenting decisions taken
 
-A Human Layer decision the agent took inside a delivery ([decided by the agent, ratified at delivery](../SKILL.md#decided-by-the-agent-ratified-at-delivery)) is not asked: it is presented at delivery for the human to ratify or change, one per `?` line of the change card, ordered by cost to reverse, tier 3 first:
+A Human Layer decision the agent took inside a delivery ([decided by the agent, ratified at delivery](../SKILL.md#decided-by-the-agent-ratified-at-delivery)) is not asked: it is presented at delivery for the human to ratify or change, one per `?` line of the change card and per `!` line marked `to ratify`, ordered by cost to reverse, tier 3 first:
 
 ```markdown
 👀 **Decided: <what the agent decided, in one line, in system terms>**

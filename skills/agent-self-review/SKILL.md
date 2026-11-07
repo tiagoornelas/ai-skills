@@ -82,7 +82,7 @@ Build a **rule ledger** once per run, then check every file in scope against it.
 1. **Enumerate rule sources**: repository `AGENTS.md`/`CLAUDE.md` and every file they point to, every file under `docs/rules/`, and `CONTRIBUTING.md`/`CODING_STANDARDS.md` if present. List them by name.
 2. **Select by applicability**: keep a rule file when its subject matches any path in scope (language, layer, directory, file type). **Test files are in scope**: testing, documentation, and language rules apply to them as much as to production code.
 3. **Read each selected file in full.** Never sample a rule file with `head`, `tail`, or `grep`: a rule past the cut-off is a rule never applied.
-4. **Extract rules**: short entries of the form *rule → where it applies → how to check it*. For preference-worded standards ("prefer", "avoid", "when possible"), record the conditions under which an alternative is allowed. Apply judgment to decide whether a violation exists; once identified, it is **Blocking** and budget-exempt. If the rule's meaning cannot be resolved from the source, escalate the ambiguity and keep the verdict blocked until the Human Layer decides.
+4. **Extract rules**: short entries of the form *rule → where it applies → how to check it*. For preference-worded standards ("prefer", "avoid", "when possible"), record the conditions under which an alternative is allowed. Apply judgment to decide whether a violation exists; once identified, it is **Blocking** and budget-exempt. If the rule's meaning cannot be resolved from the source, apply the most defensible reading and record it on the change card as a decision to ratify.
 5. **Check** every file in scope against every applicable ledger entry.
 
 Reporting obligations:
@@ -103,7 +103,7 @@ For each requirement or acceptance criterion of the task:
    - how it was verified through alternative means;
    - step-by-step instructions for human manual validation.
 
-3. **Missing infrastructure**: if the behavior could only be tested with infrastructure the project currently lacks, declare it per Item 2 and flag the missing infrastructure as **Escalate**. Do not build the infrastructure.
+3. **Missing infrastructure**: if the behavior could only be tested with infrastructure the project currently lacks, declare it per Item 2 and flag the missing infrastructure as **Escalate**: building it is a decision to ratify, never a silent side effect.
 
 4. **Removed tests**: list the test cases the range deletes, once per run:
    ```bash
@@ -138,7 +138,7 @@ When no public path exists to reach the behavior, the remedy is a module extract
   2. **Change cost**: architectural rigidity below contracts, duplicated logic or queries, missing pagination limits.
   3. **Readability**: function bloat, obscure naming, dead code.
 - Prompt text in scope (agent instructions, skills, rule files, tool descriptions) is checked against the Success Validation of [`prompt-engineering`](../prompt-engineering/SKILL.md): a failed item is **Should fix**, or **Blocking** when it breaks a project prompt rule.
-- Category mapping per Section 2: credible critical scenario → **Blocking**; other concrete scenario → **Should fix**; no concrete scenario → **Discard**; touches contract/boundary → **Escalate**, with a blocked verdict if the underlying finding is Blocking.
+- Category mapping per Section 2: credible critical scenario → **Blocking**; other concrete scenario → **Should fix**; no concrete scenario → **Discard**; touches contract/boundary → **Escalate**.
 - All remediations adhere to [refactoring-principles.md](../coding/references/refactoring-principles.md): preserved behavior, green tests.
 - Architectural smells at module or contract scale are always **Escalate**, never local refactorings.
 
@@ -210,6 +210,6 @@ When a later review accepts a rules, tests, or code-quality finding on code this
 - [ ] Scope was a git range (increment from the checkpoint, or branch against the merge-base), including merges and commits by any other agent or session, never an author-written summary; branch mode ran at most once per head commit, with Phases 4b–5 restricted to cross-commit concerns.
 - [ ] Objective checks (Phases 1–3, 4a) ran before judgment checks (4b, 5); the rule ledger lists every applicable rule file, each read in full, test files included; every violation and claimed exception quotes the rule; mechanizable rules without automated checks were escalated once each; migrations and queries were audited against [database-and-migrations.md](../coding/references/database-and-migrations.md) when database code changed.
 - [ ] Every ✅ DoD behavior names its test and the assertion that would fail without it, enforcement claims name the enforcing code, wiring behaviors are tested through the composed entry point, and every removed test case has a destination.
-- [ ] Failure-path questions were answered before code-quality judgment; at most 5 Should fix remediations across at most 3 rounds, each ending fixed, justified, or over budget; no critical defect or project rule violation used that budget; fixes were re-checked against Phases 1–3 and 4a; every contract, boundary, or dependency direction change was escalated, never applied.
+- [ ] Failure-path questions were answered before code-quality judgment; at most 5 Should fix remediations across at most 3 rounds, each ending fixed, justified, or over budget; no critical defect or project rule violation used that budget; fixes were re-checked against Phases 1–3 and 4a; every contract, boundary, or dependency direction change was decided through `software-designing` and shown on the change card as a decision to ratify.
 - [ ] Commit messages follow `commit`, the PR body follows `pull-request`, and the delivery followed `agentic-parallel-work` (one writer, standard branch, no side conversation between agents).
 - [ ] The log carries evidence for every phase (delegated runs without it were rejected); tests pass after the final remediation commit; fixes are committed separately; a clean checkpoint note is on `HEAD` only when zero Blocking findings remain.

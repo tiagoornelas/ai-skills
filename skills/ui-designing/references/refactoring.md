@@ -44,7 +44,7 @@ Write each finding as what the user experiences ("the save button disappears on 
 - **One delivery per screen or flow**, verifiable on its own, with the findings it closes.
 - **Contracts flagged**: any change to a shared component's props or behavior that other screens rely on is marked as a decision to ratify.
 
-The plan goes to the user as a short ordered list, one line per delivery: the screen, what changes for its users, and its size.
+The plan is shown to the user as a short ordered list, one line per delivery: the screen, what changes for its users, and its size.
 
 ## 4. Evidence
 
