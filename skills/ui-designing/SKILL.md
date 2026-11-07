@@ -1,5 +1,5 @@
 ---
-name: interface-designing
+name: ui-designing
 description: >-
   Designs what users see and do in an application, with deliberate choices
   instead of templated AI defaults: creates a product's design system (visual
@@ -12,7 +12,7 @@ disable-model-invocation: true
 argument-hint: "[create a design system | refactor the system | refactor <screen>]"
 ---
 
-# Interface Designing
+# UI Designing
 
 Every color, typeface, spacing value, and word on a screen is a choice made for this product and its users, and the same choice is made the same way on every screen. [craft.md](references/craft.md) holds how to make those choices; this file holds the flows.
 
