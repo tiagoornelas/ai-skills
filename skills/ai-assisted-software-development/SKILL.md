@@ -90,13 +90,13 @@ Each fact lives in the thing it describes, and the task's state is derived from 
 
 | Fact | Where it lives |
 | :--- | :--- |
-| Objective and acceptance criteria | The **issue**, in the tracker the repository or context points to (issue keys in branches, commits, or PRs; the project's docs). When none is detectable, ask the user where; when the user declines an issue, they live only in the conversation. |
-| The user's decisions | While the work is in progress, the **issue** when there is one (recorded as soon as each decision is made), otherwise the conversation. Once the work is ready, the **PR body** carries them. |
-| The change card | The **PR body**, opened when the work is ready. A delivery across repositories keeps its card in the main PR ([branch-and-worktrees.md](../agentic-parallel-work/references/branch-and-worktrees.md#4-one-delivery-several-repositories)). |
-| Code, branches, CI, reviews | Git and the code host. |
+| Objective and acceptance criteria | The **issue**, in the tracker the repository or context points to (issue keys in branches or commits; the project's docs). When none is detectable, ask the user where; when the user declines an issue, they live only in the conversation. |
+| The user's decisions | While the work is in progress, the **issue** when there is one (recorded as soon as each decision is made), otherwise the conversation. |
+| The change card | Not stored: rebuilt each time it is shown, from the diff and from the issue or the conversation. |
+| Code, branches, CI, reviews | Git and the code host's own state (open, merged, checks, reviews). A PR's description is a document for other developers, never a source: no workflow reads state, decisions, or approvals from it. |
 | Proof | Git notes on the commit they attest, per [`agent-self-review`](../agent-self-review/SKILL.md) and [`provide-evidence`](../provide-evidence/SKILL.md). |
 
-When the PR is opened, check that the objective, the acceptance criteria, the decisions, and the change card agree, and fix the one that drifted.
+Before a delivery is presented or its PR opened, check that the objective, the acceptance criteria, the decisions, and the change card agree, and fix the one that drifted.
 
 ---
 
@@ -105,6 +105,6 @@ When the PR is opened, check that the objective, the acceptance criteria, the de
 - [ ] The boundary between the Human Layer and Agent Layer was respected, with both questions of the boundary test applied; decisions on modules, contracts, dependency direction, or DoD behaviors went to the human (tier 3), and internal details were resolved autonomously with tests and self-review.
 - [ ] Anything new that runs, costs, stores data, or holds permissions in production was classified by the boundary test before being built: tier-2 items were announced with a stated deadline and their outcome recorded; anything that deletes or rewrites production data or changes a business rule went to the human as a decision card (tier 3).
 - [ ] Every notice, split plan, and delivery carried its [change card](references/change-card.md), and every delivery its six-line [evidence dossier](../provide-evidence/references/evidence-dossier.md), with lines (c)–(f) attested by an independent reviewer.
-- [ ] Objective and acceptance criteria were in the issue (or, when the user declined one, the conversation); the user's decisions were in the issue or the conversation until the PR carried them with the change card; no registry or status file copied them.
+- [ ] Objective and acceptance criteria were in the issue (or, when the user declined one, the conversation); the user's decisions were in the issue or the conversation; no PR description, registry, or status file served as their source.
 - [ ] No local or unversioned paths were exposed in shared artifacts.
 - [ ] Messages to the human passed the directing-architect test of [human-facing-communication.md](references/human-facing-communication.md): no internal term used before being situated, changes briefed in its order (where, problem, decisions and trade-offs, risks and impact, solution, evidence), no explanation handed back to the human, each pending decision was a self-contained card saying why it is the human's and whether it is easy or hard, checked as still open before being asked, every ✋ came with why only the human can do it, and emojis were used only as status and attention markers.

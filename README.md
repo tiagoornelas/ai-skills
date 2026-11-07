@@ -55,7 +55,7 @@ graph LR
   S -- "blocking finding" --> I
   S -- "clean" --> E["Evidence<br/><i>independent reviewer<br/>proves each claim</i>"]
   E -- "missing proof" --> I
-  E -- "proven" --> P["Pull Request<br/><i>summary & change card</i>"]
+  E -- "proven" --> P["Pull Request<br/><i>what changes, decisions,<br/>test evidence</i>"]
   P --> R["Human review<br/><i>Human Layer only</i>"]
   R -- "design decision" --> D
 ```
@@ -110,6 +110,7 @@ More agents are not more throughput. The rules for running agents in parallel co
 - **Done means proven.** An agent's work is accepted on evidence, not on its own report: every claim points to a proof the human can open or re-run, for the exact commit delivered, checked by a reviewer that did not write the code ([`provide-evidence`](skills/provide-evidence/SKILL.md)).
 - **Findings require concrete failure scenarios.** Judgment without a probable bug, an expensive change, or real reader confusion is preference, and preference does not become a finding.
 - **Show before describing.** What a change adds and where it lives reads as a plan, one line per thing; how a flow works reads as swimlanes.
+- **A pull request documents the change, never the work.** It is written for the developers who review it and read it later: why, what changes and where, the decisions, and the test evidence. No workflow reads state from it; the work's state lives in the session, the issue, or local git notes.
 - **Nothing the reader cannot open.** Commits, PRs, and comments never reference local machine paths.
 - **Human writing.** Text meant for human teammates undergoes review against formulaic AI writing habits.
 - **Every skill specifies how to verify success.**

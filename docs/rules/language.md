@@ -34,6 +34,5 @@ The only exception to the English rule is live communication with the user:
 A skill is authored in English but never fixes the language of what it produces:
 
 - **Output for the user** (reports, questions, cards, templates, diagrams): the user's session language, fixed template words included; symbols, code, and identifiers stay as they are.
-- **Pull requests**: the language of most of the target repository's pull requests (the `pull-request` skill).
-- **Commits**: always English (the `commit` skill).
+- **Pull requests and commits**: the language of most of the target repository's existing ones, English when it has none (the `pull-request` and `commit` skills).
 - **Language-specific knowledge** (writing habits of one language, for example) lives in a per-language reference loaded only for text in that language, never in the main `SKILL.md`.

@@ -44,8 +44,7 @@ git -C <repo> worktree add -b <branch> ../<repo>-<short-slug> origin/<default>
 ## 4. One Delivery, Several Repositories
 
 - One PR per repository, all from the same branch name, each opened with [`pull-request`](../../pull-request/SKILL.md).
-- The main PR (where the user-facing behavior lands) carries the delivery's change card; the others link to it and to each other under Related PRs.
-- The merge order follows the dependencies (for example, the backend first, compatible with the current frontend) and is stated in the main PR.
+- Each PR links the others; the merge order follows the dependencies (for example, the backend first, compatible with the current frontend), and a PR that must wait for another names it as a dependency.
 
 ## 5. Conflicts and Cleanup
 

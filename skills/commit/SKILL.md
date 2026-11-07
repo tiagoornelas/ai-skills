@@ -1,8 +1,9 @@
 ---
 name: commit
 description: >-
-  Prepares and validates standardized Conventional Commits messages,
-  strictly in English, ensuring concise, traceable commits free of local machine references.
+  Prepares and validates standardized Conventional Commits messages in the
+  repository's commit language, ensuring concise, traceable commits free of
+  local machine references.
   Triggered before every commit, including self-review remediation commits.
 ---
 
@@ -19,7 +20,7 @@ These rules apply to **every** commit, whichever agent or harness writes it.
 - **No Local References** ([no-local-references](../ai-assisted-software-development/references/no-local-references.md)): Issue keys must be real tracking keys (Jira, GitHub, Linear). If there is no formal issue linked, omit the task reference line.
 - **Body is an Exception, Not the Rule**: Add a body only when the user requests additional context or when the change cannot be understood from the title alone (e.g., a non-obvious workaround for an external bug). When in doubt, omit the body. When added, it must be a single paragraph of **at most 3 lines**—never more.
 - **No Bullet Points or Lists**: Never use bullet points or numbered lists in the commit body.
-- **English Only**: All commit messages must be written in English.
+- **Language**: the language of most of the repository's recent commits (`git log -20 --format=%s`); English when it has none. Types and scopes stay as listed.
 
 ---
 
@@ -90,7 +91,7 @@ Specific rules for remediation commits:
 
 ## 6. Success Validation
 
-- [ ] Message is written in English and adheres to Conventional Commits `<type>(<scope>): <desc>`.
+- [ ] Message is in the repository's commit language (English when it has none) and adheres to Conventional Commits `<type>(<scope>): <desc>`.
 - [ ] Title is at most 72 characters, does not end with a period, and contains no task key.
 - [ ] Task reference (if present) is isolated on line 3 between blank lines.
 - [ ] Body (if present) is at most 3 lines with zero bullet points or numbered lists.
