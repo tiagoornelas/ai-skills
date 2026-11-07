@@ -5,7 +5,7 @@ description: >-
   stateless, and read-only: gathers their tasks from the sources the session
   reaches (code host, issue tracker, team chat, Herdr App, or others the user
   names), shows first what depends on them, then the next focus with its
-  reason, the deliveries in flight against the parallel-work limit, and each
+  reason, the deliveries being built and those waiting for review, and each
   task's state; offers to report or update tasks and suggests a cleanup when
   branches and worktrees pile up. Triggered when the user asks what needs
   them, what to focus on next, how their work is going, to prioritize across
@@ -39,9 +39,9 @@ Group everything into tasks: a task is one delivery, joining its issue, its PRs 
 
 ## 3. Judge
 
-- **What depends on the user**: the ❓, 👀, ✋, and ⚠️ items of every task's [task state](../tl-dr/references/task-state.md), one per subject, ordered by what each unblocks. At most seven, then "+N more".
+- **What depends on the user**: the ❓, 👀, and ✋ items of every task's [task state](../tl-dr/references/task-state.md), one per subject, ordered by what each unblocks, decisions to ratify by cost to reverse. At most seven, then "+N more".
 - **Next focus**: one task and why, from the three standing questions of [`scope-review`](../scope-review/SKILL.md#three-standing-questions) applied to the open tasks in one line each, with any task worth reducing, postponing, or stopping. On request ("priorities", or a named task), run `scope-review` in full on up to three tasks with a concrete signal: stalled, overlapping another task, or much effort for little impact.
-- **In flight**: the number of deliveries in flight against the [limit](../agentic-parallel-work/SKILL.md#4-limits) of `agentic-parallel-work`; when the limit is reached or more than one waits for the user's review, recommend draining the review queue before starting another.
+- **In flight**: the deliveries being built against the [limit](../agentic-parallel-work/SKILL.md#4-limits) of `agentic-parallel-work`, and the pile waiting for the user's review, oldest first, with stacked deliveries under the one they build on.
 - **Offers**, one line each and only when the signal is present:
   - Work without an issue, or an issue whose status lags its PR (merged, still "in progress"): offer [`report-work`](../report-work/SKILL.md) to report or update those tasks.
   - Branches or worktrees whose PR merged or closed, five or more in a repository, or any older than two weeks: suggest [`git-cleanup`](../git-cleanup/SKILL.md) in that repository.
@@ -51,14 +51,14 @@ Group everything into tasks: a task is one delivery, joining its issue, its PRs 
 The layout is an example; its content is mandatory. A fictional overview:
 
 ```text
-Your work · Fri 14:20 · ❓ 3 depend on you in 2 tasks
+Your work · Fri 14:20 · 3 depend on you in 2 tasks
 
-1. ❓ Export invoices as PDF: delete PDFs after 90 days, or keep them forever? · blocks merge · I recommend 90 days
+1. 👀 Export invoices as PDF: decided PDFs deleted after 90 days · hard to reverse: deleted PDFs are gone
 2. 👀 Export invoices as PDF: web-app#212 is ready for your review · proven on its current commit
 3. ✋ Customer import: the agent in tab "import" stopped at a permission dialog · open that tab
 
-Next focus: Export invoices as PDF · answering 1 and 2 ships it this week; the import waits for a CSV sample from support anyway.
-In flight: 3 deliveries · limit 2–4 · 1 waits for your review (item 2), so one more may start.
+Next focus: Export invoices as PDF · ratifying 1 and reviewing 2 ships it this week; the import waits for a CSV sample from support anyway.
+In flight: 2 being built · limit 2–4 · 1 waits for your review (item 2).
 
 <the task state of each task, in the task-state format>
 
@@ -76,6 +76,6 @@ skipped: team chat (no access in this session)
 - [ ] Everything was derived from the sources in this run; nothing was written, sent, answered, or asked of any agent or person, and no state was kept.
 - [ ] Unreachable or excluded sources were named on the `skipped` line, with nothing from them guessed.
 - [ ] The output opened with what depends on the user, one item per subject, ordered by what it unblocks, at most seven then "+N more".
-- [ ] The next focus came with its reason from the `scope-review` questions, and in-flight deliveries were counted against the `agentic-parallel-work` limit.
+- [ ] The next focus came with its reason from the `scope-review` questions, deliveries being built were counted against the `agentic-parallel-work` limit, and the waiting pile was shown.
 - [ ] Each task followed the task-state format; `report-work` and `git-cleanup` were offered only on their signals and run only after the user's go.
 - [ ] Everything was in the user's session language, as recommendations.
