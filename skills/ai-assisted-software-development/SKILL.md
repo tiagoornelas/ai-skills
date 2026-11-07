@@ -79,6 +79,7 @@ This theory guides complementary workflows and independently callable entry poin
 4. **[Change card](references/change-card.md)**: the glanceable form of the tiers, printed before building, at delivery, and on demand.
 5. **[`agentic-parallel-work`](../agentic-parallel-work/SKILL.md)** owns how agents work in parallel: the delivery as the unit, one writer, branches and worktrees, in-flight and review-round limits.
 6. **[`provide-evidence`](../provide-evidence/SKILL.md)** owns the evidence: every delivery carries the six-line [evidence dossier](../provide-evidence/references/evidence-dossier.md), each line with its claim, why it convinces, and its argument or proof, the last four attested by an independent reviewer.
+7. **[Proven findings](references/proven-findings.md)**: in every review, a finding that says the code misbehaves stands only on a run that shows it.
 
 During ordinary work, briefly surface material architectural or scope opportunities already encountered, normally at delivery and earlier only if they compromise the current solution. Broad scans, deeper investigations, artifacts, and follow-up sessions stay on demand. An observation does not expand implementation scope or create a backlog.
 

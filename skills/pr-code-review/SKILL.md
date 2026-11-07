@@ -74,7 +74,7 @@ Every finding carries one badge:
 - 🟡 **Warning**: a real concern, not blocking, worth discussing before merge.
 - 🟢 **Suggestion**: a minor improvement **with a concrete scenario**. Style preferences without a concrete consequence are never reported.
 
-Documented rule violations in a peer's PR are 🔴 or 🟡 by impact. An evidence-backed architectural concern may require a Human Layer decision before merge even without a current bug.
+A finding that says the code misbehaves follows [proven findings](../ai-assisted-software-development/references/proven-findings.md): proven by a run, or reported as unproven at 🟡 at most, unless the risk is critical. Documented rule violations in a peer's PR are 🔴 or 🟡 by impact. An evidence-backed architectural concern may require a Human Layer decision before merge even without a current bug.
 
 ## 4. Present and Discuss
 
