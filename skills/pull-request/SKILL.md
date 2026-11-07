@@ -75,7 +75,7 @@ unchanged  no new service, queue, secret, or client · no data rewritten or sent
 [One line per thing added (+), changed (~), or removed (-), named in product terms with its kind and the place it lives, covering the [kinds of new things](../ai-assisted-software-development/references/change-card.md#2-the-plan) of the change card; a changed rule shows before and after; `!` marks what departs from the project's pattern or crosses a boundary, with why. The closing `unchanged` line names the kinds with nothing new and states whether contracts and boundaries stayed intact. No counts, approvals, or status.]
 
 ## Decisions
-[Each decision taken and its reason: business rules, contracts created or altered (who calls, what crosses, what it promises, how it fails), consequential trade-offs, assumptions, and maintenance commitments. Omit when there is nothing material.]
+[Each decision taken and its reason, ordered by cost to reverse after merge, the hardest first: business rules, contracts created or altered (who calls, what crosses, what it promises, how it fails), consequential trade-offs, assumptions, and maintenance commitments. Omit when there is nothing material.]
 
 ## How It Works
 [Only when the change alters a flow across places of the system: a visualize-it swimlane as a Mermaid sequenceDiagram, then at most two sentences on what to notice. Omit otherwise.]
@@ -102,7 +102,7 @@ The marks of Test Evidence follow the [Definition of Done legend](../ai-assisted
 1. **Self-review**: a branch carrying agent-authored code passes [`agent-self-review`](../agent-self-review/SKILL.md) in branch mode first, unless `HEAD` already carries a `branch` self-review note. Resolve its Blocking findings; list its Escalate findings for the developer.
 2. **Check the description matches the change**: the summary and decisions agree with the objective and acceptance criteria (issue or conversation), and What Changes matches the diff.
 3. **Push** the branch, every commit following [`commit`](../commit/SKILL.md): `git push -u origin <branch-name>`.
-4. **Open** without a separate approval prompt (the request to open the PR authorizes it), as a draft unless the user asks for ready for review: `gh pr create --draft --title "<title>" --body-file <body-file>`.
+4. **Open** without a separate approval prompt (the request to open the PR authorizes it), as a draft unless the user asks for ready for review: `gh pr create --draft --title "<title>" --body-file <body-file>`, adding `--base <branch>` for a PR stacked on the branch it builds on.
 5. **Return** the clickable PR link, plus the screenshot reminder when it applies.
 
 ---
