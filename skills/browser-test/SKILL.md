@@ -26,7 +26,8 @@ Drives a browser with `playwright-cli` to answer one question: does this page be
 
 - Treat the installed CLI as the syntax authority: load the official `playwright-cli` skill unless already in context. When the harness does not list it, read the `SKILL.md` whose path `playwright-cli --help` prints on its `Agent skill:` line.
 - If `open` fails because the browser executable is not found, propose `playwright-cli install-browser chromium` and run it only with the user's approval.
-- When the target is a local app, confirm it is running (or start it the way the project documents) before opening the browser.
+- When the target is a local app, drive an instance the user named for the test or one you start the way the project documents; any other running instance counts as in use. Ready means usable, not a process that answers: migrations and seed data done, the page you need loads.
+- Before driving it, check the instance is worth driving: the build or version you mean to test, a port your session started or the user named, and a valid login. Never drive an instance in use; start your own when the project allows a second one, or ask.
 
 ## 2. Choose the Mode
 
@@ -51,10 +52,11 @@ PLAYWRIGHT_MCP_BROWSER=chromium PLAYWRIGHT_MCP_OUTPUT_DIR="<scratch-dir>" \
 
 ## 4. Test
 
+- Target elements by stable handles (accessible role and label, `data-*` test attributes, route paths), never by coordinates or tab order.
 - Prefer `snapshot` and `find` to read state; take a `screenshot` when the result is visual or when the user needs evidence.
 - **Screenshots as delivery evidence** go where the evidence dossier says, one subfolder per context with its `index.md`, per its [visual proof](../provide-evidence/references/evidence-dossier.md#visual-proof) rule.
 - Check `console` for errors and `requests` for failed calls whenever a behavior does not match expectations.
-- State each expectation before acting, then record pass or fail with the evidence that proves it.
+- State each expectation before acting, then record pass or fail with the evidence that proves it. Follow the user's path and check side effects, per the proof standards of the [evidence dossier](../provide-evidence/references/evidence-dossier.md#reviewer-questions), line (f).
 - **Project suites:** if the project already depends on `@playwright/test` and the request is to run its tests, run them instead of driving the CLI: `PLAYWRIGHT_HTML_OPEN=never npx playwright test`, adding `--headed` only under the rule in Section 2. Never add `@playwright/test` to a project without the user's approval: it is a new dependency.
 
 ### Safety
@@ -65,6 +67,7 @@ PLAYWRIGHT_MCP_BROWSER=chromium PLAYWRIGHT_MCP_OUTPUT_DIR="<scratch-dir>" \
 ## 5. Close and Report
 
 - Close the session when done, including when a step failed or the test was aborted: `playwright-cli -s=<session> close`. Headed sessions never time out on their own. If a session is stuck, `playwright-cli list` shows it; use `kill-all` only with the user's approval, since it ends other agents' sessions too.
+- Stop every app process you started, by its process ID, never by name, and leave the ones you found running. Cleanup never deletes screenshots or traces: the evidence outlives the session.
 - Report to the user, in their language: what was tested, the mode, each expectation with pass or fail, and the paths of screenshots or traces. Those paths are local: to share evidence in a PR or issue, upload it as an attachment and do not cite the path.
 
 ## 6. Success Validation
@@ -74,4 +77,4 @@ PLAYWRIGHT_MCP_BROWSER=chromium PLAYWRIGHT_MCP_OUTPUT_DIR="<scratch-dir>" \
 - [ ] Every command used the same unique session name; no file was written inside the repository.
 - [ ] Each expectation was stated and has a pass or fail backed by evidence; delivery screenshots sit in one folder per context per the dossier.
 - [ ] No secret was typed, and no irreversible action ran without confirmation.
-- [ ] The session was closed and the user received the report.
+- [ ] The session and every process you started were closed, the evidence kept, and the user received the report.
