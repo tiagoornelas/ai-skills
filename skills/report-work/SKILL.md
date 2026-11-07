@@ -39,7 +39,7 @@ Determine **which work** to report:
 2. **No explicit target** → use work discussed and performed **in the current conversation**.
 3. **Ambiguous** (session spans unrelated tasks, or zero work occurred in chat) → ask which slice to report, presenting identified options.
 
-Declare the selected slice in one line before proceeding, and the mode: **report** new tasks, **update** existing ones, or both. Update applies when the user names existing tasks, an epic, or a tracker, or when the slice's evidence links issues (branch, commits, PR body).
+Declare the selected slice in one line before proceeding, and the mode: **report** new tasks, **update** existing ones, or both. Update applies when the user names existing tasks, an epic, or a tracker, or when the slice's evidence links issues (branch, commits, conversation).
 
 ### Step 2: Gather Evidence
 Inspect strictly what is needed for the slice:

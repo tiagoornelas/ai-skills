@@ -1,163 +1,116 @@
 ---
 name: pull-request
 description: >-
-  Formats and opens pull requests (on GitHub, through the gh CLI) focused on
-  high-level review: a direct executive summary at the top, the change card's
-  plan of what is new and where it lives, a swimlane via visualize-it when a
-  flow across the system changes, and issue linkage verification. Triggered
-  before opening or updating a pull request, or when a skill hands off to open
-  one.
+  Writes and opens pull requests (on GitHub, through the gh CLI) as the
+  delivery document of a finished change, written for the other developers who
+  review it before merge and read it later: why the change exists, its
+  references, what it adds, changes, or removes and where it lives, the
+  decisions taken, how a changed flow works (a visualize-it swimlane), and the
+  test evidence. Triggered before opening or updating a pull request, or when
+  a skill hands off to open one.
 ---
 
 # Pull Request
 
----
-
-## 1. Pull Request Principles
-
-- **Designed for the Reviewer**: The reviewer must understand the purpose of the PR within the first 5 seconds of reading.
-- **Focus on High-Level Review**: Grounded in the philosophy of [`ai-assisted-software-development`](../ai-assisted-software-development/SKILL.md) and [`human-review`](../human-review/SKILL.md). Do not clutter the PR with internal implementation minutiae already validated by [`agent-self-review`](../agent-self-review/SKILL.md).
-- **The change card first**: right after the summary, the body carries the change's [change card](../ai-assisted-software-development/references/change-card.md) plan, complete with its `state` line, so the reviewer sees what is new and where it lives before anything else. This skill cites the card; it never redefines it.
-- **A flow only when it changed**: when the PR changes how a flow crosses places of the system, a [`visualize-it`](../visualize-it/SKILL.md) swimlane, in Mermaid, shows it. No module map, interface, or method signature.
+A pull request is the permanent record of one change, written for developers who never saw the work happen: the reviewer before merge and whoever reads it years later. To them the work is always finished and ready.
 
 ---
 
-## 2. Issue Linkage and Traceability
+## 1. What the Body Holds, and What It Never Holds
 
-The issue holds the objective and acceptance criteria, and the PR body holds the user's decisions and the change card, per [where a task's facts live](../ai-assisted-software-development/SKILL.md#6-where-a-tasks-facts-live). A missing issue never blocks the PR.
+- **Holds facts about the change** that stay true after merge: why it exists, what it adds, changes, or removes and where, the decisions taken and their reasons, how a changed flow works, how each behavior was tested, and what it breaks.
+- **Never holds the state of the work or the flow that produced it**: draft, CI, review, or proof status; approvals; decisions still open; what is missing; review rounds or follow-up lists; and the vocabulary of the authoring workflow (change card, plan, notice, self-review, agents, sessions). Open decisions are settled before the PR is opened.
+- **Nothing reads the body back.** No workflow takes state, decisions, or approvals from a PR; those live in the issue, the conversation, or git notes.
+- **Updating a PR rewrites the body to describe the change as it now is**, never appends a log of what changed since the last version.
+- **Lead with the reader's question**: what this changes, for whom, and why, in the first lines. No implementation detail already settled below the contracts.
 
-### Agent Workflow:
-1. **If an issue exists in context** (Jira, GitHub Issues, Linear, etc.):
-   - Link the identifier and URL in the PR traceability section.
-   - Link every issue the PR resolves, not only the main one.
-2. **If no issue exists**: proceed without an issue link; the objective and acceptance criteria stay in the conversation.
-3. **A delivery across repositories** opens one PR per repository from the same branch name; the main PR carries the change card and the merge order, and every PR links the others under Related PRs, per [branch-and-worktrees.md](../agentic-parallel-work/references/branch-and-worktrees.md#4-one-delivery-several-repositories).
+---
 
-### Supporting References
+## 2. Title and Language
 
-Beyond the issue, the traceability section records where the work came from and what it connects to, so any reader can follow the trail without asking:
+- **Title**: the repository's PR title convention, read from its latest pull requests (`gh pr list --state all --limit 20 --json title`). Without one, `Type/Concise description`, with `Feat`, `Fix`, `Refactor`, `Chore`, `Perf`, or `Docs` (e.g. `Fix/Intermittent timeout on payment gateway call`).
+- **Language**: the title and the whole body, headings and table headers included, use the language of most of the repository's pull requests; without pull requests, the language of its documentation and commits; English when nothing indicates one. Technical terms and code identifiers stay as they are.
+
+---
+
+## 3. References
+
+Every link the reader needs to follow the trail, each labeled with what it is (`[support report on checkout failure](<url>)`), never a bare URL, and reachable by the reader ([no-local-references](../ai-assisted-software-development/references/no-local-references.md)):
 
 | Reference | What it links |
 | :--- | :--- |
-| **Origin** | The report or discussion that started the work (user report, support thread, team conversation). |
+| **Issue** | Every issue the PR resolves (Jira, GitHub Issues, Linear), with key and a short summary. |
+| **Origin** | The report or discussion that started the work. |
 | **Error** | The monitored error or alert the PR addresses. |
-| **Related PRs** | Companion changes in other repositories or layers. |
+| **Related PRs** | Companion changes in other repositories of the same delivery, and any PR that must merge before this one. |
 | **Other** | Design docs, decision records, mockups, recordings, dashboards, or queries. |
 
-- **Gather available links** from the conversation, branch, commits, and issue description or comments when accessible. Omit references whose links are unavailable; do not pause PR creation to request them.
-- **Label every link** with what it is (e.g., `[support report on checkout failure](<url>)`), never a bare URL.
-- **Include only lines that have a link**: omit empty categories instead of writing "N/A".
-- Every link must be reachable by the reader ([no-local-references](../ai-assisted-software-development/references/no-local-references.md)).
+Gather the links from the conversation, branch, commits, and issue; keep only lines that have one, and do not pause to ask for missing ones. A missing issue never blocks the PR. A delivery across repositories opens one PR per repository from the same branch name, per [branch-and-worktrees.md](../agentic-parallel-work/references/branch-and-worktrees.md#4-one-delivery-several-repositories), each describing its own part and linking the others.
 
 ---
 
-## 3. PR Title Format
+## 4. Body Template
 
-```text
-Type/Concise Description
-```
-*Accepted Types:* `Feat/`, `Fix/`, `Refactor/`, `Chore/`, `Perf/`, `Docs/`.
-*Examples:*
-- `Feat/Refresh token authentication and key rotation`
-- `Fix/Intermittent timeout on payment gateway call`
-- `Refactor/Isolate order repository persistence`
-
-> **PR language**: the title's description and the whole body use the language of most of the repository's pull requests (check the latest ones, e.g. `gh pr list --state all --limit 20 --json title`); in a repository without pull requests, the user's session language. The `Type/` prefix stays as listed, and commits stay in English per [`commit`](../commit/SKILL.md).
-
----
-
-## 4. PR Description Template (Body)
-
-Use the structure below:
-
-> **Body language**: all prose and section headings, plus the DoD table header and legend, use the PR language (Section 3). The template headings below are placeholders: translate them. Keep technical terms (`Definition of Done`, `breaking changes`) and code identifiers as is.
+The layout and the headings are an example, written in the PR's language; the content is mandatory. Omit a section only where it says so.
 
 ````markdown
 ## Summary
-[In 1 to 3 direct sentences, explain what this PR does and why it exists from the reader's perspective: where in the product it acts, what users or the system experienced before, and what happens now. Situate every screen, state, or internal layer before naming it (see the Briefing a Change section of the ai-assisted-software-development human-facing-communication reference).]
+[1 to 3 sentences: where in the product the change acts, what users or the system experienced before, what happens now, and why. Situate every screen, state, or internal layer before naming it.]
 
----
+## References
+- **Issue**: [labeled link] · **Origin**: … · **Related PRs**: … · **Other**: …
 
-## Change Card
-
+## What Changes
 ```text
-[The change card's plan of this PR, per the change-card reference of ai-assisted-software-development: the count line, one line per thing, and the closing lines with the state. Inside a text block: GitHub renders it monospace, so its columns stay aligned.]
++  table of exported invoices          table · billing-api
++  "export invoice as PDF" route       route · billing-api
+~  invoice page offers the export      screen · web-app
+~  PDFs deleted after 90 days          rule · billing-api · was: kept forever
+-  manual export script                job · billing-api
+!  PDF layout written inside the job   out of pattern · other documents use the templates folder, because …
+
+unchanged  no new service, queue, secret, or client · no data rewritten or sent out · contracts and boundaries intact
 ```
+[One line per thing added (+), changed (~), or removed (-), named in product terms with its kind and the place it lives, covering the [kinds of new things](../ai-assisted-software-development/references/change-card.md#2-the-plan) of the change card; a changed rule shows before and after; `!` marks what departs from the project's pattern or crosses a boundary, with why. The closing `unchanged` line names the kinds with nothing new and states whether contracts and boundaries stayed intact. No counts, approvals, or status.]
 
----
-
-## Traceability & Issue
-- **Issue**: [Link and issue key, e.g.: `#42` or `PROJ-123`] (short summary of the issue)
-- **Origin**: [Labeled link to the report or discussion that started the work]
-- **Error**: [Labeled link to the monitored error or alert]
-- **Related PRs**: [Labeled links, e.g.: `#1235 (frontend)`]
-- **Other**: [Labeled links to docs, decision records, mockups, recordings, dashboards]
-<!-- Keep only the lines that have a link. Omit this section if there are no links. -->
-
----
-
-## Decisions & Trade-offs
-[When material, explain actual business rules/restrictions, contracts created or altered (who calls, what crosses, what it promises, how it fails, in system terms), consequential trade-offs, assumptions, and maintenance commitments introduced by the change. Derive this from the implementation and reuse existing human-review findings; do not run a separate review just to fill this section. Omit if there is nothing material.]
-
----
+## Decisions
+[Each decision taken and its reason: business rules, contracts created or altered (who calls, what crosses, what it promises, how it fails), consequential trade-offs, assumptions, and maintenance commitments. Omit when there is nothing material.]
 
 ## How It Works
-<!-- Only when the PR changes a flow across places of the system: a swimlane via visualize-it, as a Mermaid sequenceDiagram, followed by at most two sentences on what to notice. Omit otherwise. -->
+[Only when the change alters a flow across places of the system: a visualize-it swimlane as a Mermaid sequenceDiagram, then at most two sentences on what to notice. Omit otherwise.]
 
----
-
-## Delivered Behaviors (Definition of Done)
-
-Status table mapping implemented behaviors to verification status, adhering to the [Definition of Done legend](../ai-assisted-software-development/references/human-facing-communication.md#definition-of-done-legend):
-
-| Status | Delivered Behavior | Verification | Action for Reviewer |
+## Test Evidence
+| | Behavior | How it was verified | How to check |
 | :---: | :--- | :--- | :--- |
-| ✅ | Reject expired tokens with HTTP 401 | Unit test in `tests/auth.test.ts` | None (covered by test) |
-| 🔎 | Dispatch confirmation email via real provider | Not code-testable; verified in staging | Optional to test |
-| 👤 | Responsive layout for login form | Requires visual inspection | Open `/login` and verify on mobile (375px) |
+| ✅ | Reject expired tokens with HTTP 401 | Unit test in `tests/auth.test.ts` | Covered by the test suite |
+| 🔎 | Send the confirmation email via the real provider | Not code-testable; sent from staging | Optional |
+| 👤 | Login form fits a phone screen | Visual inspection | Open `/login` at 375px |
 
-*Legend: ✅ Covered by automated test · 🔎 Not code-testable, verified via alternative means · 👤 Requires manual human validation · 🚨 Missing or unverified*
+[Marks and the legend line below the table follow the Definition of Done legend. Add a screenshot when the change is visible and an accessible image URL already exists.]
 
----
-
-## Impact & Breaking Changes
-- [Describe API contract breaks, database migrations, or new environment variables. If none, write "None"].
+## Impact
+[Contract breaks, database migrations, new environment variables, and what a deploy or rollback needs; "None" when there are none.]
 ````
 
-### Screenshot (Optional)
-
-When the diff changes the user-facing presentation layer (screens, components, styles, layouts), add a `Screenshot` section with one embedded image if an accessible image URL is already available. Otherwise omit the section and mention after creating the PR that the developer may add a screenshot in GitHub. Do not pause to request one.
-
-GitHub CLI and API cannot upload images into a PR body, so do not try to attach image files. Never commit images to the repository or upload them to third-party hosts just to embed them.
+The marks of Test Evidence follow the [Definition of Done legend](../ai-assisted-software-development/references/human-facing-communication.md#definition-of-done-legend); the swimlane follows [`visualize-it`](../visualize-it/SKILL.md). GitHub CLI cannot upload images into a PR body: never commit images or upload them to a third-party host to embed them. When a visible change has no screenshot, say after opening that the developer may add one.
 
 ---
 
-## 5. PR Creation Workflow
+## 5. Opening the PR
 
-1. **Branch Self-Review**:
-   - If the branch carries code authored by the agent pipeline, run [`agent-self-review`](../agent-self-review/SKILL.md) in **branch mode** (Section 3.2) unless `HEAD` already carries a `branch` self-review note. Resolve its Blocking findings before continuing; list its Escalate findings for the developer.
-2. **Check the Facts Agree**: the objective and acceptance criteria (issue or conversation), the user's decisions, and the change card describe the same change; fix the one that drifted before opening, and carry the decisions into the body.
-3. **Ensure Remote is Up to Date**:
-   - Verify all commits are recorded, each following [`commit`](../commit/SKILL.md), and push the branch:
-     ```bash
-     git push -u origin <branch-name>
-     ```
-4. **Create the PR**:
-   - Prepare and verify the title and body, then open the PR without a separate approval prompt or preview. The user's request to open the PR authorizes creation of the draft.
-   - Run the command via GitHub CLI:
-     ```bash
-     gh pr create --draft --title "<title>" --body-file <body-file>
-     ```
-   - Create as `--draft` unless the user explicitly requests ready for review.
-5. **Output**: return the clickable GitHub PR link, plus the screenshot reminder of the Screenshot section when it applies.
+1. **Self-review**: a branch carrying agent-authored code passes [`agent-self-review`](../agent-self-review/SKILL.md) in branch mode first, unless `HEAD` already carries a `branch` self-review note. Resolve its Blocking findings; list its Escalate findings for the developer.
+2. **Check the description matches the change**: the summary and decisions agree with the objective and acceptance criteria (issue or conversation), and What Changes matches the diff.
+3. **Push** the branch, every commit following [`commit`](../commit/SKILL.md): `git push -u origin <branch-name>`.
+4. **Open** without a separate approval prompt (the request to open the PR authorizes it), as a draft unless the user asks for ready for review: `gh pr create --draft --title "<title>" --body-file <body-file>`.
+5. **Return** the clickable PR link, plus the screenshot reminder when it applies.
 
 ---
 
 ## 6. Success Validation
 
 - [ ] Agent-authored branches passed `agent-self-review` in branch mode before the PR was opened.
-- [ ] Existing issues and supporting references were linked with descriptive labels, with no empty categories; no issue did not block creation; the PRs of a multi-repository delivery link each other and the main one carries the card and merge order.
-- [ ] Objective, acceptance criteria, decisions, and change card were checked against each other before opening.
-- [ ] Title follows `Type/Description`; title description, headings, DoD table header, and legend are in the language of most of the repository's pull requests.
-- [ ] Body has the summary, the change card's plan with its `state` line in a text block, a swimlane (via `visualize-it`) only when a flow changed, and the DoD table with its legend.
-- [ ] The PR was opened (defaulting to `--draft`) and its clickable link returned; for a visible UI change, an available screenshot was embedded or the developer was reminded one can be added.
+- [ ] The body holds only facts about the change that stay true after merge: no work status, approval, open decision, follow-up list, or workflow vocabulary.
+- [ ] Summary, References, What Changes (with its `unchanged` line), Test Evidence, and Impact are present; Decisions and How It Works appear when material; the description matches the diff and the issue.
+- [ ] Every reference is a labeled, reachable link, with no empty lines; a multi-repository delivery's PRs link each other.
+- [ ] Title and body follow the repository's convention and language, English when nothing indicates one.
+- [ ] The PR was opened (draft by default) and its link returned, with the screenshot reminder for a visible change without one.

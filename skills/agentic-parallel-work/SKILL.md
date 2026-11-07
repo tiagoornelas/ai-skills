@@ -52,7 +52,7 @@ A large, isolated part of a delivery (a whole frontend built against a mock) may
 
 - **In flight**: 2 to 4 deliveries in the foreground; start with 2. The bottleneck is the user's review capacity, not the machine. When more than one delivery is waiting for the user's review, open no new one until the queue drains. [`coordinator`](../coordinator/SKILL.md) counts them, with each task's state, when the user asks.
 - **Two deliveries never touch the same contract or file at once**: the second waits, or both become one sequential delivery.
-- **Independent review**: at most 2 rounds per delivery. Only 🔴 findings and 🟡 findings that change behavior block; other 🟡 and every 🟢 go to a follow-up list in the PR body, never into a new round. After round 2, open blocking findings go to the user as pending, never as approval.
+- **Independent review**: at most 2 rounds per delivery. Only 🔴 findings and 🟡 findings that change behavior block; other 🟡 and every 🟢 go to a follow-up list for the user, recorded in the issue when there is one, never into a new round. After round 2, open blocking findings go to the user as pending, never as approval.
 
 ## References
 

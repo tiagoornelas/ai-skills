@@ -33,15 +33,15 @@ Observe in parallel where the harness allows it.
 
 | Fact | Source |
 | :--- | :--- |
-| PR state | `gh pr view <pr> --json number,title,url,state,isDraft,mergeable,statusCheckRollup,headRefOid,baseRefName,author,body` |
-| Objective | the issue linked from the PR body, or the PR body; otherwise "not verifiable" |
-| Task status | each task referenced in the PR, from whatever tracker it points to through the tools the harness reaches; an unreachable tracker reads "status unavailable" |
+| PR state | `gh pr view <pr> --json number,title,url,state,isDraft,mergeable,statusCheckRollup,headRefOid,baseRefName,author` |
+| Objective | the issue referenced by the branch, the commits, or the conversation; for someone else's PR, the issue its description links; otherwise "not verifiable" |
+| Task status | each task found for the objective, from whatever tracker it points to through the tools the harness reaches; an unreachable tracker reads "status unavailable" |
 | Author's review | `git notes --ref=self-review show <head>`: only a `branch clean` note on the head counts |
 | The user's review | `git notes --ref=human-review show <head>`, and the user's reviews on the PR: `gh pr view <pr> --json reviews` filtered by the login from `gh api user --jq .login` |
 | Evidence | `git notes --ref=evidence show <head>`; when absent, the newest `evidence` note on an earlier commit of the branch (`git log --format=%H <base>..<head>`) |
 | Artifacts the note cites | the links, commands, and local file paths inside the note; check each local file exists |
 | Base moved after the proof | `git fetch origin <base>`, then `git log --format='%h %an %cI %s' <proven commit>..origin/<base>`: commits dated after the attestation moved the base; name each one's author and PR |
-| The change card | always, for every PR, the inventory of new things **rebuilt** from the diff, schema, and infrastructure files, in the kinds of the [change card](../ai-assisted-software-development/references/change-card.md) (for a large PR, from `git diff --name-status` plus the full diff of only the schema, migration, job, route, secret, configuration, and client files, saying so); and the card presented with the delivery (PR body, issue, or the note), when there is one. Each item's approval comes from the issue or PR, otherwise "no record" |
+| The change card | always, for every PR, the inventory of new things **rebuilt** from the diff, schema, and infrastructure files, in the kinds of the [change card](../ai-assisted-software-development/references/change-card.md) (for a large PR, from `git diff --name-status` plus the full diff of only the schema, migration, job, route, secret, configuration, and client files, saying so); and the card presented with the delivery (in the conversation, the issue, or the `evidence` note), when there is one. Each item's approval comes from the issue or the conversation, otherwise "no record" |
 | Uncommitted files | `git status --porcelain` in the current checkout |
 | Validation environment's deployed commit | read it, at the time of asking, where the project records how (a deploy URL, a status endpoint, a CI environment); "not observable" when it records none |
 
@@ -101,7 +101,7 @@ Proof: 4 ✓  2 ✗  commit 5b699b1
 - **Verdict first, one line**: ✅ "proven on the current version; only your review is left" (six ✅ for the current head, complete card, base not moved, author branch-clean); ⚠️ "not proven: <the gaps>" (any ❌, outdated note, draft, conflict, failing CI, base moved, or a card item without approval); ⏳ "not done: <what is still running>"; ✅ "delivery proven; objective not verifiable" when there is no objective to check against.
 - **One plan per PR**, open PRs first. A merged PR in scope gets a collapsed plan: its count line, its PR line, and its proven state; the six lines only when one is ❌. A branch without a PR shows its branch and head as the state.
 - **The six lines always**, each with its claim and its proof: a link, a command with its real result, or the cited file, in words that say why it convinces. Never a bare mark; the `Proof` count never stands in for the lines. When the user points at a line, give its full argument from the note. Visual proof prints each context folder with one line on what it shows.
-- **No task registered**: when no task reference exists in the PR, its branch, or its commits, suggest registering the work with [`report-work`](../report-work/SKILL.md).
+- **No task registered**: when no task reference exists in the branch, the commits, or the conversation, suggest registering the work with [`report-work`](../report-work/SKILL.md).
 - **Closing line**: the user's next action, or that nothing depends on them and the agents' next step.
 - When the verdict is not ✅ and the action was "show", end with one offer to verify (Section 4), saying what it costs (minutes; it runs tests and a real execution).
 
