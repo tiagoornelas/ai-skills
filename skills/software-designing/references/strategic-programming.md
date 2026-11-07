@@ -33,7 +33,7 @@
 
 - Rather than seizing the first workable idea, exploring alternative designs and selecting the cleanest one ([design-it-twice.md](design-it-twice.md)).
 - Anticipating how the system is likely to evolve and designing flexibility into those dimensions.
-- Thoroughly documenting contracts and design rationale (how to write comments: [comments.md](../../coding/references/comments.md)).
+- Documenting public contracts ([comments.md](../../coding/references/comments.md)) and recording design rationale where the project keeps decisions, not in code comments.
 
 ### Reactive Investments
 
@@ -88,7 +88,7 @@ When designing a change:
    - Small → implement the ideal design directly, including necessary refactorings.
    - Large → find a nearly-as-clean alternative that fits within scope; if none exists, **escalate to the human** as an explicit trade-off (cost now vs. cost later).
 4. **Improve along the way, within the scope touched by the task**: refactoring scope follows [refactoring-principles.md](../../coding/references/refactoring-principles.md).
-5. **Update contract documentation and rationale simultaneously**, adhering to [comments.md](../../coding/references/comments.md).
+5. **Update contract documentation simultaneously**, adhering to [comments.md](../../coding/references/comments.md).
 
 Contract modifications identified in this process are Human Layer decisions; internal refactorings that preserve contracts belong to the Agent Layer.
 
@@ -115,7 +115,7 @@ In every design task, the agent must:
 2. **Evaluate alternatives** before locking in a solution, following Step 3 of [`software-designing`](../SKILL.md#step-3-compare-alternatives-proportionally).
 3. **Plan for the next change**: what is the most probable subsequent enhancement in this domain? Does the design make it effortless?
 4. **Fix instead of work around** whenever encountering a design flaw along the path, provided it falls within the code touched by the task and with a footprint small next to the task's own change. If the remediation exceeds scope, **escalate to the human** as an explicit trade-off with clear trade-off analysis.
-5. **Make debt explicit**: when a tactical compromise is deliberately chosen by the human, document the decision and the outstanding cleanup.
+5. **Make debt explicit**: when a tactical compromise is deliberately chosen by the human, record the decision and the outstanding cleanup where the project keeps decisions or tracks work, not in code comments.
 
 ---
 

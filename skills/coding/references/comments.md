@@ -1,6 +1,6 @@
 # Comments
 
-> **Central thesis**: explain intent **first through code**—via expressive names, types, and structure. Comment only what the code cannot state directly: the why, the design intent, and the non-obvious. Every comment must be **direct and concise**. An unnecessary comment is noise; an outdated comment is actively harmful.
+> **Central thesis**: code explains itself. A comment is a failure to express intent in code (Robert C. Martin, *Clean Code*): it is not compiled, not tested, and rots the moment the code changes. Write no comment unless it belongs to the short list in Section 2; reshape the code instead.
 
 ---
 
@@ -11,71 +11,65 @@
 
 ---
 
-## 1. Explain Yourself in Code First
+## 1. Scope and Precedence
 
-- Before writing a comment explaining **what** a block of code does, make the comment unnecessary: choose a clearer name ([naming.md](naming.md)), extract an independent helper ([functions.md](functions.md)), introduce an explanatory variable, or define a domain type.
-- Comment only when clean code still leaves crucial context unsaid.
+- **The diff only**: the policy applies to code the change writes or touches. Comments elsewhere stay as they are.
+- **The repository's rules win**: when a project rule, linter, or language convention requires comments or docstrings (a mandated docstring style, for instance), follow it.
 
----
+## 2. The Only Comments That Survive
 
-## 2. What to Comment
+- **Legal and license headers.**
+- **Behavior forced by something we cannot change**: an external dependency, vendor, platform, or protocol, ideally with a link to the issue or specification. A surprise in our own code is not on this list: reshape the code.
+- **Public API contracts** consumed outside the module or repository: what the interface guarantees, its preconditions, side effects, and failure modes, never its implementation.
+- **Tool directives** such as formatter or linter pragmas, under Section 4.
 
-Strictly what is non-obvious from reading the code itself:
+When unsure whether a comment fits the list, delete it.
 
-- **Public interfaces** (consumed by other modules): a concise docstring stating the contract—what it guarantees, side effects, failure modes, preconditions, units of measurement. Never describe implementation details.
-- **The why** behind counter-intuitive decisions: working around an external vendor bug, operating system quirk, subtle business rule, or profiled performance optimization.
-- **Consequence warnings**: what breaks if a specific line is altered.
-- **Invariants and assumptions** that cannot be encoded in types or assertions.
-- **Indirect flows**: when and by whom an event handler, hook, or callback is triggered.
+## 3. Turn Every Other Comment into Code
 
-**Internal, private functions do not take ritualistic docstrings.** If they require lengthy explanations, improve names and signatures first. If non-obvious context remains (an unavoidable side effect or unit), a single-line comment is sufficient.
+| The comment explains | Make the code say it |
+| :--- | :--- |
+| What a block does | Extract a function named for it ([functions.md](functions.md)); extract an explanatory variable ([naming.md](naming.md)). |
+| A business rule ("legacy plans get no discount") | A named predicate or function: `if client.is_on_legacy_plan()`. |
+| An invariant or assumption | A type that cannot hold the bad state ([domain-models-and-types.md](domain-models-and-types.md)) or an assertion. |
+| A warning ("do not remove", "must run before X") | A test that fails when the constraint breaks, or a type, assertion, or check that enforces it. |
+| Who triggers a handler | Name the handler for its trigger and register it where the event is declared. |
+| A step in a test or script | The assertion message or log string: `assert(ok, 'persisted across restart')`. |
+| History, authorship, or dead code | Nothing: git holds it. Delete it. |
 
----
+A workaround that needs a paragraph to justify it means the code is wrong: fix the root cause ([debugging.md](debugging.md)).
 
-## 3. What Not to Comment
+## 4. Suppressions
 
-- **Redundant comments**: repeating what the code already says.
-- **Misleading comments**: stating something contradictory to current code behavior.
-- **Obligatory boilerplate**: docstrings on private helpers that simply restate function names and parameters.
-- **Change logs**: author names, timestamps, modification history (this belongs in git).
-- **Commented-out code**: delete it. History is preserved in version control.
-- **Banner markers**: visual dividers, section banners, block-end markers.
-- **Non-local commentary**: comments describing distant parts of the system, which rot as soon as that other component evolves.
+`eslint-disable`, `@ts-ignore`, `@ts-expect-error`, `# noqa`, `# type: ignore`, and similar suppressions are comments that silence a check. Keep one only when its rule is style-only or wrong for this exact line. When the rule catches real bugs or protects correctness or safety, remove the suppression and fix the code.
 
----
+## 5. Keeping Surviving Comments Accurate
 
-## 4. Keeping Comments Accurate
-
-- **Locality**: interface comments live alongside declarations; implementation comments live directly adjacent to the relevant lines. The greater the physical distance, the faster comments rot.
-- **In the code, not in the commit**: if knowledge is needed to understand or maintain code in the future, it belongs in the source code. Commit messages summarize and reference.
-- **Single Source of Truth**: document each decision in one place—the most obvious place for maintainers. Everywhere else, link or reference.
-- **Intent and invariants outlive mechanics**: comments explaining "why" remain accurate far longer than step-by-step descriptions of "how".
-- **Review comments in diffs**: any functional behavior change must be accompanied by updates to all comments describing that behavior.
+- Place a contract comment beside its declaration and a forced-behavior comment beside the line it explains.
+- A behavior change updates every surviving comment that describes that behavior.
 
 ---
 
 ## Red Flags
 
-- Comments explaining what confusing code does instead of cleaning up the code.
-- Comments that contradict code behavior.
-- Diffs altering behavior without updating corresponding comments.
-- Public interfaces lacking documentation of contracts, preconditions, or side effects.
-- The rationale for a strange workaround exists only in a ticket or PR description.
-- Meaningless docstrings on private methods echoing parameter names.
-- Dead, commented-out code blocks.
+- A comment explaining what our own code does or why it is shaped that way.
+- A "do not change" or "important" comment with no test or check behind it.
+- Commented-out code, banners, change logs, or docstrings that restate a private function's name and parameters.
+- A suppression on a rule that protects correctness.
 
 ---
 
 ## How to Apply
 
-- **When writing**: clarify the code first; then document remaining non-obvious context in concise, precise terms.
-- **When reviewing**: a **misleading or outdated** comment presents a concrete failure scenario (the next maintainer will be misled) and warrants immediate correction. Redundant comments lack a concrete failure scenario: do not write them, but do not block PRs solely on benign stylistic noise.
+- **When writing**: reshape the code until no comment is needed; keep only what Section 2 lists.
+- **When reviewing your own or an agent's change**: every comment the diff adds outside Section 2 is a finding to fix by reshaping the code; a misleading or outdated comment is fixed at once.
+- **When reviewing someone else's pull request**: report comments only when the repository's rules forbid or require them; otherwise this policy is a personal preference, not a finding. A misleading or outdated comment is a finding in any review: it misleads the next reader.
 
 ---
 
 ## Relationships
 
 - Self-documenting names: [naming.md](naming.md).
-- Extracting functions to clarify intent: [functions.md](functions.md).
+- Extracting functions to state intent: [functions.md](functions.md).
 - Obscurity and required reader context: [obvious-code.md](../../software-designing/references/obvious-code.md).
-- The informal contract of an interface: [deep-modules.md](../../software-designing/references/deep-modules.md).
+- The contract of an interface: [deep-modules.md](../../software-designing/references/deep-modules.md).

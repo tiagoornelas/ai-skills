@@ -94,7 +94,7 @@ Handle numerous diverse exceptions with **a single centralized recovery handler*
 
 For every failure mode in a contract, evaluate in sequence:
 
-1. **Can I redefine the operation so this condition is not an error?** (idempotency, "ensure X exists", boundary clamping, empty collections instead of nulls).
+1. **Can I redefine the operation so this condition is not an error?** (idempotency, "ensure X exists", boundary clamping, empty collections instead of nulls). Idempotent operations and shared state in code: [retries-and-concurrency.md](../../coding/references/retries-and-concurrency.md).
 2. **Can I mask the condition internally?** (retries, fallbacks, local healing), provided callers do not need the event for decision-making.
 3. **Can I aggregate handling at a higher architectural level?** (middleware, dispatchers, existing health recovery mechanisms).
 4. **Is recovery unwarranted, making termination with diagnostics preferable?**

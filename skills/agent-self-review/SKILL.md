@@ -128,7 +128,7 @@ When no public path exists to reach the behavior, the remedy is a module extract
 
 ### Phase 5: Code Quality and Query Performance (Judgment → Blocking or Should fix)
 - **Failure-path questions first.** Before judging style or structure, answer these over the code in scope; each "yes, and nothing handles it" is a candidate finding with a ready-made failure scenario:
-  1. **Partial failure**: in an operation of several steps that mutate state (files, config, lock files, remote resources, database rows), what is left behind if step *k* fails?
+  1. **Partial failure**: in an operation of several steps that mutate state (files, config, lock files, remote resources, database rows), what is left behind if step *k* fails, and does a rerun converge ([retries-and-concurrency.md](../coding/references/retries-and-concurrency.md))?
   2. **Delimiters and boundaries**: in parsers, stream handlers, and text protocols, what happens when the delimiter appears inside the payload, or the input is truncated or empty?
   3. **Silent fallbacks**: when an optional value is missing, does the code widen its scope (whole session instead of current turn, all records instead of one) or pick an arbitrary element (`[0]` where the latest was meant)?
   4. **Per-event cost**: in handlers that run per keystroke, per stream chunk, or per render, is work proportional to total history rather than to the event?

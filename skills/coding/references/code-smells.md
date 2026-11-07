@@ -45,6 +45,7 @@
 | **Deep Nesting for Exceptions** | Happy path is buried inside deeply nested `if` blocks. | Obscures the primary execution flow. | *Replace Nested Conditional with Guard Clauses* | Branches represent equal alternatives with no primary path. |
 | **Repeated Special Case** | Identical defensive check (null, missing, empty) repeated across multiple callers. | Future callers can easily forget the defensive check. | *Introduce Special Case* (see [define-errors-out-of-existence.md](../../software-designing/references/define-errors-out-of-existence.md)) | Only a single isolated call site exists. |
 | **Implicit Assumption** | Code depends on an unstated precondition without runtime verification. | Unknown unknown for future maintainers. | *Introduce Assertion* | Condition depends on external user input: that is validation, not assertion. |
+| **Growing Branch Ladder** | A new feature adds one more branch to an existing if/else chain, or a second boolean must stay in sync with the first. | The domain lives in scattered conditionals; each variant multiplies the cases to keep consistent. | Name the data shape: state machine, lookup table, discriminated union ([domain-models-and-types.md](domain-models-and-types.md)) | The shape is clear, local, and unlikely to grow. |
 | **Repeated `switch`** | The same `switch` or `if/else` ladder over a type discriminator repeated across **multiple** sites. | Adding a new variant requires hunting down and updating every ladder. | *Replace Conditional with Polymorphism* | An isolated, single clean switch statement: keep it. Polymorphism for a single instance creates shallow classes. |
 
 ---
@@ -70,6 +71,7 @@ Hidden side effects, queries mutating state, output parameters, flag arguments, 
 | Smell | Signal | Why it Hurts | Remediations | Do Not Apply When |
 | :--- | :--- | :--- | :--- | :--- |
 | **Multi-Tasking Loop** | A single loop computing multiple unrelated outcomes simultaneously. | Difficult to understand and modify tasks independently. | *Split Loop*, *Replace Loop with Pipeline* (if idiomatic to repository) | Profiled, measured performance demands a single pass. |
+| **Explanatory Comment** | A comment explains what our own code does or why it is shaped that way. | The code fails to say it, and the comment rots when the code changes. | *Extract Function*, *Extract Variable*, *Rename*, *Introduce Assertion*, per [comments.md](comments.md) | The comment is on the surviving list of [comments.md](comments.md). |
 | **Dead Code** | Unreachable statements, unused parameters, or dead branches. | Wastes mental bandwidth on irrelevant logic. | *Remove Dead Code* (git preserves history) | — |
 | **Unnamed Expression** | Complex sub-expression whose semantic meaning must be deduced. | Cognitive load. | *Extract Variable*; inversely, *Inline Variable* when the name adds zero context | — |
 | **Convoluted Algorithm** | Complicated custom logic implementing something with a simpler idiomatic solution (including standard library utilities). | Unnecessary cognitive friction without benefit. | *Substitute Algorithm* | — |
@@ -106,7 +108,6 @@ At module or contract scale, these smells represent architectural decisions belo
 
 Do not report or apply, even if present in classic catalogs:
 
-- **Comments as a smell.** What and how to document is detailed in [comments.md](comments.md).
 - ***Replace Function with Command*.** Introduces a shallow class without encapsulating meaningful complexity.
 
 ---

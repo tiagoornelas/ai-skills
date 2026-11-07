@@ -27,7 +27,7 @@
 ### Formal vs. Informal Interface Components
 
 - **Formal**: explicitly specified in code (signatures, parameter names and types, return types, exceptions). Verified by the compiler or runtime.
-- **Informal**: high-level behavior, side effects, call order constraints ("call `a` before `b`"), and invariants. Documented in comments and specifications, this is usually **larger and more complex** than the formal interface.
+- **Informal**: high-level behavior, side effects, call order constraints ("call `a` before `b`"), and invariants. Documented in the contract's documentation and specifications (constraints code can enforce become types, tests, or checks per [comments.md](../../coding/references/comments.md)), this is usually **larger and more complex** than the formal interface.
 - A well-specified interface reduces **unknown unknowns**: it tells callers precisely what they need to know to use the module correctly.
 
 ### Multiple Implementations of an Interface
