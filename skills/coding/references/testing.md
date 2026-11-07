@@ -65,7 +65,7 @@ Exporting a component's labels for this purpose does not violate Section 1: the 
 ## 4. Leverage Existing Project Infrastructure
 
 - Author tests using the frameworks, runner types, and conventions **already established in the project**. If integration tests with a database exist, leverage them.
-- **Introducing new test infrastructure** (new test runners, containerized test databases, end-to-end browser harnesses) is never a side effect of a coding task. It is a Human Layer scoping decision.
+- **Introducing new test infrastructure** (new test runners, containerized test databases, end-to-end browser harnesses) is never a side effect of a coding task. It is a Human Layer decision: a new thing on the change card, presented for ratification.
 
 ---
 

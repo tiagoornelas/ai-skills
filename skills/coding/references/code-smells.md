@@ -18,7 +18,7 @@
   2. change cost (likely subsequent changes touching multiple files);
   3. readability (unnecessary cognitive friction for maintainers).
 - If you cannot articulate the concrete failure scenario in a single sentence, **discard the finding**.
-- Every refactoring must adhere to [refactoring-principles.md](refactoring-principles.md). If a refactoring would alter a public contract or module boundary, do not apply it unilaterally: escalate to the Human Layer.
+- Every refactoring must adhere to [refactoring-principles.md](refactoring-principles.md). If a refactoring would alter a public contract or module boundary, apply it only as a Human Layer decision through [`software-designing`](../../software-designing/SKILL.md), presented for ratification.
 
 ---
 

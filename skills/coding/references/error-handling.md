@@ -76,7 +76,7 @@
 
 - **When writing**: attempt to define errors away; where errors are inevitable, use idiomatic mechanisms, provide rich context, avoid nulls, and handle errors strictly where actionable recovery is possible.
 - **When reviewing**: swallowed errors, gratuitous null returns, and lost root causes represent concrete failure scenarios (silent bugs, remote failures) and warrant remediation.
-- If remediation alters the failure modes exposed by a public contract, that is an architectural decision: escalate to the Human Layer.
+- If remediation alters the failure modes exposed by a public contract, that is an architectural decision: take it through [`software-designing`](../../software-designing/SKILL.md) and present it for ratification.
 
 ---
 
