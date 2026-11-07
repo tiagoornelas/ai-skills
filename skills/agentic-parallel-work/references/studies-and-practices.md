@@ -26,7 +26,7 @@
 
 - **One worktree per agent** is the common isolation: [Cursor worktrees](https://cursor.com/docs/configuration/worktrees), [Codex worktrees](https://developers.openai.com/codex/app/worktrees) and [cloud tasks](https://developers.openai.com/codex/cloud), and [Conductor](https://www.conductor.build/docs/concepts/git-worktrees), where one workspace is one worktree, one branch, and one unit of review.
 - **Subagents return a summary to their caller**; Claude Code's [agent teams](https://code.claude.com/docs/en/agent-teams), where teammates message each other, are recommended against for sequential or interdependent work and [cost more tokens](https://code.claude.com/docs/en/costs) with every teammate.
-- **The human reviews deliveries, not transcripts.** Practitioners run a few independent agents at once and name review capacity as the limit: [Simon Willison](https://simonwillison.net/2025/Oct/5/parallel-coding-agents/) on the parallel coding agent lifestyle, and [Addy Osmani](https://addyosmani.com/blog/future-agentic-coding/) on moving from conductor (one agent, in the loop) to orchestrator (several async agents, reviewing their output).
+- **The human reviews deliveries, not transcripts.** Practitioners run a few independent agents at once and name review capacity as the limit: [Simon Willison](https://simonwillison.net/2025/Oct/5/parallel-coding-agents/) on the parallel coding agent lifestyle, and [Addy Osmani](https://addyosmani.com/blog/future-agentic-coding/) on moving from conductor (one agent, in the loop) to orchestrator (several async agents, reviewing their output). These rules spend that capacity at the end instead of rationing it with a queue: each delivery arrives complete and proven, its decisions ordered by cost to reverse.
 
 ## 3. Good and Bad Practice
 
@@ -35,6 +35,6 @@
 | One session per delivery, multi-repo when the delivery needs it | Frontend and backend of one change in two tabs: each makes decisions the other never sees. |
 | The writer talks to the user; subagents answer once | Tabs updating each other by message: tokens grow with every message and the user loses track. |
 | No lead agent: the task state is derived from the issue, the PR, and git when asked | A lead agent relaying between tabs and keeping a status file: the file goes stale and contradicts the code. |
-| Two to four deliveries in flight, fewer when reviews pile up | More fronts than the user can review: work waits and context rots. |
+| Two to four deliveries being built; finished ones wait in a pile, each complete and proven | More fronts being built than the user can follow, or deliveries that need the user mid-way: work waits and context rots. |
 | One clean-context reviewer, at most two rounds, only real defects block | Review rounds over wording: most of the cost, little of the value. |
 | Independent opinions written separately, then compared | Agents debating until they agree: they converge on each other, not on the facts. |

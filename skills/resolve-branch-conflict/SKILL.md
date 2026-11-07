@@ -17,6 +17,8 @@ argument-hint: "[PR number/URL, or two branches: <ours> <theirs>]"
 A merge conflict signals that two developers modified the same layer **without awareness of each other's work**. Resolving conflicts well is not picking a winner: it means delivering what **both** work streams intended, structured cleanly so neither author is alienated and code remains extensible.
 
 > The agent analyzes, classifies, proposes, and executes. **Discarding someone's work, altering a public contract, or choosing between competing architectures is strictly the user's decision.**
+>
+> When both sides are the agent's own work in one stack of deliveries (a stacked branch rebased onto the branch below it), the agent resolves every class itself, keeping the lower branch's decisions, and shows any changed decision on the change card to ratify. The classes below govern conflicts with someone else's work.
 
 Two deliveries in flight that collide are a sign they shared a file or contract, which [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md#4-limits) avoids; when they do collide, this skill resolves it. Uses [`visualize-it`](../visualize-it/SKILL.md) to diagram collisions, [`software-designing`](../software-designing/SKILL.md) when resolution touches architecture, and [`coding`](../coding/SKILL.md) for clean implementation. Catalog of conflict patterns and recipes resides in [`references/conflict-patterns.md`](references/conflict-patterns.md).
 

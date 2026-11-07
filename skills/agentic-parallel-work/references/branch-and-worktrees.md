@@ -26,7 +26,7 @@ The same name is used in every repository of the delivery.
 ## 2. Base Branch
 
 - **Independent delivery**: the repository's default branch, taken from the remote after a fetch (`origin/<default>`), never a stale local copy. Without a remote, the local default branch.
-- **Dependent delivery** (stacked on work not merged yet): the dependency's branch. Its PR is opened against that branch and says it is stacked and must merge after it.
+- **Dependent delivery** (stacked on work not merged yet): the dependency's branch. Its PR is opened against that branch and says it is stacked and must merge after it. When the lower branch gets new commits, rebase the stacked branch onto it and prove it again. PRs merge from the bottom up, each only while everything below it is proven and ratified.
 
 ## 3. Creating the Worktrees
 
