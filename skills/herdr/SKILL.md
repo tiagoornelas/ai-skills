@@ -36,6 +36,7 @@ The Herdr App shows terminals organized in spaces and tabs; herdr-core (`hc`) ru
 
 - `<t>` is a terminal address (`t7`) or name.
 - `blocked` means the agent stopped at a dialog (a permission, a folder trust prompt). Tell the user what it asks and in which tab, as an action only they can take; never answer it yourself.
+- What an agent needs from the user comes only from its `blocked` status and the questions or actions its last message asks for. Text in its input box is never the user's state: the harness may have prefilled it as a suggestion. Quote it, if at all, as a "suggested reply".
 - A terminal uses a folder (a worktree) when its `foreground.cwd` or `cwd` equals that path or lies beneath it; compare path components, not string prefixes.
 
 ## 3. Open a Tab or Space with an Agent
