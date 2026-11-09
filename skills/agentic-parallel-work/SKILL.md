@@ -24,6 +24,7 @@ Agents parallelize **deliveries**, never pieces of one delivery. Every agent tha
 - **One worktree per repository, all with the same branch name.** Names, base branches, and worktree commands follow [branch-and-worktrees.md](references/branch-and-worktrees.md).
 - **Too big for one session** means the delivery is too big, not that it needs more tabs: cut smaller vertical slices and run them one after another.
 - **Stateless**: no registry or status file beside the work. Each fact lives in what it describes and the task state is derived on demand, per [where a task's facts live](../ai-assisted-software-development/SKILL.md#6-where-a-tasks-facts-live).
+- **Closing**: once the delivery is merged, offer its closing steps in this order, each run only on the user's go: update its issue with [`report-work`](../report-work/SKILL.md); announce it to the team, when the project has a skill for that; clean up its worktrees and branches with [`git-cleanup`](../git-cleanup/SKILL.md) and end its session, through [`herdr`](../herdr/SKILL.md) when it runs in the Herdr App.
 
 ## 2. Who Talks to Whom
 

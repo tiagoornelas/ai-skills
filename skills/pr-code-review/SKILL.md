@@ -16,7 +16,7 @@ argument-hint: "[PR number/URL, branch, SHA, or base ref] [--re-review]"
 
 # PR Code Review
 
-For reviewing a pull request (on GitHub, through `gh`) or any diff from a fixed base, whoever wrote it. The deliverable is **helping the user decide** (approve or request changes) and **the specific points they will comment on**. This skill owns only the pull-request mechanics; the review itself is [`human-review`](../human-review/SKILL.md) and the proof is [`provide-evidence`](../provide-evidence/SKILL.md). Nothing is modified: everything becomes a finding, and the user chooses what to comment on.
+For reviewing a pull request (on GitHub, through `gh`) or any diff from a fixed base, whoever wrote it. The deliverable is **helping the user decide** the verdict and **the specific points they will comment on**. This skill owns only the pull-request mechanics; the review itself is [`human-review`](../human-review/SKILL.md) and the proof is [`provide-evidence`](../provide-evidence/SKILL.md). Nothing is modified: everything becomes a finding, and the user chooses what to comment on.
 
 ## 1. Establish the Comparison Baseline
 
@@ -106,11 +106,11 @@ Conclude with summary and **recommended verdict**:
 
 Highest-risk axis: **<axis>** (<key finding in one line>)   ← only when the review axes ran
 
-**Suggested Verdict:** ✅ Approve | 🔁 Request changes
+**Suggested Verdict:** ✅ Approve | 💬 Comment
 <single sentence rationale>
 ```
 
-Verdict rule: a critical defect, a material unresolved decision, or a failing proof → **Request changes**, with the reason. Incomplete evidence → state the limitation and what remains to verify, never an automatic approval. **Approve** only within the reviewed scope when nothing material remains; a focused Human Layer review does not certify unreviewed Agent Layer quality. **The verdict belongs to the user**; accepted concessions are respected unless new evidence changes their premises. The summary and rationale are for discussion with the user, who may promote, demote, or discard findings; they are not a general PR review comment.
+Verdict rule: a critical defect, a material unresolved decision, or a failing proof → **Comment**, with the reason, and the comments the user marks as blocking say so in their first sentence; the others read as suggestions. Suggest **Request changes** only when the user asks for it: a formal change request on a teammate's PR weighs more than a blocking comment. Incomplete evidence → state the limitation and what remains to verify, never an automatic approval. **Approve** only within the reviewed scope when nothing material remains; a focused Human Layer review does not certify unreviewed Agent Layer quality. **The verdict belongs to the user**; accepted concessions are respected unless new evidence changes their premises. The summary and rationale are for discussion with the user, who may promote, demote, or discard findings; they are not a general PR review comment.
 
 When the PR was authored by the agent pipeline (the user's own work), tag each accepted Agent Layer finding with its escape cause per [escape-classification.md](../agent-self-review/references/escape-classification.md) and add the one-line tally to the summary.
 
@@ -137,7 +137,7 @@ For each accepted finding, generate a ready-to-paste comment in the language of 
 
 ### 5.2. General Review Comment (Only on Explicit Request)
 
-By default, leave the overall review body empty for both **Approve** and **Request changes**. Line comments and existing thread replies carry the accepted feedback; do not repeat them in a general review comment. Draft a general review body only if the user explicitly requests one, aligned with their chosen verdict, and run it through `unslop`.
+By default, leave the overall review body empty, whatever the verdict. Line comments and existing thread replies carry the accepted feedback; do not repeat them in a general review comment. Draft a general review body only if the user explicitly requests one, aligned with their chosen verdict, and run it through `unslop`.
 
 ### 5.3. Thread Replies in Re-review Mode
 

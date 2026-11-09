@@ -22,7 +22,8 @@
 ## 2. Working principles
 
 - **Safety and non-destructiveness**: preserve user data, never execute destructive commands without inspecting the target beforehand, and respect existing files.
-- **Formatted links**: when citing files in Markdown, use links (e.g., `[README.md](README.md)`).
+- **Production access**: read-only unless the user authorizes that specific write. Before any command that reaches production, say which production systems and data it touches. Never write a credential to a file (pass it through the environment or an interactive prompt), and when done, tear down the proxies, tunnels, and port-forwards opened for the access.
+- **Formatted links**: when citing files in Markdown, use links (e.g., `[README.md](README.md)`); cite every pull request, issue, and chat thread with its clickable link, never by its number alone.
 - **No local references in shared artifacts**: commits, PRs, review comments, issues, and reports must never reference paths the reader cannot open (local machine paths, `docs/tickets/`, `docs/prd/`, files in `.gitignore`). Reference the linked issue or rephrase the information. Details in the `no-local-references` reference of the `ai-assisted-software-development` skill.
 
 ---
