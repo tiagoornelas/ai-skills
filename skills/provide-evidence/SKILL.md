@@ -61,46 +61,43 @@ For every PR, take the six lines from its evidence note and judge each per the d
 
 Under every ❌, one line says **what is missing and who acts**: 🤖 the agent that closes it, or ✋ the user only when only the user can, with the reason.
 
-**Output**, entirely in the user's session language, per [human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md); the layout is an example, the content is mandatory. On this screen ✅ prints as ✓ and ❌ as ✗, one column wide so the lines stay aligned:
+**Output**: Markdown prose with headings, bold, bullets, and links, per [human-facing communication](../ai-assisted-software-development/references/human-facing-communication.md); never a code block or aligned columns. Every word of it, headings, labels, and the six questions included, is in the user's session language; the `<…>` parts below are placeholders, not text to copy. The layout is an example; the content is mandatory:
 
-````text
-🧾 <repository and branch> · <Evidence> · <time>
-<verdict line>
-<Objective>: <one or two sentences, or "not verifiable"> · <task and status, or "unavailable">
+````markdown
+🧾 **<Evidence> · <delivery name> · <time>**
 
-── <repo>#<n> · <short name>
-<the plan of the change card>
-<rebuilt from the diff: matches the plan | differs: <each item missing from either side>>
-<base moved after the proof: no | yes: what, by whom, when>
+<verdict: one emoji and one sentence>
 
-<Proof>: <N> ✓  <N> ✗  <commit> <proven commit>[ · <the PR is at <head>: outdated>]
-  ✓ <letter> <name>   <claim>   <proof>
-  ✗ <letter> <name>   <what is missing>   <proof so far>
-      🖼 <context> · <folder> · <what its images show>   (under f, one per context)
-      → 🤖 <who>: <what closes it>   or   → ✋ <you>: <action> (<only you because: reason>)
+**<Objective>:** <one or two sentences, or "not verifiable">. <Tasks and their status, or "unavailable">.
 
-<uncommitted files, or nothing uncommitted>
+### <✅ | ⚠️> <short name> · [<repo>#<n>](<url>) · commit `<proven commit>` <(current) | (outdated: the PR is at `<head>`)>
+
+**<What it adds>:**
+- <New>: <each new thing, in product terms, and where it lives>.
+- <Changes>: <each changed thing or rule, before and after>.
+- ❓ <each thing awaiting ratification, with its cost to reverse> · ⚠️ <each thing out of pattern or crossing a wall>
+- <Matches what was rebuilt from the diff | Differs: each item missing from either side>. <Base moved after the proof: no | what, by whom, when>.
+
+**<The six proofs>:**
+- ✅ **<Why does it exist?>** <the claim, in one sentence>.
+  - <Proof>: <link, command and its real result, or the cited file, in words that say why it convinces>.
+- ✅ **<Is the architecture the declared one?>** …
+- ✅ **<Was a wall knocked down?>** …
+- ❌ **<Was anything built on the side?>** <what is missing>.
+  - <Proof so far>: …
+  - 🤖 **<who>:** <what closes it>   or   ✋ **<You>:** <action>; <only you, because: reason>.
+- ✅ **<Can it cause a catastrophe?>** …
+- ✅ **<Was it tested, and does it work?>** …
+  - 🖼 <context>: <what its images show> (`<folder>`)
+
+<Uncommitted files, or nothing uncommitted.>
 📋 <No task registered: suggest report-work, when no task reference exists>
-➡️ <the user's one next action>   or   <Nothing depends on you now; next: <agent step>>
+➡️ **<Your next step>:** <the user's one action> | <Nothing depends on you now; next: the agent's step>
 ````
 
-The proof block of a fictional delivery:
-
-```text
-Proof: 4 ✓  2 ✗  commit 5b699b1
-  ✓ a why                   exported by hand today     issue #301: support asks weekly
-  ✓ b architecture          9 new things, all on plan  rebuilt inventory matches
-  ✓ c no wall knocked down  contracts, tests intact    git diff main...5b699b1 -- api/ test/ → empty
-  ✗ d nothing on the side   PDF layout inside the job  others use app/templates/
-      → 🤖 author: move the layout to app/templates/, beside the receipt template
-  ✓ e no catastrophe        flag off; one table added  revert: git revert 5b699b1
-  ✗ f tested and works      end-to-end run missing     CI run 1432: 212 passed
-      → 🤖 reviewer: export one invoice in the review app on 5b699b1, with screenshots
-```
-
 - **Verdict first, one line**: ✅ "proven on the current version; only your review is left" (six ✅ for the current head, complete card, base not moved, author branch-clean); ⚠️ "not proven: <the gaps>" (any ❌, outdated note, draft, conflict, failing CI, base moved, or a tier-2 or tier-3 item neither ratified nor a `?` line on the card); ⏳ "not done: <what is still running>"; ✅ "delivery proven; objective not verifiable" when there is no objective to check against.
-- **One plan per PR**, open PRs first. A merged PR in scope gets a collapsed plan: its count line, its PR line, and its proven state; the six lines only when one is ❌. A branch without a PR shows its branch and head as the state.
-- **The six lines always**, each with its claim and its proof: a link, a command with its real result, or the cited file, in words that say why it convinces. Never a bare mark; the `Proof` count never stands in for the lines. When the user points at a line, give its full argument from the note. Visual proof prints each context folder with one line on what it shows.
+- **One section per PR**, open PRs first. A merged PR in scope collapses to its heading and proven state; the six proofs only when one is ❌. A branch without a PR shows its branch and head in the heading.
+- **The six proofs always**, each the dossier line's question with its claim and its proof. Never a bare mark, and never a count in place of the proofs. When the user points at a proof, give its full argument from the note.
 - **No task registered**: when no task reference exists in the branch, the commits, or the conversation, suggest registering the work with [`report-work`](../report-work/SKILL.md).
 - **Closing line**: the user's next action, or that nothing depends on them and the agents' next step.
 - When the verdict is not ✅ and the action was "show", end with one offer to verify (Section 4), saying what it costs (minutes; it runs tests and a real execution).
@@ -118,7 +115,7 @@ Only on the user's request or before the writer presents a delivery (Section 1),
 
 - [ ] Show wrote nothing; verify ran only on the user's request or before the writer presented a delivery, after a branch-clean self-review for an agent's delivery, and stored a local note only.
 - [ ] The output opened with one verdict line and the objective, then, per PR, the change card's plan compared with the inventory rebuilt from the diff (undeclared clients, variables, or mechanisms as `!` lines), and whether the base moved.
-- [ ] The `Proof` count named the proven commit against the current head, and all six lines followed, each with its claim and its proof (image contexts one line each); bare results, a missing or mismatched card in (b), or a real run of another commit in (f) were ❌, each with what is missing and who acts.
+- [ ] Each PR heading named the proven commit against the current head, and all six proofs followed as questions, each with its claim and its proof (image contexts one line each); bare results, a missing or mismatched card in (b), or a real run of another commit in (f) were ❌, each with what is missing and who acts.
 - [ ] A missing note read "no record on this machine"; a note on an older commit read "outdated: proves X, the PR is at Y"; a note in the older five-line format was mapped, its (d) "no record"; an incremental or ancestor self-review was not branch-clean.
 - [ ] The validation environment's commit was read from the environment when the project records how, and any ❌ followed the dossier's no-merge rule.
-- [ ] Everything was in the user's language; no secrets were copied.
+- [ ] The screen was Markdown bullets with no code block or aligned columns, every word of it in the user's language; no secrets were copied.
