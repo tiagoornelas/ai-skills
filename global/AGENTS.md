@@ -66,5 +66,6 @@ Whatever the task, the user watches these. The first three change only as decisi
   - **Claude Code**: `Agent` tool with `general-purpose` type.
   - **Antigravity CLI**: `invoke_subagent` with `TypeName: "self"` or a specific type.
   - **Codex**: sub-process or isolated thread.
+- Choose the subagent's model by what it returns, when the harness lets each call choose: facts (research, reading, exploration) run one tier below the session's model; judgment (independent review, design sketches, opinions, synthesis) keeps the session's model.
 - Pass context and requirements **verbatim** (*ipsis litteris*), without loss of fidelity.
 - Skill paths cited in a brief must use **absolute paths**: the subagent runs in the project directory, not the skills directory. Details in the `subagent-delegation` reference of the `ai-assisted-software-development` skill.

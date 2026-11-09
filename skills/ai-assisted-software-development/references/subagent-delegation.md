@@ -21,6 +21,11 @@
 
 In other harnesses, use the equivalent tool. If none exists, execute tasks sequentially in the current context and state that explicitly.
 
+Choose the model by what the subagent returns, when the subagent tool lets each call choose one:
+
+- **Facts** found by reading, searching, or exploring (code, docs, history, the local environment, external sources): one tier below the session's model, because a wrong fact shows up when the caller uses it.
+- **Judgment** (an independent review, a design sketch, an opinion, a synthesis or verdict over findings), or a task mixing facts and judgment: the session's model, leaving the choice unset, because its quality is the deliverable.
+
 ---
 
 ## 2. Full Context
@@ -46,5 +51,6 @@ Before sending the brief:
 ## 4. Validation
 
 - [ ] The tool used matches the current harness (or sequential execution was stated).
+- [ ] A subagent returning only facts ran one tier below the session's model when the tool allows it; every other subagent ran on the session's model.
 - [ ] The brief carries complete context and requirements.
 - [ ] No brief contains `<skills>` or a relative skill path; all paths are absolute and verified to exist.
