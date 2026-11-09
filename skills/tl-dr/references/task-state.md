@@ -26,7 +26,7 @@ Every source is optional. One the session cannot reach becomes a closing `skippe
 
 ## 2. Lines
 
-In the user's session language; the plan symbols and the PR line's fields stay as they are.
+In the user's session language, the PR line's field names and states included; only the plan symbols and emojis stay as they are.
 
 1. **Header**: the task in product terms, then whether anything depends on the user: `N depend on you`, or `✅ nothing depends on you`.
 2. **What depends on the user**, one line each, marked per the [emoji vocabulary](../../ai-assisted-software-development/references/human-facing-communication.md#4-emojis-as-signals): 👀 a decision to ratify (a [`?` line](../../ai-assisted-software-development/references/change-card.md#2-the-plan) of the card), with its cost to reverse · ❓ a question to the user (an action where the agent stops, in the issue or a thread), with its options and the recommendation · 👀 a PR whose line reads `you pending`, or a review requested from the user · ✋ an agent stopped at a dialog, with the tab to open.

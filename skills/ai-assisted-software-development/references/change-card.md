@@ -16,7 +16,7 @@ Between those moments, status messages name the change in one line and do not re
 
 ## 2. The Plan
 
-The layout in Section 3 is an example; this content is not optional. Every word of it is written in the human's session language; the symbols stay as they are.
+The layout in Section 3 is an example; this content is not optional. Every word of the card, the labels of the count line, the closing lines, and the [PR line](#5-pr-line) included, is written in the language of where it appears: the human's session language in conversation, the pull request's language in a PR body. Only the symbols and emojis stay as they are.
 
 **Count line**, first: `Plan: N +  N ~  N -  N ?  N !  <state>`, the number of lines carrying each symbol, then the state in a few words ("3 draft PRs, nothing merged").
 
@@ -135,4 +135,4 @@ Every PR is written the same way, on the card and in any message about the work:
 - [ ] Every new thing had its line and its ratification (or a `?` line, ordered by cost to reverse); rule changes, data deleted or rewritten or sent to a new third party, things built on the side, and walls crossed had their lines; every kind with nothing new, and intact walls, were on the `unchanged` line.
 - [ ] No method, signature, file name, helper, internal refactor, lint, test body, or commit order appeared on the plan, except as a consequence on behavior, contract, boundary, or risk; folders and files appeared only in the "Where it lives" detail.
 - [ ] The `state` line used the PR line, and at delivery said whether the proof is for the current version.
-- [ ] Every word was in the human's session language; only the symbols stayed as they are.
+- [ ] Every word, labels included, was in the language of where the card appeared (the session's in conversation, the pull request's in a PR body); only the symbols and emojis stayed as they are.
