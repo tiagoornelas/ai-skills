@@ -18,12 +18,13 @@
 | Labels in headings and bullets | "O que ninguém te conta", "Por que isso importa" | Noun phrases: "Critério adotado", "Riscos principais", "Causa da falha". |
 | Importance announcements | "vale destacar", "é importante notar", "vale ressaltar" | Cut it and state the consequence. |
 | False suspense | "O resultado? Devastador." | State the result. |
-| Context before facts | Disconnected fragments | Tie facts with "por isso", "para que", "porque". |
+| Context before facts | Loose sentences or fragments | Link them with conversational connectors: "na verdade", "só que", "mas", "então", "aí", "inclusive", "por isso", "pra que". |
+| Coined terms | "o envio parou no meio" followed by "depois da pane" | Reuse the verb: "quando o envio parou". |
 
 ## 2. Habits Specific to Portuguese
 
 - **Title case**: wrong in Portuguese. Headings use sentence case ("Riscos principais", never "Riscos Principais").
 - **Gerundism** ("vou estar enviando", "estaremos analisando"): use the simple form ("envio", "vamos analisar").
-- **Stacked formal connectives** ("Ademais", "Outrossim", "Nesse sentido", "Dessa forma" opening sentence after sentence): keep a connective only where it carries a logical link, and prefer plain ones ("além disso", "por isso", "então").
+- **Stacked formal connectives** ("Ademais", "Outrossim", "Nesse sentido", "Dessa forma" opening sentence after sentence): replace them with plain ones ("além disso", "por isso", "então"). The habit is the formal opener, not the link: a sentence still says how it follows from the last.
 - **Translated English idioms** ("no final do dia", "fazer sentido" for everything, "endereçar um problema"): use the Portuguese expression ("no fim das contas", "resolver", "tratar").
 - **AI vocabulary in Portuguese**: "robusto", "crucial", "fundamental", "alavancar", "potencializar", "jornada", "ecossistema", "sinergia", "cenário", "desbloquear", "elevar", "mergulhar fundo", "navegar" (figurative), and stand-ins for "é" and "tem" ("serve como", "se destaca como", "conta com"). Use the plain word ("usar", "ajudar", "é", "tem").
