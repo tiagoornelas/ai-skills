@@ -47,7 +47,7 @@ To stress-test rather than merely clarify, actively hunt for branches the user o
 Every question follows this exact block structure, separated by `---`, written in the user's session language:
 
 ```markdown
-❓ **Q1** · **<Question Title>**
+⚖️ **Q1** · **<Question Title>**
 
 <Strictly the necessary context to decide, as concise as possible>
 
@@ -59,7 +59,7 @@ Every question follows this exact block structure, separated by `---`, written i
 
 ---
 
-❓ **Q2** · **<Question Title>**
+⚖️ **Q2** · **<Question Title>**
 
 <Open-ended question, when discrete choices do not apply>
 

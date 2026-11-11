@@ -88,14 +88,14 @@ Emojis help the human scan a message and spot what needs attention. They are mar
 | ⏳ | In progress, including work waiting for other in-flight work to finish. |
 | ❌ | Failed or not done. |
 | ⚠️ | Attention point: a risk, surprise, or side effect the human should notice. |
-| ❓ | Decision the human must make: a choice between options (opens a decision card). |
+| ⚖️ | Decision the human must make: a choice between options (opens a decision card). |
 | 👀 | Review the human owes, including decisions to ratify. |
-| ✋ | Action only the human can take, with nothing to choose: log in, validate in a browser, grant access, answer an agent's dialog. Written as steps, not options. Raised only after the agent tried it itself, and always with one line saying why only the human can: "only you because: <personal credential · account permission · production decision · …>". |
+| ✋ | A task the human performs by hand because no agent can: log in, validate in a browser, grant access, answer an agent's dialog, run a deploy that needs their credential. Written as steps, not options. Raised only after the agent tried it itself, and always with one line saying why only the human can: "only you because: <personal credential · account permission · …>". Never a decision, an authorization, a ratification, or advice: those are ⚖️ or 👀. |
 | 🤖 | Step an agent takes, without the human. |
 | ⏸️ | Blocked: waiting for something neither the human nor any agent can do now (a time to pass, metrics to settle, another team or a third party). Always says what it waits for and when or by whom it ends. |
-| 🔴 🟡 🟢 | Severity of a finding: critical, warning, suggestion. |
+| 🔴 🟡 🟢 | Severity of an open finding: critical, warning, suggestion. |
 
-**Who acts.** ❓, 👀, and ✋ mean the human acts; 🤖 means an agent does; ⏳ means it is already moving; ⏸️ means nobody can move it now. In a list that mixes owners (next steps, pending items), mark every item with one of these so the human sees at a glance what is theirs. Work waiting for the human is never ⏸️: it is ❓, 👀, or ✋.
+**Who acts.** ⚖️, 👀, and ✋ mean the human acts; 🤖 means an agent does; ⏳ means it is already moving; ⏸️ means nobody can move it now. In a list that mixes owners (next steps, pending items), mark every item with one of these so the human sees at a glance what is theirs. Work waiting for the human is never ⏸️: it is ⚖️, 👀, or ✋.
 
 Skills that define their own symbols (the plan symbols of the [change card](change-card.md)) keep them inside their own outputs. Do not invent other meanings within a session: the same emoji always means the same thing.
 
@@ -118,7 +118,8 @@ Prompt instructions or documentation are never automated verification.
 2. **Few enough to stand out.** One emoji per line at most. If most lines in a message carry one, they stop signaling: keep them for status and attention points.
 3. **Never the only carrier.** The text must still say what the emoji signals ("⚠️ the migration locks the table for about a minute"), so the message survives a reader who skims past the symbol.
 4. **Not inside box-drawn diagrams.** Emojis are two columns wide in terminals and break alignment; use one-column marks (`+ ~ - ? !`, `■`, `▲`) as the [change card](change-card.md) and [`visualize-it`](../../visualize-it/SKILL.md) do.
-5. **Conversation, not commits.** This applies to messages to the human. Commit messages and titles of tickets or PRs carry no emojis; other shared artifacts follow their own skill.
+5. **Color shows the current state.** 🔴, 🟡, and ❌ mark only what is still open and needs attention now. A resolved item carries ✅ alone; when its past severity matters, say it in words ("was critical, fixed with a test"). Never pair a past mark with the current one (`🔴→✅`, `❌→✅`, `✅ 🟡`).
+6. **Conversation, not commits.** This applies to messages to the human. Commit messages and titles of tickets or PRs carry no emojis; other shared artifacts follow their own skill.
 
 ---
 
@@ -137,7 +138,7 @@ Prompt instructions or documentation are never automated verification.
 Several decisions may share a message. What matters is that each one is explained well enough to decide on the spot, with a recommendation. Present each as a self-contained card, in the human's language and situated per Section 3:
 
 ```markdown
-❓ **Decision: <the question in one line, in system terms>**
+⚖️ **Decision: <the question in one line, in system terms>**
 
 - **Why it is yours:** <one line: the action that leaves the branch, or why only the human can choose> · <easy: reversible, low cost of a wrong answer | hard: costly or impossible to undo>
 - **Context:** where this sits in the product, what happens today, and what changed that requires a choice (1–3 sentences, no bare handles).
