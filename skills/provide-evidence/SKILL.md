@@ -75,7 +75,7 @@ Under every ❌, one line says **what is missing and who acts**: 🤖 the agent 
 **<What it adds>:**
 - <New>: <each new thing, in product terms, and where it lives>.
 - <Changes>: <each changed thing or rule, before and after>.
-- ❓ <each thing awaiting ratification, with its cost to reverse> · ⚠️ <each thing out of pattern or crossing a wall>
+- 👀 <each thing awaiting ratification, with its cost to reverse> · ⚠️ <each thing out of pattern or crossing a wall>
 - <Matches what was rebuilt from the diff | Differs: each item missing from either side>. <Base moved after the proof: no | what, by whom, when>.
 
 **<The six proofs>:**

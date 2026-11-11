@@ -39,7 +39,7 @@ Group everything into tasks: a task is one delivery, joining its issue, its PRs 
 
 ## 3. Judge
 
-- **What depends on the user**: the ❓, 👀, and ✋ items of every task's [task state](../tl-dr/references/task-state.md), one per subject, ordered by what each unblocks, decisions to ratify by cost to reverse. At most seven, then "+N more".
+- **What depends on the user**: the ⚖️, 👀, and ✋ items of every task's [task state](../tl-dr/references/task-state.md), one per subject, ordered by what each unblocks, decisions to ratify by cost to reverse. At most seven, then "+N more".
 - **Next focus**: one task and why, from the three standing questions of [`scope-review`](../scope-review/SKILL.md#three-standing-questions) applied to the open tasks in one line each, with any task worth reducing, postponing, or stopping. On request ("priorities", or a named task), run `scope-review` in full on up to three tasks with a concrete signal: stalled, overlapping another task, or much effort for little impact.
 - **In flight**: the deliveries being built against the [limit](../agentic-parallel-work/SKILL.md#4-limits) of `agentic-parallel-work`, and the pile waiting for the user's review, oldest first, with stacked deliveries under the one they build on.
 - **Offers**, one line each and only when the signal is present:
