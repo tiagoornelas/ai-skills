@@ -29,13 +29,13 @@
 
 ## Lens: Judgment
 
-> Name the durable principle behind each incident: the thing that saves future agents real time. Scan for mistakes made and corrections received, the user's preferences and workflow, codebase knowledge gained, decisions and their reasons, friction in following a skill or delegating, and manual steps repeated that could be encoded.
+> Name the durable principle behind each incident: the thing that saves future agents real time. Scan for mistakes made and corrections received, the user's preferences and workflow, codebase knowledge gained, decisions and their reasons, friction in following a skill or delegating, and manual steps repeated that could be encoded as a rule or scheduled as a routine via roostr.
 
 ## Lens: Tooling
 
 > Name the concrete tool, command, flag, or convention a future agent would otherwise rediscover: tool invocations and flags the agent had to discover, library or framework quirks, non-obvious file or path conventions, how to run tests or reproduce a failure, where logs land, and build or sandbox surprises.
 >
-> Also flag every moment the user supplied context the agent could have fetched itself through a tool it had (a tracker, chat, docs, observability, source control). Route it to the skill that owns that workflow, so the next agent fetches it.
+> Also flag every moment the user supplied context the agent could have fetched itself through a tool it had (a tracker, chat, docs, observability, source control). Route it to the skill that owns that workflow, so the next agent fetches it, or propose a recurring check via roostr when it requires periodic inspection.
 
 ## Lens: Divergent
 

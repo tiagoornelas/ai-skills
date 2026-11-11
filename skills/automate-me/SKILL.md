@@ -36,14 +36,15 @@ Group the signals into rules, keeping only those that are specific and non-defau
 - **An existing skill** when the rule refines what that skill already governs (a commit preference goes to the commit skill).
 - **The global instructions** when the rule must hold in every session (response style, reporting), since a skill acts only when it runs.
 - **A new skill** for each coherent group of rules nothing else covers; a stray rule with no home is listed as such, not forced into a skill.
+- **A scheduled routine** via [`roostr`](../roostr/SKILL.md) when the pattern is a recurring task, periodic audit, or time-based routine (triage, daily reviews, test suites) rather than a reactive instruction.
 
 ## 4. Propose and Decide
 
-Present the proposal in the user's language, one row per rule: the rule, the evidence behind it (slices or the user's answer), and its destination. For each existing file, show the edit, drafted with [`prompt-engineering`](../prompt-engineering/SKILL.md) (rewrite its governing text before adding). For a new skill, show its draft, where it would live (recommending the repository the user keeps their skills in), and two or three name suggestions drawn from what it does; the user picks one or names it freely. Never derive a name from a pattern such as the user's handle. Revise with the user until each row reads like them ("does it read like you? what is missing?"); the user may approve, redirect, or drop any row. When no rule survives step 3, say so and stop.
+Present the proposal in the user's language, one row per rule: the rule, the evidence behind it (slices or the user's answer), and its destination. For each existing file, show the edit, drafted with [`prompt-engineering`](../prompt-engineering/SKILL.md) (rewrite its governing text before adding). For a new skill, show its draft, where it would live (recommending the repository the user keeps their skills in), and two or three name suggestions drawn from what it does; the user picks one or names it freely. Never derive a name from a pattern such as the user's handle. For a scheduled routine, show its proposed schedule, harness, target (Herdr workspace, terminal, background), and prompt via [`roostr`](../roostr/SKILL.md). Revise with the user until each row reads like them ("does it read like you? what is missing?"); the user may approve, redirect, or drop any row. When no rule survives step 3, say so and stop.
 
 ## 5. Write and Land
 
-- Write only the approved rows, as approved. A new skill references the skills and rules the user relies on by name instead of pasting them, and is manual (`disable-model-invocation: true`) unless the user wants it automatic.
+- Write only the approved rows, as approved. A new skill references the skills and rules the user relies on by name instead of pasting them, and is manual (`disable-model-invocation: true`) unless the user wants it automatic. A scheduled routine is configured via `roostr job create` only after user approval.
 - In a repository, land it as a delivery per [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md), with [`commit`](../commit/SKILL.md) and [`pull-request`](../pull-request/SKILL.md); in a personal directory, write it once the user approves. A new skill is linked into the harnesses by the user's install step (for this repository, `./scripts/setup-global.sh`).
 
 Not for one narrow workflow the user already knows they want ("how I write commit messages"): that is a direct edit or a regular skill, written with `prompt-engineering` and no mining.
@@ -55,6 +56,6 @@ Not for one narrow workflow the user already knows they want ("how I write commi
 - [ ] Only the current project's sessions were mined, in parallel slices, and only patterns seen in two or more slices or confirmed by the user were kept.
 - [ ] The user answered at most two structured rounds and one open question.
 - [ ] Every proposed rule is specific and non-default, and none restates the global instructions, memory, or an installed skill.
-- [ ] Each rule was routed to an existing skill, the global instructions, or a coherent new skill, and a new skill's name was chosen by the user from suggestions or freely, never from a template.
+- [ ] Each rule or routine was routed to an existing skill, the global instructions, a coherent new skill, or a scheduled `roostr` routine, and a new skill's name was chosen by the user from suggestions or freely, never from a template.
 - [ ] Every edit and new skill was drafted with `prompt-engineering` and shown, with its location, before anything was written.
 - [ ] Only rows the user approved were written, and in a repository they landed as a delivery.
