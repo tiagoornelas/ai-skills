@@ -51,7 +51,7 @@ Only when the user asks, or when a skill the user invoked (such as [`handoff`](.
      --label herdr.space=<space-id> env TERM=xterm-256color <harness command>
    ```
 
-   - **An independent session** (another delivery, a handoff) takes `--no-parent --outlive-parent`: it survives the caller, and the app's agent list shows it once instead of also nesting it under the caller.
+   - **An independent session** (another delivery, a handoff) takes `--no-parent --outlive-parent`: it survives the caller, and the app's agent list shows it once instead of also nesting it under the caller. Its harness command runs as `<user's shell> -lic '<harness command>; exec <user's shell> -li'`, with the prompt from a file so no quote breaks: when the agent exits, its tab stays as a shell instead of closing, and a one-tab space with it.
    - **A run whose result the caller collects** (one opinion among several in a [`brainstorm`](../brainstorm/SKILL.md), a check the user wants to watch) omits both flags: it ends with its caller, and hc notifies the caller when it finishes, blocks, or exits (`hc wait --children all`). Ask it to write its answer to a file and read that file; once read, end it with `hc kill <slug>` and `hc rm <slug>`.
    - `<slug>` is unique among live terminals in `hc ls`, `[a-z0-9_-]{1,32}`.
    - `env TERM=xterm-256color` keeps the harness in color: hc starts terminals with `TERM=dumb`.
@@ -67,15 +67,15 @@ Only when the user asks, or when a skill the user invoked (such as [`handoff`](.
 | Claude Code | `claude "<prompt>"` |
 | Codex | `codex --no-daemon "<prompt>"` |
 | Cursor | `cursor-agent "<prompt>"` |
-| Antigravity | `<user's shell> -ic 'agy -i "read <path> and resume the work it describes"'`, always with a prompt file, so no quoting breaks |
+| Antigravity | `agy -i "read <path> and resume the work it describes"`, always with a prompt file |
 
-A harness the user's shell defines as an alias or function (as `agy` often is) only exists in an interactive shell, so it runs through `<user's shell> -ic '<command>'`.
+A harness the user's shell defines as an alias or function (as `agy` often is) only exists in an interactive shell, so a collected run starts it through `<user's shell> -ic '<command>'`.
 
 ## 4. Manage Terminals
 
 - **Rename**: `herdr-app do tab.rename --id <tab> --name <name>`, or `space.rename` for a space.
 - **Move a running session to another space**: set its labels (`hc label <t> herdr.space=<space-id>`, plus `herdr.tab=<tab-id>` to join an existing tab), then `herdr-app do terminal.park --terminal <t>` and `herdr-app do terminal.keep --terminal <t> --place tab`; the app reads placement labels only when it adopts a terminal. The program keeps running. Parking disables core keep: when `hc get` showed `keep` on before, restore it with `hc keep <t>`.
-- **Keep**: `hc keep <t>` (or `hc run --keep`) makes the core replace a lost program with a shell in place, so the tab survives a core restart.
+- **Keep**: `hc keep <t>` (or `hc run --keep`) makes the core replace a lost program with a shell in place, so the tab survives a core restart; a program that exits still ends its terminal.
 - **Put a tab away**: `herdr-app do tab.settle --id <tab>` hides it from the lists while it runs; it returns when shown or when an agent in it needs the user.
 - **End**: `hc kill <t>`, then `hc rm <t>`, for a terminal this session started or one the user asked to end. Sending `/exit` with `hc send` does not end an agent: hc delivers it as a message. Closing a tab, pane, or space (`tab.close`, `pane.close`, `space.close`) ends its terminals: do it only with the user's approval, after naming the terminals inside and any agent still `working`.
 
@@ -83,7 +83,7 @@ A harness the user's shell defines as an alias or function (as `agy` often is) o
 
 - [ ] The Herdr App of this machine was verified and used through `hc` and `herdr-app` only; the `herdr` CLI, `--on`, and `--machine` were not used.
 - [ ] A tab or space was opened only on the user's request or a skill they invoked, named after the work, with a unique terminal name, `env TERM=xterm-256color`, the harness's command, and its start prompt in the command.
-- [ ] An independent session ran with `--no-parent --outlive-parent`; a collected run had its caller as parent, answered in a file, and was ended and removed after its answer was read.
+- [ ] An independent session ran with `--no-parent --outlive-parent`, inside a shell that outlives its agent; a collected run had its caller as parent, answered in a file, and was ended and removed after its answer was read.
 - [ ] Every opened agent reached a started state or a reported failure; no dialog was answered and nothing was retried or re-prompted automatically.
 - [ ] No message was sent to another agent to coordinate work.
 - [ ] Every tab, pane, or space closed had the user's approval, with its terminals and working agents named; the only terminals ended without it were collected runs this session started.
