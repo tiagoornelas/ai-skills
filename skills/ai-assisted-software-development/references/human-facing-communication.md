@@ -118,7 +118,7 @@ Skills that define their own symbols (the marks of the [change card](change-card
 
 ### Definition of Done Legend
 
-Wherever delivered behaviors are listed against their verification (a PR body, a code review, a conflict resolution), each behavior carries one of these:
+Wherever delivered behaviors are listed against their verification for the human (a code review, a conflict resolution), each behavior carries one of these:
 
 | Status | Meaning |
 | :---: | :--- |

@@ -5,8 +5,9 @@ description: >-
   delivery document of a finished change, written for the other developers who
   review it before merge and read it later: why the change exists, its
   references, what it adds, changes, or removes and where it lives, the
-  decisions taken, how a changed flow works (a visualize-it swimlane), and the
-  test evidence. Triggered before opening or updating a pull request, or when
+  decisions taken, how a changed flow works (a visualize-it swimlane), how it
+  was tested, and what deploying it needs, readable by anyone who never saw the
+  work. Triggered before opening or updating a pull request, or when
   a skill hands off to open one.
 ---
 
@@ -40,9 +41,9 @@ Every link the reader needs to follow the trail, each labeled with what it is (`
 
 | Reference | What it links |
 | :--- | :--- |
-| **Issue** | Every issue the PR resolves (Jira, GitHub Issues, Linear), with key and a short summary. |
+| **Issue** | Every issue the PR resolves (Jira, GitHub Issues, Linear), with key and a short summary; on GitHub Issues, with the closing keyword (`Fixes #123`) so merging closes it. |
 | **Origin** | The report or discussion that started the work. |
-| **Error** | The monitored error or alert the PR addresses. |
+| **Alert** | The monitored error or alert the PR addresses. |
 | **Related PRs** | Companion changes in other repositories of the same delivery, and any PR that must merge before this one. |
 | **Other** | Design docs, decision records, mockups, recordings, dashboards, or queries. |
 
@@ -52,49 +53,49 @@ Gather the links from the conversation, branch, commits, and issue; keep only li
 
 ## 4. Body Template
 
-The layout and the headings are an example, written in the PR's language; the content is mandatory. Omit a section only where it says so.
+When the repository has its own pull request template (`.github/pull_request_template.md` or similar), fill its headings with the content below and keep its order. Otherwise use this layout. The headings are an example, written in the PR's language; the content is mandatory. Omit a section only where it says so. Every word must make sense to a reader who knows nothing of how the change was produced.
 
 ````markdown
 ## Summary
 [1 to 3 sentences: where in the product the change acts, what users or the system experienced before, what happens now, and why. Situate every screen, state, or internal layer before naming it.]
 
 ## References
-- **Issue**: [labeled link] · **Origin**: … · **Related PRs**: … · **Other**: …
+- Fixes #123: [one-line summary] · **Origin**: … · **Related PRs**: … · **Other**: …
 
 ## What Changes
 ```text
 billing-api
 ├─ db
-│  └─ + exported invoices      table
+│  └─ Added: exported invoices table
 └─ jobs
-   └─ ! PDF rendering job      job · other documents use the templates folder, because …
+   └─ Added: PDF rendering job. It lays out the PDF itself, while other documents use the templates folder, because …
 web-app
-└─ + "Download PDF" button     screen
+└─ Added: "Download PDF" button
 ```
 
-Exported PDFs are now deleted after 90 days; before, they were kept forever. No data is rewritten or sent out, and contracts and boundaries stay as they were.
-[The [change card](../ai-assisted-software-development/references/change-card.md#2-the-tree) tree of what the change brings in, without its ratification marks or last line: `+` new, `~` changed, `-` removed, `!` what departs from the project's pattern or crosses a boundary, with why; then the card's sentences on rules, data, and what does not change. No counts, approvals, or status.]
+Exported PDFs are now deleted after 90 days; before, they were kept forever. No data is rewritten or sent out, and the public API, the database schema of existing tables, and permissions are unchanged.
+[A tree of the system with each high-level thing the change brings in, changes, or removes hanging where it lives, of the kinds the [change card](../ai-assisted-software-development/references/change-card.md#2-the-tree) lists, each leaf opening with Added, Changed, or Removed; anything that departs from how the project usually does that kind of thing says so in words, with why. Then plain sentences on business rules before and after, data deleted, rewritten, or sent out, and what does not change, named concretely. No counts, approvals, or status.]
 
 ## Decisions
-[Each decision taken and its reason, ordered by cost to reverse after merge, the hardest first: business rules, contracts created or altered (who calls, what crosses, what it promises, how it fails), consequential trade-offs, assumptions, and maintenance commitments. Omit when there is nothing material.]
+[Each decision taken and its reason, ordered by cost to reverse after merge, the hardest first: business rules, contracts created or altered (who calls, what crosses, what it promises, how it fails), consequential trade-offs, assumptions, and maintenance commitments. When there was a real choice, name the alternative not taken and why. Omit when there is nothing material.]
 
 ## How It Works
 [Only when the change alters a flow across places of the system: a visualize-it swimlane as a Mermaid sequenceDiagram, then at most two sentences on what to notice. Omit otherwise.]
 
-## Test Evidence
-| | Behavior | How it was verified | How to check |
-| :---: | :--- | :--- | :--- |
-| ✅ | Reject expired tokens with HTTP 401 | Unit test in `tests/auth.test.ts` | Covered by the test suite |
-| 🔎 | Send the confirmation email via the real provider | Not code-testable; sent from staging | Optional |
-| 👀 | Login form fits a phone screen | Visual inspection | Open `/login` at 375px |
+## Testing
+| Behavior | How it was verified | How to check |
+| :--- | :--- | :--- |
+| Expired tokens get HTTP 401 | Automated test `tests/auth.test.ts` | Runs in CI |
+| The confirmation email arrives | Manual: sent from staging through the real provider | Not reproducible locally |
+| The login form fits a phone screen | Not verified: needs a person to look | Open `/login` at 375px |
 
-[Marks and the legend line below the table follow the Definition of Done legend. Add a screenshot when the change is visible and an accessible image URL already exists.]
+[One row per behavior, the verification in words: an automated test named, a manual check and how, or not verified and why. Add a screenshot when the change is visible and an accessible image URL already exists.]
 
-## Impact
-[Contract breaks, database migrations, new environment variables, and what a deploy or rollback needs; "None" when there are none.]
+## Deployment and Risk
+[Breaking changes, database migrations, new configuration, environment variables, or secrets, deploy order, and how to roll back; "None" when there are none.]
 ````
 
-The marks of Test Evidence follow the [Definition of Done legend](../ai-assisted-software-development/references/human-facing-communication.md#definition-of-done-legend); the swimlane follows [`visualize-it`](../visualize-it/SKILL.md). GitHub CLI cannot upload images into a PR body: never commit images or upload them to a third-party host to embed them. When a visible change has no screenshot, say after opening that the developer may add one.
+The swimlane follows [`visualize-it`](../visualize-it/SKILL.md). GitHub CLI cannot upload images into a PR body: never commit images or upload them to a third-party host to embed them. When a visible change has no screenshot, say after opening that the developer may add one.
 
 ---
 
@@ -111,8 +112,8 @@ The marks of Test Evidence follow the [Definition of Done legend](../ai-assisted
 ## 6. Success Validation
 
 - [ ] Agent-authored branches passed `agent-self-review` in branch mode before the PR was opened.
-- [ ] The body holds only facts about the change that stay true after merge: no work status, approval, open decision, follow-up list, or workflow vocabulary.
-- [ ] Summary, References, What Changes (with what does not change), Test Evidence, and Impact are present; Decisions and How It Works appear when material; the description matches the diff and the issue.
+- [ ] The body holds only facts about the change that stay true after merge, readable by anyone: no work status, approval, open decision, follow-up list, workflow vocabulary, or symbol only the author's tooling defines.
+- [ ] Summary, References, What Changes (with what does not change), Testing, and Deployment and Risk are present, in the repository's own template when it has one; Decisions and How It Works appear when material; the description matches the diff and the issue.
 - [ ] Every reference is a labeled, reachable link, with no empty lines; a multi-repository delivery's PRs link each other.
 - [ ] Title and body follow the repository's convention and language, English when nothing indicates one.
 - [ ] The PR was opened (draft by default) and, inside a delivery, its link reached the user in the delivery report after verify; the screenshot reminder came for a visible change without one.
