@@ -7,8 +7,10 @@ description: >-
   optionally organized into contexts/epics, parent tasks, and relationships;
   also brings the status of existing tasks up to date with that work and helps
   organize them (regroup, link, merge duplicates, close stale ones).
-  Tool-agnostic: shows every change and writes to a tracker (Jira, GitHub
-  Issues, Linear, markdown file, etc.) only after the user approves it.
+  Tool-agnostic: updates the status of existing tasks (epics excepted) on its
+  own and reports it; creates, edits, reorganizes, or changes an epic's status
+  in a tracker (Jira, GitHub Issues, Linear, markdown file, etc.) only after
+  the user approves it.
   Triggered when the user asks to report, log, document, or convert work into
   tickets/tasks, whether the entire scope or a slice of it, or to update,
   sync, or tidy the status and structure of tasks already created.
@@ -26,7 +28,7 @@ Inverts the traditional task creation sequence: **first you do the work to under
 > The skill **understands and drafts**; the user **decides where and how to persist**.
 
 - **Tool-agnostic**: produces a neutral, clean task representation. Zero tracker-specific fields, statuses, or rituals are assumed until instructed by the user.
-- **Never writes without approval**: a tracker is read by other people, so every creation, status change, or reorganization is shown as a change list (what, where, from → to) and written only after the user approves that list.
+- **Status moves on its own; everything else waits for approval**: the status of an existing task that is not an epic is updated as soon as the evidence supports it, and reported (task, from → to, evidence) so the user can move it back. Every creation, content edit, reorganization, and epic status change is shown as a change list (what, where, from → to) and written only after the user approves that list.
 - **Reports evidence**: every task is grounded in real evidence (conversations, commits, diffs, PRs). Nothing is fabricated to pad out the backlog.
 
 ---
@@ -79,14 +81,14 @@ Compare each existing task with the evidence:
 Follow the Section 3 format and Section 4 writing guidelines.
 
 ### Step 8: Present and Await
-Present the new tasks and, in update mode, the change list, then **stop**. Conclude by asking for approval and, when the destination is not yet known, how the user wishes to save them: e.g., target tool, project key, existing epic, issue types, labels, assignee, sprint, or file export format.
+Apply the status changes of existing non-epic tasks and report them; then present the new tasks and the rest of the change list, and **stop**. Conclude by asking for approval and, when the destination is not yet known, how the user wishes to save them: e.g., target tool, project key, existing epic, issue types, labels, assignee, sprint, or file export format.
 
 User requested edits (merging, splitting, rewriting, shifting hierarchy) are applied and the updated set re-presented until approved.
 
 ### Step 9: Save per User Instruction
 When destination instructions arrive:
 - If a specific tool skill exists (e.g., Jira skill), load it and adhere to its rules.
-- **Confirm prior to writing** to any external system: display what will be created or changed, where, and with what fields or from → to values, and write only what the user approved.
+- **Confirm prior to writing** anything beyond a non-epic status change: display what will be created or changed, where, and with what fields or from → to values, and write only what the user approved.
 - Create in relational order (epic → parent → subtasks → links), replacing temporary keys with real tracking IDs.
 - Present a final mapping table: `Temporary Key → Real ID / Link` for new tasks and, in update mode, `Change → Result (applied / failed, link)`.
 
@@ -162,4 +164,4 @@ After tasks:
 - [ ] Each task represents a single verifiable outcome; zero tasks per file or per commit.
 - [ ] In-flight and outstanding discoveries captured as *To Do*.
 - [ ] Hierarchy and relationships exist strictly where natural groupings occur; temporary keys resolve consistently.
-- [ ] Existing tasks got only the status and organization changes their evidence supports, and nothing was written to an external system before the user approved the exact change list.
+- [ ] Existing tasks got only the status and organization changes their evidence supports; non-epic status changes were applied and reported, and nothing else was written before the user approved the exact change list.
