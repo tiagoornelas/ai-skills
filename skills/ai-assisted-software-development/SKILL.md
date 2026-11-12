@@ -43,7 +43,7 @@ The human is the **human directing architect**: the owner of this layer's decisi
 A decision costs nothing to change before merge; an action whose effect leaves the branch does. Before any of these, the agent stops and asks with a [decision card](references/human-facing-communication.md#every-decision-fully-explained), and an approval covers only the action it named:
 
 - merging, deploying, or publishing (packages, releases, artifacts);
-- writing to shared or production data, including running a migration against a database that is not disposable;
+- writing to shared or production data, including running a migration against a database that is not disposable (moving an existing non-epic task's status with [`report-work`](../report-work/SKILL.md) is not one: it is done and reported);
 - sending anything outside: messages, emails, comments on others' issues or pull requests;
 - creating resources that cost money or that others use (cloud resources, secrets, queues);
 - rewriting the history of a shared branch, or deleting data.
