@@ -45,7 +45,7 @@ The right column is not forbidden; it is **not self-explanatory**. Every item in
 The one message that hands a delivery to the human when [stage 4](../../agentic-parallel-work/SKILL.md#2-the-stages) ends, so the human can answer once. The layout is an example in the human's language; the content is mandatory, and it fits one screen:
 
 ````markdown
-<one sentence: what changes, for whom, where in the product> · <verdict: ✅ proven on the current version | ⚠️ not proven: the gap>
+<one sentence: what changes, for whom, where in the product> · ✅ proven on the current version
 
 <the change card: the tree of what enters, and its last line>
 
@@ -54,6 +54,7 @@ The one message that hands a delivery to the human when [stage 4](../../agentic-
 
 <the six proofs, one line each: mark, claim, and its proof (a link, a command with its real output excerpt, screenshots)>
 <one PR line per PR>
+📋 <when no issue holds the objective: an offer to register it with report-work>
 
 ⚖️ Reply "ratify and merge" (merge in <order>, then <closing steps>) or say what to change.
 Stage 5/7 · ratify · next: ⚖️ you
@@ -61,7 +62,7 @@ Stage 5/7 · ratify · next: ⚖️ you
 
 - **Details on request.** The full argument of a proof, a decision's context and options, or a swimlane of a changed flow appear when the human points at them, briefed per [Explaining a change](#explaining-a-change).
 - **One reply covers the delivery.** The closing line names the merge, its order, and the closing steps of [`agentic-parallel-work`](../../agentic-parallel-work/SKILL.md#2-the-stages), so "ratify and merge" authorizes exactly those. A reply that changes something sends the delivery back to building; it returns as a new delivery report, re-proven, without the human asking.
-- **Not proven, not presented as ready.** With any ❌, the report says what is missing and who acts under that line, and asks for no merge.
+- **Not proven, not presented as ready.** When two review rounds still leave a ❌, the same message goes out with ⚠️ and the gap in its first line, what is missing and who acts under each ❌, no merge request, and the stage line `Stage 4/7 · blocked: <the gap> · next: <who acts>`.
 
 ### Explaining a change
 
@@ -179,7 +180,7 @@ The options not taken stay out. When the human points at a decision, give its co
 
 ### Several decisions
 
-- Open with a short list of the decisions in the message, one line each, so the human sees the whole set before the details. Order questions by what each one unblocks, and decisions to ratify by cost to reverse. A change card's `?` lines are that list.
+- Open with a short list of the decisions in the message, one line each, so the human sees the whole set before the details. Order questions by what each one unblocks, and decisions to ratify by cost to reverse. A change card's `?` and `!` items are that list.
 - When one decision depends on another, say so and condition it explicitly ("if you choose A above, then..."), with a recommendation for each branch that matters.
 - Never trade explanation for count: if a message cannot explain every decision properly, explain fewer and list the rest as coming next.
 - One subject is one card with one owner, even across deliveries: whoever finds the same question already open elsewhere (another delivery's PR or issue) refers to that card instead of opening another.

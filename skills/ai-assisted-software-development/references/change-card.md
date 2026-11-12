@@ -19,6 +19,7 @@ The places of the system are the branches: the repository, or in a single reposi
 | Mark | Meaning |
 | :---: | :--- |
 | `+` | New, and ratified or following an existing sibling. |
+| `~` | Changed: an existing thing whose role, reach, or configuration changes. |
 | `-` | Removed. |
 | `?` | Decided by the agent and awaiting ratification; ends with its cost to reverse when it is hard. |
 | `!` | Out of the project's pattern, crossing a boundary, contract, or dependency direction, weakening a rule or test, or provisional; says what it departs from, and ends with `to ratify`. |

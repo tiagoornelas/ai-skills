@@ -37,12 +37,12 @@ Every delivery moves through the same seven stages, whoever acts in them, so the
 | **3. Build** | Code and tests, with [`agent-self-review`](../agent-self-review/SKILL.md) until a clean branch-mode verdict. | 🤖 | The branch is self-review clean. |
 | **4. PR and proof** | Push, open the draft PRs with [`pull-request`](../pull-request/SKILL.md), and verify the head with [`provide-evidence`](../provide-evidence/SKILL.md). | 🤖 | All six proofs are ✅ for the head, then the [delivery report](../ai-assisted-software-development/references/human-facing-communication.md#3-the-delivery-report) is sent. |
 | **5. Ratify** | The human ratifies or changes the decisions. A change returns the delivery to stage 3, and it comes back as a new delivery report. | ⚖️ | Every decision is ratified. |
-| **6. Merge** | Merge in order, on the human's authorization. | ⚖️ | The PRs are merged. |
+| **6. Merge** | Mark the draft PRs ready and merge them in order, on the human's authorization. | ⚖️ | The PRs are merged. |
 | **7. Close** | Update the issue with [`report-work`](../report-work/SKILL.md); announce it, when the project has a skill for that; clean up worktrees and branches with [`git-cleanup`](../git-cleanup/SKILL.md); end the session, through [`herdr`](../herdr/SKILL.md) in the Herdr App. | 🤖 | Done. |
 
 - **At the start of a delivery**, copy the seven stages into the harness's task list, or into the first message when it has none. A stage skipped stays listed as `skip: <reason>`.
 - **The writer ends its turn only** at stage 5 with the delivery report, before an action where the agent [always stops](../ai-assisted-software-development/SKILL.md#where-the-agent-always-stops), or blocked on something only the human can do (💪) or nobody can do now (⏸️), saying what.
-- **Every message where the writer stops ends with the stage line**: `Stage 4/7 · PR and proof · next: 🤖 verifying the head` (in the human's language).
+- **Every message where the writer stops ends with the stage line**: `Stage 5/7 · ratify · next: ⚖️ you` (in the human's language).
 - The delivery report's "ratify and merge" authorizes stages 6 and 7 together.
 
 ## 3. Who Talks to Whom

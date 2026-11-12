@@ -48,7 +48,7 @@ Export invoices as PDF · 3 depend on you
 ⚖️ decided: bucket storage, about $4 a month · easy to reverse
 👀 web-app#212 is ready for your review · proven on its current commit
 issue   BILL-142 · in progress · 3 of 4 acceptance criteria met
-Stage 4/7 · PR and proof · ⚖️ 3 to ratify
+Stage 4/7 · PR and proof · next: 🤖 proving billing-api#88 and infra#41
 ⏳ billing-api#88 · invoice PDF export · draft · CI ok · agent ok · proof — · you —
 👀 web-app#212 · download PDF button · CI ok · agent ok · proof ok · you pending
 ⏳ infra#41 · invoice PDF bucket · draft · CI running · agent — · proof — · you —

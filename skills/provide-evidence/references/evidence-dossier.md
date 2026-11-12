@@ -76,7 +76,7 @@ Line (f) holds only when its real run executed the commit the dossier attests. A
   <for a user-visible change, one line per context: <context> · <folder> · <what its images show>>
 ```
 
-- **Six lines, nothing more.** The dossier is a summary of proof, not a report. The Human Layer explanation of the change stays in its briefing or, on request, in `human-review`.
+- **Six lines, nothing more.** The dossier is a summary of proof, not a report. The Human Layer explanation of the change stays in the delivery report or, on request, in `human-review`.
 - **Every line shows its claim and proof**: the note keeps why it convinces ([above](#every-line-convinces-claim-why-proof)); the screen folds the why into the proof, on the line's one line. A summary count such as "6/6" never stands in for the lines, except [`human-review`](../../human-review/SKILL.md)'s single proof line, which reports the state and points to `provide-evidence`.
 - **A line not yet proven is a no.** Write ❌ with what is missing, never a hopeful ✅.
 - **Presented in full by whoever presents it.** When the evidence or analysis was produced by someone else (a subagent, the independent reviewer), the one presenting it to the human presents the dossier itself, in the human's language, on [`provide-evidence`](../SKILL.md#3-judge-and-write)'s screen: the change card, every line with its claim and its proof inline, and the image contexts; the full argument from the note when the human points at a line. Never a summary, never "see the file", "see the tab", or "see the report", never only paths: links and paths follow the content as lookup keys, they are not the content.

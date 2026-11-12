@@ -37,7 +37,7 @@ graph TB
 | | ⚖️ Human Layer | 🤖 Agent Layer |
 | :--- | :--- | :--- |
 | **Decides** | Which modules exist, what each promises, where dependencies point, what defines "done". | How each module fulfills its promises. |
-| **Reviews** | The plan of what is new and where it lives, contracts, the behavior table, and the evidence that the delivered commit does what was asked—never the entire diff. | Its own code, in an automated loop, before any human sees it. |
+| **Reviews** | A tree of what is new and where it lives, contracts, the behavior table, and the evidence that the delivered commit does what was asked—never the entire diff. | Its own code, in an automated loop, before any human sees it. |
 | **Receives from the other side** | Only what belongs to its layer: pending decisions, new contracts, manual verifications, and the evidence for each claim. | Clear contracts and acceptance criteria. |
 
 **The boundary test**, whenever it is unclear who owns a decision:
@@ -110,7 +110,7 @@ More agents are not more throughput. The rules for running agents in parallel co
 - **Facts are the agent's job; decisions belong to the human.** The agent doesn't ask what it can discover on its own, and doesn't answer its own decision questions.
 - **Done means proven.** An agent's work is accepted on evidence, not on its own report: every claim points to a proof the human can open or re-run, for the exact commit delivered, checked by a reviewer that did not write the code ([`provide-evidence`](skills/provide-evidence/SKILL.md)).
 - **Findings require concrete failure scenarios.** Judgment without a probable bug, an expensive change, or real reader confusion is preference, and preference does not become a finding.
-- **Show before describing.** What a change adds and where it lives reads as a plan, one line per thing; how a flow works reads as swimlanes.
+- **Show before describing.** What a change adds and where it lives reads as a tree of the system; how a flow works reads as swimlanes.
 - **A pull request documents the change, never the work.** It is written for the developers who review it and read it later: why, what changes and where, the decisions, and the test evidence. No workflow reads state from it; the work's state lives in the session, the issue, or local git notes.
 - **Nothing the reader cannot open.** Commits, PRs, and comments never reference local machine paths.
 - **Human writing.** Text meant for human teammates undergoes review against formulaic AI writing habits.

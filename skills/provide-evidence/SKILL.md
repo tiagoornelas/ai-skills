@@ -23,7 +23,7 @@ The user needs to know at once: **is the work done, what does it add to the syst
 ## 1. Scope and Action
 
 - **Scope**: the PR or branch given as argument; without one, the PR of the current branch (`gh pr view --json number`); without a PR, the current branch itself, compared with its base. Any PR works, whoever wrote it.
-- **Show the proof** (default): read-only. Never run tests, fix, commit, push, merge, write a note or file, or message an agent.
+- **Show the proof** (default): read-only. Never run tests, fix, commit, push, merge, write a note or file, or message an agent; when the verdict is not ✅ and this session wrote the delivery, it switches to verify (Section 3).
 - **Verify and produce what is missing**: run the [independent reviewer](#4-verify) for the current head, in any harness, at [stage 4](../agentic-parallel-work/SKILL.md#2-the-stages) of every delivery (its draft PRs open, before the delivery report), whenever its writer says it is done or stops working on it, and when the user asks.
 - When `gh` is missing or not authenticated, show what git alone proves and say the PR part was skipped; never guess PR states.
 
@@ -93,7 +93,7 @@ Under every ❌, one line says **what is missing and who acts**: 🤖 the agent 
 - **The six proofs always**, one line each: the dossier line's question, its claim, and its proof. Never a bare mark, and never a count in place of the proofs. When the user points at a proof, give its full argument from the note.
 - **No task registered**: when no task reference exists in the branch, the commits, or the conversation, suggest registering the work with [`report-work`](../report-work/SKILL.md).
 - **Closing line**: the user's next action, or that nothing depends on them and the agents' next step.
-- When the verdict is not ✅ on the writer's own delivery, run verify (Section 4) instead of showing the gap; on someone else's PR, end with one offer to verify, saying what it costs (minutes; it runs tests and a real execution).
+- When the verdict is not ✅ and this session wrote the delivery, switch to verify (Section 4) instead of showing the gap; on someone else's PR, end with one offer to verify, saying what it costs (minutes; it runs tests and a real execution).
 
 ## 4. Verify
 
