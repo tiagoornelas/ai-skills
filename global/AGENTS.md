@@ -36,6 +36,7 @@ Division of labor follows the `ai-assisted-software-development` skill: the huma
 | :--- | :--- |
 | Before deciding modules, boundaries, interfaces, contracts, or dependency direction | Load `software-designing`. |
 | Before locking in a Human Layer design decision the project has no established way to settle | Run the arena of `software-designing`: two radically different sketches by subagents in the calling harness, the best one built. |
+| Before presenting or building a design that holds a Human Layer decision | Run the adversarial review of `software-designing`: a fresh subagent on the harness's default model attacks the design, and its objections outweigh the session's. |
 | Before starting a delivery (branch or worktree), splitting work, opening another session, tab, or subagent, or running anything in parallel | Load `agentic-parallel-work`. |
 | **Before creating, editing, testing, or refactoring any code file** | **Load `coding`**, even for a small change. |
 | **Before creating or changing any prompt** (system prompts, agent instructions, skills and their references, AGENTS.md, CLAUDE.md, rule and memory files, tool and skill descriptions, brief templates) | **Load `prompt-engineering`**, even for a one-word change. |

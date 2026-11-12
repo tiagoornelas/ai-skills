@@ -5,7 +5,9 @@ description: >-
   solutions (modules, boundaries, layers, interfaces, contracts, and failure
   modes), and takes key architectural decisions for the human to ratify via
   the Human Layer, settling the hard ones with an arena of competing
-  sketches. Triggered by humans or peer agents whenever facing design or
+  sketches, and submitting every design holding a Human Layer decision to an
+  adversarial review by a fresh subagent whose objections outweigh the
+  drafter's. Triggered by humans or peer agents whenever facing design or
   architecture decisions at any scale—a new system, module, API, refactoring,
   modifications to existing code, or critical review of a proposed design.
 ---
@@ -53,8 +55,8 @@ In both modes, the received context must be preserved verbatim (*ipsis litteris*
   1. Frame once: the shared grounding (the current design, read in Step 1), the Step 4 lenses as the rubric, and every assumption recorded as a decision instead of asked.
   2. Pick two **radically different premises** (unit of abstraction, where knowledge lives, sync vs. events, mutable state vs. event log, one deep module vs. separate services); drop any that only renames the same decomposition.
   3. Give each premise to its own subagent in the calling harness, launched together with the same verbatim framing ([subagent delegation](../ai-assisted-software-development/references/subagent-delegation.md)), because a context that drafted one alternative anchors on it. Each returns a **sketch**: types, signatures, and module structure with empty bodies, never a full implementation. Other models or harnesses join only when the human asks, through [`brainstorm`](../brainstorm/SKILL.md).
-  4. Compare both on the same criteria: ease of use for callers first, then simplicity, generality, efficiency of the implementation, failure modes, and relative cost. Pick one, grafting a strength of the other only when it fits the chosen shape (the result passes the Step 4 lenses again); when both are weak, redesign from their weaknesses once, then present the problem as ill-defined among the decisions at delivery. For a decision hard to reverse after merge (tier 3: a data model, a contract other systems consume), a fresh subagent in the same harness first scores both sketches against the rubric; when it disagrees with your pick, read both rationales before deciding.
-  5. Implement only the chosen sketch, and record the decision and its reason for ratification (Step 5).
+  4. Compare both on the same criteria: ease of use for callers first, then simplicity, generality, efficiency of the implementation, failure modes, and relative cost. Pick one, grafting a strength of the other only when it fits the chosen shape (the result passes the Step 4 lenses again); when both are weak, redesign from their weaknesses once, then present the problem as ill-defined among the decisions at delivery.
+  5. Implement only the chosen sketch, after its adversarial review (Step 5), and record the decision and its reason for ratification (Step 6).
 - **When a brief assigns one design premise**, develop the best design within it and generate no alternatives.
 - Reuse decisions already ratified in the session.
 - For each alternative, draft **interfaces first** (what each module promises, in a few concise sentences) before internal structure.
@@ -80,14 +82,22 @@ Apply the relevant lenses below (Section 4). Keep a focused assessment proportio
 
 Before introducing a folder, module, client, configuration variable, or cross-cutting mechanism (authentication, timeouts, retries, logging, error handling, data access), find how the project already does that kind of thing and follow it. A parallel structure, a duplicated mechanism, or a departure from an established convention is a Human Layer decision: take it only when the project's way cannot serve, and show it as a `!` line with its reason, to ratify. Typical cases built on the side: an HTTP client with its own timeout and retry beside the project's shared transport; a dedicated configuration variable where the project has a convention for that kind of setting; a new folder for something whose siblings live elsewhere. The [change card](../ai-assisted-software-development/references/change-card.md) shows the result for each new thing, and line (d) of the [evidence dossier](../provide-evidence/references/evidence-dossier.md) proves it.
 
-### Step 5: Decide and Present via the Human Layer
-- Select the design and justify it using concepts from the reference lenses (e.g., "Alternative B eliminates format leakage between reader and writer").
+### Step 5: Adversarial Review
+
+A design holding any Human Layer decision passes one adversarial review before it is built or, in a design session, before you present your recommendation. A design with only Agent Layer choices skips it, and so does an arena sketch or an adversarial review you were briefed to produce: the agent that called you runs it. This review is separate from the delivery's independent review and does not count toward its rounds. The context that drafted a design anchors on it and reasons from the code it happened to read, so the reviewer's objections outweigh your own judgment.
+
+1. Launch one fresh subagent in the calling harness, on the harness's default model, briefed with [adversarial-review.md](references/adversarial-review.md).
+2. Adopt each 🔴 and 🟡 objection: revise the design and pass the Step 4 lenses again. When you disagree with one, it still wins: build the reviewer's position (in a design session, recommend it) and present the disagreement as a decision to ratify, with both positions and their reasons. 🟢 objections are yours to weigh.
+3. When the design changed, one more fresh subagent reviews the revised version with the same brief; adopt or build its 🔴 and 🟡 objections as in item 2, presenting each disagreement; the result is not reviewed again.
+
+### Step 6: Decide and Present via the Human Layer
+- Justify the design that survived Step 5 using concepts from the reference lenses (e.g., "Alternative B eliminates format leakage between reader and writer").
 - Present to the human **only** what belongs to the Human Layer: modules and responsibilities, dependency direction, contracts and failure modes, behaviors, and trade-offs.
 - **Show** what the design adds and where as a [change card](../ai-assisted-software-development/references/change-card.md) plan (a dependency pointing away from business rules is a `!` line), the main flow as a [`visualize-it`](../visualize-it/SKILL.md) swimlane, and each new or altered contract in system terms: who calls it, what crosses, what it promises and hides, and how it fails. No method names or signatures.
-- List the **decisions taken** explicitly, ordered by cost to reverse after merge, each [presented for ratification](../ai-assisted-software-development/references/human-facing-communication.md#presenting-decisions-taken) with its reason and evidence; inside a delivery, the alternatives that lost are not shown.
+- List the **decisions taken** explicitly, ordered by cost to reverse after merge, each [presented for ratification](../ai-assisted-software-development/references/human-facing-communication.md#presenting-decisions-taken) with its reason and evidence; inside a delivery, the alternatives that lost are not shown, except a disagreement from the adversarial review, shown with both positions.
 - **Cost is relative, never schedule-based**: compare options in terms of complexity, risk, and change footprint (e.g., "Option B modifies three modules; Option A modifies only one"). Do not estimate days or craft phased release timelines—project scheduling is outside the scope of software design.
 
-### Step 6: Finalize and Record
+### Step 7: Finalize and Record
 - Summarize decisions and consequences in the conversation; write a persistent decision record when requested or required by the project.
 - Continue implementation via [`coding`](../coding/SKILL.md); a separate handoff, session, or command is optional.
 
@@ -111,6 +121,7 @@ Before introducing a folder, module, client, configuration variable, or cross-cu
 | [obvious-code.md](references/obvious-code.md) | Choosing names, contract types, event-driven flows, or reviewing design readability. |
 | [dependency-direction.md](references/dependency-direction.md) | Defining dependency direction, decoupling business rules from infrastructure (persistence, UI, frameworks, providers), or deciding when to defer detail choices. |
 | [design-it-twice.md](references/design-it-twice.md) | Running the arena, or judging whether the alternatives compared are radically different. |
+| [adversarial-review.md](references/adversarial-review.md) | Briefing the adversarial reviewer (Step 5). |
 | [`design-patterns`](../design-patterns/SKILL.md) | The design involves object structure, creation, or behavior (Step 4). |
 
 ### Red Flags → Reference Mapping
@@ -166,9 +177,9 @@ Use this structure for a substantial design brief; omit irrelevant sections in a
 
 A design is complete only when:
 
-- [ ] Alternatives match the decision depth: a Human Layer decision with no project pattern went through the arena (two radically different sketches by subagents in the calling harness, compared on the same criteria, a fresh judge for tier 3), only the chosen sketch was implemented, and a project pattern or an empirical question did not trigger it.
+- [ ] Alternatives match the decision depth: a Human Layer decision with no project pattern went through the arena (two radically different sketches by subagents in the calling harness, compared on the same criteria), only the chosen sketch was implemented, and a project pattern or an empirical question did not trigger it.
 - [ ] Both **fundamental questions** were evaluated: plausible future change vectors are localized, and runtime failure paths and implicit assumptions are surfaced and contained ([changeability-and-fragility.md](references/changeability-and-fragility.md)).
 - [ ] Each module has an **interface described in a few sentences**, is **deep** (interface substantially simpler than what it encapsulates), and is the **single owner** of each design decision it holds (no leakage).
 - [ ] **Failure modes** for each contract passed through elimination techniques and the remaining ones are explicit; **dependency direction** points toward business rules, any exception a `!` line on the plan ([dependency-direction.md](references/dependency-direction.md)).
-- [ ] All **Human Layer decisions** were decided by the human (design session) or recorded as decisions to ratify, ordered by cost to reverse (inside a delivery).
+- [ ] Every design holding a **Human Layer decision** passed the adversarial review, each 🔴 and 🟡 objection adopted, or, when you disagreed, built (recommended in a design session) and shown with both positions; each decision was decided by the human (design session) or recorded as a decision to ratify, ordered by cost to reverse (inside a delivery).
 - [ ] No red flag from Section 4 was left unaddressed or unjustified, and a reader who did not participate in the conversation can understand the design purely from the plan, the flow, and the contracts.
