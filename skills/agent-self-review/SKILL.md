@@ -32,7 +32,7 @@ Every discovered finding falls into one of four distinct categories. The categor
 | **Blocking** | Tool or test failure; violation of an applicable documented project rule, including a preference-worded standard (Phase 2); unsafe database migration; DoD behavior lacking test coverage and lacking explicit declaration; or a critical defect with a concrete failure scenario. Critical means a credible path to data loss or corruption, security exposure, irreversible side effects, or failure of a required behavior. A credible critical risk blocks even when no run can prove it ([proven-findings.md](../ai-assisted-software-development/references/proven-findings.md)). | Fix regardless of budget. If unresolved, report a blocked verdict. |
 | **Should fix** | Judgment **with a concrete failure scenario** that does not meet the Blocking criteria: a lower-impact bug proven by a run per [proven-findings.md](../ai-assisted-software-development/references/proven-findings.md), expensive future change, or reader confusion. | Fix within the budget (Section 5) or justify in one line why it remains. |
 | **Discard** | Judgment lacking a concrete scenario, personal style preference, "could be slightly cleaner". | Do not fix and do not record. |
-| **Escalate** | The remediation would alter a public contract, module boundary, or dependency direction; or a checkable rule has no automated check (Phase 2). | Not a self-review fix: decide it through [`software-designing`](../software-designing/SKILL.md), apply it, and show it on the change card as a decision to ratify. A rule without a check is reported for [`correct`](../correct/SKILL.md). |
+| **Escalate** | The remediation would alter a public contract, module boundary, or dependency direction; or a checkable rule has no automated check (Phase 2). | Not a self-review fix: decide it through [`software-designing`](../software-designing/SKILL.md), apply it, and show it on the change card as a decision to ratify. A rule without a check is reported to the user as a check to build. |
 
 Classify severity before applying any budget. When uncertain whether a credible scenario is critical, keep it Blocking until evidence rules out the critical impact. When uncertain between **Should fix** and **Discard**: if a concrete failure scenario does not come to mind immediately, discard it.
 
@@ -178,7 +178,7 @@ The deliverable is **clean** at the agent layer when:
 
 - zero **Blocking** issues exist;
 - every reported **Should fix** was remediated, justified in a single sentence, or named as over budget;
-- every **Escalate** finding is on the change card as a decision to ratify, or reported for `correct`.
+- every **Escalate** finding is on the change card as a decision to ratify.
 
 Record a concise traceability log: the reviewed range and mode, the rule files in the ledger, the DoD table with named tests, the removed-test destinations, what was fixed, what was justified, what was over budget, and what was escalated. Findings classified **Discard** are not recorded.
 

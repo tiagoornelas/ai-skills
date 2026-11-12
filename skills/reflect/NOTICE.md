@@ -1,6 +1,6 @@
 # Notice
 
-[`SKILL.md`](SKILL.md) and its references are adapted from the [`reflect`](https://github.com/cursor/plugins/blob/main/pstack/skills/reflect/SKILL.md) skill of [pstack](https://github.com/cursor/plugins/tree/main/pstack), by Lauren Tan, licensed under the MIT License (below). Changes made: transcript locations for several harnesses; the three reviewer prompts merged into one brief with a shared part; approved edits applied as deliveries; items a mechanism can enforce handed to `correct`; tracker filing only with the user's approval.
+[`SKILL.md`](SKILL.md) and its references are adapted from the [`reflect`](https://github.com/cursor/plugins/blob/main/pstack/skills/reflect/SKILL.md) skill of [pstack](https://github.com/cursor/plugins/tree/main/pstack), by Lauren Tan, licensed under the MIT License (below). Changes made: transcript locations for several harnesses; the three reviewer prompts merged into one brief with a shared part; approved edits applied as deliveries; items a mechanism can enforce built as a check; tracker filing only with the user's approval.
 
 ```text
 MIT License

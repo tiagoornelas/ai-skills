@@ -1,5 +1,5 @@
 ---
-name: explain-it
+name: explain
 description: >-
   Explains code, files, flows, or technical concepts to the user as if they
   had lost all context on that part of the system: rebuilds, in a few short
@@ -27,7 +27,7 @@ Every sentence moves the reader one step closer to understanding the target, or 
 ## 2. Operational Principles
 
 - **Shared context principles**: apply [Giving context](../ai-assisted-software-development/references/human-facing-communication.md#giving-context) (outside in, situate before naming, concrete before and after, say why or say it is unknown, no condescension, grounded). Domain terms are defined too, inline where they first appear.
-- **Reasons the code does not state**: when the explanation needs why the code is shaped this way and the code does not say, investigate it with [`why`](../why/SKILL.md) instead of guessing.
+- **Reasons the code does not state**: when the explanation needs why the code is shaped this way and the code does not say, read its history (`git log -L`, `git blame`, and the pull requests and issues they lead to), cite what you find, and say what stays unknown instead of guessing.
 - **Visuals**: invoke the [`visualize-it`](../visualize-it/SKILL.md) skill whenever explaining a flow across parts of the system or the states a user sees, with the code names beside the drawing, keyed by step. The drawing replaces the prose it shows.
 
 ---

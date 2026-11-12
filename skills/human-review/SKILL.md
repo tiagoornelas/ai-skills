@@ -52,7 +52,7 @@ Omit the findings when there are none, and the decisions when there is nothing t
 
 ## 4. Explain on Request
 
-When the user points at a part ("explain this job", "why this table?", a `?` or `!` line), explain that part only, following [`explain-it`](../explain-it/SKILL.md), situated in the product and drawn with [`visualize-it`](../visualize-it/SKILL.md) when a flow helps. "Where does it live?" names the folder or file of each item on the card. Never explain the whole change unasked.
+When the user points at a part ("explain this job", "why this table?", a `?` or `!` line), explain that part only, following [`explain`](../explain/SKILL.md), situated in the product and drawn with [`visualize-it`](../visualize-it/SKILL.md) when a flow helps. "Where does it live?" names the folder or file of each item on the card. Never explain the whole change unasked.
 
 ## 5. Local Review Note
 

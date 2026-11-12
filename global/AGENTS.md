@@ -41,7 +41,6 @@ Division of labor follows the `ai-assisted-software-development` skill: the huma
 | **Before creating, editing, testing, or refactoring any code file** | **Load `coding`**, even for a small change. |
 | **Before creating or changing any prompt** (system prompts, agent instructions, skills and their references, AGENTS.md, CLAUDE.md, rule and memory files, tool and skill descriptions, brief templates) | **Load `prompt-engineering`**, even for a one-word change. |
 | **Before writing or editing documentation, a README, a pull request description, or a commit message** | **Load `technical-writing`**. |
-| When the user corrects an agent for the same mistake a second time, or you catch yourself writing the same instruction a second time | Use `correct`: make the mistake impossible instead of adding text. |
 | Before delivering code to the human | Run `agent-self-review` until a clean branch-mode verdict, then `provide-evidence` verify on the head, and present the delivery report. |
 | When the human requests delivery review | Use `human-review`, strictly on the Human Layer. |
 | Before any commit | Use `commit`. |
