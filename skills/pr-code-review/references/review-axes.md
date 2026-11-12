@@ -62,7 +62,7 @@ Send a single prompt launching subagents concurrently using the harness subagent
 > *"Apply phases 1 and 2 of `<skills>/agent-self-review/SKILL.md` to this PR, without fixing anything. (a) In the worktree, run linters, typecheckers, and tests; if unable to run, use `gh pr checks <pr>` and state that. Report strictly failures introduced or touched by the diff. (b) Report every diff location violating a documented project rule, citing file and rule. Do not report code smells or general design judgments: those belong to another axis. Cite `file:line` for all findings. Prefix each finding with its severity emoji (🔴/🟡/🟢). Max 400 words."*
 
 **✅ Behaviors and Tests**: pass diff command, commit list, Section 2 behavior list, and severity scale, instructing to first read `<skills>/coding/references/testing.md`. Brief:
-> *"Apply phases 3 and 4 of `<skills>/agent-self-review/SKILL.md` to this PR, without fixing anything. For each behavior, classify using the Definition of Done legend in `<skills>/ai-assisted-software-development/references/human-facing-communication.md`: ✅, 🔎, 👤 (state manual validation steps), or 🚨. Report findings: (a) implemented behavior that is testable but lacks adequate tests (🟡); (b) behavior in diff that was not requested (scope creep); (c) tests in diff violating `testing.md` (coupled to text, markup, or internals; exposed private symbols; mocked internal collaborators), with concrete failure scenarios. Cite requirement and `file:line`. Prefix each finding with severity emoji (🔴/🟡/🟢). Max 400 words."*
+> *"Apply phases 3 and 4 of `<skills>/agent-self-review/SKILL.md` to this PR, without fixing anything. For each behavior, classify using the Definition of Done legend in `<skills>/ai-assisted-software-development/references/human-facing-communication.md`: ✅, 🔎, 👀 (state manual validation steps), or 🚨. Report findings: (a) implemented behavior that is testable but lacks adequate tests (🟡); (b) behavior in diff that was not requested (scope creep); (c) tests in diff violating `testing.md` (coupled to text, markup, or internals; exposed private symbols; mocked internal collaborators), with concrete failure scenarios. Cite requirement and `file:line`. Prefix each finding with severity emoji (🔴/🟡/🟢). Max 400 words."*
 
 **🏗️ Architecture and Contracts**: pass diff command, commit list, Section 3 intended architecture, and severity scale, instructing to first read `<skills>/ai-assisted-software-development/references/change-card.md` and relevant files in `<skills>/software-designing/references/`. Brief:
 > *"Review the architectural design of the diff, not syntax or business logic. Report: (a) what is new and where it lives, in the change card's kinds, plus the pattern each new thing follows or departs from, and whether the walls (boundaries, contracts, dependency direction) stay intact, naming any dependency that points away from business rules; (b) contracts created or altered, in system terms: what crosses the boundary, for whom, its promises and failure modes; (c) architectural concerns prioritized by impact: describe the issue, concrete scenario (what breaks or becomes rigid), and suggested direction using reference concepts (shallow module, information leakage, pass-through method); (d) strengths to preserve. Balance trade-offs. Cite files, functions, lines. Prefix concerns with severity emoji (🔴/🟡/🟢); strengths carry no emoji. Max 500 words."*
@@ -93,14 +93,14 @@ Format the report for quick scanning. **Never combine or re-order findings acros
 | Status | Behavior (DoD) | Evidence | Action for Reviewer |
 | :---: | :--- | :--- | :--- |
 | ✅ | ... | `tests/...` | None |
-| 👤 | ... | Not code-testable | Manually verify: ... |
+| 👀 | ... | Not code-testable | Manually verify: ... |
 | 🚨 | ... | Missing | Blocker |
 
 - 🟡 **<title>** — <detail>
 
 ### 🏗️ Architecture and Contracts — 🔴 0 · 🟡 1 · 🟢 1
 
-<the change card plan lines of what is new and where; a visualize-it swimlane only when a flow across places changed>
+<the change card tree of what is new and where; a visualize-it swimlane only when a flow across places changed>
 
 - 🟡 **<title>** — <detail>
 - 🟢 **<title>** — <detail>

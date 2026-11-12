@@ -162,7 +162,7 @@ Execute objective checks (Phases 1, 2, 3, and 4a) first. Then execute judgment c
 
 ### Iteration Limit
 - Maximum of **3 rounds** of evaluate → fix → re-evaluate. This is a stopping limit on autonomous attempts, never an acceptance threshold for Blocking findings.
-- If **Blocking** issues persist after round 3, stop with a **blocked** verdict. Document each unresolved finding, its impact, and what was attempted; ask the user for help. Do not deliver the code as clean, open or mark a pull request ready, or create a clean checkpoint. A later run must review the unresolved scope again.
+- If **Blocking** issues persist after round 3, stop with a **blocked** verdict. Report it in the shape of the [delivery report](../ai-assisted-software-development/references/human-facing-communication.md#3-the-delivery-report): the change card, one ❌ line per unresolved finding with its impact, what was attempted, the options, and a recommendation, and the stage line saying the delivery is blocked at stage 3. Do not deliver the code as clean, open or mark a pull request ready, or create a clean checkpoint. A later run must review the unresolved scope again.
 
 ### Anti-Oscillation
 - If a proposed fix would revert a previous fix, or contradicts a decision already finalized in this review, **preserve the current implementation** and move forward only for discretionary findings. For Blocking findings, stop with a blocked verdict and document the conflict.

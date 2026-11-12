@@ -3,7 +3,8 @@ name: agentic-parallel-work
 description: >-
   Defines how AI agents run work in parallel without losing quality, tokens,
   or the user's control: the delivery as the unit of work (one session, one
-  writer, one branch name across one worktree per repository), branch naming
+  writer, one branch name across one worktree per repository), the seven
+  stages every delivery moves through and where the writer stops, branch naming
   and base selection, when to open another session or tab versus a subagent
   versus staying sequential, how a delivery stacks on one not merged yet,
   how many deliveries to build at once, how many
@@ -24,9 +25,27 @@ Agents parallelize **deliveries**, never pieces of one delivery. Every agent tha
 - **One worktree per repository, all with the same branch name.** Names, base branches, and worktree commands follow [branch-and-worktrees.md](references/branch-and-worktrees.md).
 - **Too big for one session** means the delivery is too big, not that it needs more tabs: cut smaller vertical slices and run them one after another.
 - **Stateless**: no registry or status file beside the work. Each fact lives in what it describes and the task state is derived on demand, per [where a task's facts live](../ai-assisted-software-development/SKILL.md#6-where-a-tasks-facts-live).
-- **Closing**: once the delivery is merged, offer its closing steps in this order, each run only on the user's go: update its issue with [`report-work`](../report-work/SKILL.md); announce it to the team, when the project has a skill for that; clean up its worktrees and branches with [`git-cleanup`](../git-cleanup/SKILL.md) and end its session, through [`herdr`](../herdr/SKILL.md) when it runs in the Herdr App.
 
-## 2. Who Talks to Whom
+## 2. The Stages
+
+Every delivery moves through the same seven stages, whoever acts in them, so the human always knows where a delivery stands:
+
+| Stage | What happens | Who | Leaves when |
+| :--- | :--- | :--- | :--- |
+| **1. Understand** | The objective and acceptance criteria, in the issue or the conversation. | 🤖 | Both are written. |
+| **2. Design** | [`software-designing`](../software-designing/SKILL.md) before any code, its adversarial review included when the design holds a Human Layer decision; each decision recorded for ratification at stage 5. | 🤖 | The design passed its review. |
+| **3. Build** | Code and tests, with [`agent-self-review`](../agent-self-review/SKILL.md) until a clean branch-mode verdict. | 🤖 | The branch is self-review clean. |
+| **4. PR and proof** | Push, open the draft PRs with [`pull-request`](../pull-request/SKILL.md), and verify the head with [`provide-evidence`](../provide-evidence/SKILL.md). | 🤖 | All six proofs are ✅ for the head, then the [delivery report](../ai-assisted-software-development/references/human-facing-communication.md#3-the-delivery-report) is sent. |
+| **5. Ratify** | The human ratifies or changes the decisions. A change returns the delivery to stage 3, and it comes back as a new delivery report. | ⚖️ | Every decision is ratified. |
+| **6. Merge** | Mark the draft PRs ready and merge them in order, on the human's authorization. | ⚖️ | The PRs are merged. |
+| **7. Close** | Update the issue with [`report-work`](../report-work/SKILL.md); announce it, when the project has a skill for that; clean up worktrees and branches with [`git-cleanup`](../git-cleanup/SKILL.md); end the session, through [`herdr`](../herdr/SKILL.md) in the Herdr App. | 🤖 | Done. |
+
+- **At the start of a delivery**, copy the seven stages into the harness's task list, or into the first message when it has none. A stage skipped stays listed as `skip: <reason>`.
+- **The writer ends its turn only** at stage 5 with the delivery report, before an action where the agent [always stops](../ai-assisted-software-development/SKILL.md#where-the-agent-always-stops), or blocked on something only the human can do (💪) or nobody can do now (⏸️), saying what.
+- **Every message where the writer stops ends with the stage line**: `Stage 5/7 · ratify · next: ⚖️ you` (in the human's language).
+- The delivery report's "ratify and merge" authorizes stages 6 and 7 together.
+
+## 3. Who Talks to Whom
 
 ```text
 user ── writer A ── worktrees ── PR(s)        writer B ── worktrees ── PR(s)
@@ -39,7 +58,7 @@ user ── writer A ── worktrees ── PR(s)        writer B ── worktr
 - **A subagent answers once and ends**: read-only research, exploration, a hypothesis to check, an isolated review. It never edits the writer's files and never coordinates with other subagents. Brief it per [subagent-delegation.md](../ai-assisted-software-development/references/subagent-delegation.md).
 - **What crosses deliveries is a contract**: the delivery that owns it decides it and presents it for ratification, the dependent delivery stacks on it, and it never travels as a message between agents.
 
-## 3. Choosing How to Run Something
+## 4. Choosing How to Run Something
 
 | The work | How to run it |
 | :--- | :--- |
@@ -51,7 +70,7 @@ user ── writer A ── worktrees ── PR(s)        writer B ── worktr
 
 A large, isolated part of a delivery (a whole frontend built against a mock) may become a second delivery stacked on the first; the contract between them is a decision to ratify in the first, and a change to it restacks the second.
 
-## 4. Limits
+## 5. Limits
 
 - **In flight**: 2 to 4 deliveries being built at once; start with 2. A delivery waiting for the user's ratification is no longer in flight, and nothing limits how many wait: each arrives complete, proven, and with its decisions ordered by cost to reverse, so the user reviews them in any batch. [`coordinator`](../coordinator/SKILL.md) shows the waiting pile, with each task's state, when the user asks.
 - **Two deliveries never touch the same contract or file at once**: the second stacks on the first, or both become one sequential delivery.
@@ -69,8 +88,8 @@ A large, isolated part of a delivery (a whole frontend built against a mock) may
 ## Success Validation
 
 - [ ] The work in flight is a vertical-slice delivery with one writer; nothing was split by layer or repository.
+- [ ] The seven stages were listed when the delivery started, the writer stopped only where Section 2 allows, and every stop ended with the stage line.
 - [ ] Every worktree of the delivery uses the same branch name, named and based per [branch-and-worktrees.md](references/branch-and-worktrees.md), and the calling checkout was never switched.
-- [ ] No agent messaged or relayed for another agent; every subagent answered once and ended.
-- [ ] No registry or status file was kept beside the work; facts live where [ai-assisted-software-development](../ai-assisted-software-development/SKILL.md#6-where-a-tasks-facts-live) places them.
+- [ ] No agent messaged or relayed for another agent, every subagent answered once and ended, and no registry or status file was kept beside the work.
 - [ ] No more than 4 deliveries were being built at once, and a delivery that builds on an unmerged one was stacked on its branch.
 - [ ] Independent review stopped at 2 rounds, blocked only on 🔴 and behavior-changing 🟡, and the rest went to the follow-up list.

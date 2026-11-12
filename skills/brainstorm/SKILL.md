@@ -14,7 +14,7 @@ argument-hint: "[question] [harnesses or models to ask]"
 
 # Brainstorm
 
-Several models answering the same question alone give a wider spread of ideas than one model, and their agreement is a signal. Models that read each other converge on each other instead of on the facts, so participants never see one another's answers and never debate: this is the "several independent opinions" case of [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md#3-choosing-how-to-run-something).
+Several models answering the same question alone give a wider spread of ideas than one model, and their agreement is a signal. Models that read each other converge on each other instead of on the facts, so participants never see one another's answers and never debate: this is the "several independent opinions" case of [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md#4-choosing-how-to-run-something).
 
 ## 1. When It Pays
 
