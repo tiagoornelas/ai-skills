@@ -1,9 +1,11 @@
 ---
 name: grill-me
 description: >-
-  Relentlessly interviews the user to stress-test a plan, decision, design, or
-  idea across any topic and at any stage, until reaching shared understanding
-  with zero implicit assumptions. Structures inquiries into a decision tree and
+  Relentlessly interviews the user to stress-test the behavior and business
+  rules of a plan, feature, or idea (what it does, for whom, its rules, edge
+  cases, and priorities), until reaching shared understanding with zero
+  implicit assumptions. Architecture and implementation stay with
+  software-designing. Structures inquiries into a decision tree and
   asks questions in rounds, always accompanied by a recommendation;
   autonomously researches facts the environment answers, leaving decisions to
   the user. Produces no permanent artifacts and belongs to no fixed flow.
@@ -14,7 +16,7 @@ argument-hint: "[plan, decision, or idea to stress-test — by default, current 
 
 # Grill Me
 
-An interview designed to **rigorously test reasoning before acting**. Applies to anything: a feature, an architecture, a business decision, an article draft, or determining next steps. Requires no git repository, writes no permanent files (the only possible artifact is a disposable prototype, Section 5), and **has no fixed output schema**: what remains is a significantly sharpened idea inside the user's mind.
+An interview designed to **rigorously test reasoning before acting**, on behavior and business rules: what a feature, product, or decision does, for whom, under which rules and edge cases, and what comes first. When a question turns to architecture or implementation (modules, contracts, data models, technology), note it for [`software-designing`](../software-designing/SKILL.md) and keep the interview on behavior. Requires no git repository, writes no permanent files (the only possible artifact is a disposable prototype, Section 5), and **has no fixed output schema**: what remains is a significantly sharpened idea inside the user's mind.
 
 > **Facts** are the agent's job. **Decisions** belong to the user. An agent that answers its own decision questions breaks the skill.
 

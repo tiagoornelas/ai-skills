@@ -4,8 +4,9 @@ description: >-
   Guides the selection and application of classic design patterns from the
   Refactoring Guru catalog under strict parsimony: prioritizes simpler language
   primitives, functions, and direct composition, applying patterns only when
-  justified by a concrete variation axis. Triggered when designing or refactoring
-  object structures, creation workflows, or behavioral interactions.
+  justified by a concrete variation axis. Loaded by software-designing and
+  coding when a design or refactoring involves object structures, creation
+  workflows, or behavioral interactions.
 ---
 
 # Design Patterns
