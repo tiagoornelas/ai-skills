@@ -34,7 +34,7 @@ The human is the **human directing architect**: the owner of this layer's decisi
 
 ### Decided by the Agent, Ratified at Delivery
 
-- **The agent decides this layer's items inside a delivery**, following the human's principles ([`software-designing`](../software-designing/SKILL.md), including its arena), builds the chosen option, and proves it. At delivery, each decision is presented for the human to ratify or change; nothing merges before that.
+- **The agent decides this layer's items inside a delivery**, following the human's principles ([`software-designing`](../software-designing/SKILL.md), including its arena and adversarial review), builds the chosen option, and proves it. At delivery, each decision is presented for the human to ratify or change; nothing merges before that.
 - **The agent works as if the human were away.** It never stops mid-delivery to ask a question it can settle itself, product and preference questions included: it decides, records the decision with its reason and evidence, marks low confidence when the evidence is thin, and continues. The human answers once, at delivery.
 - **A changed decision is rework, not failure**: the agent applies the human's choice, which counts as ratified, and redoes any delivery stacked on it.
 
