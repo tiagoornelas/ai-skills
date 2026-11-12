@@ -41,7 +41,7 @@ In the user's language, per [human-facing communication](../ai-assisted-software
 3. **Critical findings only**: 🔴, and 🟡 that change a behavior, each one or two lines with a plausible scenario, its impact, and a direction of solution with its trade-off, most consequential first; mark a problem the change did not introduce as older. A preference without a consequence is not a finding. Other findings are counted and given on request.
 4. **One proof line**, read from the delivery's evidence note by [`provide-evidence`](../provide-evidence/SKILL.md)'s show rules: how many of the six lines hold on which commit and which are missing, "outdated: proves X, the PR is at Y", or "no record on this machine".
 
-Omit the findings when there are none, and the decisions when there is nothing to ratify; the plan and the proof line always appear. Nothing below contracts appears unless it changes a behavior, contract, boundary, or risk; then the screen shows that consequence.
+Omit the findings when there are none, and the decisions when there is nothing to ratify; the change card and the proof line always appear. Nothing below contracts appears unless it changes a behavior, contract, boundary, or risk; then the screen shows that consequence.
 
 ## 3. Stay Critical
 

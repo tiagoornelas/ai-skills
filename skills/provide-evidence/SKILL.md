@@ -23,7 +23,7 @@ The user needs to know at once: **is the work done, what does it add to the syst
 ## 1. Scope and Action
 
 - **Scope**: the PR or branch given as argument; without one, the PR of the current branch (`gh pr view --json number`); without a PR, the current branch itself, compared with its base. Any PR works, whoever wrote it.
-- **Show the proof** (default): read-only. Never run tests, fix, commit, push, merge, write a note or file, or message an agent; when the verdict is not ✅ and this session wrote the delivery, it switches to verify (Section 3).
+- **Show the proof** (default): read-only. Never run tests, fix, commit, push, merge, write a note or file, or message an agent; when the verdict is not ✅ and this session wrote the delivery, it switches to verify (Section 4).
 - **Verify and produce what is missing**: run the [independent reviewer](#4-verify) for the current head, in any harness, at [stage 4](../agentic-parallel-work/SKILL.md#2-the-stages) of every delivery (its draft PRs open, before the delivery report), whenever its writer says it is done or stops working on it, and when the user asks.
 - When `gh` is missing or not authenticated, show what git alone proves and say the PR part was skipped; never guess PR states.
 

@@ -41,7 +41,7 @@ Every delivery moves through the same seven stages, whoever acts in them, so the
 | **7. Close** | Update the issue with [`report-work`](../report-work/SKILL.md); announce it, when the project has a skill for that; clean up worktrees and branches with [`git-cleanup`](../git-cleanup/SKILL.md); end the session, through [`herdr`](../herdr/SKILL.md) in the Herdr App. | 🤖 | Done. |
 
 - **At the start of a delivery**, copy the seven stages into the harness's task list, or into the first message when it has none. A stage skipped stays listed as `skip: <reason>`.
-- **The writer ends its turn only** at stage 5 with the delivery report, before an action where the agent [always stops](../ai-assisted-software-development/SKILL.md#where-the-agent-always-stops), or blocked on something only the human can do (💪) or nobody can do now (⏸️), saying what.
+- **The writer ends its turn only** at stage 5 with the delivery report, before an action where the agent [always stops](../ai-assisted-software-development/SKILL.md#where-the-agent-always-stops), or blocked: two review rounds still leave a ❌, or it waits on something only the human can do (💪) or nobody can do now (⏸️), saying what.
 - **Every message where the writer stops ends with the stage line**: `Stage 5/7 · ratify · next: ⚖️ you` (in the human's language).
 - The delivery report's "ratify and merge" authorizes stages 6 and 7 together.
 
