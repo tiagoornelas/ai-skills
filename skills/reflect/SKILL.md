@@ -40,11 +40,11 @@ Run one subagent briefed with [synthesizer-brief.md](references/synthesizer-brie
 - Present the three lists in full, in the user's language. Each Accepted row shows its destination: the skill or rule file, and the repository it lives in (a symlinked skill's source is `readlink -f` of its folder).
 - Apply only the rows the user approves; the user may redirect a routing. Skill and rule changes affect every future session, so nothing is applied on the agent's judgment.
 - Apply approved rows as a delivery in the repository that owns each file, per [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md), with [`prompt-engineering`](../prompt-engineering/SKILL.md), then [`commit`](../commit/SKILL.md) and [`pull-request`](../pull-request/SKILL.md).
-- Mechanism items go to [`correct`](../correct/SKILL.md), in the repository where the mistake happens, when the user approves; `correct` acts once the mistake has recurred, so a first occurrence stays in the report as a suggestion. Filing any of them in a tracker goes through [`report-work`](../report-work/SKILL.md). When a finding calls for a recurring check, audit, or preventive inspection that fits a fixed schedule or morning routine, propose scheduling it via [`roostr`](../roostr/SKILL.md).
+- Mechanism items become a check (lint, test, script, or hook) built as a delivery in the repository where the mistake happens, when the user approves; a first occurrence stays in the report as a suggestion. Filing any of them in a tracker goes through [`report-work`](../report-work/SKILL.md). When a finding calls for a recurring check, audit, or preventive inspection that fits a fixed schedule or morning routine, propose scheduling it via [`roostr`](../roostr/SKILL.md).
 
 ## 5. Report
 
-One line each: edits applied (file and what changed), mechanism items handed to `correct`, scheduled in `roostr`, or filed, and rejected findings with the synthesizer's reason.
+One line each: edits applied (file and what changed), mechanism items built, scheduled in `roostr`, or filed, and rejected findings with the synthesizer's reason.
 
 ---
 
@@ -54,5 +54,5 @@ One line each: edits applied (file and what changed), mechanism items handed to 
 - [ ] Three reviewers with distinct lenses ran in parallel as read-only subagents, and one synthesizer sorted their findings.
 - [ ] Every Accepted row routes to a skill or rule the session used, tunes the description of one that should have triggered, or proposes a new skill for a pattern none covers.
 - [ ] Nothing was applied before the user approved its row; each approved edit went through `prompt-engineering` as a delivery in the repository that owns the file.
-- [ ] Items a mechanism can enforce went to `correct`, `roostr`, or a tracker, never into prose.
+- [ ] Items a mechanism can enforce became a check, a `roostr` routine, or a tracker item, never prose.
 - [ ] The report listed edits applied, mechanism items, and rejections with reasons.

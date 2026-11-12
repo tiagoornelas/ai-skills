@@ -26,7 +26,7 @@ Identify the question being investigated—from user intent, surrounding codebas
 | Question | Branch | Artifact |
 | :--- | :--- | :--- |
 | **"Does this business logic / state model hold up?"** | [`references/logic.md`](references/logic.md) | A single, self-contained, shareable HTML file featuring unconstrained action buttons and tabbed scenarios, driving the domain model through edge cases difficult to evaluate on paper, operable by non-technical stakeholders. |
-| **"What should this interface look like?"** | [`references/ui.md`](references/ui.md) | A standalone HTML mockup, **outside the project repository**, faithful to the project's actual design system, displaying radically different visual variants at the real target screen size (stacked vertically for desktop screens). Completely decoupled from the production app. |
+| **"What should this interface look like?"** | [`references/ui.md`](references/ui.md) | A standalone HTML mockup, **outside the project repository**, designed with [`ui-designing`](../ui-designing/SKILL.md)'s craft and faithful to the project's actual design system, displaying radically different visual variants at the real target screen size (stacked vertically for desktop screens). Completely decoupled from the production app. |
 
 The two branches produce fundamentally different deliverables: choosing the wrong one invalidates the exercise. If the inquiry is ambiguous and the user is unavailable, select the branch matching surrounding code (backend module → logic; view/page component → UI) and declare the assumption explicitly at the top of the artifact.
 
