@@ -7,7 +7,7 @@
 ## 1. When It Is Printed
 
 - **In a design or split plan**: one card per delivery, from what it will add.
-- **At delivery**, inside the [delivery report](human-facing-communication.md#3-the-delivery-report), and in the PR body's What Changes section ([`pull-request`](../../pull-request/SKILL.md)).
+- **At delivery**, inside the [delivery report](human-facing-communication.md#3-the-delivery-report). The PR body's What Changes section ([`pull-request`](../../pull-request/SKILL.md)) draws the same tree with the same kinds of leaves, written in words (Added, Changed, Removed, a departure explained), with no marks and no last line.
 - **On demand**, through [`human-review`](../../human-review/SKILL.md) or [`provide-evidence`](../../provide-evidence/SKILL.md).
 
 Between those moments, a message names the change in one line and does not repeat the card.
@@ -32,7 +32,7 @@ The places of the system are the branches: the repository, or in a single reposi
 
 **Last line**: `⚖️ <N> to ratify`, or `nothing to ratify`. Each `?` and `!` leaf, and each rule change, opens one [decision to ratify](human-facing-communication.md#presenting-decisions-taken), ordered by cost to reverse.
 
-Every word is in the language of where the card appears: the session's in conversation, the PR's in its body. Inside the tree, only one-column marks; no emoji.
+Every word is in the human's session language. Inside the tree, only one-column marks; no emoji.
 
 ## 3. Example
 
@@ -87,4 +87,4 @@ infra#41        invoice PDF bucket   ✅ CI ─ ✅ agent ─ ⚠️ proof ─ �
 - [ ] It was a tree of the system's places with one leaf per high-level thing brought in, each with its mark, a product-level name, and its kind; nothing below that level appeared.
 - [ ] Rule changes, data deleted, rewritten, or sent out, and what does not change were plain sentences in the reader's language, with no fixed labels.
 - [ ] Every `?` and `!` item was counted on the last line and opened a decision to ratify, ordered by cost to reverse.
-- [ ] Every word was in the language of where the card appeared, with no emoji inside the tree.
+- [ ] Every word was in the human's session language, with no emoji inside the tree.
