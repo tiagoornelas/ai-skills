@@ -62,22 +62,23 @@ A change that brings in nothing prints only `unchanged` and `nothing to ratify`.
 
 ## 4. PR Line
 
-Every PR is written the same way, in any message about the work:
+Every PR is written the same way, in any message about the work: its steps in the order they happen, each with its mark, read from left to right up to the first one that is not ✅.
 
 ```text
-<emoji> <repo>#<number> · <short name> · [draft · ][conflict · ]CI <state> · agent <state> · proof <state> · you <state>
-<emoji> <repo>#<number> · <short name> · merged · proof <state>
+<repo>#<number>  <short name>  <mark> CI ─ <mark> agent ─ <mark> proof ─ <mark> you[ ─ ✅ merged]   [<note>]
 ```
 
-- **`<repo>`** is the repository name without its owner (`web-app#212`). **`<short name>`** is two to four words naming what the PR changes.
-- **`draft`** and **`conflict`** appear only when true.
-- **CI**: the worst state among its checks: `failing`, `running`, `cancelled`, `ok`; `—` when it has none.
-- **agent**: the author's self-review on the PR head: `ok` (a clean branch-mode `agent-self-review`), or `—` for no record.
-- **proof**: the [evidence](../../provide-evidence/references/evidence-dossier.md) of the PR head: `ok` (all six lines ✅ for the current head), `failing` (a line is ❌), `outdated` (it proves an earlier commit), or `—` for no record.
-- **you**: the human's review: `ok` (approved), `changes` (changes requested), `pending` (ready for them: CI ok, agent ok, proof ok), or `—` for no record. Without `proof ok` it is never `pending`.
-- **Leading emoji**, the worst that applies: ❌ conflict, CI failing, or proof failing · ⏳ CI running, agent review missing, or proof outdated or missing · 👀 proven and waiting for the human's review · ✅ proven and approved, ready to merge.
-- **Merged** PRs use the second form; its emoji is ✅ only with `proof ok`, ⚠️ otherwise.
-- A missing note reads "no record" (`—`), never "not reviewed": its absence on this machine proves nothing.
+- **`<repo>`** is the repository name without its owner (`web-app#212`). **`<short name>`** is two to four words naming what the PR changes. Align the steps when several PRs are listed.
+- **Marks**: ✅ done · ⏳ running · ❌ failed · ⚠️ outdated (it covers an earlier commit) · ⬜ not yet · 👀 the human's turn.
+- **CI**: the worst state among its checks; ⬜ when it has none. **agent**: ✅ only for a clean branch-mode `agent-self-review` on the head. **proof**: ✅ only when all six [evidence](../../provide-evidence/references/evidence-dossier.md) lines are ✅ for the head. **you**: 👀 when the human owes the review or ratification, ✅ when approved, ❌ when changes were requested; never 👀 before the proof is ✅.
+- **Note**, only when it matters, in a few words: `draft`, `conflict`, what failed, or what the outdated proof covers.
+- A missing note on the head reads ⬜, never "not reviewed": its absence on this machine proves nothing.
+
+```text
+billing-api#88  invoice PDF export   ⏳ CI ─ ⬜ agent ─ ⬜ proof ─ ⬜ you
+web-app#212     download PDF button  ✅ CI ─ ✅ agent ─ ✅ proof ─ 👀 you
+infra#41        invoice PDF bucket   ✅ CI ─ ✅ agent ─ ⚠️ proof ─ ⬜ you   proof covers an earlier commit
+```
 
 ## 5. Success Validation
 

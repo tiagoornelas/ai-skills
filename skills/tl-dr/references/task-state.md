@@ -26,10 +26,10 @@ Every source is optional. One the session cannot reach becomes a closing `skippe
 
 ## 2. Lines
 
-In the user's session language, the PR line's field names and states included; only the card's marks and emojis stay as they are.
+In the user's session language, the PR line's step names and notes included; only the card's marks and emojis stay as they are.
 
 1. **Header**: the task in product terms, then whether anything depends on the user: `N depend on you`, or `✅ nothing depends on you`.
-2. **What depends on the user**, one line each, marked per the [emoji vocabulary](../../ai-assisted-software-development/references/human-facing-communication.md#4-emojis-as-signals): ⚖️ a decision to ratify (a [`?` or `!` item](../../ai-assisted-software-development/references/change-card.md#2-the-tree) of the card), with its cost to reverse · ⚖️ a question to the user (an action where the agent stops, in the issue or a thread), with its options and the recommendation · 👀 a PR whose line reads `you pending`, or a review requested from the user · 💪 an agent stopped at a dialog, with the tab to open.
+2. **What depends on the user**, one line each, marked per the [emoji vocabulary](../../ai-assisted-software-development/references/human-facing-communication.md#4-emojis-as-signals): ⚖️ a decision to ratify (a [`?` or `!` item](../../ai-assisted-software-development/references/change-card.md#2-the-tree) of the card), with its cost to reverse · ⚖️ a question to the user (an action where the agent stops, in the issue or a thread), with its options and the recommendation · 👀 a PR whose line reads `👀 you`, or a review requested from the user · 💪 an agent stopped at a dialog, with the tab to open.
 3. **Issue**: key · status · acceptance criteria met, when known. One line per issue.
 4. **Stage**: `Stage N/7 · <name> · next: <who acts>`, and the change card's last line when the delivery has a diff.
 5. **PRs**: one [PR line](../../ai-assisted-software-development/references/change-card.md#4-pr-line) each.
@@ -49,9 +49,9 @@ Export invoices as PDF · 3 depend on you
 👀 web-app#212 is ready for your review · proven on its current commit
 issue   BILL-142 · in progress · 3 of 4 acceptance criteria met
 Stage 4/7 · PR and proof · next: 🤖 proving billing-api#88 and infra#41
-⏳ billing-api#88 · invoice PDF export · draft · CI ok · agent ok · proof — · you —
-👀 web-app#212 · download PDF button · CI ok · agent ok · proof ok · you pending
-⏳ infra#41 · invoice PDF bucket · draft · CI running · agent — · proof — · you —
+billing-api#88  invoice PDF export   ✅ CI ─ ✅ agent ─ ⬜ proof ─ ⬜ you   draft
+web-app#212     download PDF button  ✅ CI ─ ✅ agent ─ ✅ proof ─ 👀 you
+infra#41        invoice PDF bucket   ⏳ CI ─ ⬜ agent ─ ⬜ proof ─ ⬜ you   draft
 thread  team chat · support asked when PDFs ship · your move · +1 thread, author's move
 next    🤖 billing-api#88 runs its proof once infra#41 is green
 ```
