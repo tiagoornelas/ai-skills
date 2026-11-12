@@ -1,13 +1,13 @@
 ---
 name: explain-it
 description: >-
-  Explains code, files, flows, or technical concepts as if to a junior
-  colleague who just joined the project and has no context on the business or
-  on the applications themselves: starts from the problem the business solves,
-  defines every domain term and project-specific name, and only then descends
-  into the code. Leverages visualize-it to draw flows and states. Used on
-  demand when the user asks for an explanation, and by human-review when the
-  user points at a part of a change.
+  Explains code, files, flows, or technical concepts to the user as if they
+  had lost all context on that part of the system: rebuilds, in a few short
+  steps, the path from the product down to the target, defining every domain
+  term and internal name on the way, so the user regains the understanding
+  without reading a report. Leverages visualize-it to draw flows and states.
+  Used on demand when the user asks for an explanation, and by human-review
+  when the user points at a part of a change.
 disable-model-invocation: true
 argument-hint: "[what to explain — by default the last discussed topic]"
 ---
@@ -16,44 +16,46 @@ argument-hint: "[what to explain — by default the last discussed topic]"
 
 ---
 
-## 1. Audience
+## 1. Reader
 
-The reader is a **junior developer on their first days in the project**, reading in the user's session language:
+The user, in their session language, as described in [The Human Directing Architect](../ai-assisted-software-development/references/human-facing-communication.md#1-the-human-directing-architect), assumed to have lost all context on this part of the system, including what they once knew or decided about it. They know general programming; the business area, the applications involved, and the code are rebuilt from zero.
 
-- **Knows**: general programming, the language basics, Git, and what an API or a database is.
-- **Does not know**: the business, its users and vocabulary, which applications exist, how they talk to each other, or why the code is shaped the way it is.
-
-Every explanation is written for that reader. If a sentence only makes sense to someone who already knows the project, it is not done yet.
+Every sentence moves the reader one step closer to understanding the target, or it is cut.
 
 ---
 
 ## 2. Operational Principles
 
-- **Business before code**: open with the real-world problem: who uses this, what they are trying to achieve, and what goes wrong without it. Code comes after the reader knows why it exists.
-- **Shared context principles**: apply [Giving context](../ai-assisted-software-development/references/human-facing-communication.md#giving-context) (outside in, situate before naming, concrete before and after, say why or say it is unknown, no condescension, grounded). This reader also lacks the business, so domain terms are defined too, not only internal names.
+- **Shared context principles**: apply [Giving context](../ai-assisted-software-development/references/human-facing-communication.md#giving-context) (outside in, situate before naming, concrete before and after, say why or say it is unknown, no condescension, grounded). Domain terms are defined too, inline where they first appear.
 - **Reasons the code does not state**: when the explanation needs why the code is shaped this way and the code does not say, investigate it with [`why`](../why/SKILL.md) instead of guessing.
-- **Visuals**: invoke the [`visualize-it`](../visualize-it/SKILL.md) skill whenever explaining a flow across parts of the system or the states a user sees; this reader needs the code names, so give them beside the drawing, keyed by step.
+- **Visuals**: invoke the [`visualize-it`](../visualize-it/SKILL.md) skill whenever explaining a flow across parts of the system or the states a user sees, with the code names beside the drawing, keyed by step. The drawing replaces the prose it shows.
 
 ---
 
 ## 3. Explanation Structure
 
-1. **Target of Explanation**: if no argument is provided, explain the last component, file, or flow discussed in the conversation.
-2. **Business Context**: 2 to 4 sentences on the problem this part of the system solves, for whom, and where it sits in the product.
-3. **What It Is**: 1 to 2 sentences on the component's role among the applications, in plain words.
-4. **Flow (Visual)**: a swimlane of the flow via `visualize-it`, in the format its destination rule dictates (terminal-native in conversation), showing how it interacts with surrounding applications and modules, followed by one concrete example traced through it.
-5. **Glossary**: short table of the domain terms and internal names used, each with a one-line definition.
-6. **Key Nuances & Pitfalls**: edge cases, critical business rules, failure modes, and the traps a newcomer is most likely to fall into.
-7. **Where to Go Next**: 2 to 4 files, docs, or flows worth reading next, each with why it matters.
-8. **Takeaway Summary**: concise bullet-point conclusion.
+1. **Target**: the argument, or the last component, file, or flow discussed in the conversation. Explain what was asked, not the whole module around it.
+2. **Destination**: one sentence that answers the question, so the reader knows where the path leads.
+3. **Path**: from the product down to the target (product → application → area → mechanism), one or two sentences per level, each situating the next name before using it.
+4. **How it works**: one concrete example traced through the target, as a swimlane when it is a flow.
+5. **What would surprise**: up to three business rules, pitfalls, or reasons the code does not state. Omit when there are none.
+6. **Deeper**: one line naming the parts that could be explained further, on request.
+
+The explanation fits one screen besides the drawing. Terms are defined where they appear and the path already summarizes, so there is no glossary, closing summary, or reading list.
+
+The shape, in a fictional gym app:
+
+```text
+The "Expired" badge on a membership is set by a nightly job, not by the screen, so it can lag up to a day.
+Path: the app sells gym memberships. Each member has a membership with an end date, shown on the member page of the web app. The web app does not compute the badge: it shows the status the backend stores. A job running every night at 2 a.m. (backend, ExpireMemberships) marks memberships past their end date as expired.
+```
 
 ---
 
 ## 4. Success Validation
 
-- [ ] Target identified, and the explanation opens with the business problem before any code.
-- [ ] Every domain term, acronym, and internal name is defined on first use and listed in the glossary; general programming basics the reader already knows are not explained.
-- [ ] A concrete example is traced through the flow.
-- [ ] Includes a [`visualize-it`](../visualize-it/SKILL.md) drawing for flows or user-visible states.
-- [ ] Nuances, critical rules, and newcomer pitfalls highlighted; unknown reasons are stated as unknown, not invented.
-- [ ] Ends with next reading suggestions and a concise bullet-point takeaway.
+- [ ] The target was identified, and only what was asked was explained.
+- [ ] The explanation opened with one destination sentence, then the path from the product to the target, every domain term and internal name situated before use.
+- [ ] One concrete example was traced, with a [`visualize-it`](../visualize-it/SKILL.md) drawing for flows or user-visible states.
+- [ ] At most three surprises, and unknown reasons were stated as unknown, not invented.
+- [ ] No glossary, closing summary, or reading list; the whole explanation fit one screen besides the drawing.
