@@ -29,7 +29,7 @@ Use every source the session reaches, plus any the user names; skip the ones the
 
 | Source | What it gives |
 | :--- | :--- |
-| Code host (GitHub: `gh search prs --author=@me --state=open`, `--review-requested=@me`) | The user's open PRs and the PRs awaiting their review, read per the [PR line](../ai-assisted-software-development/references/change-card.md#5-pr-line). |
+| Code host (GitHub: `gh search prs --author=@me --state=open`, `--review-requested=@me`) | The user's open PRs and the PRs awaiting their review, read per the [PR line](../ai-assisted-software-development/references/change-card.md#4-pr-line). |
 | Issue tracker (Jira, GitHub Issues, Linear…) | Issues assigned to the user in progress or next, their status and priority. |
 | Team chat (Slack…) | Threads from the last seven days where the user was asked something and has not answered. |
 | Herdr App, when active per [`herdr`](../herdr/SKILL.md#1-preconditions) | Live agent sessions, their state, and the worktree each uses. |
@@ -39,9 +39,9 @@ Group everything into tasks: a task is one delivery, joining its issue, its PRs 
 
 ## 3. Judge
 
-- **What depends on the user**: the ⚖️, 👀, and ✋ items of every task's [task state](../tl-dr/references/task-state.md), one per subject, ordered by what each unblocks, decisions to ratify by cost to reverse. At most seven, then "+N more".
+- **What depends on the user**: the ⚖️, 👀, and 💪 items of every task's [task state](../tl-dr/references/task-state.md), one per subject, ordered by what each unblocks, decisions to ratify by cost to reverse. At most seven, then "+N more".
 - **Next focus**: one task and why, from the three standing questions of [`scope-review`](../scope-review/SKILL.md#three-standing-questions) applied to the open tasks in one line each, with any task worth reducing, postponing, or stopping. On request ("priorities", or a named task), run `scope-review` in full on up to three tasks with a concrete signal: stalled, overlapping another task, or much effort for little impact.
-- **In flight**: the deliveries being built against the [limit](../agentic-parallel-work/SKILL.md#4-limits) of `agentic-parallel-work`, and the pile waiting for the user's review, oldest first, with stacked deliveries under the one they build on.
+- **In flight**: the deliveries being built against the [limit](../agentic-parallel-work/SKILL.md#5-limits) of `agentic-parallel-work`, and the pile waiting for the user's review, oldest first, with stacked deliveries under the one they build on.
 - **Offers**, one line each and only when the signal is present:
   - Work without an issue, or an issue whose status lags its PR (merged, still "in progress"): offer [`report-work`](../report-work/SKILL.md) to report or update those tasks.
   - Branches or worktrees whose PR merged or closed, five or more in a repository, or any older than two weeks: suggest [`git-cleanup`](../git-cleanup/SKILL.md) in that repository.
@@ -53,9 +53,9 @@ The layout is an example; its content is mandatory. A fictional overview:
 ```text
 Your work · Fri 14:20 · 3 depend on you in 2 tasks
 
-1. 👀 Export invoices as PDF: decided PDFs deleted after 90 days · hard to reverse: deleted PDFs are gone
+1. ⚖️ Export invoices as PDF: decided PDFs deleted after 90 days · hard to reverse: deleted PDFs are gone
 2. 👀 Export invoices as PDF: web-app#212 is ready for your review · proven on its current commit
-3. ✋ Customer import: the agent in tab "import" stopped at a permission dialog · open that tab
+3. 💪 Customer import: the agent in tab "import" stopped at a permission dialog · open that tab
 
 Next focus: Export invoices as PDF · ratifying 1 and reviewing 2 ships it this week; the import waits for a CSV sample from support anyway.
 In flight: 2 being built · limit 2–4 · 1 waits for your review (item 2).

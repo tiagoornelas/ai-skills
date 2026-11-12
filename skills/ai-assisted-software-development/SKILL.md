@@ -36,7 +36,7 @@ The human is the **human directing architect**: the owner of this layer's decisi
 
 - **The agent decides this layer's items inside a delivery**, following the human's principles ([`software-designing`](../software-designing/SKILL.md), including its arena and adversarial review), builds the chosen option, and proves it. At delivery, each decision is presented for the human to ratify or change; nothing merges before that.
 - **The agent works as if the human were away.** It never stops mid-delivery to ask a question it can settle itself, product and preference questions included: it decides, records the decision with its reason and evidence, marks low confidence when the evidence is thin, and continues. The human answers once, at delivery.
-- **A changed decision is rework, not failure**: the agent applies the human's choice, which counts as ratified, and redoes any delivery stacked on it.
+- **A changed decision is rework, not failure**: the agent applies the human's choice, which counts as ratified, redoes any delivery stacked on it, and sends a new delivery report, re-proven, without being asked.
 
 ### Where the Agent Always Stops
 
@@ -82,7 +82,7 @@ A change can pass the first question and still fail the second: a scheduled job 
 
 - **Nothing is tier 2 by default.** Every new item goes through both questions; tier 3 wins whenever any of its conditions holds. A business rule, or a component that deletes or rewrites production data (a purge job, a retention policy), is always tier 3: turning the component off stops new effects but does not undo the ones already made. This concerns a component whose purpose is to delete or rewrite data (a purge, a retention policy, a data migration), not the ordinary writes a product feature makes.
 - **When in doubt between tiers 2 and 3, it is tier 3.** Building a tier-3 item in a branch is allowed; running its effects outside the branch is an action where the agent [always stops](#where-the-agent-always-stops).
-- **The [change card](references/change-card.md) is how the tiers are seen.** Tier 1 never appears on it; tier 2 appears as new things and where they live; tier 3 as rule changes, data deleted or rewritten, things built on the side, and walls knocked down.
+- **The [change card](references/change-card.md) is how the tiers are seen.** Tier 1 never appears on it; tiers 2 and 3 appear as the things the change brings in, where they live, and what awaits ratification.
 
 ---
 
@@ -108,7 +108,7 @@ Each fact lives in the thing it describes, and the task's state is derived from 
 
 | Fact | Where it lives |
 | :--- | :--- |
-| Objective and acceptance criteria | The **issue**, in the tracker the repository or context points to (issue keys in branches or commits; the project's docs). When none is detectable, ask the user where; when the user declines an issue, they live only in the conversation. |
+| Objective and acceptance criteria | The **issue**, in the tracker the repository or context points to (issue keys in branches or commits; the project's docs). When none is detectable, they live in the conversation, and the delivery report offers to register them with [`report-work`](../report-work/SKILL.md). |
 | Decisions and their ratification | While the work is in progress, the **issue** when there is one (each decision recorded as soon as it is taken, and its ratification or change when the human gives it), otherwise the conversation. |
 | The change card | Not stored: rebuilt each time it is shown, from the diff and from the issue or the conversation. |
 | Code, branches, CI, reviews | Git and the code host's own state (open, merged, checks, reviews). A PR's description is a document for other developers, never a source: no workflow reads state, decisions, or approvals from it. |
@@ -125,4 +125,4 @@ Before a delivery is presented or its PR opened, check that the objective, the a
 - [ ] Every split plan and delivery carried its [change card](references/change-card.md), and every delivery its six-line [evidence dossier](../provide-evidence/references/evidence-dossier.md), with lines (c)–(f) attested by an independent reviewer.
 - [ ] Objective and acceptance criteria were in the issue (or, when the user declined one, the conversation); decisions and their ratification were in the issue or the conversation; no PR description, registry, or status file served as their source.
 - [ ] No local or unversioned paths were exposed in shared artifacts.
-- [ ] Messages to the human passed the directing-architect test of [human-facing-communication.md](references/human-facing-communication.md): no internal term used before being situated, changes briefed in its order (where, problem, decisions and trade-offs, risks and impact, solution, evidence), no explanation handed back to the human, each decision presented for ratification or asked was self-contained, checked as still open before being asked, every ✋ came with why only the human can do it, and emojis were used only as status and attention markers.
+- [ ] Messages to the human passed the directing-architect test of [human-facing-communication.md](references/human-facing-communication.md): no internal term used before being situated, each delivery handed over as one [delivery report](references/human-facing-communication.md#3-the-delivery-report), no explanation handed back to the human, each decision presented for ratification or asked was self-contained, checked as still open before being asked, every 💪 came with why only the human can do it, and emojis were used only as status and attention markers.

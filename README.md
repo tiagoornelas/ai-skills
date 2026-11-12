@@ -14,7 +14,7 @@ An agent writes code faster than any human can read. Reviewing everything line-b
 
 ```mermaid
 graph TB
-  subgraph H["👤 Human Layer — governance"]
+  subgraph H["⚖️ Human Layer — governance"]
     direction LR
     H1["Modules and boundaries"]
     H2["Dependency direction"]
@@ -34,7 +34,7 @@ graph TB
   A -- "only what belongs to the Human Layer" --> H
 ```
 
-| | 👤 Human Layer | 🤖 Agent Layer |
+| | ⚖️ Human Layer | 🤖 Agent Layer |
 | :--- | :--- | :--- |
 | **Decides** | Which modules exist, what each promises, where dependencies point, what defines "done". | How each module fulfills its promises. |
 | **Reviews** | The plan of what is new and where it lives, contracts, the behavior table, and the evidence that the delivered commit does what was asked—never the entire diff. | Its own code, in an automated loop, before any human sees it. |
@@ -43,28 +43,29 @@ graph TB
 **The boundary test**, whenever it is unclear who owns a decision:
 
 > *Would changing this require renegotiating a contract with external callers, or can it be rewritten tomorrow without anyone outside the module noticing?*
-> Renegotiate → 👤 human. Silently rewrite → 🤖 agent.
+> Renegotiate → ⚖️ human. Silently rewrite → 🤖 agent.
 
 
 ## 🔁 The Delivery Cycle
 
+Every delivery moves through the same seven stages, so you always know where it stands and who acts next:
+
 ```mermaid
 graph LR
-  D["Understand & decide<br/><i>interview, design,<br/>alternatives</i>"] --> I["Implement<br/><i>test-driven</i>"]
-  I --> S["Self-review<br/><i>evaluate → fix →<br/>re-evaluate</i>"]
-  S -- "blocking finding" --> I
-  S -- "clean" --> E["Evidence<br/><i>independent reviewer<br/>proves each claim</i>"]
-  E -- "missing proof" --> I
-  E -- "proven" --> P["Pull Request<br/><i>what changes, decisions,<br/>test evidence</i>"]
-  P --> R["Human review<br/><i>Human Layer only</i>"]
-  R -- "design decision" --> D
+  U["1 · Understand<br/><i>objective and<br/>acceptance criteria</i>"] --> D["2 · Design<br/><i>alternatives and<br/>adversarial review</i>"]
+  D --> B["3 · Build<br/><i>tests first,<br/>self-review</i>"]
+  B --> P["4 · PR and proof<br/><i>independent reviewer<br/>proves each claim</i>"]
+  P -- "missing proof" --> B
+  P --> R["5 · Ratify<br/><i>you, in one reply</i>"]
+  R -- "change" --> B
+  R --> M["6 · Merge<br/><i>on your authorization</i>"]
+  M --> C["7 · Close<br/><i>issue, cleanup</i>"]
 ```
 
-- **Before coding**, high-consequence decisions pass through the human. When a decision carries heavy weight, the agent designs **twice**, exploring radically different alternatives, and brings a recommendation instead of a single path.
-- **During**, the agent writes tests first whenever an observable behavior and a way to test it exist.
-- **Before the human**, the agent reviews itself with an iteration budget and limit: fixes blocking issues, fixes anything with a concrete failure scenario, discards style preferences, and **escalates** anything that would touch a contract.
-- **Before review**, the delivery carries its evidence: each claim (behavior covered, tests passing, nothing new left unlisted, no rule or test weakened) comes with a proof the human can open or re-run, for the exact commit being delivered. A reviewer with a clean context, not the agent that wrote the code, checks it. A claim without proof counts as not done.
-- **In review**, the human evaluates what was built against what was requested, in diagrams, a behavior table, and that evidence, rather than wading through a sea of lines.
+- **Before coding**, the agent designs the change. When a decision carries heavy weight, it designs **twice** and lets a fresh reviewer attack the result. It records each decision and keeps building: you ratify them once, at the end.
+- **During**, the agent writes tests first whenever an observable behavior and a way to test it exist, then reviews itself with an iteration budget and limit.
+- **Before you**, the delivery carries its evidence: each claim (behavior covered, tests passing, nothing new left unlisted, no rule or test weakened) comes with a proof you can open or re-run, for the exact commit being delivered. A reviewer with a clean context, not the agent that wrote the code, checks it. A claim without proof counts as not done.
+- **At ratification**, one message holds everything: a tree of what enters the system, the decisions, the proofs, and the PRs. You answer once.
 
 I use the same lenses for collaborating on other people's work: reviewing a peer's PR, responding to received reviews, and resolving conflicts between parallel branches without discarding either work.
 

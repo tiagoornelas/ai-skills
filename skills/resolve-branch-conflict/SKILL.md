@@ -20,7 +20,7 @@ A merge conflict signals that two developers modified the same layer **without a
 >
 > When both sides are the agent's own work in one stack of deliveries (a stacked branch rebased onto the branch below it), the agent resolves every class itself, keeping the lower branch's decisions, and shows any changed decision on the change card to ratify. The classes below govern conflicts with someone else's work.
 
-Two deliveries in flight that collide are a sign they shared a file or contract, which [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md#4-limits) avoids; when they do collide, this skill resolves it. Uses [`visualize-it`](../visualize-it/SKILL.md) to diagram collisions, [`software-designing`](../software-designing/SKILL.md) when resolution touches architecture, and [`coding`](../coding/SKILL.md) for clean implementation. Catalog of conflict patterns and recipes resides in [`references/conflict-patterns.md`](references/conflict-patterns.md).
+Two deliveries in flight that collide are a sign they shared a file or contract, which [`agentic-parallel-work`](../agentic-parallel-work/SKILL.md#5-limits) avoids; when they do collide, this skill resolves it. Uses [`visualize-it`](../visualize-it/SKILL.md) to diagram collisions, [`software-designing`](../software-designing/SKILL.md) when resolution touches architecture, and [`coding`](../coding/SKILL.md) for clean implementation. Catalog of conflict patterns and recipes resides in [`references/conflict-patterns.md`](references/conflict-patterns.md).
 
 ---
 
@@ -57,7 +57,7 @@ Summarize in a single sentence per side: **"We intended X. They intended Y."** I
 
 Show the divergence:
 - **Timeline**: in the swimlane shape of [`visualize-it`](../visualize-it/SKILL.md), one column per side, the merge-base at the top, commits flowing down, and a note where each side modified the conflict area.
-- **What each side adds**: each side's [change card](../ai-assisted-software-development/references/change-card.md) plan lines, with the things both sides touch marked `!`.
+- **What each side adds**: each side's [change card](../ai-assisted-software-development/references/change-card.md) leaves, with the things both sides touch marked `!`.
 
 ---
 
@@ -85,7 +85,7 @@ This map and the closing summary (Section 8) are examples; their fixed words are
 - **Ours** (<branch>, <authors>): <intent in one sentence>
 - **Theirs** (<branch>, <authors>): <intent in one sentence>
 
-<timeline via visualize-it and each side's plan lines>
+<timeline via visualize-it and each side's change card leaves>
 
 ## Conflict Points — 🟢 N · 🟡 N · 🔴 N · ⚠️ N
 

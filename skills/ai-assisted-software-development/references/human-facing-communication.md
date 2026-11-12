@@ -34,28 +34,44 @@ The right column is not forbidden; it is **not self-explanatory**. Every item in
 2. **No sentence depends on a handle.** "With A, #171 will be rebased again" fails the test; "With A, the report PR needs one more update on top of the previous one; nothing changes for you" passes.
 3. **Labels live for one message.** A label coined in a message (`P3`, `option B`) may be reused only inside that same message. In a later message, repeat its meaning: "P3 (fetch cases one by one through the show route)". When the human returns after a gap, restate each pending item in one sentence of its own instead of citing "decision 2" or "option B".
 4. **Code identifiers only when they matter.** Say what the code does ("the tool that downloads the calculation report"); add the identifier in parentheses only when the human will need it to look something up.
-5. **Status in terms of the goal.** Report what is done and what is missing for the human's objective. Hashes, stack order, test counts, and pane IDs go below, in a details block, or only on request.
+5. **Status in terms of the goal, bottom line first.** Open with what the human must know, decide, or do, in the shape of a [`tl-dr`](../../tl-dr/SKILL.md) digest, and keep the message to one screen; details come only when the human points at them. Inside a delivery, every message where the agent stops ends with its [stage line](../../agentic-parallel-work/SKILL.md#2-the-stages). Hashes, stack order, test counts, and pane IDs appear only on request.
 6. **Translate reports.** When passing on what a subagent or reviewer reported, rewrite it for the human; never paste its wording.
 7. **Directing-architect test.** Before sending, read every noun and every claim and ask: would someone who knows only what the product does and its high-level architecture know what this refers to, when it happens, and why it matters? Would they understand it as the first thing they read after two hours in another tab, without scrolling up or opening anything? If not, situate it or rewrite.
 
 ---
 
-## 3. Briefing a Change
+## 3. The Delivery Report
 
-How to explain work done or proposed (a delivery, a PR, a fix, an architectural change) so the human can direct it and decide whether to ship it.
+The one message that hands a delivery to the human when [stage 4](../../agentic-parallel-work/SKILL.md#2-the-stages) ends, so the human can answer once. The layout is an example in the human's language; the content is mandatory, and it fits one screen:
 
-### Order
+````markdown
+<one sentence: what changes, for whom, where in the product> · <verdict: ✅ proven on the current version | ⚠️ not proven: the gap>
 
-The human's job is to judge the **decisions**, not to learn the code. What matters most goes first, but only after the minimum context that makes it intelligible:
+<the change card: the tree of what enters, and its last line>
 
-1. **Where on the map.** Which product and which part of it, what that part does, and how a user meets it. One to three sentences, plus a [`visualize-it`](../../visualize-it/SKILL.md) swimlane when the change alters a flow across places of the system.
-2. **The problem.** A concrete scenario: who was doing what, what happened, and why (the cause, in system terms). Say whether it was a bug users hit, a risk, or a structural cost.
-3. **Decisions and trade-offs.** What was chosen and why, and what the choice commits the system to (a new rule, a dependency, a maintenance commitment, a behavior users will now see). This is where most of the words go.
-4. **Risks and impact.** Where the change can break or surprise: which flows and users are affected, what was not verified (for example tested only in unit tests, not in the browser), and how the human can check it.
-5. **The solution.** How it works, at the level of modules, boundaries, responsibilities, and dependency direction, with general programming terms used freely. Internal mechanics go here only when they explain a decision or a risk.
-6. **The card and the evidence.** A delivery closes with its [change card](change-card.md) (the plan of what is new, changed, removed, yours to ratify, or out of pattern, and the state) and its six-line [evidence dossier](../../provide-evidence/references/evidence-dossier.md): why do it, architecture, no wall knocked down, nothing built on the side, no catastrophe, tested and works, each a yes or no with its claim, why it convinces, and its argument or proof, presented in full.
+⚖️ <each decision to ratify, one line, ordered by cost to reverse>
+👀 <what the human should see with their own eyes, when anything: a screen, a flow, with its link>
 
-A change with nothing to decide still follows the order: it says plainly that the decisions were routine Agent Layer choices and moves on to impact.
+<the six proofs, one line each: mark, claim, and its proof (a link, a command with its real output excerpt, screenshots)>
+<one PR line per PR>
+
+⚖️ Reply "ratify and merge" (merge in <order>, then <closing steps>) or say what to change.
+Stage 5/7 · ratify · next: ⚖️ you
+````
+
+- **Details on request.** The full argument of a proof, a decision's context and options, or a swimlane of a changed flow appear when the human points at them, briefed per [Explaining a change](#explaining-a-change).
+- **One reply covers the delivery.** The closing line names the merge, its order, and the closing steps of [`agentic-parallel-work`](../../agentic-parallel-work/SKILL.md#2-the-stages), so "ratify and merge" authorizes exactly those. A reply that changes something sends the delivery back to building; it returns as a new delivery report, re-proven, without the human asking.
+- **Not proven, not presented as ready.** With any ❌, the report says what is missing and who acts under that line, and asks for no merge.
+
+### Explaining a change
+
+When the human points at a part, or asks how a change works, brief it from the outside in, so they can judge the decisions without learning the code:
+
+1. **Where on the map**: which product and part, what it does, how a user meets it; a [`visualize-it`](../../visualize-it/SKILL.md) swimlane when a flow across places changed.
+2. **The problem**: a concrete scenario, who did what, what happened, and why.
+3. **Decisions and trade-offs**: what was chosen, why, and what it commits the system to.
+4. **Risks and impact**: which flows and users are affected, and what was not verified.
+5. **The solution**: at the level of modules, boundaries, and responsibilities.
 
 ### Giving context
 
@@ -72,7 +88,7 @@ Concise means fewer items, never less context per item. If a message cannot brie
 
 ### Never hand the explanation back
 
-The briefing carries its own context. Never send the human a summary that requires running another command, opening a file, or reading a PR to be understood, and never list "ask me for the full explanation" as something the human owes.
+Every message carries its own context: it never requires running another command, opening a file, or reading a PR to be understood.
 
 ---
 
@@ -88,16 +104,16 @@ Emojis help the human scan a message and spot what needs attention. They are mar
 | ⏳ | In progress, including work waiting for other in-flight work to finish. |
 | ❌ | Failed or not done. |
 | ⚠️ | Attention point: a risk, surprise, or side effect the human should notice. |
-| ⚖️ | Decision the human must make: a choice between options (opens a decision card). |
-| 👀 | Review the human owes, including decisions to ratify. |
-| ✋ | A task the human performs by hand because no agent can: log in, validate in a browser, grant access, answer an agent's dialog, run a deploy that needs their credential. Written as steps, not options. Raised only after the agent tried it itself, and always with one line saying why only the human can: "only you because: <personal credential · account permission · …>". Never a decision, an authorization, a ratification, or advice: those are ⚖️ or 👀. |
+| ⚖️ | Decision the human must make: a choice between options, or a decision to ratify. |
+| 👀 | Something the human must see with their own eyes: a screen, a behavior in the running app, a PR to review. |
+| 💪 | A task the human performs by hand because no agent can: log in, validate in a browser, grant access, answer an agent's dialog, run a deploy that needs their credential. Written as steps, not options. Raised only after the agent tried it itself, and always with one line saying why only the human can: "only you because: <personal credential · account permission · …>". Never a decision, an authorization, a ratification, or advice: those are ⚖️. |
 | 🤖 | Step an agent takes, without the human. |
 | ⏸️ | Blocked: waiting for something neither the human nor any agent can do now (a time to pass, metrics to settle, another team or a third party). Always says what it waits for and when or by whom it ends. |
 | 🔴 🟡 🟢 | Severity of an open finding: critical, warning, suggestion. |
 
-**Who acts.** ⚖️, 👀, and ✋ mean the human acts; 🤖 means an agent does; ⏳ means it is already moving; ⏸️ means nobody can move it now. In a list that mixes owners (next steps, pending items), mark every item with one of these so the human sees at a glance what is theirs. Work waiting for the human is never ⏸️: it is ⚖️, 👀, or ✋.
+**Who acts.** ⚖️, 👀, and 💪 mean the human acts; 🤖 means an agent does; ⏳ means it is already moving; ⏸️ means nobody can move it now. In a list that mixes owners (next steps, pending items), mark every item with one of these so the human sees at a glance what is theirs. Work waiting for the human is never ⏸️: it is ⚖️, 👀, or 💪.
 
-Skills that define their own symbols (the plan symbols of the [change card](change-card.md)) keep them inside their own outputs. Do not invent other meanings within a session: the same emoji always means the same thing.
+Skills that define their own symbols (the marks of the [change card](change-card.md)) keep them inside their own outputs. Do not invent other meanings within a session: the same emoji always means the same thing.
 
 ### Definition of Done Legend
 
@@ -107,7 +123,7 @@ Wherever delivered behaviors are listed against their verification (a PR body, a
 | :---: | :--- |
 | ✅ | Covered by a named automated test verifying behavior through the public interface. |
 | 🔎 | Not code-testable; verified by alternative means, with the method disclosed. |
-| 👤 | Requires manual human validation. |
+| 👀 | Requires manual human validation. |
 | 🚨 | Missing, or lacking both test coverage and declaration. |
 
 Prompt instructions or documentation are never automated verification.
@@ -128,9 +144,10 @@ Prompt instructions or documentation are never automated verification.
 ### Ask less
 
 - **Decide, then present.** Agent Layer choices are done and reported; Human Layer decisions inside a delivery are taken and [presented for ratification](#presenting-decisions-taken). Ask only before an action where the agent [always stops](../SKILL.md#where-the-agent-always-stops), or for a choice outside any delivery that only the human can make.
+- **Run instead of asking.** When running something (a test, a prototype, a query, a look at the running app) can answer the question, run it and decide.
 - **Check before asking.** Before asking a decision or an action, confirm it is still open: the PR may be merged, the human may have decided it in another tab or space, the agent may already have done it. Asking again for what is done costs the human more than one look costs the agent.
 - **Ask once.** A decision is asked again only when something changed since it was asked, and the new card opens by saying what changed.
-- **Never make the human the courier.** Agents do not message each other ([`agentic-parallel-work`](../../agentic-parallel-work/SKILL.md#2-who-talks-to-whom)), so never ask the human to carry a message to another agent either. What one delivery needs from another is a contract: the delivery that owns it decides it and presents it for ratification.
+- **Never make the human the courier.** Agents do not message each other ([`agentic-parallel-work`](../../agentic-parallel-work/SKILL.md#3-who-talks-to-whom)), so never ask the human to carry a message to another agent either. What one delivery needs from another is a contract: the delivery that owns it decides it and presents it for ratification.
 - **Never park a question at the end of a status report.** A decision opens the message or gets its own message.
 
 ### Every decision fully explained
@@ -152,18 +169,13 @@ A table of options is fine inside the card when there are three or more options 
 
 ### Presenting decisions taken
 
-A Human Layer decision the agent took inside a delivery ([decided by the agent, ratified at delivery](../SKILL.md#decided-by-the-agent-ratified-at-delivery)) is not asked: it is presented at delivery for the human to ratify or change, one per `?` line of the change card and per `!` line marked `to ratify`, ordered by cost to reverse, tier 3 first:
+A Human Layer decision the agent took inside a delivery ([decided by the agent, ratified at delivery](../SKILL.md#decided-by-the-agent-ratified-at-delivery)) is not asked: it is one line of the [delivery report](#3-the-delivery-report), one per `?` and `!` item of the change card, ordered by cost to reverse, tier 3 first:
 
 ```markdown
-👀 **Decided: <what the agent decided, in one line, in system terms>**
-
-- **Why it needs you:** <tier 3: contract · business rule · data · irreversible | tier 2: new component or reversible operational change>
-- **Context:** where this sits in the product, what happens today, and what required a choice (1–3 sentences, no bare handles).
-- **What I decided and why:** the choice and its reason in the human's terms, naming the principle it follows.
-- **Evidence:** the prototype, measurement, or test behind it; "low confidence" and why, when the evidence is thin.
-- **Cost to reverse after merge:** what changing it later would take.
-- **Reply with:** "ratify", or what to change.
+⚖️ <what the agent decided, in system terms> · <why, naming the principle or the evidence; "low confidence" when the evidence is thin> · <cost to reverse after merge>
 ```
+
+The options not taken stay out. When the human points at a decision, give its context, the options weighed, and the evidence, per [Explaining a change](#explaining-a-change).
 
 ### Several decisions
 
@@ -184,14 +196,7 @@ Before:
 
 After:
 
-> 👀 **Decided: downloading the calculation report keeps calling the billing system directly, outside the gateway**
->
-> - **Why it needs you:** tier 3 · it makes an exception to the rule that all billing-system access goes through the gateway.
-> - **Context:** the report download is the one place that still calls the billing system's REST API directly, because the gateway's token does not work on that route.
-> - **What I decided and why:** I recorded it as a documented exception to the rule, so the written rule stays true without growing this delivery into another developer's gateway code.
-> - **Evidence:** the download fails through the gateway with the token error; the direct call passes its test.
-> - **Cost to reverse after merge:** low: moving the call into the gateway later touches one route and removes the exception line.
-> - **Reply with:** "ratify", or what to change.
+> ⚖️ Downloading the calculation report keeps calling the billing system directly, outside the gateway · the gateway's token fails on that route, so the rule gets a documented exception · cheap to reverse: moving it later touches one route
 
 ### A change
 

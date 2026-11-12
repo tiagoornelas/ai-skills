@@ -63,16 +63,18 @@ The layout and the headings are an example, written in the PR's language; the co
 
 ## What Changes
 ```text
-+  table of exported invoices          table · billing-api
-+  "export invoice as PDF" route       route · billing-api
-~  invoice page offers the export      screen · web-app
-~  PDFs deleted after 90 days          rule · billing-api · was: kept forever
--  manual export script                job · billing-api
-!  PDF layout written inside the job   out of pattern · other documents use the templates folder, because …
+billing-api
+├─ db
+│  └─ + exported invoices      table
+└─ jobs
+   └─ ! PDF rendering job      job · other documents use the templates folder, because …
+web-app
+└─ + "Download PDF" button     screen
 
-unchanged  no new service, queue, secret, or client · no data rewritten or sent out · contracts and boundaries intact
+rule       PDFs deleted after 90 days (was: kept forever)
+unchanged  no data rewritten or sent out · contracts and boundaries intact
 ```
-[One line per thing added (+), changed (~), or removed (-), named in product terms with its kind and the place it lives, covering the [kinds of new things](../ai-assisted-software-development/references/change-card.md#2-the-plan) of the change card; a changed rule shows before and after; `!` marks what departs from the project's pattern or crosses a boundary, with why. The closing `unchanged` line names the kinds with nothing new and states whether contracts and boundaries stayed intact. No counts, approvals, or status.]
+[The [change card](../ai-assisted-software-development/references/change-card.md#2-the-tree) tree of what the change brings in, without its ratification marks or last line: `+` new, `-` removed, `!` what departs from the project's pattern or crosses a boundary, with why; a changed rule with before and after; the closing `unchanged` line. No counts, approvals, or status.]
 
 ## Decisions
 [Each decision taken and its reason, ordered by cost to reverse after merge, the hardest first: business rules, contracts created or altered (who calls, what crosses, what it promises, how it fails), consequential trade-offs, assumptions, and maintenance commitments. Omit when there is nothing material.]
@@ -85,7 +87,7 @@ unchanged  no new service, queue, secret, or client · no data rewritten or sent
 | :---: | :--- | :--- | :--- |
 | ✅ | Reject expired tokens with HTTP 401 | Unit test in `tests/auth.test.ts` | Covered by the test suite |
 | 🔎 | Send the confirmation email via the real provider | Not code-testable; sent from staging | Optional |
-| 👤 | Login form fits a phone screen | Visual inspection | Open `/login` at 375px |
+| 👀 | Login form fits a phone screen | Visual inspection | Open `/login` at 375px |
 
 [Marks and the legend line below the table follow the Definition of Done legend. Add a screenshot when the change is visible and an accessible image URL already exists.]
 
@@ -103,7 +105,7 @@ The marks of Test Evidence follow the [Definition of Done legend](../ai-assisted
 2. **Check the description matches the change**: the summary and decisions agree with the objective and acceptance criteria (issue or conversation), and What Changes matches the diff.
 3. **Push** the branch, every commit following [`commit`](../commit/SKILL.md): `git push -u origin <branch-name>`.
 4. **Open** without a separate approval prompt (the request to open the PR authorizes it), as a draft unless the user asks for ready for review: `gh pr create --draft --title "<title>" --body-file <body-file>`, adding `--base <branch>` for a PR stacked on the branch it builds on.
-5. **Return** the clickable PR link, plus the screenshot reminder when it applies.
+5. **Prove and report**: inside a delivery, verify the head with [`provide-evidence`](../provide-evidence/SKILL.md) and send the PR link inside the [delivery report](../ai-assisted-software-development/references/human-facing-communication.md#3-the-delivery-report), never alone; otherwise return the clickable PR link. Add the screenshot reminder when it applies.
 
 ---
 
@@ -114,4 +116,4 @@ The marks of Test Evidence follow the [Definition of Done legend](../ai-assisted
 - [ ] Summary, References, What Changes (with its `unchanged` line), Test Evidence, and Impact are present; Decisions and How It Works appear when material; the description matches the diff and the issue.
 - [ ] Every reference is a labeled, reachable link, with no empty lines; a multi-repository delivery's PRs link each other.
 - [ ] Title and body follow the repository's convention and language, English when nothing indicates one.
-- [ ] The PR was opened (draft by default) and its link returned, with the screenshot reminder for a visible change without one.
+- [ ] The PR was opened (draft by default) and, inside a delivery, its link reached the user in the delivery report after verify; the screenshot reminder came for a visible change without one.

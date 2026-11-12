@@ -105,7 +105,7 @@ One structured card per comment, ordered by thread appearance in diff:
 **Recommendation:** ✅ Accept — <what to change, in one line>
 ```
 
-When an item is structural (dependency, boundary, flow), show what it adds or moves as [change card](../ai-assisted-software-development/references/change-card.md) plan lines and, when it changes a flow, a [`visualize-it`](../visualize-it/SKILL.md) swimlane.
+When an item is structural (dependency, boundary, flow), show what it adds or moves as [change card](../ai-assisted-software-development/references/change-card.md) leaves and, when it changes a flow, a [`visualize-it`](../visualize-it/SKILL.md) swimlane.
 
 Conclude with summary table:
 

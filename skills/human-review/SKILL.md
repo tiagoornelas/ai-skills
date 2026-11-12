@@ -5,7 +5,7 @@ description: >-
   someone else's, answering "what changed, where does it live, and what do I
   need to understand or ratify?" in one screen: one sentence on what changes
   for whom, the decisions to ratify ordered by cost to reverse, the change
-  card's plan built from the actual change, the critical findings with their
+  card built from the actual change, the critical findings with their
   consequence, and one line on the proof. Explains a part
   in depth only when the user points at it. Stays critical: it judges the
   change, it does not approve it. Use on demand.
@@ -28,7 +28,7 @@ In the user's language, per [human-facing communication](../ai-assisted-software
 <one sentence: what changes, for whom, in product terms>
 
 <a decision-to-ratify card per `?` line and `!` line to ratify, ordered by cost to reverse>
-<the plan of the change card>
+<the change card tree>
 
 <Findings>
   🔴 <what goes wrong, for whom, when> → <direction of a fix and its trade-off>
@@ -37,7 +37,7 @@ In the user's language, per [human-facing communication](../ai-assisted-software
 ```
 
 1. **The decisions to ratify**, first: one [decision-to-ratify card](../ai-assisted-software-development/references/human-facing-communication.md#presenting-decisions-taken) per `?` line and per `!` line marked `to ratify`, ordered by cost to reverse after merge, tier 3 first. They are the Human Layer decisions the change embeds, recorded by the author or not: a rule, a contract, a new component, a departure from a pattern, a trade-off with a lasting [maintenance commitment](../software-designing/references/maintenance-commitment.md). Do not infer that the author consciously accepted a trade-off just because the code embodies it.
-2. **The [change card](../ai-assisted-software-development/references/change-card.md)'s plan**, built from the change itself, not from the author's description (for a large PR, by the light path of [`provide-evidence`](../provide-evidence/SKILL.md#2-gather)).
+2. **The [change card](../ai-assisted-software-development/references/change-card.md)**, built from the change itself, not from the author's description (for a large PR, by the light path of [`provide-evidence`](../provide-evidence/SKILL.md#2-gather)).
 3. **Critical findings only**: 🔴, and 🟡 that change a behavior, each one or two lines with a plausible scenario, its impact, and a direction of solution with its trade-off, most consequential first; mark a problem the change did not introduce as older. A preference without a consequence is not a finding. Other findings are counted and given on request.
 4. **One proof line**, read from the delivery's evidence note by [`provide-evidence`](../provide-evidence/SKILL.md)'s show rules: how many of the six lines hold on which commit and which are missing, "outdated: proves X, the PR is at Y", or "no record on this machine".
 
@@ -52,7 +52,7 @@ Omit the findings when there are none, and the decisions when there is nothing t
 
 ## 4. Explain on Request
 
-When the user points at a part ("explain this job", "why this table?", a `?` or `!` line), explain that part only, following [`explain-it`](../explain-it/SKILL.md), situated in the product and drawn with [`visualize-it`](../visualize-it/SKILL.md) when a flow helps. "Where does it live?" adds the change card's [where it lives](../ai-assisted-software-development/references/change-card.md#4-where-it-lives-optional-detail) detail. Never explain the whole change unasked.
+When the user points at a part ("explain this job", "why this table?", a `?` or `!` line), explain that part only, following [`explain-it`](../explain-it/SKILL.md), situated in the product and drawn with [`visualize-it`](../visualize-it/SKILL.md) when a flow helps. "Where does it live?" names the folder or file of each item on the card. Never explain the whole change unasked.
 
 ## 5. Local Review Note
 
@@ -66,7 +66,7 @@ It records that a review ran and what it recommended, never an approval. It stay
 
 ## 6. Success Validation
 
-- [ ] The screen opened with one sentence on what changes for whom, then a decision-to-ratify card per `?` line and `!` line to ratify, ordered by cost to reverse, then the change card's plan built from the actual change.
+- [ ] The screen opened with one sentence on what changes for whom, then a decision-to-ratify card per `?` line and `!` line to ratify, ordered by cost to reverse, then the change card built from the actual change.
 - [ ] Only critical findings followed, each with scenario, impact, and direction; the others were counted, not listed; nothing below contracts appeared unless it changed behavior, contract, boundary, or risk.
 - [ ] One proof line closed the screen, read from the evidence note; divergences between claims and the change, and what is unverified, were named; no proof or approval was implied.
 - [ ] A part was explained in depth only when the user pointed at it.
