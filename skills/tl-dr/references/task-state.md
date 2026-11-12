@@ -36,7 +36,7 @@ In the user's session language, the PR line's step names and notes included; onl
 6. **Threads**: where · what is open, in one phrase · whose move (yours, the author's, a reviewer's). Resolved threads are only counted.
 7. **Closing**: `next` (the agent's next step, 🤖, or ⏸️ with what it waits for) and `skipped`, each only when it has content.
 
-Lines with nothing to say are left out. Past about ten lines, group the rest ("+3 resolved threads"). A line not read from a source is marked *(inferred)*; a missing note reads `—`, never "not reviewed".
+Lines with nothing to say are left out. Past about ten lines, group the rest ("+3 resolved threads"). A line not read from a source is marked *(inferred)*; a missing note reads ⬜, never "not reviewed".
 
 ## 3. Example
 
@@ -60,5 +60,5 @@ next    🤖 billing-api#88 runs its proof once infra#41 is green
 
 - [ ] The header said whether anything depends on the user, and those items came first, each with its mark and what it unblocks.
 - [ ] Issues, the stage line, PR lines, and open threads followed, each read from its source when asked, PRs exactly in the PR line format.
-- [ ] No line was guessed: inferences were marked, missing notes read `—`, unreachable sources were named on the `skipped` line.
+- [ ] No line was guessed: inferences were marked, missing notes read ⬜, unreachable sources were named on the `skipped` line.
 - [ ] The state fit in about ten lines, in the user's language, with empty lines left out.

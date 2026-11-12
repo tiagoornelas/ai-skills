@@ -62,7 +62,7 @@ A change that brings in nothing prints only `unchanged` and `nothing to ratify`.
 
 ## 4. PR Line
 
-Every PR is written the same way, in any message about the work: its steps in the order they happen, each with its mark, read from left to right up to the first one that is not ✅.
+Every PR is written the same way, in any message about the work: its steps in the order they happen, each with its mark; the first step that is not ✅ is where the PR stands.
 
 ```text
 <repo>#<number>  <short name>  <mark> CI ─ <mark> agent ─ <mark> proof ─ <mark> you[ ─ ✅ merged]   [<note>]
@@ -70,7 +70,8 @@ Every PR is written the same way, in any message about the work: its steps in th
 
 - **`<repo>`** is the repository name without its owner (`web-app#212`). **`<short name>`** is two to four words naming what the PR changes. Align the steps when several PRs are listed.
 - **Marks**: ✅ done · ⏳ running · ❌ failed · ⚠️ outdated (it covers an earlier commit) · ⬜ not yet · 👀 the human's turn.
-- **CI**: the worst state among its checks; ⬜ when it has none. **agent**: ✅ only for a clean branch-mode `agent-self-review` on the head. **proof**: ✅ only when all six [evidence](../../provide-evidence/references/evidence-dossier.md) lines are ✅ for the head. **you**: 👀 when the human owes the review or ratification, ✅ when approved, ❌ when changes were requested; never 👀 before the proof is ✅.
+- **CI**: the worst state among its checks (a cancelled check is ❌); ⬜ when it has none. A conflict also marks CI ❌, with the note `conflict`, because the PR cannot merge as it is. **agent**: ✅ only for a clean branch-mode `agent-self-review` on the head. **proof**: ✅ only when all six [evidence](../../provide-evidence/references/evidence-dossier.md) lines are ✅ for the head. **you**: 👀 when the human owes the review or ratification, ✅ when approved, ❌ when changes were requested; never 👀 before the proof is ✅.
+- **Merged**: the trail ends in `✅ merged` and keeps the proof's own mark, so a PR merged with ⬜ or ⚠️ proof shows it.
 - **Note**, only when it matters, in a few words: `draft`, `conflict`, what failed, or what the outdated proof covers.
 - A missing note on the head reads ⬜, never "not reviewed": its absence on this machine proves nothing.
 
