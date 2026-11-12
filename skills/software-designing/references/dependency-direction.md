@@ -100,7 +100,7 @@ PostgresPersistence ──implements──┘
 6. **The plug-in test**: for each detail, ask "Can this be replaced with an in-memory double without editing business logic?" If not, the boundary is leaking.
 7. List **infrastructure decisions that can be deferred** and the criteria needed to make them.
 
-When presenting to the human, name which modules are policy and which are detail, and describe each port in system terms (what the policy needs from it); a dependency pointing from policy toward detail is a `!` line on the [change card](../../ai-assisted-software-development/references/change-card.md) plan. Dependency direction, ports, and deferred decisions belong to the Human Layer.
+When presenting to the human, name which modules are policy and which are detail, and describe each port in system terms (what the policy needs from it); a dependency pointing from policy toward detail is a `!` item on the [change card](../../ai-assisted-software-development/references/change-card.md). Dependency direction, ports, and deferred decisions belong to the Human Layer.
 
 ---
 

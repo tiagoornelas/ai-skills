@@ -12,7 +12,7 @@ disable-model-invocation: true
 argument-hint: "[what to explain — by default the last discussed topic]"
 ---
 
-# Explain It
+# Explain
 
 ---
 

@@ -73,7 +73,7 @@ web-app
 ```
 
 Exported PDFs are now deleted after 90 days; before, they were kept forever. No data is rewritten or sent out, and contracts and boundaries stay as they were.
-[The [change card](../ai-assisted-software-development/references/change-card.md#2-the-tree) tree of what the change brings in, without its ratification marks or last line: `+` new, `-` removed, `!` what departs from the project's pattern or crosses a boundary, with why; then the card's sentences on rules, data, and what does not change. No counts, approvals, or status.]
+[The [change card](../ai-assisted-software-development/references/change-card.md#2-the-tree) tree of what the change brings in, without its ratification marks or last line: `+` new, `~` changed, `-` removed, `!` what departs from the project's pattern or crosses a boundary, with why; then the card's sentences on rules, data, and what does not change. No counts, approvals, or status.]
 
 ## Decisions
 [Each decision taken and its reason, ordered by cost to reverse after merge, the hardest first: business rules, contracts created or altered (who calls, what crosses, what it promises, how it fails), consequential trade-offs, assumptions, and maintenance commitments. Omit when there is nothing material.]
