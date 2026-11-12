@@ -25,7 +25,7 @@ Inverts the traditional task creation sequence: **first you do the work to under
 
 ## 1. Core Principle
 
-> The skill **understands and drafts**; the user **decides where and how to persist**.
+> The skill **understands and drafts**; the user **decides where and how to persist**, except the status of existing non-epic tasks, which the skill moves and reports.
 
 - **Tool-agnostic**: produces a neutral, clean task representation. Zero tracker-specific fields, statuses, or rituals are assumed until instructed by the user.
 - **Status moves on its own; everything else waits for approval**: the status of an existing task that is not an epic is updated as soon as the evidence supports it, and reported (task, from → to, evidence) so the user can move it back. Every creation, content edit, reorganization, and epic status change is shown as a change list (what, where, from → to) and written only after the user approves that list.
@@ -73,7 +73,7 @@ Before drafting, clarify:
 
 ### Step 6: Update and Organize Existing Tasks (Update Mode)
 Compare each existing task with the evidence:
-- **Status**: propose the status the evidence supports (a merged PR → done; an open PR → in review or in progress, per the tracker's own status names), never further than the evidence goes.
+- **Status**: apply the status the evidence supports to each non-epic task, and propose it for an epic (a merged PR → done; an open PR → in review or in progress, per the tracker's own status names), never further than the evidence goes. Closing a task because its work is done is a status change; closing one the work made obsolete is organization.
 - **Organization**: propose regrouping under an epic or parent, linking related or blocking tasks, merging duplicates, splitting a task that holds two outcomes, and closing tasks the work made obsolete, each with its reason.
 - New work the existing tasks do not cover becomes a new task (Steps 4, 5, and 7).
 
