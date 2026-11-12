@@ -70,11 +70,10 @@ billing-api
    └─ ! PDF rendering job      job · other documents use the templates folder, because …
 web-app
 └─ + "Download PDF" button     screen
-
-rule       PDFs deleted after 90 days (was: kept forever)
-unchanged  no data rewritten or sent out · contracts and boundaries intact
 ```
-[The [change card](../ai-assisted-software-development/references/change-card.md#2-the-tree) tree of what the change brings in, without its ratification marks or last line: `+` new, `-` removed, `!` what departs from the project's pattern or crosses a boundary, with why; a changed rule with before and after; the closing `unchanged` line. No counts, approvals, or status.]
+
+Exported PDFs are now deleted after 90 days; before, they were kept forever. No data is rewritten or sent out, and contracts and boundaries stay as they were.
+[The [change card](../ai-assisted-software-development/references/change-card.md#2-the-tree) tree of what the change brings in, without its ratification marks or last line: `+` new, `-` removed, `!` what departs from the project's pattern or crosses a boundary, with why; then the card's sentences on rules, data, and what does not change. No counts, approvals, or status.]
 
 ## Decisions
 [Each decision taken and its reason, ordered by cost to reverse after merge, the hardest first: business rules, contracts created or altered (who calls, what crosses, what it promises, how it fails), consequential trade-offs, assumptions, and maintenance commitments. Omit when there is nothing material.]
@@ -113,7 +112,7 @@ The marks of Test Evidence follow the [Definition of Done legend](../ai-assisted
 
 - [ ] Agent-authored branches passed `agent-self-review` in branch mode before the PR was opened.
 - [ ] The body holds only facts about the change that stay true after merge: no work status, approval, open decision, follow-up list, or workflow vocabulary.
-- [ ] Summary, References, What Changes (with its `unchanged` line), Test Evidence, and Impact are present; Decisions and How It Works appear when material; the description matches the diff and the issue.
+- [ ] Summary, References, What Changes (with what does not change), Test Evidence, and Impact are present; Decisions and How It Works appear when material; the description matches the diff and the issue.
 - [ ] Every reference is a labeled, reachable link, with no empty lines; a multi-repository delivery's PRs link each other.
 - [ ] Title and body follow the repository's convention and language, English when nothing indicates one.
 - [ ] The PR was opened (draft by default) and, inside a delivery, its link reached the user in the delivery report after verify; the screenshot reminder came for a visible change without one.

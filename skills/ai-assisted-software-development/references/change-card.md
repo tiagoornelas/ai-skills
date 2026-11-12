@@ -26,11 +26,11 @@ The places of the system are the branches: the repository, or in a single reposi
 
 **What earns a leaf**: module or folder · library or package · infrastructure (service, database, queue, bucket, cloud function, secret or permission, recurring cost) · entity or table · route or endpoint · job or schedule · client to another system · configuration variable or flag · cross-cutting mechanism (authentication, timeouts, retries, logging, error handling, data access) · screen · prompt or agent tool. A new client, variable, or mechanism earns its leaf even inside an existing folder, so nothing built on the side hides.
 
-**Below the tree**, one line each, only when present: `rule` for a business rule changed (before and after), `data` for production data deleted, rewritten, or sent to a new third party (and how it is undone). Then always a closing `unchanged` line naming what did not happen ("no rule changed · no data deleted, rewritten, or sent out · walls intact"), so silence never hides an omission.
+**After the tree**, in plain sentences of the reader's language, outside the text block: each business rule that changes, with before and after; each kind of production data deleted, rewritten, or sent to a new third party, with how it is undone; then one sentence on what does not change (rules, data, boundaries, contracts), so silence never hides an omission. No fixed labels.
 
 **Never on the card**: methods, signatures, files, helpers, internal refactors, tests, commits, and counts. When one of these changes a behavior, contract, boundary, or risk, the card shows that consequence.
 
-**Last line**, outside the tree: `⚖️ <N> to ratify`, or `nothing to ratify`. Each `?` and `!` leaf, and each `?` rule, opens one [decision to ratify](human-facing-communication.md#presenting-decisions-taken), ordered by cost to reverse.
+**Last line**: `⚖️ <N> to ratify`, or `nothing to ratify`. Each `?` and `!` leaf, and each rule change, opens one [decision to ratify](human-facing-communication.md#presenting-decisions-taken), ordered by cost to reverse.
 
 Every word is in the language of where the card appears: the session's in conversation, the PR's in its body. Inside the tree, only one-column marks; no emoji.
 
@@ -52,13 +52,13 @@ infra
 └─ ? invoice PDF bucket        bucket · about $4 a month
 web-app
 └─ + "Download PDF" button     screen
-
-rule       ? PDFs deleted after 90 days (was: kept) · hard to reverse: deleted PDFs are gone
-unchanged  no data rewritten or sent out · walls intact
-⚖️ 4 to ratify
 ```
 
-A change that brings in nothing prints only `unchanged` and `nothing to ratify`.
+Exported PDFs are now deleted after 90 days; before, they were kept forever. Nothing else changes: no data is rewritten or sent out, and boundaries and contracts stay as they were.
+
+⚖️ 5 to ratify
+
+A change that brings in nothing prints only the sentence on what does not change and `nothing to ratify`.
 
 ## 4. PR Line
 
@@ -85,6 +85,6 @@ infra#41        invoice PDF bucket   ✅ CI ─ ✅ agent ─ ⚠️ proof ─ �
 
 - [ ] The card was printed only in a plan, at delivery, or on demand.
 - [ ] It was a tree of the system's places with one leaf per high-level thing brought in, each with its mark, a product-level name, and its kind; nothing below that level appeared.
-- [ ] Rule changes and data deleted, rewritten, or sent out had their lines, and the `unchanged` line closed the card.
+- [ ] Rule changes, data deleted, rewritten, or sent out, and what does not change were plain sentences in the reader's language, with no fixed labels.
 - [ ] Every `?` and `!` item was counted on the last line and opened a decision to ratify, ordered by cost to reverse.
 - [ ] Every word was in the language of where the card appeared, with no emoji inside the tree.
