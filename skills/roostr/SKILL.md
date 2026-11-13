@@ -3,10 +3,11 @@ name: roostr
 description: >-
   Manages scheduled routines, alarms, and background automated workflows for
   local AI coding agents via the Roostr CLI (`roostr`): inspects active jobs,
-  schedules recurring tasks across Herdr workspaces, dedicated terminals, or
-  background processes, triggers immediate runs, and organizes routine folders.
-  Triggered when the user or an agent (coordinator, reflect, automate-me) wants
-  to schedule, automate, inspect, or manage recurring local AI routines.
+  schedules recurring and one-time tasks across Herdr workspaces, dedicated
+  terminals, or background processes, triggers immediate runs, and organizes
+  routine folders. Triggered when the user or an agent (coordinator, reflect,
+  automate-me) wants to schedule, automate, inspect, or manage recurring or
+  one-time local AI routines.
 argument-hint: "[routine to schedule, inspect, or run]"
 ---
 
@@ -29,6 +30,7 @@ Always pass `--json` to inspection and manipulation commands for deterministic m
 | Need | Command |
 | :--- | :--- |
 | List all scheduled routines | `roostr job list --json` |
+| Filter recurring or one-time jobs | `roostr job list --type [all\|recurring\|once] [--state scheduled\|executed] --json` |
 | View detailed config & status of a job | `roostr job show <job_id> --json` |
 | View execution history (all or specific job) | `roostr history [job_id] --json [-n <limit>]` |
 | List folders and hierarchy | `roostr folder list` |
@@ -56,7 +58,7 @@ roostr job create \
 ```
 
 Key configuration options (confirm current flags with `roostr job create --help`):
-- **Action**: `--prompt "<prompt>"` (runs an AI prompt via the specified harness) or `--command "<shell command>"`.
+- **Action**: `--prompt "<prompt>"` (runs an AI prompt via the specified harness) or `--command "<shell command>"`. For one-time jobs—especially those scheduled far in the future—include the reason and context in `--prompt` so the user and agent immediately know why it is running.
 - **Harness**: `--harness [claude|antigravity|agy|cursor|codex]` (defaults to `claude`).
 - **Target**: `--target [herdr|terminal|background]`:
   - `herdr`: Opens in Herdr App tab (`--space "<space_name>"` and `--tab-template "{job.name} {DD}/{MM}"`). Requires Herdr App.
@@ -64,6 +66,7 @@ Key configuration options (confirm current flags with `roostr job create --help`
   - `background`: Headless background execution (`--notify` for desktop notifications).
 - **Schedule**:
   - Daily: `--frequency daily --times "08:00,13:30" --days weekdays`
+  - One-Time: `--frequency once --at "YYYY-MM-DD HH:MM"` (passing `--at` infers `once`)
   - Interval: `--frequency interval_hours --interval 4` or `interval_minutes`
   - Tolerance catch-up mode: `--tolerance [window_hours|until_hour|exact] --tolerance-value <n>`
 - **Working directory**: `--cwd <path>` defaults to current working directory.
@@ -71,6 +74,7 @@ Key configuration options (confirm current flags with `roostr job create --help`
 ### Modify, Pause, Resume, or Delete
 
 - **Update**: `roostr job update <job_id> [options] --json` (run `roostr job update --help` to confirm options).
+- **Clone / Reschedule**: `roostr job clone <job_id> [--at "YYYY-MM-DD HH:MM"] --json` (preserves executed job history).
 - **Pause / Resume**: `roostr job pause <job_id>` and `roostr job resume <job_id>`.
 - **Delete**: `roostr job delete <job_id>`.
 - **Organize**: `roostr folder create "<Folder/Subfolder>"`, `roostr folder delete "<folder>"`.
@@ -86,7 +90,7 @@ Execute a routine immediately without waiting for its scheduled time:
 ## 5. Integration with Other Agents
 
 Agents acting as coordinators or reviewers ([`coordinator`](../coordinator/SKILL.md), [`reflect`](../reflect/SKILL.md), [`automate-me`](../automate-me/SKILL.md)):
-- **Proposing routines**: When a repetitive workflow, morning triage, daily health check, or recurring review is identified, propose creating a Roostr job rather than relying on manual triggering.
+- **Proposing routines**: When a repetitive workflow, morning triage, daily health check, or one-time follow-up (delayed verification, scheduled reminder) is identified, propose creating a Roostr job rather than relying on manual triggering.
 - **Specifying prompt & skills**: Scheduled prompts can invoke skills directly (e.g., `/coordinator ...`, `/improve-architecture ...`, `/human-review ...`).
 - **Human approval**: Never create or modify persistent scheduled jobs without presenting the routine (name, schedule, harness, target workspace, and prompt) to the user for explicit approval.
 
