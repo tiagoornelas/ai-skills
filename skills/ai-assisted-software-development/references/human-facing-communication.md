@@ -50,10 +50,10 @@ The one message that hands a delivery to the human when [stage 4](../../agentic-
 <the change card: the tree of what enters, and its last line>
 
 ⚖️ <each decision to ratify, one line, ordered by cost to reverse>
-👀 <what the human should see with their own eyes, when anything: a screen, a flow, with its link>
+👀 <what the human should see with their own eyes, when anything: a screen, a flow, with its link; for each PR they have not reviewed, whether human-review is worth running before they ratify, and why>
 
 <the six proofs, one line each: mark, claim, and its proof (a link, a command with its real output excerpt, screenshots)>
-<one PR line per PR>
+<one PR line per PR: its link and the human's review state, as provide-evidence shows it>
 📋 <when no issue holds the objective: an offer to register it with report-work>
 
 ⚖️ Reply "ratify and merge" (merge in <order>, then <closing steps>) or say what to change.
