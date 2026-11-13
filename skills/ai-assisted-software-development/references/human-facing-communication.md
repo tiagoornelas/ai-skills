@@ -63,6 +63,7 @@ Stage 5/7 · ratify · next: ⚖️ you
 - **Details on request.** The full argument of a proof, a decision's context and options, or a swimlane of a changed flow appear when the human points at them, briefed per [Explaining a change](#explaining-a-change).
 - **One reply covers the delivery.** The closing line names the merge, its order, and the closing steps of [`agentic-parallel-work`](../../agentic-parallel-work/SKILL.md#2-the-stages), so "ratify and merge" authorizes exactly those. A reply that changes something sends the delivery back to building; it returns as a new delivery report, re-proven, without the human asking.
 - **Not proven, not presented as ready.** When two review rounds still leave a ❌, the same message goes out with ⚠️ and the gap in its first line, what is missing and who acts under each ❌, no merge request, and the stage line `Stage 4/7 · blocked: <the gap> · next: <who acts>`.
+- **Patterns used (when any).** When the implementation applied a pattern from [`design-patterns`](../../design-patterns/SKILL.md), add one informational line before the proofs naming the pattern, where it sits in product terms, and its variation axis (no `⚖️` and no change-card leaf, unless it crosses a boundary or contract). Omit when none was used.
 
 ### Explaining a change
 
