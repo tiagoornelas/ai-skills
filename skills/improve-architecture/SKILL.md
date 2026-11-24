@@ -14,9 +14,9 @@ An explicit entry point for continuous architectural improvement, from discoveri
 
 ## Investigate the requested problem
 
-Use the area or difficulty supplied. A broad request can start with likely hotspots informed by dependencies, change history, or recurring friction; frequency of edits alone is not proof of poor design. When the user already chose an opportunity, focus there rather than starting a new catalog.
+Use the area or difficulty supplied. A broad request can start with likely hotspots informed by dependencies, change history, or recurring friction; frequency of edits alone is not proof of poor design, and edits count as recurring friction only when they continue after the area's latest fix or decision. When the user already chose an opportunity, focus there rather than starting a new catalog.
 
-Read the current structure and relevant consumers. Assess [changeability and fragility](../software-designing/references/changeability-and-fragility.md) and [maintenance commitment](../software-designing/references/maintenance-commitment.md), loading other design references only as relevant. Identify concrete scenarios and distinguish verified consequences from hypotheses and unexamined areas.
+Read the current structure and relevant consumers. When the friction sits at a contract with a dependency the code consumes (a server, an upstream API), read the repository that owns it too, where the fix may belong, and give every subagent brief that same scope. Assess [changeability and fragility](../software-designing/references/changeability-and-fragility.md) and [maintenance commitment](../software-designing/references/maintenance-commitment.md), loading other design references only as relevant. Identify concrete scenarios and distinguish verified consequences from hypotheses and unexamined areas.
 
 Compare opportunities by recurring cost, likely evolution, failure impact, and the obligations a remedy would introduce. Avoid aesthetic cleanup and speculative abstractions. It is valid to find no intervention worth its cost. Respect prior decisions unless new evidence warrants revisiting them.
 
