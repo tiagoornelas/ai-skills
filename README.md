@@ -100,7 +100,7 @@ More agents are not more throughput. The rules for running agents in parallel co
 
 | Source | What was adopted | Where it appears |
 | :--- | :--- | :--- |
-| **BLUF** (bottom line up front), from military writing; [Matt Ström-Awn, *Bottom Line Up Front: write to make decisions faster*](https://mattstromawn.com/writing/bluf/) | The first sentence says what the reader must know, decide, or do, as a concrete action, not a description of the text. The criterion is relevance to the reader, not compression. | `tl-dr` digests, `coordinator`, `brainstorm` syntheses. |
+| **BLUF** (bottom line up front), from military writing; [Matt Ström-Awn, *Bottom Line Up Front: write to make decisions faster*](https://mattstromawn.com/writing/bluf/) | The first sentence says what the reader must know, decide, or do, as a concrete action, not a description of the text. The criterion is relevance to the reader, not compression. | `tl-dr` digests, `brainstorm` syntheses. |
 | **Bryan A. Garner**, [*Should the bottom line be up front? Only with context*](https://www.abajournal.com/columns/article/should-the-bottom-line-be-up-front-only-with-context-says-bryan-garner) (ABA Journal) | A bottom line without one line of context skips the delicate part: **add the condition or risk that would change the action**. | The context line of a `tl-dr` digest. |
 
 
@@ -145,10 +145,10 @@ Most skills need nothing beyond the harness. A few drive command-line tools, whi
 
 | Tool | Used by | Required for |
 | :--- | :--- | :--- |
-| [Git](https://git-scm.com/) | `agentic-parallel-work`, `commit`, `coordinator`, `git-cleanup`, `pr-code-review`, `provide-evidence`, `report-work`, `resolve-branch-conflict` | Reading history and diffs, creating branches and commits. |
-| [GitHub CLI](https://cli.github.com/) (`gh`) | `coordinator`, `git-cleanup`, `pr-code-review`, `pull-request`, `pr-review-react`, `provide-evidence`, `report-work`, `resolve-branch-conflict`, `tl-dr` | Reading and writing pull requests, reviews, and comments. Run `gh auth login` first. |
-| [Herdr App](https://herdr.dev/) (`herdr-app` and `hc`) | `herdr`, used by `handoff`, `brainstorm`, `coordinator`, `tl-dr`, and `git-cleanup` (optional) | Opening tabs and spaces with an agent of any harness, reading the live state of agents, and noting which agents use a worktree before cleaning it. Requires the Herdr App (desktop app with herdr-core); the older Herdr terminal multiplexer (`herdr` CLI) is not supported. |
-| [Roostr](https://github.com/tiagoornelas/roostr) (`roostr`) | `roostr`, used by `automate-me`, `reflect`, `coordinator` (optional) | Scheduling autonomous routines and software factory alarms for local AI coding agents across Herdr workspaces, dedicated terminals, or background executions. Installed via `uv tool install roostr` or local build. |
+| [Git](https://git-scm.com/) | `agentic-parallel-work`, `commit`, `git-cleanup`, `pr-code-review`, `provide-evidence`, `report-work`, `resolve-branch-conflict` | Reading history and diffs, creating branches and commits. |
+| [GitHub CLI](https://cli.github.com/) (`gh`) | `git-cleanup`, `pr-code-review`, `pull-request`, `pr-review-react`, `provide-evidence`, `report-work`, `resolve-branch-conflict`, `tl-dr` | Reading and writing pull requests, reviews, and comments. Run `gh auth login` first. |
+| [Herdr App](https://herdr.dev/) (`herdr-app` and `hc`) | `herdr`, used by `handoff`, `brainstorm`, `tl-dr`, and `git-cleanup` (optional) | Opening tabs and spaces with an agent of any harness, reading the live state of agents, and noting which agents use a worktree before cleaning it. Requires the Herdr App (desktop app with herdr-core); the older Herdr terminal multiplexer (`herdr` CLI) is not supported. |
+| [Roostr](https://github.com/tiagoornelas/roostr) (`roostr`) | `roostr`, used by `automate-me`, `reflect` (optional) | Scheduling autonomous routines and software factory alarms for local AI coding agents across Herdr workspaces, dedicated terminals, or background executions. Installed via `uv tool install roostr` or local build. |
 | Harness CLIs (`claude`, `codex`, `cursor-agent`, `agy`) | `brainstorm` (optional) | Asking other models headless; without them, `brainstorm` uses subagents. |
 | [Playwright CLI](https://playwright.dev/docs/getting-started-cli) (`playwright-cli`) | `browser-test` | Driving a browser, headless by default, to test and verify web pages. Install with `npm install -g @playwright/cli@latest`, then `playwright-cli install-browser chromium`. |
 

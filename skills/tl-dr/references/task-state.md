@@ -1,6 +1,6 @@
 # Task State
 
-> **Central thesis**: one task reads in about ten lines, in the order the user acts on it: first whether anything depends on them, then the issue, the PRs, and the conversations around it. Every line is derived from its source when asked, never kept anywhere. Skills that show a task ([`tl-dr`](../SKILL.md), [`coordinator`](../../coordinator/SKILL.md)) use this format.
+> **Central thesis**: one task reads in about ten lines, in the order the user acts on it: first whether anything depends on them, then the issue, the PRs, and the conversations around it. Every line is derived from its source when asked, never kept anywhere. Skills that show a task ([`tl-dr`](../SKILL.md)) use this format.
 
 ---
 

@@ -5,7 +5,7 @@ description: >-
   local AI coding agents via the Roostr CLI (`roostr`): inspects active jobs,
   schedules recurring and one-time tasks across Herdr workspaces, dedicated
   terminals, or background processes, triggers immediate runs, and organizes
-  routine folders. Triggered when the user or an agent (coordinator, reflect,
+  routine folders. Triggered when the user or an agent (reflect,
   automate-me) wants to schedule, automate, inspect, or manage recurring or
   one-time local AI routines.
 argument-hint: "[routine to schedule, inspect, or run]"
@@ -89,9 +89,9 @@ Execute a routine immediately without waiting for its scheduled time:
 
 ## 5. Integration with Other Agents
 
-Agents acting as coordinators or reviewers ([`coordinator`](../coordinator/SKILL.md), [`reflect`](../reflect/SKILL.md), [`automate-me`](../automate-me/SKILL.md)):
+Agents acting as coordinators or reviewers ([`reflect`](../reflect/SKILL.md), [`automate-me`](../automate-me/SKILL.md)):
 - **Proposing routines**: When a repetitive workflow, morning triage, daily health check, or one-time follow-up (delayed verification, scheduled reminder) is identified, propose creating a Roostr job rather than relying on manual triggering.
-- **Specifying prompt & skills**: Scheduled prompts can invoke skills directly (e.g., `/coordinator ...`, `/improve-architecture ...`, `/human-review ...`).
+- **Specifying prompt & skills**: Scheduled prompts can invoke skills directly (e.g., `/improve-architecture ...`, `/human-review ...`).
 - **Human approval**: Never create or modify persistent scheduled jobs without presenting the routine (name, schedule, harness, target workspace, and prompt) to the user for explicit approval.
 
 ---
