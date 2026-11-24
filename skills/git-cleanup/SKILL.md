@@ -8,8 +8,7 @@ description: >-
   remove (closed or merged pull requests and everything else), lets the user
   freely edit that list, and removes only what the user explicitly approves,
   even when the branch or worktree is the one currently in use. Triggered
-  when the user asks to clean, prune, or tidy local branches or worktrees,
-  or accepts the cleanup coordinator suggests.
+  when the user asks to clean, prune, or tidy local branches or worktrees.
 argument-hint: "[recent-work window in days, default 14]"
 ---
 
