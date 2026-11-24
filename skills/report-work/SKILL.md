@@ -49,6 +49,7 @@ Inspect strictly what is needed for the slice:
 - **Git**: `git log <base>..HEAD --oneline`, `git diff <base>...HEAD --stat` and diffs of relevant files; involved branches.
 - **PRs/issues** (if present): title, description, linked tickets (e.g. `gh pr view`).
 - **Files** touched, when diffs alone do not convey intent.
+- **The user's own work log** (daily reports, validation threads), in update mode: it records stages a PR does not show, such as a task already in validation on a review app.
 - **Existing tasks** (update mode): read their current status, parent, and links from the tracker, through its tool skill when one exists. Reading is free; nothing is written here.
 
 ### Step 3: Understand the Work
@@ -73,7 +74,7 @@ Before drafting, clarify:
 
 ### Step 6: Update and Organize Existing Tasks (Update Mode)
 Compare each existing task with the evidence:
-- **Status**: apply the status the evidence supports to each non-epic task, and propose it for an epic (a merged PR → done; an open PR → in review or in progress, per the tracker's own status names), never further than the evidence goes. Closing a task because its work is done is a status change; closing one the work made obsolete is organization.
+- **Status**: apply the status the evidence supports to each non-epic task, and propose it for an epic (a merged PR → done; an open PR → in review or in progress, per the tracker's own status names, unless the work log shows a later stage such as validation), never further than the evidence goes. Closing a task because its work is done is a status change; closing one the work made obsolete is organization.
 - **Organization**: propose regrouping under an epic or parent, linking related or blocking tasks, merging duplicates, splitting a task that holds two outcomes, and closing tasks the work made obsolete, each with its reason.
 - New work the existing tasks do not cover becomes a new task (Steps 4, 5, and 7).
 

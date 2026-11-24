@@ -29,7 +29,7 @@ Use every source the session reaches, plus any the user names; skip the ones the
 
 | Source | What it gives |
 | :--- | :--- |
-| Code host (GitHub: `gh search prs --author=@me --state=open`, `--review-requested=@me`) | The user's open PRs and the PRs awaiting their review, read per the [PR line](../ai-assisted-software-development/references/change-card.md#4-pr-line). |
+| Code host (GitHub: `gh search prs --author=@me --state=open`, `--review-requested=@me`) | The user's open PRs and the PRs awaiting their review, read per the [PR line](../ai-assisted-software-development/references/change-card.md#4-pr-line). `gh search prs --json` lacks branch and review fields: read them with `gh pr view <n> -R <owner>/<repo> --json headRefName,reviewDecision,body`. |
 | Issue tracker (Jira, GitHub Issues, Linear…) | Issues assigned to the user in progress or next, their status and priority. |
 | Team chat (Slack…) | Threads from the last seven days where the user was asked something and has not answered. |
 | Herdr App, when active per [`herdr`](../herdr/SKILL.md#1-preconditions) | Live agent sessions, their state, and the worktree each uses. |
