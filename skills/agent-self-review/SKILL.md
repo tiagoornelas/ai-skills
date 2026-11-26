@@ -73,6 +73,7 @@ Inspect the full branch diff against its merge-base with the target branch. Run 
 
 ### Phase 1: Static Tooling and Tests (Objective → Blocking)
 - Run project linters, static type checkers (`tsc`, `mypy`, etc.), and automated test suites.
+- When the repository's commit hook runs the full suite, the hook run on the last commit is this phase's suite evidence: before committing, run only the tests the change touches, never the full suite by hand on the same tree.
 - Resolve any syntax error, formatting defect, typing mismatch, or broken test. Never silence alerts with suppression directives without imperative justification.
 
 ### Phase 2: Project Rules and Migration Safety (Mandatory → Blocking)
