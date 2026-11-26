@@ -74,7 +74,7 @@ Self-review: <the review finding, in one line>
 ```
 
 Specific rules for remediation commits:
-- The final line of the body must start with the prefix `Self-review:` followed by the finding it resolves—one finding per line, one commit per finding whenever remediations are separable.
+- The body ends with one `Self-review:` line per finding the commit resolves. Make one commit per finding whenever remediations are separable, except when the commit hook runs the full test suite: then one commit per review round per repository, carrying every finding's line. Never skip the hook (`--no-verify`) to save time.
 - The title continues describing the code modification itself, not the act of reviewing: `fix(auth): reject expired tokens at the boundary`, not `fix: address review comment`.
 - Keep the `Self-review:` line restricted to the finding. Architectural rationale belongs in the review report, not the commit message.
 

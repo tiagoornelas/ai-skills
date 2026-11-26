@@ -66,6 +66,7 @@ user ── writer A ── worktrees ── PR(s)        writer B ── worktr
 | Reading, searching, exploring, or a second opinion that would bloat the writer's context | A subagent |
 | Another delivery that can merge without waiting for one in flight | Another session or tab, with its own worktrees |
 | Another delivery that builds on one not merged yet | Another session or tab, stacked on that delivery's branch per [branch-and-worktrees.md](references/branch-and-worktrees.md#2-base-branch) |
+| A heavy local job: a full test suite, type check, build, dependency install, or a commit whose hook runs one | Alone on the machine, per [Limits](#5-limits) |
 | Several independent opinions on one question | [`brainstorm`](../brainstorm/SKILL.md): independent runs, each writing its own answer; the caller compares them; no debate between them |
 
 A large, isolated part of a delivery (a whole frontend built against a mock) may become a second delivery stacked on the first; the contract between them is a decision to ratify in the first, and a change to it restacks the second.
@@ -73,6 +74,7 @@ A large, isolated part of a delivery (a whole frontend built against a mock) may
 ## 5. Limits
 
 - **In flight**: 2 to 4 deliveries being built at once; start with 2. A delivery waiting for the user's ratification is no longer in flight, and nothing limits how many wait: each arrives complete, proven, and with its decisions ordered by cost to reverse, so the user reviews them in any batch.
+- **One heavy local job at a time**: every session and subagent shares the machine's memory, and a test runner left to its defaults takes a worker per core. Run heavy jobs one after another, across repositories and subagents, never one in the background while another starts; a command the harness moved to the background counts until it exits.
 - **Two deliveries never touch the same contract or file at once**: the second stacks on the first, or both become one sequential delivery.
 - **Independent review**: at most 2 rounds per delivery. Only 🔴 findings and 🟡 findings that change behavior block; other 🟡 and every 🟢 go to a follow-up list for the user, recorded in the issue when there is one, never into a new round. After round 2, open blocking findings go to the user as pending, never as approval.
 
