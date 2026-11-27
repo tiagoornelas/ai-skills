@@ -8,9 +8,7 @@ description: >-
   exists, before anything is built. Triggered when the user asks how big a
   change is, whether it fits the current architecture, whether it knocks
   down a wall or pivots the architecture, or for a solution of a weight they
-  describe in their own words ("something light", "even if it is heavy"); owns how the ruler is judged and
-  drawn wherever the change card, decision options, improve-architecture, and
-  pull requests print it.
+  describe in their own words ("something light", "even if it is heavy").
 argument-hint: "[proposal or change to weigh — by default the last one discussed]"
 ---
 
@@ -20,22 +18,9 @@ The weight of a change is what it moves in the design, and the plainest measure 
 
 ---
 
-## 1. The Ruler
+## 1. Levels and Ruler
 
-The four levels (local, internal, boundary, architecture), who notices each, and how they relate to the tiers are defined in [the boundary test](../ai-assisted-software-development/SKILL.md#4-the-boundary-test); read them there before weighing.
-
-Two forms, every word in the reader's language, labels realigned under their dots:
-
-```text
-Design weight  ●──────────○──────────○──────────○
-               local      internal   boundary   architecture
-```
-
-```text
-Design weight  ○───○───●───○  boundary
-```
-
-The two-line form opens a direct call. The one-line form goes where a report already shows what changes: the change card, a decision option, an opportunity of [`improve-architecture`](../improve-architecture/SKILL.md). A report sent after an estimate, such as the change card at delivery, adds it when the result differs: `boundary, estimated local`.
+The four levels (local, internal, boundary, architecture), who notices each, and how they relate to the tiers are defined in [the boundary test](../ai-assisted-software-development/SKILL.md#4-the-boundary-test); read them there before weighing. The ruler that shows the weight is drawn as the [change card's weight ruler](../ai-assisted-software-development/references/change-card.md#the-weight-ruler) sets.
 
 ## 2. Judging the Weight
 
@@ -49,7 +34,7 @@ The two-line form opens a direct call. The one-line form goes where a report alr
 
 Weigh the proposal in the argument, or the last one discussed. When the argument is a problem and the weight the user wants in their own words, read that wish as they would mean it, propose the solution that fits it best, weigh it, and say whether it fits. Read-only: nothing is built. The answer fits one screen:
 
-1. The two-line ruler.
+1. The two-line ruler, always, even when the weight is local.
 2. The change card tree of the proposal, with only the leaves the change card admits; internal parts (stores, types, components) are never leaves, so local and internal changes usually print no tree.
 3. Up to three sentences: what moves and who notices, any business rule that changes, what would raise the weight, and what was not read when confidence is not high.
 4. Above local, the lighter variant. At architecture, `⚖️` asks the user to decide before any code.
@@ -74,7 +59,7 @@ Lighter variant: run the nightly job every hour (local).
 
 ## 4. When the Weight Rises While Building
 
-When the work being built reaches a level above the weight the user accepted (an estimate they were given, or a weight they asked for in their own words, such as "only if it keeps the architecture"), stop before that part, per [where the agent always stops](../ai-assisted-software-development/SKILL.md#where-the-agent-always-stops), and send:
+When [the stop for building past the accepted weight](../ai-assisted-software-development/SKILL.md#where-the-agent-always-stops) applies, send:
 
 ```text
 ⚠️ The weight rose: ●───○───○───○ local  →  ○───○───●───○ boundary
@@ -90,5 +75,5 @@ When the work being built reaches a level above the weight the user accepted (an
 - [ ] The decisions in force were looked up, the fact the weight rests on was pointed at, and confidence was high only with every consumer read.
 - [ ] A direct call showed the two-line ruler, the change card tree when it had leaves, what moves, and what would raise it, in one screen, without building anything.
 - [ ] Above local, the lighter variant or its absence was stated; at architecture, the user was asked to decide before code.
-- [ ] Inside other reports, only the one-line ruler appeared, with the estimate when it differed.
+- [ ] Every ruler drawn followed the change card's weight ruler.
 - [ ] Building past the accepted weight stopped and showed the ruler before and after.
