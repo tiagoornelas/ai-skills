@@ -36,7 +36,8 @@ The right column is not forbidden; it is **not self-explanatory**. Every item in
 4. **Code identifiers only when they matter.** Say what the code does ("the tool that downloads the calculation report"); add the identifier in parentheses only when the human will need it to look something up.
 5. **Status in terms of the goal, bottom line first.** Open with what the human must know, decide, or do, in the shape of a [`tl-dr`](../../tl-dr/SKILL.md) digest, and keep the message to one screen; details come only when the human points at them. Inside a delivery, every message where the agent stops ends with its [stage line](../../agentic-parallel-work/SKILL.md#2-the-stages). Hashes, stack order, test counts, and pane IDs appear only on request.
 6. **Translate reports.** When passing on what a subagent or reviewer reported, rewrite it for the human; never paste its wording.
-7. **Directing-architect test.** Before sending, read every noun and every claim and ask: would someone who knows only what the product does and its high-level architecture know what this refers to, when it happens, and why it matters? Would they understand it as the first thing they read after two hours in another tab, without scrolling up or opening anything? If not, situate it or rewrite.
+7. **Effort as work, never as time.** Size work by what it changes in the project: its [design weight](../SKILL.md#4-the-boundary-test), the places it touches, and the decisions and checks it needs. Never in hours, days, or any other human time: an agent's pace makes those numbers meaningless, and they read as a schedule.
+8. **Directing-architect test.** Before sending, read every noun and every claim and ask: would someone who knows only what the product does and its high-level architecture know what this refers to, when it happens, and why it matters? Would they understand it as the first thing they read after two hours in another tab, without scrolling up or opening anything? If not, situate it or rewrite.
 
 ---
 
@@ -161,7 +162,7 @@ Several decisions may share a message. What matters is that each one is explaine
 
 - **Why it is yours:** <one line: the action that leaves the branch, or why only the human can choose> · <easy: reversible, low cost of a wrong answer | hard: costly or impossible to undo>
 - **Context:** where this sits in the product, what happens today, and what changed that requires a choice (1–3 sentences, no bare handles).
-- **Options:** for each, what changes in the system or for users, what it costs, and what it commits the system to.
+- **Options:** for each, what changes in the system or for users, what it costs, what it commits the system to, and its one-line [weight ruler](change-card.md#the-weight-ruler).
 - **Recommendation:** <option>, because <reason in the human's terms>.
 - **If you do not decide now:** what stays blocked, or what the agent will do by default; whether the choice is reversible later.
 - **Reply with:** <the short answer expected, e.g. "A" or "B">

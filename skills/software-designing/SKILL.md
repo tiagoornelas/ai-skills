@@ -67,6 +67,7 @@ Apply the relevant lenses below (Section 4). Keep a focused assessment proportio
 - **Maintenance commitment**: what recurring obligations does the solution impose across the system, and which are avoidable? → [maintenance-commitment.md](references/maintenance-commitment.md)
 - **Depth**: is each module's interface substantially simpler than its implementation? → [deep-modules.md](references/deep-modules.md)
 - **Information Hiding**: does each design decision have a single owner? → [information-hiding.md](references/information-hiding.md)
+- **Single Source of Truth**: does every fact (data, state, configuration, rule) have one authoritative place, with every other place reading, deriving, or linking to it? → [single-source-of-truth.md](references/single-source-of-truth.md)
 - **Generality**: do interfaces speak the module's own concepts rather than caller concepts (except infrastructure gateways, which speak the domain's vocabulary)? → [general-purpose-modules.md](references/general-purpose-modules.md)
 - **Layers**: does each layer provide a distinct abstraction? → [different-layer-different-abstraction.md](references/different-layer-different-abstraction.md)
 - **Where complexity lives**: is complexity absorbed by modules or leaked to callers? → [pull-complexity-downwards.md](references/pull-complexity-downwards.md)
@@ -96,7 +97,7 @@ A design holding any Human Layer decision passes one adversarial review before i
 - Present to the human **only** what belongs to the Human Layer: modules and responsibilities, dependency direction, contracts and failure modes, behaviors, and trade-offs.
 - **Show** what the design adds and where as a [change card](../ai-assisted-software-development/references/change-card.md) tree (a dependency pointing away from business rules is a `!` line), the main flow as a [`visualize`](../visualize/SKILL.md) swimlane, and each new or altered contract in system terms: who calls it, what crosses, what it promises and hides, and how it fails. No method names or signatures.
 - List the **decisions taken** explicitly, ordered by cost to reverse after merge, each [presented for ratification](../ai-assisted-software-development/references/human-facing-communication.md#presenting-decisions-taken) with its reason and evidence; inside a delivery, the alternatives that lost are not shown, except a disagreement from the adversarial review, shown with both positions.
-- **Cost is relative, never schedule-based**: compare options in terms of complexity, risk, and change footprint (e.g., "Option B modifies three modules; Option A modifies only one"). Do not estimate days or craft phased release timelines—project scheduling is outside the scope of software design.
+- **Cost is relative, never schedule-based**: compare options in terms of complexity, risk, and change footprint (e.g., "Option B modifies three modules; Option A modifies only one"), as [effort as work](../ai-assisted-software-development/references/human-facing-communication.md#2-naming-rules) sets; project scheduling is outside the scope of software design.
 
 ### Step 7: Finalize and Record
 - Summarize decisions and consequences in the conversation; write a persistent decision record when requested or required by the project.
@@ -114,6 +115,7 @@ A design holding any Human Layer decision passes one adversarial review before i
 | [strategic-programming.md](references/strategic-programming.md) | Under pressure for quick shortcuts, deciding how much to invest in design, or modifying existing systems. |
 | [deep-modules.md](references/deep-modules.md) | Defining or reviewing modules, classes, services, or APIs. |
 | [information-hiding.md](references/information-hiding.md) | Deciding what each module knows and reveals, or encountering temporal decomposition. |
+| [single-source-of-truth.md](references/single-source-of-truth.md) | The same fact would be stored, written, or stated in more than one place, or a value could be derived instead of stored. |
 | [general-purpose-modules.md](references/general-purpose-modules.md) | Designing interfaces, or finding special cases scattered across the codebase. |
 | [different-layer-different-abstraction.md](references/different-layer-different-abstraction.md) | Designing layered architectures, wrappers, decorators, or pass-through parameters. |
 | [pull-complexity-downwards.md](references/pull-complexity-downwards.md) | Tempted to let callers handle complexity (exceptions, configuration, prerequisites). |
@@ -135,6 +137,7 @@ A design holding any Human Layer decision passes one adversarial review before i
 | Pass-through method, pass-through variable, shallow decorators | [different-layer-different-abstraction.md](references/different-layer-different-abstraction.md) |
 | Exposed configuration without need, "caller must…" | [pull-complexity-downwards.md](references/pull-complexity-downwards.md) |
 | Duplicated design decisions, modules always modified together | [together-or-apart.md](references/together-or-apart.md) |
+| The same fact stored or stated in two places that can disagree; a status copy beside its source | [single-source-of-truth.md](references/single-source-of-truth.md) |
 | Shotgun surgery across modules for a single business change | [changeability-and-fragility.md](references/changeability-and-fragility.md), [together-or-apart.md](references/together-or-apart.md) |
 | Happy-path myopia, unhandled runtime fragility, unexamined implicit assumptions | [changeability-and-fragility.md](references/changeability-and-fragility.md), [define-errors-out-of-existence.md](references/define-errors-out-of-existence.md) |
 | Exception overload, repetitive handling logic | [define-errors-out-of-existence.md](references/define-errors-out-of-existence.md) |
@@ -180,7 +183,7 @@ A design is complete only when:
 
 - [ ] Alternatives match the decision depth: a Human Layer decision with no project pattern went through the arena (two radically different sketches by subagents in the calling harness, compared on the same criteria), only the chosen sketch was implemented, and a project pattern or an empirical question did not trigger it.
 - [ ] Both **fundamental questions** were evaluated: plausible future change vectors are localized, and runtime failure paths and implicit assumptions are surfaced and contained ([changeability-and-fragility.md](references/changeability-and-fragility.md)).
-- [ ] Each module has an **interface described in a few sentences**, is **deep** (interface substantially simpler than what it encapsulates), and is the **single owner** of each design decision it holds (no leakage).
+- [ ] Each module has an **interface described in a few sentences**, is **deep** (interface substantially simpler than what it encapsulates), and is the **single owner** of each design decision it holds (no leakage), and every fact has a [single source of truth](references/single-source-of-truth.md).
 - [ ] **Failure modes** for each contract passed through elimination techniques and the remaining ones are explicit; **dependency direction** points toward business rules, any exception a `!` item on the change card ([dependency-direction.md](references/dependency-direction.md)).
 - [ ] Every design holding a **Human Layer decision** passed the adversarial review, each 🔴 and 🟡 objection adopted, or, when you disagreed, built (recommended in a design session) and shown with both positions; each decision was decided by the human (design session) or recorded as a decision to ratify, ordered by cost to reverse (inside a delivery).
 - [ ] No red flag from Section 4 was left unaddressed or unjustified, and a reader who did not participate in the conversation can understand the design purely from the change card, the flow, and the contracts.
