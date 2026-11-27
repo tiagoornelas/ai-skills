@@ -129,7 +129,7 @@ Never run `git reset`, `git clean`, `git push --delete`, or any command on the r
 
 ## 6. Report and Offer
 
-Show what was removed and what was kept, with **continuous numbering** so the user can refer to rows by number, and the group names and headers in the user's session language:
+Show what was removed and what was kept, splitting the kept rows in two: **kept for safety** holds rows whose work is done (merged, closed PR, or stale) and that stayed only because of an idle or finished Herdr pane or uncommitted changes, so the user can likely close them; **kept** holds the rest. Use **continuous numbering** so the user can refer to rows by number, and the group names and headers in the user's session language:
 
 ```text
 Default branch master: updated 3 commits (fast-forward) ✓
@@ -141,16 +141,21 @@ REMOVED
  3  chore/old-lint             —                                 2026-05-30   ⚠️ no PR, 1 commit, local only    Stricter lint rules
  4  (detached)                 ../app-tmp                        2026-06-11   🧹 prunable                       —
 
+KEPT FOR SAFETY (likely closable)
+ #  Branch                     Worktree                          Last commit  Held by                           Work
+ 5  fix/date-parse             ../app-date-fix [herdr:t4 "fix"]  2026-10-12   Herdr pane (idle) · merged #44    Date parsing in reports
+ 6  chore/tmp-notes            ../app-notes                      2026-08-02   2 uncommitted files · closed #31  Scratch notes for the API
+
 KEPT
  #  Branch                     Worktree                          Last commit  Reason                            Work
- 5  fix/date-parse             ../app-date-fix [herdr:t4 "fix"]  2026-10-12   open Herdr pane (idle), merged #44  Date parsing in reports
- 6  fix/null-avatar            —                                 2026-09-01   open PR #57                       Avatar fallback for null
- 7  feat/chips-input           —                                 2026-10-14   merged #49, +4 commits            Chips below the input
- 8  master                     (main)                            2026-10-14   default branch                    —
+ 7  fix/null-avatar            —                                 2026-09-01   open PR #57                       Avatar fallback for null
+ 8  feat/chips-input           —                                 2026-10-14   merged #49, +4 commits            Chips below the input
+ 9  master                     (main)                            2026-10-14   default branch                    —
 
 Restore:  git branch spike/cache-redis 4f2a9c1   …
 ```
 
+- A row kept for safety names what holds it and what closing it loses (the pane, or the uncommitted files by name).
 - Every failure appears with its reason.
 - A kept worktree used by Herdr App terminals shows each terminal's address and tab name, `../path [herdr:<terminal> "<tab>"]`, with its agent state and the PR state the row would have otherwise.
 - The **restore block** holds `git branch <name> <sha>` per removed branch, and `git worktree add <path> <branch>` per removed worktree; a branch stays restorable while its commits are in the reflog (typically 30 to 90 days).
@@ -178,4 +183,4 @@ End with two questions: restore any removed row, and remove any kept row.
 - [ ] Keep reasons were limited to the table's list; closed PRs were cleaned even with recent commits; closed-unmerged, stale, and detached rows showed what was removed.
 - [ ] Only Clean rows were removed without asking, never with `--force` and never closing a Herdr pane; the default branch and the main worktree were never removed.
 - [ ] A branch in use by the main worktree was switched away only from a clean worktree, and the session left a worktree before removing it.
-- [ ] The report listed every removal, every kept row with its reason, every failure, and a restore command per removed branch and worktree, then asked what to restore and what else to remove; a pane closed later had its explicit yes (working agents separately), and the `herdr` terminal CLI was never used.
+- [ ] The report listed every removal, every kept row with its reason, every failure, and a restore command per removed branch and worktree, kept-for-safety rows apart from the rest, then asked what to restore and what else to remove; a pane closed later had its explicit yes (working agents separately), and the `herdr` terminal CLI was never used.
