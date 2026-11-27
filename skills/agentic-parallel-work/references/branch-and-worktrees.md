@@ -49,4 +49,4 @@ git -C <repo> worktree add -b <branch> ../<repo>-<short-slug> origin/<default>
 ## 5. Conflicts and Cleanup
 
 - Two deliveries that collide on the same files are resolved with [`resolve-branch-conflict`](../../resolve-branch-conflict/SKILL.md), which keeps what both intended.
-- Finished worktrees and branches are removed with [`git-cleanup`](../../git-cleanup/SKILL.md), only with the user's approval.
+- Finished worktrees and branches are removed with [`git-cleanup`](../../git-cleanup/SKILL.md).
