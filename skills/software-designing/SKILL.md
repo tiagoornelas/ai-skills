@@ -94,7 +94,7 @@ A design holding any Human Layer decision passes one adversarial review before i
 - **Inside a delivery, nothing here stops the work**: record the decisions in the issue or the conversation and continue building; they reach the human once, in the [delivery report](../ai-assisted-software-development/references/human-facing-communication.md#3-the-delivery-report), after the delivery is proven.
 - Justify the design that survived Step 5 using concepts from the reference lenses (e.g., "Alternative B eliminates format leakage between reader and writer").
 - Present to the human **only** what belongs to the Human Layer: modules and responsibilities, dependency direction, contracts and failure modes, behaviors, and trade-offs.
-- **Show** what the design adds and where as a [change card](../ai-assisted-software-development/references/change-card.md) tree (a dependency pointing away from business rules is a `!` line), the main flow as a [`visualize-it`](../visualize-it/SKILL.md) swimlane, and each new or altered contract in system terms: who calls it, what crosses, what it promises and hides, and how it fails. No method names or signatures.
+- **Show** what the design adds and where as a [change card](../ai-assisted-software-development/references/change-card.md) tree (a dependency pointing away from business rules is a `!` line), the main flow as a [`visualize`](../visualize/SKILL.md) swimlane, and each new or altered contract in system terms: who calls it, what crosses, what it promises and hides, and how it fails. No method names or signatures.
 - List the **decisions taken** explicitly, ordered by cost to reverse after merge, each [presented for ratification](../ai-assisted-software-development/references/human-facing-communication.md#presenting-decisions-taken) with its reason and evidence; inside a delivery, the alternatives that lost are not shown, except a disagreement from the adversarial review, shown with both positions.
 - **Cost is relative, never schedule-based**: compare options in terms of complexity, risk, and change footprint (e.g., "Option B modifies three modules; Option A modifies only one"). Do not estimate days or craft phased release timelines—project scheduling is outside the scope of software design.
 
@@ -160,7 +160,7 @@ Use this structure for a substantial design brief; omit irrelevant sections in a
 <change card tree: what the design adds and where; a dependency pointing away from business rules is a `!` line>
 
 ## How It Works
-<swimlane of the main flow via visualize-it>
+<swimlane of the main flow via visualize>
 
 ## Contracts
 <per new or altered contract, in system terms: who calls it, what crosses, what it promises and hides, how it fails>

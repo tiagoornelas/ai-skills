@@ -100,7 +100,7 @@ Format the report for quick scanning. **Never combine or re-order findings acros
 
 ### 🏗️ Architecture and Contracts — 🔴 0 · 🟡 1 · 🟢 1
 
-<the change card tree of what is new and where; a visualize-it swimlane only when a flow across places changed>
+<the change card tree of what is new and where; a visualize swimlane only when a flow across places changed>
 
 - 🟡 **<title>** — <detail>
 - 🟢 **<title>** — <detail>

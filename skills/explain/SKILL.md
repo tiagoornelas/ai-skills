@@ -5,7 +5,7 @@ description: >-
   had lost all context on that part of the system: rebuilds, in a few short
   steps, the path from the product down to the target, defining every domain
   term and internal name on the way, so the user regains the understanding
-  without reading a report. Leverages visualize-it to draw flows and states.
+  without reading a report. Leverages visualize to draw flows and states.
   Used on demand when the user asks for an explanation, and by human-review
   when the user points at a part of a change.
 disable-model-invocation: true
@@ -28,7 +28,7 @@ Every sentence moves the reader one step closer to understanding the target, or 
 
 - **Shared context principles**: apply [Giving context](../ai-assisted-software-development/references/human-facing-communication.md#giving-context) (outside in, situate before naming, concrete before and after, say why or say it is unknown, no condescension, grounded). Domain terms are defined too, inline where they first appear.
 - **Reasons the code does not state**: when the explanation needs why the code is shaped this way and the code does not say, read its history (`git log -L`, `git blame`, and the pull requests and issues they lead to), cite what you find, and say what stays unknown instead of guessing.
-- **Visuals**: invoke the [`visualize-it`](../visualize-it/SKILL.md) skill whenever explaining a flow across parts of the system or the states a user sees, with the code names beside the drawing, keyed by step. The drawing replaces the prose it shows.
+- **Visuals**: invoke the [`visualize`](../visualize/SKILL.md) skill whenever explaining a flow across parts of the system or the states a user sees, with the code names beside the drawing, keyed by step. The drawing replaces the prose it shows.
 
 ---
 
@@ -56,6 +56,6 @@ Path: the app sells gym memberships. Each member has a membership with an end da
 
 - [ ] The target was identified, and only what was asked was explained.
 - [ ] The explanation opened with one destination sentence, then the path from the product to the target, every domain term and internal name situated before use.
-- [ ] One concrete example was traced, with a [`visualize-it`](../visualize-it/SKILL.md) drawing for flows or user-visible states.
+- [ ] One concrete example was traced, with a [`visualize`](../visualize/SKILL.md) drawing for flows or user-visible states.
 - [ ] At most three surprises, and unknown reasons were stated as unknown, not invented.
 - [ ] No glossary, closing summary, or reading list; the whole explanation fit one screen besides the drawing.

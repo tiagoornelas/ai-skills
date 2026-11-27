@@ -5,7 +5,7 @@ description: >-
   delivery document of a finished change, written for the other developers who
   review it before merge and read it later: why the change exists, its
   references, what it adds, changes, or removes and where it lives, the
-  decisions taken, how a changed flow works (a visualize-it swimlane), how it
+  decisions taken, how a changed flow works (a visualize swimlane), how it
   was tested, and what deploying it needs, readable by anyone who never saw the
   work. Triggered before opening or updating a pull request, or when
   a skill hands off to open one.
@@ -80,7 +80,7 @@ Exported PDFs are now deleted after 90 days; before, they were kept forever. No 
 [Each decision taken and its reason, ordered by cost to reverse after merge, the hardest first: business rules, contracts created or altered (who calls, what crosses, what it promises, how it fails), consequential trade-offs, assumptions, and maintenance commitments. When there was a real choice, name the alternative not taken and why. Omit when there is nothing material.]
 
 ## How It Works
-[Only when the change alters a flow across places of the system: a visualize-it swimlane as a Mermaid sequenceDiagram, then at most two sentences on what to notice. Omit otherwise.]
+[Only when the change alters a flow across places of the system: a visualize swimlane as a Mermaid sequenceDiagram, then at most two sentences on what to notice. Omit otherwise.]
 
 ## Testing
 | Behavior | How it was verified | How to check |
@@ -95,7 +95,7 @@ Exported PDFs are now deleted after 90 days; before, they were kept forever. No 
 [Breaking changes, database migrations, new configuration, environment variables, or secrets, deploy order, and how to roll back; "None" when there are none.]
 ````
 
-The swimlane follows [`visualize-it`](../visualize-it/SKILL.md). GitHub CLI cannot upload images into a PR body: never commit images or upload them to a third-party host to embed them. When a visible change has no screenshot, say after opening that the developer may add one.
+The swimlane follows [`visualize`](../visualize/SKILL.md). GitHub CLI cannot upload images into a PR body: never commit images or upload them to a third-party host to embed them. When a visible change has no screenshot, say after opening that the developer may add one.
 
 ---
 
