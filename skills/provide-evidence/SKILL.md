@@ -94,7 +94,7 @@ Under every ❌, one line says **what is missing and who acts**: 🤖 the agent 
 - **The six proofs always**, one line each: the dossier line's question, its claim, and its proof. Never a bare mark, and never a count in place of the proofs. When the user points at a proof, give its full argument from the note.
 - **No task registered**: when no task reference exists in the branch, the commits, or the conversation, suggest registering the work with [`report-work`](../report-work/SKILL.md).
 - **Closing line**: the user's next action, or that nothing depends on them and the agents' next step.
-- When the verdict is not ✅ and this session wrote the delivery, switch to verify (Section 4) instead of showing the gap; on someone else's PR, end with one offer to verify, saying what it costs (minutes; it runs tests and a real execution).
+- When the verdict is not ✅ and this session wrote the delivery, switch to verify (Section 4) instead of showing the gap; on someone else's PR, end with one offer to verify, saying what it costs: it runs the tests and a real execution.
 
 ## 4. Verify
 
