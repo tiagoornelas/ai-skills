@@ -1,5 +1,5 @@
 ---
-name: visualize-it
+name: visualize
 description: >-
   Draws how a part of a software system works, for a reader who knows the
   product but not the code: swimlanes (one column per place of the system,
@@ -8,12 +8,13 @@ description: >-
   sees, a states view. Box-drawing text in conversation; Mermaid only where it
   renders. Used by the review, design, and explanation skills, and directly
   invokable when the user asks how a flow, feature, or module works. What a
-  change adds and where it lives is the change card's job, not a diagram.
+  change adds and where it lives is the change card's job, not a diagram; the
+  components of a system and how they relate are visualize-architecture's.
 ---
 
-# Visualize It
+# Visualize
 
-One drawing answers **how does this work?**: who does what, in which order, crossing which places of the system, and where the flow stops or detours. What a change adds and where it lives belongs to the [change card](../ai-assisted-software-development/references/change-card.md).
+One drawing answers **how does this work?**: who does what, in which order, crossing which places of the system, and where the flow stops or detours. What a change adds and where it lives belongs to the [change card](../ai-assisted-software-development/references/change-card.md); the components of a system and how they relate, to [`visualize-architecture`](../visualize-architecture/SKILL.md).
 
 ---
 
