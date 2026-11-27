@@ -73,13 +73,24 @@ Whenever in doubt about which layer a decision belongs to, apply this test, both
 > 1. **"Would changing this require renegotiating a contract with external callers, or could it be rewritten tomorrow without anyone outside the module noticing?"**
 > 2. **"Does this start to run, cost, store data, or hold permissions in production where it did not before?"**
 
-A change can pass the first question and still fail the second: a scheduled job that deletes production rows changes no contract, yet it is a new component the human must ratify. The answers place every decision in one of three tiers, which set how it is presented, not whether the agent may take it:
+A change can pass the first question and still fail the second: a scheduled job that deletes production rows changes no contract, yet it is a new component the human must ratify.
+
+Each part of a change also sits on a level, by who notices it. The highest level any part reaches is the change's **design weight**, which [`design-weight`](../design-weight/SKILL.md) judges and draws:
+
+| Level | Who notices | What it covers |
+| :--- | :--- | :--- |
+| **local** | Nobody outside that point of the code | A fix inside the current design; every decision in force holds |
+| **internal** | The module itself | Its parts and their responsibilities are rearranged, a new boundary inside it included; what it promises outside stays |
+| **boundary** | Its neighbors, consumers, or operators | A contract between parts (question 1) or a new component (question 2) |
+| **architecture** | The human, because a decision of theirs stops holding | A ratified decision reversed, an existing boundary moved or removed, a dependency inverted, or the system's style changed |
+
+A business rule that changes is reported beside the weight, not as a level. The weight describes the whole change; each decision (the choice behind one part) gets a tier, and its tier comes only from this table, which sets how it is presented, not whether the agent may take it:
 
 | Tier | What it covers | What the human sees at delivery |
 | :--- | :--- | :--- |
 | **1. Internal detail** | No to both questions: implementation, internal data, tests, hygiene below contracts | Nothing; it surfaces only inside a delivery's evidence |
 | **2. New component or reversible operational change** | Yes to question 2 only, and reversible **including its effects**: a new job, schedule, table, queue, route, secret, permission, or recurring cost; an operational change that can be undone, data included | A decision to ratify, after the tier-3 ones |
-| **3. Hard to reverse after merge** | Yes to question 1, a business rule, anything that deletes or rewrites production data, or anything irreversible or outward-facing | A decision to ratify, first in the order |
+| **3. Hard to reverse after merge** | Yes to question 1, a business rule, a ratified decision reversed, an existing boundary moved or removed, a dependency inverted, anything that deletes or rewrites production data, or anything irreversible or outward-facing | A decision to ratify, first in the order |
 
 - **Nothing is tier 2 by default.** Every new item goes through both questions; tier 3 wins whenever any of its conditions holds. A business rule, or a component that deletes or rewrites production data (a purge job, a retention policy), is always tier 3: turning the component off stops new effects but does not undo the ones already made. This concerns a component whose purpose is to delete or rewrite data (a purge, a retention policy, a data migration), not the ordinary writes a product feature makes.
 - **When in doubt between tiers 2 and 3, it is tier 3.** Building a tier-3 item in a branch is allowed; running its effects outside the branch is an action where the agent [always stops](#where-the-agent-always-stops).

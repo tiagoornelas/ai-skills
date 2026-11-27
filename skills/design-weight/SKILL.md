@@ -7,8 +7,9 @@ description: >-
   change card tree of where it lands, and offers the lighter variant when one
   exists, before anything is built. Triggered when the user asks how big a
   change is, whether it fits the current architecture, or whether it knocks
-  down a wall or pivots the architecture; owns the ruler that the change card,
-  decision options, improve-architecture, and pull requests print.
+  down a wall or pivots the architecture; owns how the ruler is judged and
+  drawn wherever the change card, decision options, improve-architecture, and
+  pull requests print it.
 argument-hint: "[proposal or change to weigh — by default the last one discussed]"
 ---
 
@@ -20,14 +21,7 @@ The weight of a change is what it moves in the design, and the plainest measure 
 
 ## 1. The Ruler
 
-| Level | Who notices | What moves |
-| :--- | :--- | :--- |
-| **local** | Nobody outside that point of the code | A fix inside the current design; every design decision holds. |
-| **internal** | The module itself | Its parts and their responsibilities are rearranged; what it promises to the outside stays. |
-| **boundary** | Its neighbors | A contract between parts, a boundary, or a new component that runs, stores data, costs money, or holds permissions. |
-| **architecture** | The user, because a decision of theirs stops holding | A ratified decision is reversed, a boundary between modules moves, a dependency is inverted, or the system's style changes. |
-
-The weight is the highest level any part of the change reaches. A business rule that changes is reported beside the weight, as the [change card](../ai-assisted-software-development/references/change-card.md#2-the-tree) does, never as a level.
+The four levels (local, internal, boundary, architecture), who notices each, and how they relate to the tiers are defined in [the boundary test](../ai-assisted-software-development/SKILL.md#4-the-boundary-test); read them there before weighing.
 
 Two forms, every word in the reader's language, labels realigned under their dots:
 
