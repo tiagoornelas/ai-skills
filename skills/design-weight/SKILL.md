@@ -6,8 +6,9 @@ description: >-
   a four-level ruler (local, internal, boundary, architecture), draws the
   change card tree of where it lands, and offers the lighter variant when one
   exists, before anything is built. Triggered when the user asks how big a
-  change is, whether it fits the current architecture, or whether it knocks
-  down a wall or pivots the architecture; owns how the ruler is judged and
+  change is, whether it fits the current architecture, whether it knocks
+  down a wall or pivots the architecture, or for a solution of a weight they
+  describe in their own words ("something light", "even if it is heavy"); owns how the ruler is judged and
   drawn wherever the change card, decision options, improve-architecture, and
   pull requests print it.
 argument-hint: "[proposal or change to weigh — by default the last one discussed]"
@@ -46,10 +47,10 @@ The two-line form opens a direct call. The one-line form goes where a report alr
 
 ## 3. Direct Call
 
-Weigh the proposal in the argument, or the last one discussed. Read-only: nothing is built. The answer fits one screen:
+Weigh the proposal in the argument, or the last one discussed. When the argument is a problem and the weight the user wants in their own words, read that wish as they would mean it, propose the solution that fits it best, weigh it, and say whether it fits. Read-only: nothing is built. The answer fits one screen:
 
 1. The two-line ruler.
-2. The change card tree of the proposal, omitted when it has no leaf, as local and internal changes often do.
+2. The change card tree of the proposal, with only the leaves the change card admits; internal parts (stores, types, components) are never leaves, so local and internal changes usually print no tree.
 3. Up to three sentences: what moves and who notices, any business rule that changes, what would raise the weight, and what was not read when confidence is not high.
 4. Above local, the lighter variant. At architecture, `⚖️` asks the user to decide before any code.
 
@@ -73,7 +74,7 @@ Lighter variant: run the nightly job every hour (local).
 
 ## 4. When the Weight Rises While Building
 
-When the work being built reaches a level above the weight the user accepted (an estimate they were given, or a limit they set, such as "only if it keeps the architecture"), stop before that part, per [where the agent always stops](../ai-assisted-software-development/SKILL.md#where-the-agent-always-stops), and send:
+When the work being built reaches a level above the weight the user accepted (an estimate they were given, or a weight they asked for in their own words, such as "only if it keeps the architecture"), stop before that part, per [where the agent always stops](../ai-assisted-software-development/SKILL.md#where-the-agent-always-stops), and send:
 
 ```text
 ⚠️ The weight rose: ●───○───○───○ local  →  ○───○───●───○ boundary
