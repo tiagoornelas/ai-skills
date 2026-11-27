@@ -30,6 +30,8 @@ The places of the system are the branches: the repository, or in a single reposi
 
 **Never on the card**: methods, signatures, files, helpers, internal refactors, tests, commits, and counts. When one of these changes a behavior, contract, boundary, or risk, the card shows that consequence.
 
+**Weight line**: before the last line, the one-line [design weight](../../design-weight/SKILL.md#1-the-ruler) ruler of the whole change.
+
 **Last line**: `⚖️ <N> to ratify`, or `nothing to ratify`. Each `?` and `!` leaf, and each rule change, opens one [decision to ratify](human-facing-communication.md#presenting-decisions-taken), ordered by cost to reverse.
 
 Every word is in the human's session language. Inside the tree, only one-column marks; no emoji.
@@ -56,9 +58,13 @@ web-app
 
 Exported PDFs are now deleted after 90 days; before, they were kept forever. Nothing else changes: no data is rewritten or sent out, and boundaries and contracts stay as they were.
 
+```text
+Design weight  ○───○───●───○  boundary
+```
+
 ⚖️ 5 to ratify
 
-A change that brings in nothing prints only the sentence on what does not change and `nothing to ratify`.
+A change that brings in nothing prints only the sentence on what does not change, the weight line, and `nothing to ratify`.
 
 ## 4. PR Line
 
@@ -86,5 +92,6 @@ infra#41        invoice PDF bucket   ✅ CI ─ ✅ agent ─ ⚠️ proof ─ �
 - [ ] The card was printed only in a plan, at delivery, or on demand.
 - [ ] It was a tree of the system's places with one leaf per high-level thing brought in, each with its mark, a product-level name, and its kind; nothing below that level appeared.
 - [ ] Rule changes, data deleted, rewritten, or sent out, and what does not change were plain sentences in the reader's language, with no fixed labels.
+- [ ] The weight line preceded the last line.
 - [ ] Every `?` and `!` item was counted on the last line and opened a decision to ratify, ordered by cost to reverse.
 - [ ] Every word was in the human's session language, with no emoji inside the tree.

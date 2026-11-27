@@ -40,13 +40,14 @@ The human is the **human directing architect**: the owner of this layer's decisi
 
 ### Where the Agent Always Stops
 
-A decision costs nothing to change before merge; an action whose effect leaves the branch does. Before any of these, the agent stops and asks with a [decision card](references/human-facing-communication.md#every-decision-fully-explained), and an approval covers only the action it named:
+A decision costs nothing to change before merge; an action whose effect leaves the branch does, and so does work past a limit the user set. Before any of these, the agent stops and asks with a [decision card](references/human-facing-communication.md#every-decision-fully-explained), and an approval covers only the action it named:
 
 - merging, deploying, or publishing (packages, releases, artifacts);
 - writing to shared or production data, including running a migration against a database that is not disposable (moving an existing non-epic task's status with [`report-work`](../report-work/SKILL.md) is not one: it is done and reported);
 - sending anything outside: messages, emails, comments on others' issues or pull requests;
 - creating resources that cost money or that others use (cloud resources, secrets, queues);
-- rewriting the history of a shared branch, or deleting data.
+- rewriting the history of a shared branch, or deleting data;
+- building past the [design weight](../design-weight/SKILL.md#4-when-the-weight-rises-while-building) the user accepted for the work: an estimate they were given, or a limit they set.
 
 Pushing the delivery's own branch and opening its draft pull requests stay inside the delivery; deploying to a validation environment others use is a deploy.
 

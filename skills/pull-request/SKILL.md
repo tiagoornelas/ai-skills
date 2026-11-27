@@ -74,7 +74,12 @@ web-app
 ```
 
 Exported PDFs are now deleted after 90 days; before, they were kept forever. No data is rewritten or sent out, and the public API, the database schema of existing tables, and permissions are unchanged.
-[A tree of the system with each high-level thing the change brings in, changes, or removes hanging where it lives, of the kinds the [change card](../ai-assisted-software-development/references/change-card.md#2-the-tree) lists, each leaf opening with Added, Changed, or Removed; anything that departs from how the project usually does that kind of thing says so in words, with why. Then plain sentences on business rules before and after, data deleted, rewritten, or sent out, and what does not change, named concretely. No counts, approvals, or status.]
+
+```text
+Design weight  ○──────────○──────────●──────────○
+               local      internal   boundary   architecture
+```
+[A tree of the system with each high-level thing the change brings in, changes, or removes hanging where it lives, of the kinds the [change card](../ai-assisted-software-development/references/change-card.md#2-the-tree) lists, each leaf opening with Added, Changed, or Removed; anything that departs from how the project usually does that kind of thing says so in words, with why. Then plain sentences on business rules before and after, data deleted, rewritten, or sent out, and what does not change, named concretely. Last, the two-line [design weight](../design-weight/SKILL.md#1-the-ruler) ruler of the change, its labels in the PR's language. No counts, approvals, or status.]
 
 ## Decisions
 [Each decision taken and its reason, ordered by cost to reverse after merge, the hardest first: business rules, contracts created or altered (who calls, what crosses, what it promises, how it fails), consequential trade-offs, assumptions, and maintenance commitments. When there was a real choice, name the alternative not taken and why. Omit when there is nothing material.]
@@ -113,7 +118,7 @@ The swimlane follows [`visualize`](../visualize/SKILL.md). GitHub CLI cannot upl
 
 - [ ] Agent-authored branches passed `agent-self-review` in branch mode before the PR was opened.
 - [ ] The body holds only facts about the change that stay true after merge, readable by anyone: no work status, approval, open decision, follow-up list, workflow vocabulary, or symbol only the author's tooling defines.
-- [ ] Summary, References, What Changes (with what does not change), Testing, and Deployment and Risk are present, in the repository's own template when it has one; Decisions and How It Works appear when material; the description matches the diff and the issue.
+- [ ] Summary, References, What Changes (with what does not change and the design weight ruler), Testing, and Deployment and Risk are present, in the repository's own template when it has one; Decisions and How It Works appear when material; the description matches the diff and the issue.
 - [ ] Every reference is a labeled, reachable link, with no empty lines; a multi-repository delivery's PRs link each other.
 - [ ] Title and body follow the repository's convention and language, English when nothing indicates one.
 - [ ] The PR was opened (draft by default) and, inside a delivery, its link reached the user in the delivery report after verify; the screenshot reminder came for a visible change without one.

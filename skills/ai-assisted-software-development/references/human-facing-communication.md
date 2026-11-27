@@ -161,7 +161,7 @@ Several decisions may share a message. What matters is that each one is explaine
 
 - **Why it is yours:** <one line: the action that leaves the branch, or why only the human can choose> · <easy: reversible, low cost of a wrong answer | hard: costly or impossible to undo>
 - **Context:** where this sits in the product, what happens today, and what changed that requires a choice (1–3 sentences, no bare handles).
-- **Options:** for each, what changes in the system or for users, what it costs, and what it commits the system to.
+- **Options:** for each, what changes in the system or for users, what it costs, what it commits the system to, and its one-line [design weight](../../design-weight/SKILL.md#1-the-ruler) ruler.
 - **Recommendation:** <option>, because <reason in the human's terms>.
 - **If you do not decide now:** what stays blocked, or what the agent will do by default; whether the choice is reversible later.
 - **Reply with:** <the short answer expected, e.g. "A" or "B">
